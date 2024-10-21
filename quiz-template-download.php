@@ -125,7 +125,7 @@ function kw_download_quiz_pdf_callback() {
             $pdf->Image($image_path, 150, 10, 40, 15, '', '', '', false, 300, '', false, false, 1, false, false, false);
 
             // Add bottom padding by moving the cursor down after the image
-            $pdf->SetY($pdf->GetY() + 20); // Adjusted from 15 to 20 to add 10px extra padding
+            $pdf->SetY($pdf->GetY() + 10); // Adjusted from 15 to 20 to add 10px extra padding
         } else {
             error_log("Image file not found: " . $image_path); // Log an error if the image file is not found
         }
@@ -157,17 +157,18 @@ function kw_download_quiz_pdf_callback() {
         $pdf->SetTextColorArray(hex2rgb($question_font_color));
         $pdf->SetFillColorArray(hex2rgb($question_background_color));
         $pdf->MultiCell(0, 10, ($index + 1) . '. ' . __($question_title, 'wp-quiz-plugin'), 0, 'L', 1);
-        $pdf->Ln(5);
+        $pdf->Ln(2);
 
 
 
         // Show the image if it exists
         if (!empty($question['TitleImage'])) {
+            $pdf->Ln(2);
             $image_url = esc_url($question['TitleImage']);
             $pdf->Image($image_url, $pdf->GetX(), $pdf->GetY(), 50, 30, '', '', '', false, 300, '', false, false, 1, false, false, false);
             $pdf->Ln(35);  // Move cursor after image
         } else {
-            $pdf->Ln(5); // Add a little space if no image
+            $pdf->Ln(2); // Add a little space if no image
         }
 
         // Decode answers JSON safely
@@ -350,7 +351,7 @@ function kw_download_answer_key_pdf_callback() {
     }
 
     // Output Answer Key PDF securely
-    $pdf->Output('quiz_answer_key_' . $quiz_id . '.pdf', 'D'); // D for download, I for inline
+    $pdf->Output('quiz_odpowiedzi_' . $quiz_id . '.pdf', 'D'); // D for download, I for inline
 
     wp_die(); // Stop the execution after generating PDF
 }
