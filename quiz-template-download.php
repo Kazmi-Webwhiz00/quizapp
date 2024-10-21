@@ -157,12 +157,13 @@ function kw_download_quiz_pdf_callback() {
         $pdf->SetTextColorArray(hex2rgb($question_font_color));
         $pdf->SetFillColorArray(hex2rgb($question_background_color));
         $pdf->MultiCell(0, 10, ($index + 1) . '. ' . __($question_title, 'wp-quiz-plugin'), 0, 'L', 1);
-        $pdf->Ln(5);
+        $pdf->Ln(2);
 
 
 
         // Show the image if it exists
         if (!empty($question['TitleImage'])) {
+            $pdf->Ln(2);
             $image_url = esc_url($question['TitleImage']);
             $pdf->Image($image_url, $pdf->GetX(), $pdf->GetY(), 50, 30, '', '', '', false, 300, '', false, false, 1, false, false, false);
             $pdf->Ln(35);  // Move cursor after image
