@@ -350,7 +350,7 @@ function kw_download_answer_key_pdf_callback() {
     }
 
     // Output Answer Key PDF securely
-    $pdf->Output('quiz_answer_key_' . $quiz_id . '.pdf', 'D'); // D for download, I for inline
+    $pdf->Output('quiz_odpowiedzi_' . $quiz_id . '.pdf', 'D'); // D for download, I for inline
 
     wp_die(); // Stop the execution after generating PDF
 }
