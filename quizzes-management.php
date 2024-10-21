@@ -294,16 +294,26 @@ function display_questions_meta_box($post) {
                 <?php if (!empty($questions)): ?>
                 <?php foreach ($questions as $index => $question): ?>
                 <div class="kw_question-item" data-index="<?php echo $index; ?>">
-                    <div class="kw_question-header kw_close-expand kw_toggle-question-btn" >
-                        <strong><?php echo esc_html__('Q.', 'wp-quiz-plugin') . ($index + 1); ?>: &nbsp;</strong> <?php echo esc_html($question['Title']); ?>
-                        <span class="kw_remove-question-btn kw_ml-2" data-id="<?php echo esc_attr($question['QuesID']); ?>">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                                <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM175 175c9.4-9.4 24.6-9.4 33.9 0l47 47 47-47c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-47 47 47 47c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-47-47-47 47c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l47-47-47-47c-9.4-9.4-9.4-24.6 0-33.9z"/>
+
+                  <div class="kw_question-header kw_close-expand kw_toggle-question-btn">
+                    <div class="kw-handle-container">
+                        <span class="kw_handle-icon" style="cursor: move; display: inline-block; margin-right: 10px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="16" height="16">
+                                <rect y="4" width="20" height="2" rx="1"></rect>
+                                <rect y="9" width="20" height="2" rx="1"></rect>
+                                <rect y="14" width="20" height="2" rx="1"></rect>
                             </svg>
                         </span>
-                        <input type="hidden" name="quiz_questions[<?php echo $index; ?>][order]" value="<?php echo $index; ?>">
-
+                        <strong><?php echo esc_html__('Q.', 'wp-quiz-plugin') . ($index + 1); ?>: &nbsp;</strong> <?php echo esc_html($question['Title']); ?>
                     </div>
+                    <span class="kw_remove-question-btn kw_ml-2" data-id="<?php echo esc_attr($question['QuesID']); ?>">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                            <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM175 175c9.4-9.4 24.6-9.4 33.9 0l47 47 47-47c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-47 47 47 47c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-47-47-47 47c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l47-47-47-47c-9.4-9.4-9.4-24.6 0-33.9z"/>
+                        </svg>
+                    </span>
+                    <input type="hidden" name="quiz_questions[<?php echo $index; ?>][order]" value="<?php echo $index; ?>">
+                </div>
+
                     
                     <div class="kw_question-body">
                         <!--<label>Question Type:</label>-->
