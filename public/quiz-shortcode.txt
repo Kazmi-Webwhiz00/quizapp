@@ -1,0 +1,492 @@
+<?php
+
+
+// Shortcode to display the quiz
+function wp_quiz_display_shortcode($atts) {
+    // Fetch style settings from options
+    $font_family = esc_attr(get_option('wp_quiz_plugin_font_family', 'Arial'));
+    $font_color = esc_attr(get_option('wp_quiz_plugin_font_color', '#000000'));
+    $background_color = esc_attr(get_option('wp_quiz_plugin_background_color', '#ffffff'));
+    $button_background_color = esc_attr(get_option('wp_quiz_plugin_button_background_color', '#007bff'));
+    $button_text_color = esc_attr(get_option('wp_quiz_plugin_button_text_color', '#ffffff'));
+    $progress_bar_color = esc_attr(get_option('wp_quiz_plugin_progress_bar_color', '#4CAF50'));
+    $progress_bar_background_color = esc_attr(get_option('wp_quiz_plugin_progress_bar_background_color', '#f1f1f1'));
+
+
+    // Check if we are in a single quiz post
+    if (is_singular('quizzes')) {
+        $quiz_id = get_the_ID(); // Get current post ID
+    } else {
+        return '<p>This shortcode is only valid on a quiz post.</p>';
+    }
+
+    // Fetch quiz questions
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'quiz_questions';
+    $questions = $wpdb->get_results($wpdb->prepare("SELECT * FROM $table_name WHERE QuizID = %d ORDER BY `Order`", $quiz_id), ARRAY_A);
+
+    if (empty($questions)) {
+        return '<p>No questions found for this quiz.</p>';
+    }
+
+        // Render initial quiz container
+        ob_start(); ?>
+        <div id="pf_quiz-container" data-quiz-id="<?php echo $quiz_id; ?>" data-total-questions="<?php echo count($questions); ?>" style="font-family: <?php echo $font_family; ?>; color: <?php echo $font_color; ?>; background-color: <?php echo $background_color; ?>;">
+            <div class="pf_quiz-header">
+                <p><strong>1/<?php echo count($questions); ?></strong></p>
+                <div class="pf_progress-bar" style="width: 100%; background-color: <?php echo $progress_bar_background_color; ?>; height: 4px; margin-bottom: 15px;">
+                    <div class="pf_progress" style="width: 0%; height: 4px; background-color: <?php echo $progress_bar_color; ?>;"></div>
+                </div>
+            </div>
+
+            <div id="pf_question-container" class="pf_question-card">
+                <!-- Question and answers will be dynamically inserted here -->
+            </div>
+            <div class="pf_quiz-footer">
+                <button id="pf_back-question-btn" class="pf_button pf_button-secondary" style="display: none; width: 50%; background-color: <?php echo $button_background_color; ?>; color: <?php echo $button_text_color; ?>;"><?php echo __('Back', 'wp-quiz-plugin'); ?></button>
+                <button id="pf_next-question-btn" class="pf_button pf_button-primary" style="width: 50%; background-color: <?php echo $button_background_color; ?>; color: <?php echo $button_text_color; ?>;">Next</button>
+            </div>
+        </div>
+
+
+    <script>
+    jQuery(document).ready(function($) {
+        let quizContainer = $('#pf_quiz-container');
+        let quizId = quizContainer.data('quiz-id');
+        let totalQuestions = quizContainer.data('total-questions');
+        let questionIndex = 0; // Start with the first question
+        let questions = <?php echo json_encode($questions); ?>;
+        let selectedAnswer = null; // Track the selected answer
+        let isAnswerCorrect = false; // Track if the user selected the correct answer
+        let answerSubmitted = false; // Track if the answer is submitted
+
+        // Fetch the dynamic styles from PHP variables
+        let quizFontFamily = '<?php echo $font_family; ?>';
+        let quizFontColor = '<?php echo $font_color; ?>';
+        let quizBackgroundColor = '<?php echo $background_color; ?>';
+        let quizButtonBackgroundColor = '<?php echo $button_background_color; ?>';
+        let quizButtonTextColor = '<?php echo $button_text_color; ?>';
+
+        // Check if userName is already stored in session storage
+        let userName = sessionStorage.getItem('userName');
+
+        if (userName) {
+            // If userName exists, directly load the first question
+            loadQuestion();
+        } else {
+            // If userName does not exist, show the input prompt
+            let userNameHTML = `
+                <div class="pf_user-name-prompt" style="font-family: ${quizFontFamily}; color: ${quizFontColor}; background-color: ${quizBackgroundColor}; padding: 10px; border-radius: 5px;">
+                    <label for="pf_user-name-input" style="font-family: ${quizFontFamily}; color: ${quizFontColor};"><?php echo esc_attr__('Please enter your name:', 'wp-quiz-plugin'); ?></label>
+                    <input type="text" id="pf_user-name-input" name="user-name" placeholder="<?php echo esc_attr__('Your name here', 'wp-quiz-plugin'); ?>" style="margin: 10px 0; font-family: ${quizFontFamily}; color: ${quizFontColor};">
+                    <button id="pf_submit-name-btn" class="pf_button pf_button-primary" style="background-color: ${quizButtonBackgroundColor}; color: ${quizButtonTextColor}; font-family: ${quizFontFamily};"><?php echo esc_attr__('Submit', 'wp-quiz-plugin'); ?></button>
+                </div>
+            `;
+            $('#pf_question-container').html(userNameHTML);
+            // Hide the 'next-question-btn' button
+            $('#pf_next-question-btn').hide();
+
+            $('#pf_submit-name-btn').on('click', function() {
+                let userName = $('#pf_user-name-input').val().trim();
+                if (userName) {
+                    // Store the name in session storage
+                    sessionStorage.setItem('userName', userName);
+                    $('#pf_next-question-btn').show();
+                    loadQuestion(); // Load the first question after the user submits their name
+                } else {
+                    alert("Please enter your name."); // Alert if no name is entered
+                }
+            });
+        }
+
+        function loadQuestion() {
+            let question = questions[questionIndex];
+            let questionHTML = `
+                <div class="pf_question-header">
+                    <h3>${question.Title}</h3>
+                    ${question.TitleImage ? `<img src="${question.TitleImage}" class="pf_question-image" alt="Question Image">` : ''}
+                </div>
+                <div class="pf_answers-container">
+                    ${generateAnswerOptions(question.Answer, question.QuestionType)}
+                </div>
+            `;
+            $('#pf_question-container').html(questionHTML);
+
+            // Reset answer tracking
+            selectedAnswer = null;
+            isAnswerCorrect = false;
+            answerSubmitted = false; // Reset answer submission state
+
+            // Load stored answer from session storage
+            loadStoredAnswer(questionIndex, question.QuestionType);
+
+            // Update progress
+            updateProgress();
+            updateButtons();
+        }
+
+        // Generate answer options
+        function generateAnswerOptions(answerData, questionType) {
+            let answers = JSON.parse(answerData);
+            let answerHTML = '';
+            if (questionType === 'MCQ') {
+                answers.forEach((answer, index) => {
+                    answerHTML += `
+                        <div class="pf_answer-option" data-correct="${answer.correct}">
+                            <input type="checkbox" id="pf_answer-${index}" name="answer" value="${index}" class="pf_answer-checkbox" style="display: none;">
+                            <label for="pf_answer-${index}">${answer.text}</label>
+                            ${answer.image ? `<img src="${answer.image}" class="pf_answer-image" alt="Answer Image">` : ''}
+                        </div>
+                    `;
+                });
+            } else if (questionType === 'T/F') {
+                answers.forEach((answer, index) => {
+                    answerHTML += `
+                        <div class="pf_answer-option" data-correct="${answer.correct}">
+                            <input type="checkbox" id="pf_answer-${index}" name="answer" value="${index}" class="pf_answer-checkbox" style="display: none;">
+                            <label for="pf_answer-${index}">${answer.text}</label>
+                        </div>
+                    `;
+                });
+            } else if (questionType === 'Text') {
+                answerHTML += `
+                    <textarea class="pf_answer-textarea" placeholder="Type your answer here..."></textarea>
+                `;
+            }
+            return answerHTML;
+        }
+
+        // Update button visibility and text
+        function updateButtons() {
+            const $backButton = $('#pf_back-question-btn');
+            const $nextButton = $('#pf_next-question-btn');
+
+            $backButton.toggle(questionIndex > 0); // Show 'Back' only if not the first question
+
+            // Ensure the button is enabled
+            $nextButton.prop('disabled', false);
+
+            // Adjust button width based on visibility
+            if ($backButton.is(':visible')) {
+                $nextButton.css('width', '50%'); // 50% width when both buttons are visible
+            } else {
+                $nextButton.css('width', '100%'); // 100% width when only the Next button is visible
+            }
+        }
+
+        // Handle answer selection
+        $(document).on('click', '.pf_answer-option', function() {
+            if (answerSubmitted) return; // Prevent changing answers after submission
+
+            $('.pf_answer-option').removeClass('selected incorrect correct');
+            $(this).addClass('selected');
+            selectedAnswer = $(this);
+            $('#pf_next-question-btn').prop('disabled', false); // Enable Next button
+
+            // Get the selected answer's index and text value
+            const answerIndex = selectedAnswer.index();
+            const answerValue = selectedAnswer.find('label').text();
+
+            // Store the selected answer in session storage
+            storeAnswer(questionIndex, answerIndex, answerValue, 'selected');
+        });
+
+
+        // Handle text input answer change
+        $(document).on('input', '.pf_answer-textarea', function() {
+            if (answerSubmitted) return; // Prevent changing text answer after submission
+
+            // Store the text answer in session storage as user types
+            storeAnswer(questionIndex, null, $(this).val(), 'selected'); // Store only value for text input
+            $('#pf_next-question-btn').prop('disabled', false); // Enable Next button for text input
+        });
+
+
+        // Updated Next/Finish button click handler to handle MCQ, T/F, and Text questions
+        $('#pf_next-question-btn').on('click', function() {
+            let question = questions[questionIndex];
+            let questionType = question.QuestionType;
+
+            if (!answerSubmitted) { // First time click on 'Check Answer'
+                if (questionType === 'Text') {
+                    let userAnswer = $('.pf_answer-textarea').val().trim();
+                    let userAnswerLower = userAnswer.toLowerCase();
+                    let correctTextAnswerArray = JSON.parse(question.Answer); 
+                    let correctTextAnswer = correctTextAnswerArray[0].text;
+                    let correctTextAnswerLower = correctTextAnswer.toLowerCase();
+
+                    $('.pf_correct-answer-message').remove();
+
+                    if (userAnswerLower === correctTextAnswerLower) {
+                        isAnswerCorrect = true;
+                        $('.pf_answer-textarea').after(`<p class="pf_correct-answer-message" style="color: #4CAF50; background-color: #e8f5e9; padding: 10px; border-radius: 5px; margin-top: 10px;">Correct answer!</p>`);
+                        $('.pf_answer-textarea').css('border-color', '#4CAF50');
+                        storeAnswer(questionIndex, null, userAnswer, 'correct');
+                    } else {
+                        isAnswerCorrect = false;
+                        $('.pf_answer-textarea').after(`<p class="pf_correct-answer-message" style="color: #f44336; background-color: #ffebee; padding: 10px; border-radius: 5px; margin-top: 10px;">Incorrect answer. The correct answer is: "<strong>${correctTextAnswer}</strong>"</p>`);
+                        $('.pf_answer-textarea').css('border-color', '#f44336');
+                        storeAnswer(questionIndex, null, userAnswer, 'incorrect');
+                    }
+
+                    $('.pf_answer-textarea').prop('disabled', true);
+                } else {
+                    if (!selectedAnswer) return;
+
+                    let correctAnswer = $('.pf_answer-option[data-correct="1"]');
+                    let answerText = selectedAnswer.find('label').text();
+
+                    if (selectedAnswer.data('correct') == 1) {
+                        isAnswerCorrect = true;
+                        selectedAnswer.removeClass('selected').addClass('correct');
+                        storeAnswer(questionIndex, selectedAnswer.index(), answerText, 'correct');
+                    } else {
+                        selectedAnswer.removeClass('selected').addClass('incorrect').css('border-color', '#f44336');
+                        correctAnswer.addClass('correct');
+                        storeAnswer(questionIndex, selectedAnswer.index(), answerText, 'incorrect');
+                    }
+                }
+
+                // Change button text to 'Next Question' after checking the answer
+                $('#pf_next-question-btn').text(questionIndex < totalQuestions - 1 ? '<?php echo __('Next Question', 'wp-quiz-plugin'); ?>' : '<?php echo __('Submit Quiz', 'wp-quiz-plugin'); ?>');
+
+                answerSubmitted = true;
+                $('.pf_answer-option').off('click'); // Disable answer selection after submission
+
+            } else { // Second time click on 'Next Question'
+                if (questionIndex < totalQuestions - 1) {
+                    questionIndex++;
+                    loadQuestion();
+                } else {
+                    displayReportCard();
+                }
+            }
+        });
+
+        // Handle Back button click
+        $('#pf_back-question-btn').on('click', function() {
+            if (questionIndex > 0) {
+                questionIndex--;
+                loadQuestion();
+            }
+        });
+
+        // Update the progress bar
+        function updateProgress() {
+            let progressPercentage = ((questionIndex + 1) / totalQuestions) * 100;
+            $('.pf_progress').css('width', progressPercentage + '%');
+            $('.pf_quiz-header p strong').text(`${questionIndex + 1}/${totalQuestions}`);
+        }
+
+        // Store the user's answer and its state in session storage
+        function storeAnswer(questionIndex, answerIndex, answerValue, state) {
+            sessionStorage.setItem('quiz_answer_' + questionIndex, JSON.stringify({
+                answerIndex: answerIndex,
+                answerValue: answerValue,
+                state: state
+            }));
+        }
+
+        // Load the stored answer and its state from session storage
+        function loadStoredAnswer(questionIndex, questionType) {
+            let storedData = JSON.parse(sessionStorage.getItem('quiz_answer_' + questionIndex));
+            const $nextButton = $('#pf_next-question-btn');
+
+            if (storedData !== null) {
+                if (questionType === 'MCQ' || questionType === 'T/F') {
+                    let answerOption = $('.pf_answer-option').eq(storedData.answer);
+                    if (storedData.state === 'correct') {
+                        answerOption.addClass('correct');
+                    } else if (storedData.state === 'incorrect') {
+                        answerOption.addClass('incorrect').css('border-color', '#f44336');
+                        $('.pf_answer-option[data-correct="1"]').addClass('correct');
+                    }
+                    answerOption.off('click');
+                    $nextButton.prop('disabled', false).text(questionIndex < totalQuestions - 1 ? '<?php echo __('Next Question', 'wp-quiz-plugin'); ?>' : '<?php echo __('Submit Quiz', 'wp-quiz-plugin'); ?>');
+                    answerSubmitted = true;
+                } else if (questionType === 'Text') {
+                    $('.pf_answer-textarea').val(storedData.answer).prop('disabled', true);
+                    if (storedData.state === 'correct') {
+                        $('.pf_answer-textarea').css('border-color', '#4CAF50');
+                    } else if (storedData.state === 'incorrect') {
+                        $('.pf_answer-textarea').css('border-color', '#f44336');
+                        $('.pf_answer-textarea').after(`<p class="pf_correct-answer-message" style="color: #f44336; background-color: #ffebee; padding: 10px; border-radius: 5px; margin-top: 10px;">Incorrect answer. The correct answer is: "<strong>${JSON.parse(questions[questionIndex].Answer)[0].text}</strong>"</p>`);
+                    }
+                    $nextButton.prop('disabled', false).text(questionIndex < totalQuestions - 1 ? '<?php echo __('Next Question', 'wp-quiz-plugin'); ?>' : '<?php echo __('Submit Quiz', 'wp-quiz-plugin'); ?>');
+                    answerSubmitted = true;
+                }
+            } else {
+                $nextButton.text('<?php echo esc_attr__('Check Answer', 'wp-quiz-plugin'); ?>').prop('disabled', true);
+
+            }
+        }
+
+        // Update answersData preparation in displayReportCard
+        function displayReportCard() {
+            let correctCount = 0;
+            let incorrectCount = 0;
+            let totalQuestions = 0;
+            let userName = sessionStorage.getItem('userName') || 'Unknown Student'; // Get stored student name
+
+            let answersData = []; // Collect data for each question and user's answer
+
+            // Loop through session storage to count correct and incorrect answers
+            for (let i = 0; i < sessionStorage.length; i++) {
+                let key = sessionStorage.key(i);
+                if (key.startsWith('quiz_answer_')) {
+                    totalQuestions++; 
+
+                    let storedData = JSON.parse(sessionStorage.getItem(key));
+                    let questionIndex = key.split('_')[2];
+                    let questionData = questions[questionIndex];
+
+                    answersData.push({
+                        question: questionData.Title,
+                        correctAnswer: JSON.parse(questionData.Answer).find(ans => ans.correct == 1).text,
+                        userAnswer: storedData.answerValue, // Use the stored value of user's answer
+                        isCorrect: storedData.state === 'correct'
+                    });
+
+                    if (storedData.state === 'correct') {
+                        correctCount++;
+                    } else if (storedData.state === 'incorrect') {
+                        incorrectCount++;
+                    }
+                }
+            }
+                    // Calculate score percentage
+                    let scorePercentage = ((correctCount / totalQuestions) * 100).toFixed(2);
+
+                    let quizData = {
+                        userName: userName,
+                        quizId: quizId,  // Pass the quiz ID to the server
+                        score: scorePercentage,
+                        answersData: answersData
+                    };
+
+                    // AJAX request to store submission data
+                    $.ajax({
+                        url: quiz_ajax_obj.ajax_url,
+                        method: 'POST',
+                        data: {
+                            action: 'store_quiz_submission',
+                            quiz_data: JSON.stringify(quizData)
+                        },
+                        success: function(response) {
+                            console.log('Quiz submission stored successfully:', response);
+                        },
+                        error: function(error) {
+                            console.error('Failed to store quiz submission:', error);
+                        }
+                    });
+
+                    let reportCardHTML = `
+                        <div class="pf_report-card">
+                            <h2><?php echo __('Quiz Report Card', 'wp-quiz-plugin'); ?></h2>
+                            <p><?php echo __('Student Name:', 'wp-quiz-plugin'); ?> <strong>${userName}</strong></p>
+                            <p><?php echo __('Total Questions:', 'wp-quiz-plugin'); ?> <strong>${totalQuestions}</strong></p>
+                            <p><?php echo __('Correct Answers:', 'wp-quiz-plugin'); ?> <strong>${correctCount}</strong></p>
+                            <p><?php echo __('Incorrect Answers:', 'wp-quiz-plugin'); ?> <strong>${incorrectCount}</strong></p>
+                            <p><?php echo __('Your Score:', 'wp-quiz-plugin'); ?> <strong>${scorePercentage}%</strong></p>
+                            <div class="pf_score-bar">
+                                <div class="pf_score-fill" style="width: ${scorePercentage}%"></div>
+                            </div>
+                            <button id="pf_retake-quiz-btn" class="pf_button pf_button-primary"><?php echo __('Retake Quiz', 'wp-quiz-plugin'); ?></button>
+                            <button id="pf_download-result-pdf-btn" class="pf_button pf_button-secondary"><?php echo __('Download Result as PDF', 'wp-quiz-plugin'); ?></button>
+                        </div>
+                    `;
+                    
+                    $('#pf_quiz-container').html(reportCardHTML);
+
+                    // Handle retake button click
+                    $('#pf_retake-quiz-btn').on('click', function() {
+                        for (let i = 0; i < totalQuestions; i++) {
+                            sessionStorage.removeItem('quiz_answer_' + i);
+                        }
+                        sessionStorage.removeItem('userName');
+                        location.reload(); // Reload the page after clearing session storage
+                    });
+
+                    // Handle Download PDF button click
+                    $('#pf_download-result-pdf-btn').on('click', function() {
+                        let correctCount = 0;
+                        let incorrectCount = 0;
+                        let totalQuestions = 0;
+                        let userName = sessionStorage.getItem('userName') || 'Unknown Student'; // Get stored student name
+
+                        let answersData = []; // Collect data for each question and user's answer
+
+                        // Loop through session storage to count correct and incorrect answers
+                        for (let i = 0; i < sessionStorage.length; i++) {
+                            let key = sessionStorage.key(i);
+                            if (key.startsWith('quiz_answer_')) {
+                                totalQuestions++; 
+
+                                let storedData = JSON.parse(sessionStorage.getItem(key));
+                                let questionIndex = key.split('_')[2];
+                                let questionData = questions[questionIndex];
+
+                                answersData.push({
+                                    question: questionData.Title,
+                                    correctAnswer: JSON.parse(questionData.Answer).find(ans => ans.correct == 1).text,
+                                    userAnswer: storedData.answerValue,
+                                    isCorrect: storedData.state === 'correct'
+                                });
+
+
+                                if (storedData.state === 'correct') {
+                                    correctCount++;
+                                } else if (storedData.state === 'incorrect') {
+                                    incorrectCount++;
+                                }
+                            }
+                        }
+
+                        // Calculate score percentage
+                        let scorePercentage = ((correctCount / totalQuestions) * 100).toFixed(2);
+
+                        let quizData = {
+                            userName: userName,
+                            totalQuestions: totalQuestions,
+                            correctCount: correctCount,
+                            incorrectCount: incorrectCount,
+                            scorePercentage: scorePercentage,
+                            answersData: answersData
+                        };
+
+                        // AJAX request to generate PDF
+                        $.ajax({
+                                url: quiz_ajax_obj.ajax_url,
+                                method: 'POST',
+                                xhrFields: { // Allows the browser to interpret the response as a file download
+                                    responseType: 'blob'
+                                },
+                                data: {
+                                    action: 'generate_pdf',
+                                    quiz_data: JSON.stringify(quizData)
+                                },
+                                success: function(response) {
+                                    // Create a URL for the blob response
+                                    var blob = new Blob([response], { type: 'application/pdf' });
+                                    var link = document.createElement('a');
+                                    link.href = window.URL.createObjectURL(blob);
+                                    link.download = 'quiz_report_card.pdf';
+                                    link.click();
+                                },
+                                error: function(error) {
+                                    alert('Failed to generate PDF. Please try again.');
+                                }
+                            });
+                    });
+
+
+                }
+
+            });
+
+            </script>
+
+            <?php
+            return ob_get_clean();
+}
+add_shortcode('wp_quiz', 'wp_quiz_display_shortcode');

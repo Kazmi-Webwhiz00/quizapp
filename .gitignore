@@ -5,21 +5,4 @@
 *.pot~
 *.bak
 *~
-
-# WordPress specific files
-/wp-content/uploads/
-/wp-content/cache/
-wp-quiz-plugin-backup-*
-
-# Ignore specific plugin files that are backups
-wp-quiz-plugin-backup-*.pot
-
-# Other potential files and folders to ignore
-assets/
-custom-meta-boxes/
-lib/
-public/
-utils/
-
-# Ignore logs or other temp files if any
 *.log

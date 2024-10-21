@@ -1,0 +1,473 @@
+#kw_quiz-questions-container {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #ffffff;
+    margin-bottom: 20px;
+    display: flex;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.download-buttons{
+    text-align: end;
+    padding-bottom:10px;
+}
+
+.kw_option-letter {
+    font-weight: bold;
+}
+
+.kw_left {
+    background: #fcfcfc;
+    padding: 20px;
+    border-radius: 8px 0px 0px 8px;
+    flex: 0 0 30%;
+    box-sizing: border-box;
+}
+
+.kw_right {
+    background: #d7d7d778;
+    padding: 20px;
+    border-radius: 0px 8px 8px 0px;
+    padding-left: 40px;
+    flex: 0 0 70%;
+    box-sizing: border-box;
+}
+
+.kw_question-item {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #fff;
+    margin-bottom: 20px;
+    padding: 0; /* Removed padding to make it collapsible */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: hidden; /* Ensure overflow is hidden for collapsing effect */
+}
+
+.kw_upload-image-btn{
+    order: 2;
+}
+
+.kw_image-preview{
+    order: 3;
+}
+
+.kw_question-header {
+    background-color: #f1f1f1;
+    padding: 15px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.kw_question-body {
+    padding: 15px;
+    display: none; /* Initially hidden */
+}
+
+.kw_question-body.active {
+    display: block; /* Show on toggle */
+}
+
+.kw_question-item h5 {
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.kw_question-item label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.kw_question-item input[type="text"], .kw_question-item select {
+    width: 100%;
+    padding: 8px;
+    /*margin-bottom: 10px;*/
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.kw_answers-container {
+
+}
+
+.kw_answer-item .kw_answerinputs {
+    border: none !important;
+    background: transparent !important;
+    padding: 30px 5px !important;
+    margin: 5px 10px !important;
+}
+
+.kw_answer-item input:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.kw_question-type-select {
+    margin-bottom: 10px !important;
+}
+
+.kw_answer-item input[type="text"] {
+
+}
+
+.kw_answer-item label {
+
+}
+
+.kw_button {
+    background-color: #007cba;
+    border: none;
+    color: white;
+    padding: 8px 16px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s ease; /* Add hover effect */
+}
+
+.kw_button:hover {
+    background-color: #005a8c; /* Darker color on hover */
+}
+
+.kw_button.kw_add-more-answers-btn, .kw_button.kw_add-question-btn {
+    width: -webkit-fill-available;
+    /*position: absolute;*/
+    /*bottom: 80px;*/
+    /*display: flex;*/
+    /*align-items: center;*/
+    /*justify-content: center;*/
+}
+
+.kw_button.kw_remove-question-btn {
+}
+
+.kw_button.kw_remove-question-btn:hover {
+}
+
+.kw_button svg {
+    margin-right: 5px;
+}
+
+.kw_toggle-question-btn {
+    margin-left: auto;
+}
+
+/* Import Nunito Font */
+body {
+    font-family: 'Nunito', sans-serif;
+}
+
+/* General Container Styles */
+.kw_container {
+    display: flex;
+    width: 100%;
+}
+
+.kw_column {
+    padding: 0;
+}
+
+/* Column 1 (30%) */
+.kw_column-30 {
+    width: 30%;
+    background: rgb(247, 247, 247);
+}
+
+.kw_quiz-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff;
+    border-bottom: 1px solid #2121211f;
+    color: #212121;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 16px;
+}
+
+.kw_quiz-content {
+    background: rgb(247, 247, 247);
+    padding: 16px;
+}
+
+.kw_quiz-title {
+    color: #212121;
+    font-size: 16px;
+}
+
+.kw_quiz-info {
+    color: #21212185;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.kw_question-container {
+    margin-bottom: 16px;
+}
+
+.kw_question-title {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.kw_question-number {
+    font-weight: bold;
+    margin-right: 8px;
+}
+
+.kw_question-text {
+    font-weight: bold;
+}
+
+.kw_question-image {
+    margin-left: 24px;
+}
+
+.kw_quiz-image {
+    width: 90%;
+    height: auto;
+    object-fit: cover;
+    padding: 5px;
+    text-align: left;
+    border: 1px solid #2d364240;
+    border-radius: 5px;
+    transition: border-color 0.3s;
+}
+
+.kw_quiz-image:hover {
+    border-color: #3b82f6;
+}
+
+.kw_btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: normal;
+    padding: 8px;
+    position: relative;
+    text-align: center;
+    gap: 4px;
+    margin: 10px 24px;
+    cursor: pointer;
+    border-radius: 6px;
+}
+
+.kw_btn-primary {
+    background: #3b82f6;
+    color: #fff;
+}
+
+.kw_btn-outline {
+    border: 1px solid rgba(45, 54, 66, .122);
+    color: #2d3642;
+}
+
+.kw_btn-outline:hover {
+    border-color: rgb(59 130 246 / 52%);
+    color: #3b82f6;
+}
+
+.kw_plus-icon, .kw_ai-icon {
+    font-size: 16px;
+}
+
+/* Column 2 (70%) */
+.kw_column-70 {
+    width: 70%;
+    background-color: #d7d7d7;
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Tab Container */
+.kw_tab-container {
+    background-color: #fff;
+    padding: 8px 16px;
+    border-radius: 2px;
+    width: 200px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #212121;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Gap between containers */
+.kw_gap {
+    height: 5px;
+}
+
+/* Window Container */
+.kw_window-container {
+    background-color: #fff;
+    padding: 30px 24px;
+    border-radius: 5px;
+    flex-grow: 1;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+.kw_remove-question-btn svg {
+    width: 20px;
+    height: 20px;
+    padding-left: 10px;
+    cursor: pointer;
+}
+
+.kw_close-expand svg, .kw_upload-image-btn svg {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.kw_upload-image-btn-q-svg {
+    width: 20px;
+    height: 20px;
+    padding-left: 10px;
+}
+
+.kw_remove-question-btn svg path, .kw_close-expand svg path {
+    fill: dimgray !important;
+}
+
+/* Styled Box within the Window Container */
+.kw_styled-box {
+    margin-bottom: 10px !important;
+    width: 100%;
+    height: 200px;
+    background: #2d36420a !important;
+    border: 1px dashed #2d364285 !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 24px;
+    color: #2d364285;
+    font-weight: 600;
+}
+
+.wp-editor-container textarea.wp-editor-area {
+    color: black !important;
+    font-size: 16px !important;
+}
+
+/* Allow Multiple Answers Text */
+.kw_allow-multiple-text {
+    font-size: 12px;
+    font-style: italic;
+    text-align: right;
+    margin: 10px 0;
+}
+
+/* Four Column Wrapper */
+.kw_four-column-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 16px; /* Adjust the gap between rows as needed */
+}
+
+/* Four Column Container */
+.kw_four-column-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px; /* Adjust the gap between columns as needed */
+}
+
+/* Column Item */
+.kw_column-item {
+    flex: 1 1 calc(50% - 16px); /* Two items per row with space for gap */
+    background: #2d36420a; /* Same background as styled-box */
+    border: 1px dashed #2d364285; /* Same border as styled-box */
+    border-radius: 4px;
+    padding: 0px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+}
+
+/* Column Content */
+.kw_column-content {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    height: 76px; /* Height adjusted as per request */
+}
+
+/* Column Number */
+.kw_column-number {
+    font-weight: bold;
+}
+
+/* Column Text */
+.kw_column-text {
+    flex-grow: 1;
+}
+
+/* Radio Button */
+.kw_radio-button {
+    margin-left: 8px;
+}
+
+/* Add New Option Button */
+.kw_btn-add-option {
+    width: -webkit-fill-available;
+    background: #2d36420a; /* Same background as styled-box */
+    color: #212121;
+    text-align: center;
+    padding: 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.kw_btn-add-img {
+    margin-bottom: 10px;
+    width: -webkit-fill-available;
+    background: #2d36420a; /* Same background as styled-box */
+    color: #212121;
+    text-align: center;
+    padding: 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.kw_plus-icon {
+    font-size: 16px;
+    margin-right: 8px;
+}
+
+.kw_swal-custom-title{
+    line-height: 2 !important;  /* Adjust the value to your preference */
+}
+
+.swal2-title{
+    line-height: 1.5 !important;
+}
+
+/* Notification */
