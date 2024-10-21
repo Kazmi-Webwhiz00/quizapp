@@ -125,7 +125,7 @@ function kw_download_quiz_pdf_callback() {
             $pdf->Image($image_path, 150, 10, 40, 15, '', '', '', false, 300, '', false, false, 1, false, false, false);
 
             // Add bottom padding by moving the cursor down after the image
-            $pdf->SetY($pdf->GetY() + 20); // Adjusted from 15 to 20 to add 10px extra padding
+            $pdf->SetY($pdf->GetY() + 10); // Adjusted from 15 to 20 to add 10px extra padding
         } else {
             error_log("Image file not found: " . $image_path); // Log an error if the image file is not found
         }
@@ -167,7 +167,7 @@ function kw_download_quiz_pdf_callback() {
             $pdf->Image($image_url, $pdf->GetX(), $pdf->GetY(), 50, 30, '', '', '', false, 300, '', false, false, 1, false, false, false);
             $pdf->Ln(35);  // Move cursor after image
         } else {
-            $pdf->Ln(5); // Add a little space if no image
+            $pdf->Ln(2); // Add a little space if no image
         }
 
         // Decode answers JSON safely
