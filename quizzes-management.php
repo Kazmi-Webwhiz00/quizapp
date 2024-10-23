@@ -46,6 +46,16 @@ function wp_quiz_plugin_enqueue_styles() {
 }
 add_action('admin_enqueue_scripts', 'wp_quiz_plugin_enqueue_styles'); // Change to admin_enqueue_scripts for admin area
 
+    // Check if the crossword module is enabled
+    function load_crossword_module() {
+        //$is_crossword_enabled = get_option('enable_crossword_module'); // Replace with your option name if different
+
+        //if ($is_crossword_enabled) {
+            include_once plugin_dir_path(__FILE__) . 'modules/crossword/index.php';
+        //}
+    }
+    add_action('plugins_loaded', 'load_crossword_module');
+
 // AJAX Handler to Save PDF Image URL
 function kw_save_pdf_image() {
     check_ajax_referer('kw_save_pdf_image_nonce', '_wpnonce'); // Verify nonce
