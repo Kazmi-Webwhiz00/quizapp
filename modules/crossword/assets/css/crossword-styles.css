@@ -87,3 +87,9 @@ button.remove-word:hover svg {
 #add-word-button:hover, #clear-list-button:hover {
     background-color: #c5d5f0;
 }
+
+.upload-crossword-image-btn svg {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
