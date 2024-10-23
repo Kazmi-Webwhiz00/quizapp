@@ -1,0 +1,89 @@
+/* Container for the entire words and clues section */
+#crossword-words-clues-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+/* Styling for each word-clue row */
+.crossword-word-clue {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px;
+    position: relative;
+}
+
+/* Styling for the numbering span */
+.crossword-word-clue .word-number {
+    width: 20px; /* Fixed width for consistent alignment */
+    font-size: 14px;
+    font-weight: bold;
+    color: #555;
+    text-align: right;
+}
+
+/* Input fields styling */
+.crossword-word-clue input[type="text"], 
+.crossword-word-clue input[type="file"] {
+    flex: 1;
+    padding: 5px;
+    font-size: 14px;
+    border: 1px solid #ccc; /* Light border color */
+    border-radius: 3px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* File input specific styling */
+.crossword-word-clue input[type="file"] {
+    padding: 3px;
+    font-size: 12px;
+}
+
+/* Focus style for input fields */
+.crossword-word-clue input[type="text"]:focus, 
+.crossword-word-clue input[type="file"]:focus {
+    border-color: #6c9bd1; /* Light blue focus border */
+    box-shadow: 0 0 5px rgba(108, 155, 209, 0.3);
+    outline: none;
+}
+
+/* Styling for the remove icon (trash can) */
+button.remove-word {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    margin-left: 5px;
+}
+
+/* Inline SVG styling */
+button.remove-word svg {
+    width: 20px;
+    height: 20px;
+    color: #6c9bd1; /* Default light blue color */
+    transition: fill 0.2s;
+}
+
+button.remove-word:hover svg {
+    color: #ff6b6b; /* Change to light red on hover */
+}
+
+/* Styling for action buttons */
+#add-word-button, #clear-list-button {
+    margin-top: 10px;
+    padding: 8px 15px;
+    font-size: 14px;
+    cursor: pointer;
+    background-color: #dae8fc;
+    border: 1px solid #6c9bd1;
+    border-radius: 3px;
+    transition: background-color 0.2s;
+}
+
+#add-word-button:hover, #clear-list-button:hover {
+    background-color: #c5d5f0;
+}
