@@ -1,0 +1,14 @@
+.crossword-preview-container {
+    background-color: #ffffff;
+    padding: 20px;
+    min-height: 60vh;
+    border: 1px solid #ddd;
+}
+
+.crossword-preview-container h2 {
+    margin-bottom: 20px;
+}
+
+.crossword-preview-content {
+    /* Placeholder for future styles for the content */
+}

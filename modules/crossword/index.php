@@ -14,6 +14,7 @@ function load_crossword_assets($hook) {
     // Check if the current screen is for the 'crossword' post type
         // Enqueue the CSS file
         wp_enqueue_style('crossword-style', plugin_dir_url(__FILE__) . 'assets/css/crossword-styles.css');
+        wp_enqueue_style('crossword-preview-style', plugin_dir_url(__FILE__) . 'assets/css/crossword-preview-styles.css');
         
         // Enqueue the JS file with jQuery as a dependency
         wp_enqueue_script('crossword-script', plugin_dir_url(__FILE__) . 'assets/js/crossword-scripts.js', array('jquery'), null, true);

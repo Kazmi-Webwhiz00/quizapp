@@ -22,11 +22,10 @@ function register_crossword_post_type() {
         'menu_icon'          => 'dashicons-editor-table',
         'supports'           => array( 'title' ),
         'has_archive'        => true,
-        'rewrite'            => array( 'slug' => 'crosswords' ),
+        'rewrite'            => array( 'slug' => 'crossword' ), // Singular slug
     );
 
-    register_post_type( 'crosswords', $args );
+    register_post_type( 'crossword', $args ); // Singular post type key
 }
 add_action( 'init', 'register_crossword_post_type' );
-
 ?>

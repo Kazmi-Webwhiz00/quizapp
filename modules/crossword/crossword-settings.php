@@ -3,10 +3,10 @@
 function crossword_add_meta_boxes() {
     add_meta_box(
         'crossword_words_clues',
-        __( 'Words and Clues', 'your-text-domain' ),
+        __( 'Words and Clues 2', 'your-text-domain' ),
         'crossword_words_clues_meta_box_callback',
-        'crosswords', // Post type should be singular 'crossword' as registered
-        'normal',
+        'Crossword', // Post type should be singular 'crossword' as registered
+        'side',
         'high'
     );
 }
@@ -53,3 +53,32 @@ function crossword_save_meta_box_data($post_id) {
     }
 }
 add_action('save_post', 'crossword_save_meta_box_data');
+
+// Callback function for the meta box
+function crossword_preview_meta_box_callback($post) {
+    // Add a nonce field for security
+    wp_nonce_field('crossword_save_preview_meta_box_data', 'crossword_preview_meta_box_nonce');
+
+    // Include the template file
+    $template_path = plugin_dir_path(__FILE__) . 'templates/crossword-preview-meta-box.php';
+    
+    if (file_exists($template_path)) {
+        include $template_path;
+    } else {
+        echo '<p>Template file not found.</p>';
+    }
+}
+
+// Function to add the preview meta box
+function crossword_preview_meta_box() {
+    add_meta_box(
+        'crossword_preview_meta_box_id', // Unique ID for the meta box
+        __('Crossword Full View', 'your-text-domain'), // Meta box title
+        'crossword_preview_meta_box_callback', // Callback function
+        'crossword', // Post type where it should appear
+        'normal', // Context ('normal', 'side', 'advanced')
+        'high' // Priority
+    );
+}
+add_action('add_meta_boxes', 'crossword_preview_meta_box');
+?>
