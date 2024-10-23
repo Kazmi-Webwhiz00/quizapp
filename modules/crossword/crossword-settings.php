@@ -6,7 +6,7 @@ function crossword_add_meta_boxes() {
         __( 'Words and Clues 2', 'your-text-domain' ),
         'crossword_words_clues_meta_box_callback',
         'Crossword', // Post type should be singular 'crossword' as registered
-        'side',
+        'normal',
         'high'
     );
 }

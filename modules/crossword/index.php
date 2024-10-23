@@ -14,7 +14,6 @@ function load_crossword_assets($hook) {
     // Check if the current screen is for the 'crossword' post type
         // Enqueue the CSS file
         wp_enqueue_style('crossword-style', plugin_dir_url(__FILE__) . 'assets/css/crossword-styles.css');
-        wp_enqueue_style('crossword-preview-style', plugin_dir_url(__FILE__) . 'assets/css/crossword-preview-styles.css');
         
         // Enqueue the JS file with jQuery as a dependency
         wp_enqueue_script('crossword-script', plugin_dir_url(__FILE__) . 'assets/js/crossword-scripts.js', array('jquery'), null, true);
@@ -23,10 +22,40 @@ function load_crossword_assets($hook) {
 
 add_action('admin_enqueue_scripts', 'load_crossword_assets');
 
-// add_action('init', 'initialize_crossword_module');
+function crossword_enqueue_preview_assets($hook) {
+    global $post;
 
-// function initialize_crossword_module() {
-//     // Logic to initialize crossword module (e.g., add shortcodes, hooks, etc.)
-// }
+    if ($hook === 'post.php' || $hook === 'post-new.php') {
+        if ($post->post_type === 'crossword') {
+            // Enqueue the custom JavaScript file
+            wp_enqueue_script(
+                'crossword-preview-script',
+                plugin_dir_url(__FILE__) . 'assets/js/crossword-preview.js',
+                array('jquery'),
+                '1.0',
+                true
+            );
+
+            // Enqueue the custom CSS for the crossword styling
+            wp_enqueue_style('crossword-preview-style', plugin_dir_url(__FILE__) . 'assets/css/crossword-preview-styles.css');
+
+            // Fetch the crossword data from post meta
+            $words_clues = get_post_meta($post->ID, '_crossword_words_clues', true);
+            if (empty($words_clues) || !is_array($words_clues)) {
+                $words_clues = [];
+            }
+
+            // Localize the script to pass the crossword data
+            wp_localize_script(
+                'crossword-preview-script',
+                'crosswordData', // This will be the global JS object name
+                array(
+                    'wordsClues' => $words_clues
+                )
+            );
+        }
+    }
+}
+add_action('admin_enqueue_scripts', 'crossword_enqueue_preview_assets');
 
 ?>

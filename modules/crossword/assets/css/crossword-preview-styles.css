@@ -1,14 +1,29 @@
 .crossword-preview-container {
-    background-color: #ffffff;
     padding: 20px;
-    min-height: 60vh;
+    background-color: #f9f9f9;
     border: 1px solid #ddd;
+    min-height: 60vh;
 }
 
-.crossword-preview-container h2 {
-    margin-bottom: 20px;
+.crossword-table {
+    border-collapse: collapse;
+    margin: 20px 0;
+    width: 100%;
+    max-width: 600px;
 }
 
-.crossword-preview-content {
-    /* Placeholder for future styles for the content */
+.crossword-table td {
+    width: 30px;
+    height: 30px;
+    border: 1px solid #000;
+    text-align: center;
+    vertical-align: middle;
+    font-weight: bold;
+    font-size: 14px;
+    text-transform: uppercase;
+    background-color: #fff;
+}
+
+.filled-cell {
+    background-color: #e0e0e0;
 }
