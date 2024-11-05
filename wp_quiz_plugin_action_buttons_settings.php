@@ -98,16 +98,32 @@ function wp_quiz_plugin_number_callback($args) {
 function wp_quiz_plugin_textarea_callback($args) {
     $option_name = $args['option_name'];
     $value = get_option($option_name, '');
-    
-    // Informational text for the user
-    echo '<p style="margin-bottom: 8px; color: #555;">';
-    echo __('Use [URL] to insert the active quiz URL in your email. For example:', 'wp_quiz_plugin') . '<br>';
-    echo __('"Hello,\n\nPlease attempt this quiz on time: [URL]\n\nBest regards,"', 'wp_quiz_plugin');
-    echo '</p>';
-    
+
+    // Informational text with the specified styles
+    echo '<div style="
+        background-color: #cce5ff96;
+        color: #2a2a2a;
+        padding: 12px;
+        border-left: 4px solid #3b82f6;
+        border-radius: 4px;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: start;
+        max-width: 500px;
+    ">';
+    echo '<span style="font-size: 18px; font-weight: bold; color: #3b82f6; margin-right: 12px;">&#9432;</span>'; // Information icon
+    echo '<div>';
+    echo '<strong>' . __('Note:', 'wp_quiz_plugin') . '</strong> ' . __('Use [URL] to insert the active quiz URL in your email. For example:', 'wp_quiz_plugin') . '<br><br>' .
+         __('Hello,', 'wp_quiz_plugin') . '<br>' .
+         __('Please attempt this quiz on time: [URL]', 'wp_quiz_plugin') . '<br>' .
+         __('Best regards,', 'wp_quiz_plugin');
+    echo '</div>';
+    echo '</div>';
+
     // Textarea for the email body
     echo '<textarea id="' . esc_attr($option_name) . '" name="' . esc_attr($option_name) . '" rows="8" cols="60">' . esc_textarea($value) . '</textarea>';
 }
+
 
 // Callback function for Reset to Default button
 function wp_quiz_plugin_reset_defaults_callback() {

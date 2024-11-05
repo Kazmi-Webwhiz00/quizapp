@@ -6,38 +6,43 @@ if (!defined('ABSPATH')) {
 
 // Hook to add the meta box for quizzes post type
 function quizzes_custom_meta_box() {
-    add_meta_box(
-        'quizzes_action_buttons_meta_box', // Updated ID for uniqueness
-        'Quiz Actions',                    // Title
-        'quizzes_meta_box_callback',       // Callback function
-        'quizzes',                         // Post type
-        'normal',                          // Context
-        'high'                             // Priority
-    );
+    global $post;
+
+    // Only add the meta box if the post is published
+    if ($post && $post->post_type === 'quizzes' && $post->post_status === 'publish') {
+        add_meta_box(
+            'quizzes_action_buttons_meta_box', // Updated ID for uniqueness
+            'Quiz Actions',                    // Title
+            'quizzes_meta_box_callback',       // Callback function
+            'quizzes',                         // Post type
+            'normal',                          // Context
+            'high'                             // Priority
+        );
+    }
 }
 add_action('add_meta_boxes', 'quizzes_custom_meta_box');
 
 // Callback function for the meta box content
 function quizzes_meta_box_callback($post) {
-    // Retrieve stored options for the buttons
-    $open_tab_label = get_option('wp_quiz_plugin_open_tab_button_label', __('Open in New Tab', 'wp_quiz_plugin'));
-    $open_tab_color = get_option('wp_quiz_plugin_open_tab_button_color', '#007BFF');
-    $open_tab_font_size = get_option('wp_quiz_plugin_open_tab_button_font_size', '16');
-
-    $copy_url_label = get_option('wp_quiz_plugin_copy_url_button_label', __('Copy URL to Clipboard', 'wp_quiz_plugin'));
-    $copy_url_color = get_option('wp_quiz_plugin_copy_url_button_color', '#007BFF');
-    $copy_url_font_size = get_option('wp_quiz_plugin_copy_url_button_font_size', '16');
-
-    $email_label = get_option('wp_quiz_plugin_share_email_button_label', __('Share via Email', 'wp_quiz_plugin'));
-    $email_color = get_option('wp_quiz_plugin_share_email_button_color', '#007BFF');
-    $email_font_size = get_option('wp_quiz_plugin_share_email_button_font_size', '16');
-    $email_subject = get_option('wp_quiz_plugin_share_email_subject', __('New Quiz Assessment Available', 'wp_quiz_plugin'));
-    $email_body = get_option('wp_quiz_plugin_share_email_body', __('Hello,\n\nPlease attempt this quiz on time. Here is the quiz link:\n\n[URL]\n\nBest regards,', 'wp_quiz_plugin'));
-
-        
 
     // Get the post URL for dynamic button actions
     $post_url = get_permalink($post->ID);
+    // Retrieve stored options for the buttons
+    $open_tab_label = esc_html(get_option('wp_quiz_plugin_open_tab_button_label', __('Open in New Tab', 'wp_quiz_plugin')));
+    $open_tab_color = get_option('wp_quiz_plugin_open_tab_button_color', '#007BFF');
+    $open_tab_font_size = get_option('wp_quiz_plugin_open_tab_button_font_size', '16');
+
+    $copy_url_label = esc_html(get_option('wp_quiz_plugin_copy_url_button_label', __('Copy URL to Clipboard', 'wp_quiz_plugin')));
+    $copy_url_color = get_option('wp_quiz_plugin_copy_url_button_color', '#007BFF');
+    $copy_url_font_size = get_option('wp_quiz_plugin_copy_url_button_font_size', '16');
+
+    $email_label = esc_html(get_option('wp_quiz_plugin_share_email_button_label', __('Share via Email', 'wp_quiz_plugin')));
+    $email_color = get_option('wp_quiz_plugin_share_email_button_color', '#007BFF');
+    $email_font_size = get_option('wp_quiz_plugin_share_email_button_font_size', '16');
+    $email_subject = esc_html(get_option('wp_quiz_plugin_share_email_subject', __('New Quiz Assessment Available', 'wp_quiz_plugin')));
+    $email_body = esc_html(get_option('wp_quiz_plugin_share_email_body', __('Hello,\n\nPlease attempt this quiz on time. Here is the quiz link:\n\n[URL]\n\nBest regards,', 'wp_quiz_plugin')));
+
+        
 
     ?>
     <div id="quizzes_action_buttons_container">
@@ -45,7 +50,7 @@ function quizzes_meta_box_callback($post) {
         <button class="kw_button kw_button-primary" type="button" 
             onclick="window.open('<?php echo esc_url($post_url); ?>', '_blank')"
             style="background-color: <?php echo esc_attr($open_tab_color); ?>; font-size: <?php echo esc_attr($open_tab_font_size); ?>px;">
-            <?php echo esc_html($open_tab_label); ?>
+            <?php echo __($open_tab_label); ?>
         </button>
 
         <!-- Hidden input field for URL copying -->
@@ -54,14 +59,14 @@ function quizzes_meta_box_callback($post) {
         <!-- Button to copy URL to clipboard -->
         <button class="kw_button kw_button-primary" type="button" id="copy-url-button" 
             style="background-color: <?php echo esc_attr($copy_url_color); ?>; font-size: <?php echo esc_attr($copy_url_font_size); ?>px;">
-            <?php echo esc_html($copy_url_label); ?>
+            <?php echo __($copy_url_label); ?>
         </button>
 
         <!-- Button to open mailbox with default message -->
         <button class="kw_button kw_button-primary" type="button" 
             onclick="openMailClient('<?php echo esc_url($post_url); ?>')" 
             style="background-color: <?php echo esc_attr($email_color); ?>; font-size: <?php echo esc_attr($email_font_size); ?>px;">
-            <?php echo esc_html($email_label); ?>
+            <?php echo __($email_label); ?>
         </button>
 
         <!-- Div to show copy confirmation message -->
