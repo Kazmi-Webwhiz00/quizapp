@@ -458,7 +458,7 @@ function save_quiz_description_meta_box($post_id) {
 add_action('save_post', 'save_quiz_description_meta_box');
 
 
-// Hook to prevent saving if no taxonomy is selected
+
 // Hook to modify post data before saving
 function wp_quiz_plugin_validate_taxonomies($data, $postarr) {
     // Only apply to 'quizzes' post type
@@ -481,12 +481,12 @@ function wp_quiz_plugin_validate_taxonomies($data, $postarr) {
         return $data;
     }
 
-    // **Retrieve 'quiz_visibility' Meta Value**
+    // **Retrieve 'quiz_listing_visibility_status' Meta Value**
     $quiz_visibility = '';
 
     // Attempt to get the value from $postarr['meta_input']
-    if (isset($postarr['meta_input']['quiz_visibility'])) {
-        $quiz_visibility = $postarr['meta_input']['quiz_visibility'];
+    if (isset($postarr['meta_input']['quiz_listing_visibility_status'])) {
+        $quiz_visibility = sanitize_text_field($postarr['meta_input']['quiz_listing_visibility_status']);
     } elseif (isset($_POST['quiz_visibility'])) {
         // If not in meta_input, try to get it from $_POST
         $quiz_visibility = sanitize_text_field($_POST['quiz_visibility']);
@@ -494,7 +494,7 @@ function wp_quiz_plugin_validate_taxonomies($data, $postarr) {
         // For existing posts, retrieve the current meta value
         $post_id = isset($postarr['ID']) ? intval($postarr['ID']) : 0;
         if ($post_id) {
-            $quiz_visibility = get_post_meta($post_id, 'quiz_visibility', true);
+            $quiz_visibility = get_post_meta($post_id, 'quiz_listing_visibility_status', true);
         }
     }
 
@@ -506,51 +506,52 @@ function wp_quiz_plugin_validate_taxonomies($data, $postarr) {
     // Initialize error messages array
     $error_messages = array();
 
-    // Get the selected taxonomy terms from $_POST
-    $selected_terms = isset($_POST['tax_input']['quiz_category']) ? (array) $_POST['tax_input']['quiz_category'] : array();
-
-    // Remove empty values and ensure they are integers
-    $selected_terms = array_filter(array_map('intval', $selected_terms));
+    // **Retrieve Selected Terms from $_POST**
+    $selected_school    = isset($_POST['selected_school']) ? intval($_POST['selected_school']) : 0;
+    $selected_class     = isset($_POST['selected_class']) ? intval($_POST['selected_class']) : 0;
+    $selected_subject   = isset($_POST['selected_subject']) ? intval($_POST['selected_subject']) : 0;
 
     // **Begin Validation Logic**
 
     // Check if a School is selected
-    if (empty($selected_terms)) {
+    if (empty($selected_school)) {
         $error_messages[] = __('Please select a School.', 'wp-quiz-plugin');
     } else {
-        // Get the selected School ID
-        $school_id = $selected_terms[0];
-
         // Get Classes under the selected School
         $class_terms = get_terms(array(
             'taxonomy'   => 'quiz_category',
-            'parent'     => $school_id,
+            'parent'     => $selected_school,
             'hide_empty' => false,
         ));
 
-        if (!empty($class_terms)) {
-            // Check if a Class is selected
-            $selected_class = array_intersect($selected_terms, wp_list_pluck($class_terms, 'term_id'));
-
+        if (!is_wp_error($class_terms) && !empty($class_terms)) {
+            // If Classes exist under the School, ensure a Class is selected
             if (empty($selected_class)) {
                 $error_messages[] = __('Please select a Class.', 'wp-quiz-plugin');
             } else {
-                // Get the selected Class ID
-                $class_id = reset($selected_class);
+                // Verify that the selected Class is indeed a child of the selected School
+                $class_ids = wp_list_pluck($class_terms, 'term_id');
+                if (!in_array($selected_class, $class_ids, true)) {
+                    $error_messages[] = __('Selected Class is invalid for the chosen School.', 'wp-quiz-plugin');
+                } else {
+                    // Get Subjects under the selected Class
+                    $subject_terms = get_terms(array(
+                        'taxonomy'   => 'quiz_category',
+                        'parent'     => $selected_class,
+                        'hide_empty' => false,
+                    ));
 
-                // Get Subjects under the selected Class
-                $subject_terms = get_terms(array(
-                    'taxonomy'   => 'quiz_category',
-                    'parent'     => $class_id,
-                    'hide_empty' => false,
-                ));
-
-                if (!empty($subject_terms)) {
-                    // Check if a Subject is selected
-                    $selected_subject = array_intersect($selected_terms, wp_list_pluck($subject_terms, 'term_id'));
-
-                    if (empty($selected_subject)) {
-                        $error_messages[] = __('Please select a Subject.', 'wp-quiz-plugin');
+                    if (!is_wp_error($subject_terms) && !empty($subject_terms)) {
+                        // If Subjects exist under the Class, ensure a Subject is selected
+                        if (empty($selected_subject)) {
+                            $error_messages[] = __('Please select a Subject.', 'wp-quiz-plugin');
+                        } else {
+                            // Verify that the selected Subject is indeed a child of the selected Class
+                            $subject_ids = wp_list_pluck($subject_terms, 'term_id');
+                            if (!in_array($selected_subject, $subject_ids, true)) {
+                                $error_messages[] = __('Selected Subject is invalid for the chosen Class.', 'wp-quiz-plugin');
+                            }
+                        }
                     }
                 }
             }

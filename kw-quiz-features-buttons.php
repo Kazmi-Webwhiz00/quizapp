@@ -28,19 +28,19 @@ function quizzes_meta_box_callback($post) {
     // Get the post URL for dynamic button actions
     $post_url = get_permalink($post->ID);
     // Retrieve stored options for the buttons
-    $open_tab_label = esc_html(get_option('wp_quiz_plugin_open_tab_button_label', __('Open in New Tab', 'wp_quiz_plugin')));
+    $open_tab_label = esc_html(get_option('wp_quiz_plugin_open_tab_button_label', __('Open in New Tab', 'wp-quiz-plugin')));
     $open_tab_color = get_option('wp_quiz_plugin_open_tab_button_color', '#007BFF');
     $open_tab_font_size = get_option('wp_quiz_plugin_open_tab_button_font_size', '16');
 
-    $copy_url_label = esc_html(get_option('wp_quiz_plugin_copy_url_button_label', __('Copy URL to Clipboard', 'wp_quiz_plugin')));
+    $copy_url_label = esc_html(get_option('wp_quiz_plugin_copy_url_button_label', __('Copy URL to Clipboard', 'wp-quiz-plugin')));
     $copy_url_color = get_option('wp_quiz_plugin_copy_url_button_color', '#007BFF');
     $copy_url_font_size = get_option('wp_quiz_plugin_copy_url_button_font_size', '16');
 
-    $email_label = esc_html(get_option('wp_quiz_plugin_share_email_button_label', __('Share via Email', 'wp_quiz_plugin')));
+    $email_label = esc_html(get_option('wp_quiz_plugin_share_email_button_label', __('Share via Email', 'wp-quiz-plugin')));
     $email_color = get_option('wp_quiz_plugin_share_email_button_color', '#007BFF');
     $email_font_size = get_option('wp_quiz_plugin_share_email_button_font_size', '16');
-    $email_subject = esc_html(get_option('wp_quiz_plugin_share_email_subject', __('New Quiz Assessment Available', 'wp_quiz_plugin')));
-    $email_body = esc_html(get_option('wp_quiz_plugin_share_email_body', __('Hello,\n\nPlease attempt this quiz on time. Here is the quiz link:\n\n[URL]\n\nBest regards,', 'wp_quiz_plugin')));
+    $email_subject = esc_html(get_option('wp_quiz_plugin_share_email_subject', __('New Quiz Assessment Available', 'wp-quiz-plugin')));
+    $email_body = esc_html(get_option('wp_quiz_plugin_share_email_body', __('Hello,\n\nPlease attempt this quiz on time. Here is the quiz link:\n\n[URL]\n\nBest regards,', 'wp-quiz-plugin')));
 
         
 

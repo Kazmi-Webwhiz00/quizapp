@@ -42,18 +42,18 @@ add_action('admin_menu', 'wp_quiz_plugin_add_quizzes_settings_page');
 
 function wp_quiz_plugin_render_quizzes_settings_page() { ?>
     <div class="wrap">
-        <h1><?php esc_html_e('Quizzes Settings', 'wp_quiz_plugin'); ?></h1>
+        <h1><?php esc_html_e('Quizzes Settings','wp-quiz-plugin'); ?></h1>
         
         <!-- Tab Navigation -->
         <h2 class="nav-tab-wrapper">
-            <a href="#general-settings" class="nav-tab nav-tab-active"><?php esc_html_e('General Settings', 'wp_quiz_plugin'); ?></a>
-            <a href="#style-settings" class="nav-tab"><?php esc_html_e('Admin Style Settings', 'wp_quiz_plugin'); ?></a>
-            <a href="#frontend-style-settings" class="nav-tab"><?php esc_html_e('Frontend Style Settings', 'wp_quiz_plugin'); ?></a>
-            <a href="#strings-text-settings" class="nav-tab"><?php esc_html_e('Admin Strings Text', 'wp_quiz_plugin'); ?></a> 
-            <a href="#pdf-strings-text-settings" class="nav-tab"><?php esc_html_e('PDF Strings Text', 'wp_quiz_plugin'); ?></a> 
-            <a href="#pdf-style-settings" class="nav-tab"><?php esc_html_e('PDF Style Settings', 'wp_quiz_plugin'); ?></a> 
-            <a href="#kw-quiz-shortcode-settings" class="nav-tab"><?php esc_html_e('Shortcode Settings', 'wp_quiz_plugin'); ?></a> 
-            <a href="#action-buttons-settings" class="nav-tab"><?php esc_html_e('Action Buttons Settings', 'wp_quiz_plugin'); ?></a> <!-- New tab -->
+            <a href="#general-settings" class="nav-tab nav-tab-active"><?php esc_html_e('General Settings','wp-quiz-plugin'); ?></a>
+            <a href="#style-settings" class="nav-tab"><?php esc_html_e('Admin Style Settings','wp-quiz-plugin'); ?></a>
+            <a href="#frontend-style-settings" class="nav-tab"><?php esc_html_e('Frontend Style Settings','wp-quiz-plugin'); ?></a>
+            <a href="#strings-text-settings" class="nav-tab"><?php esc_html_e('Admin Strings Text','wp-quiz-plugin'); ?></a> 
+            <a href="#pdf-strings-text-settings" class="nav-tab"><?php esc_html_e('PDF Strings Text','wp-quiz-plugin'); ?></a> 
+            <a href="#pdf-style-settings" class="nav-tab"><?php esc_html_e('PDF Style Settings','wp-quiz-plugin'); ?></a> 
+            <a href="#kw-quiz-shortcode-settings" class="nav-tab"><?php esc_html_e('Shortcode Settings','wp-quiz-plugin'); ?></a> 
+            <a href="#action-buttons-settings" class="nav-tab"><?php esc_html_e('Action Buttons Settings','wp-quiz-plugin'); ?></a> <!-- New tab -->
 
         </h2>
 
@@ -167,7 +167,7 @@ function wp_quiz_plugin_strings_text_settings_init() {
     // Add settings section once before the loop
     add_settings_section(
         'wp_quiz_plugin_strings_text_section',
-        __('Customize Button and Placeholder Texts', 'wp_quiz_plugin'),
+        __('Customize Button and Placeholder Texts','wp-quiz-plugin'),
         null,
         'wp_quiz_plugin_strings_text'
     );
@@ -285,7 +285,7 @@ function wp_quiz_plugin_strings_text_settings_init() {
         // Add the settings field
         add_settings_field(
             $option_name,
-            __($info['label'], 'wp_quiz_plugin'),
+            __($info['label'],'wp-quiz-plugin'),
             'wp_quiz_plugin_strings_text_callback',
             'wp_quiz_plugin_strings_text',
             'wp_quiz_plugin_strings_text_section',
@@ -324,25 +324,25 @@ function wp_quiz_plugin_pdf_strings_text_settings_init() {
     // Add a new section for the PDF strings
     add_settings_section(
         'wp_quiz_plugin_pdf_strings_text_section',
-        __('Customize PDF Strings Texts', 'wp_quiz_plugin'),
+        __('Customize PDF Strings Texts','wp-quiz-plugin'),
         null,
         'wp_quiz_plugin_pdf_strings_text'
     );
 
     // Add settings fields
-    add_settings_field('wp_quiz_plugin_pdf_download_quiz_title', __('Quiz PDF Title', 'wp_quiz_plugin'), 'wp_quiz_plugin_pdf_download_quiz_title_callback', 'wp_quiz_plugin_pdf_strings_text', 'wp_quiz_plugin_pdf_strings_text_section');
+    add_settings_field('wp_quiz_plugin_pdf_download_quiz_title', __('Quiz PDF Title','wp-quiz-plugin'), 'wp_quiz_plugin_pdf_download_quiz_title_callback', 'wp_quiz_plugin_pdf_strings_text', 'wp_quiz_plugin_pdf_strings_text_section');
     
-    add_settings_field('wp_quiz_plugin_pdf_student_name', __('Student Name Field Text', 'wp_quiz_plugin'), 'wp_quiz_plugin_pdf_student_name_callback', 'wp_quiz_plugin_pdf_strings_text', 'wp_quiz_plugin_pdf_strings_text_section');
+    add_settings_field('wp_quiz_plugin_pdf_student_name', __('Student Name Field Text','wp-quiz-plugin'), 'wp_quiz_plugin_pdf_student_name_callback', 'wp_quiz_plugin_pdf_strings_text', 'wp_quiz_plugin_pdf_strings_text_section');
     
-    add_settings_field('wp_quiz_plugin_pdf_date_text', __('Date Field Text', 'wp_quiz_plugin'), 'wp_quiz_plugin_pdf_date_text_callback', 'wp_quiz_plugin_pdf_strings_text', 'wp_quiz_plugin_pdf_strings_text_section');
+    add_settings_field('wp_quiz_plugin_pdf_date_text', __('Date Field Text','wp-quiz-plugin'), 'wp_quiz_plugin_pdf_date_text_callback', 'wp_quiz_plugin_pdf_strings_text', 'wp_quiz_plugin_pdf_strings_text_section');
     
-    add_settings_field('wp_quiz_plugin_pdf_answer_key_title', __('Answer Key PDF Title', 'wp_quiz_plugin'), 'wp_quiz_plugin_pdf_answer_key_title_callback', 'wp_quiz_plugin_pdf_strings_text', 'wp_quiz_plugin_pdf_strings_text_section');
+    add_settings_field('wp_quiz_plugin_pdf_answer_key_title', __('Answer Key PDF Title','wp-quiz-plugin'), 'wp_quiz_plugin_pdf_answer_key_title_callback', 'wp_quiz_plugin_pdf_strings_text', 'wp_quiz_plugin_pdf_strings_text_section');
     
-    add_settings_field('wp_quiz_plugin_pdf_correct_answer_header', __('Correct Answer Header Text', 'wp_quiz_plugin'), 'wp_quiz_plugin_pdf_correct_answer_header_callback', 'wp_quiz_plugin_pdf_strings_text', 'wp_quiz_plugin_pdf_strings_text_section');
+    add_settings_field('wp_quiz_plugin_pdf_correct_answer_header', __('Correct Answer Header Text','wp-quiz-plugin'), 'wp_quiz_plugin_pdf_correct_answer_header_callback', 'wp_quiz_plugin_pdf_strings_text', 'wp_quiz_plugin_pdf_strings_text_section');
     
-    add_settings_field('wp_quiz_plugin_pdf_question_header', __('Question Header Text', 'wp_quiz_plugin'), 'wp_quiz_plugin_pdf_question_header_callback', 'wp_quiz_plugin_pdf_strings_text', 'wp_quiz_plugin_pdf_strings_text_section');
+    add_settings_field('wp_quiz_plugin_pdf_question_header', __('Question Header Text','wp-quiz-plugin'), 'wp_quiz_plugin_pdf_question_header_callback', 'wp_quiz_plugin_pdf_strings_text', 'wp_quiz_plugin_pdf_strings_text_section');
     
-    add_settings_field('wp_quiz_plugin_pdf_generated_by_text', __('Generated By Text', 'wp_quiz_plugin'), 'wp_quiz_plugin_pdf_generated_by_text_callback', 'wp_quiz_plugin_pdf_strings_text', 'wp_quiz_plugin_pdf_strings_text_section');
+    add_settings_field('wp_quiz_plugin_pdf_generated_by_text', __('Generated By Text','wp-quiz-plugin'), 'wp_quiz_plugin_pdf_generated_by_text_callback', 'wp_quiz_plugin_pdf_strings_text', 'wp_quiz_plugin_pdf_strings_text_section');
 
 }
 add_action('admin_init', 'wp_quiz_plugin_pdf_strings_text_settings_init');
@@ -421,38 +421,38 @@ function wp_quiz_plugin_pdf_style_settings_init() {
     // Add a new section for the style settings
     add_settings_section(
         'wp_quiz_plugin_pdf_style_settings_section',
-        __('Customize PDF Style Settings', 'wp_quiz_plugin'),
+        __('Customize PDF Style Settings','wp-quiz-plugin'),
         null,
         'wp_quiz_plugin_pdf_style'
     );
 
     // Add settings fields for Questions
-    add_settings_field('wp_quiz_plugin_question_font_size', __('Question Font Size', 'wp_quiz_plugin'), 'wp_quiz_plugin_question_font_size_callback', 'wp_quiz_plugin_pdf_style', 'wp_quiz_plugin_pdf_style_settings_section');
-    add_settings_field('wp_quiz_plugin_question_font_color', __('Question Font Color', 'wp_quiz_plugin'), 'wp_quiz_plugin_question_font_color_callback', 'wp_quiz_plugin_pdf_style', 'wp_quiz_plugin_pdf_style_settings_section');
-    add_settings_field('wp_quiz_plugin_question_font_family', __('Question Font Family', 'wp_quiz_plugin'), 'wp_quiz_plugin_question_font_family_callback', 'wp_quiz_plugin_pdf_style', 'wp_quiz_plugin_pdf_style_settings_section');
-    add_settings_field('wp_quiz_plugin_question_background_color', __('Question Background Color', 'wp_quiz_plugin'), 'wp_quiz_plugin_question_background_color_callback', 'wp_quiz_plugin_pdf_style', 'wp_quiz_plugin_pdf_style_settings_section');
+    add_settings_field('wp_quiz_plugin_question_font_size', __('Question Font Size','wp-quiz-plugin'), 'wp_quiz_plugin_question_font_size_callback', 'wp_quiz_plugin_pdf_style', 'wp_quiz_plugin_pdf_style_settings_section');
+    add_settings_field('wp_quiz_plugin_question_font_color', __('Question Font Color','wp-quiz-plugin'), 'wp_quiz_plugin_question_font_color_callback', 'wp_quiz_plugin_pdf_style', 'wp_quiz_plugin_pdf_style_settings_section');
+    add_settings_field('wp_quiz_plugin_question_font_family', __('Question Font Family','wp-quiz-plugin'), 'wp_quiz_plugin_question_font_family_callback', 'wp_quiz_plugin_pdf_style', 'wp_quiz_plugin_pdf_style_settings_section');
+    add_settings_field('wp_quiz_plugin_question_background_color', __('Question Background Color','wp-quiz-plugin'), 'wp_quiz_plugin_question_background_color_callback', 'wp_quiz_plugin_pdf_style', 'wp_quiz_plugin_pdf_style_settings_section');
 
     // Add settings fields for Student Name & Date
-    add_settings_field('wp_quiz_plugin_student_date_font_size', __('Student Name & Date Font Size', 'wp_quiz_plugin'), 'wp_quiz_plugin_student_date_font_size_callback', 'wp_quiz_plugin_pdf_style', 'wp_quiz_plugin_pdf_style_settings_section');
-    add_settings_field('wp_quiz_plugin_student_date_font_color', __('Student Name & Date Font Color', 'wp_quiz_plugin'), 'wp_quiz_plugin_student_date_font_color_callback', 'wp_quiz_plugin_pdf_style', 'wp_quiz_plugin_pdf_style_settings_section');
-    add_settings_field('wp_quiz_plugin_student_date_font_family', __('Student Name & Date Font Family', 'wp_quiz_plugin'), 'wp_quiz_plugin_student_date_font_family_callback', 'wp_quiz_plugin_pdf_style', 'wp_quiz_plugin_pdf_style_settings_section');
-    add_settings_field('wp_quiz_plugin_student_date_background_color', __('Student Name & Date Background Color', 'wp_quiz_plugin'), 'wp_quiz_plugin_student_date_background_color_callback', 'wp_quiz_plugin_pdf_style', 'wp_quiz_plugin_pdf_style_settings_section');
+    add_settings_field('wp_quiz_plugin_student_date_font_size', __('Student Name & Date Font Size','wp-quiz-plugin'), 'wp_quiz_plugin_student_date_font_size_callback', 'wp_quiz_plugin_pdf_style', 'wp_quiz_plugin_pdf_style_settings_section');
+    add_settings_field('wp_quiz_plugin_student_date_font_color', __('Student Name & Date Font Color','wp-quiz-plugin'), 'wp_quiz_plugin_student_date_font_color_callback', 'wp_quiz_plugin_pdf_style', 'wp_quiz_plugin_pdf_style_settings_section');
+    add_settings_field('wp_quiz_plugin_student_date_font_family', __('Student Name & Date Font Family','wp-quiz-plugin'), 'wp_quiz_plugin_student_date_font_family_callback', 'wp_quiz_plugin_pdf_style', 'wp_quiz_plugin_pdf_style_settings_section');
+    add_settings_field('wp_quiz_plugin_student_date_background_color', __('Student Name & Date Background Color','wp-quiz-plugin'), 'wp_quiz_plugin_student_date_background_color_callback', 'wp_quiz_plugin_pdf_style', 'wp_quiz_plugin_pdf_style_settings_section');
 
     // Add settings fields for Quiz Download Header Texts
-    add_settings_field('wp_quiz_plugin_header_font_size', __('Header Font Size', 'wp_quiz_plugin'), 'wp_quiz_plugin_header_font_size_callback', 'wp_quiz_plugin_pdf_style', 'wp_quiz_plugin_pdf_style_settings_section');
-    add_settings_field('wp_quiz_plugin_header_font_color', __('Header Font Color', 'wp_quiz_plugin'), 'wp_quiz_plugin_header_font_color_callback', 'wp_quiz_plugin_pdf_style', 'wp_quiz_plugin_pdf_style_settings_section');
-    add_settings_field('wp_quiz_plugin_header_font_family', __('Header Font Family', 'wp_quiz_plugin'), 'wp_quiz_plugin_header_font_family_callback', 'wp_quiz_plugin_pdf_style', 'wp_quiz_plugin_pdf_style_settings_section');
+    add_settings_field('wp_quiz_plugin_header_font_size', __('Header Font Size','wp-quiz-plugin'), 'wp_quiz_plugin_header_font_size_callback', 'wp_quiz_plugin_pdf_style', 'wp_quiz_plugin_pdf_style_settings_section');
+    add_settings_field('wp_quiz_plugin_header_font_color', __('Header Font Color','wp-quiz-plugin'), 'wp_quiz_plugin_header_font_color_callback', 'wp_quiz_plugin_pdf_style', 'wp_quiz_plugin_pdf_style_settings_section');
+    add_settings_field('wp_quiz_plugin_header_font_family', __('Header Font Family','wp-quiz-plugin'), 'wp_quiz_plugin_header_font_family_callback', 'wp_quiz_plugin_pdf_style', 'wp_quiz_plugin_pdf_style_settings_section');
 
     // Add settings fields for Quiz Title
-    add_settings_field('wp_quiz_plugin_title_font_size', __('Quiz Title Font Size', 'wp_quiz_plugin'), 'wp_quiz_plugin_title_font_size_callback', 'wp_quiz_plugin_pdf_style', 'wp_quiz_plugin_pdf_style_settings_section');
-    add_settings_field('wp_quiz_plugin_title_font_color', __('Quiz Title Font Color', 'wp_quiz_plugin'), 'wp_quiz_plugin_title_font_color_callback', 'wp_quiz_plugin_pdf_style', 'wp_quiz_plugin_pdf_style_settings_section');
-    add_settings_field('wp_quiz_plugin_title_font_family', __('Quiz Title Font Family', 'wp_quiz_plugin'), 'wp_quiz_plugin_title_font_family_callback', 'wp_quiz_plugin_pdf_style', 'wp_quiz_plugin_pdf_style_settings_section');
+    add_settings_field('wp_quiz_plugin_title_font_size', __('Quiz Title Font Size','wp-quiz-plugin'), 'wp_quiz_plugin_title_font_size_callback', 'wp_quiz_plugin_pdf_style', 'wp_quiz_plugin_pdf_style_settings_section');
+    add_settings_field('wp_quiz_plugin_title_font_color', __('Quiz Title Font Color','wp-quiz-plugin'), 'wp_quiz_plugin_title_font_color_callback', 'wp_quiz_plugin_pdf_style', 'wp_quiz_plugin_pdf_style_settings_section');
+    add_settings_field('wp_quiz_plugin_title_font_family', __('Quiz Title Font Family','wp-quiz-plugin'), 'wp_quiz_plugin_title_font_family_callback', 'wp_quiz_plugin_pdf_style', 'wp_quiz_plugin_pdf_style_settings_section');
 
     // Add settings fields for Answers
-    add_settings_field('wp_quiz_plugin_answer_font_size', __('Answer Font Size', 'wp_quiz_plugin'), 'wp_quiz_plugin_answer_font_size_callback', 'wp_quiz_plugin_pdf_style', 'wp_quiz_plugin_pdf_style_settings_section');
-    add_settings_field('wp_quiz_plugin_answer_font_color', __('Answer Font Color', 'wp_quiz_plugin'), 'wp_quiz_plugin_answer_font_color_callback', 'wp_quiz_plugin_pdf_style', 'wp_quiz_plugin_pdf_style_settings_section');
-    add_settings_field('wp_quiz_plugin_answer_font_family', __('Answer Font Family', 'wp_quiz_plugin'), 'wp_quiz_plugin_answer_font_family_callback', 'wp_quiz_plugin_pdf_style', 'wp_quiz_plugin_pdf_style_settings_section');
-    add_settings_field('wp_quiz_plugin_answer_background_color', __('Answer Background Color', 'wp_quiz_plugin'), 'wp_quiz_plugin_answer_background_color_callback', 'wp_quiz_plugin_pdf_style', 'wp_quiz_plugin_pdf_style_settings_section');
+    add_settings_field('wp_quiz_plugin_answer_font_size', __('Answer Font Size','wp-quiz-plugin'), 'wp_quiz_plugin_answer_font_size_callback', 'wp_quiz_plugin_pdf_style', 'wp_quiz_plugin_pdf_style_settings_section');
+    add_settings_field('wp_quiz_plugin_answer_font_color', __('Answer Font Color','wp-quiz-plugin'), 'wp_quiz_plugin_answer_font_color_callback', 'wp_quiz_plugin_pdf_style', 'wp_quiz_plugin_pdf_style_settings_section');
+    add_settings_field('wp_quiz_plugin_answer_font_family', __('Answer Font Family','wp-quiz-plugin'), 'wp_quiz_plugin_answer_font_family_callback', 'wp_quiz_plugin_pdf_style', 'wp_quiz_plugin_pdf_style_settings_section');
+    add_settings_field('wp_quiz_plugin_answer_background_color', __('Answer Background Color','wp-quiz-plugin'), 'wp_quiz_plugin_answer_background_color_callback', 'wp_quiz_plugin_pdf_style', 'wp_quiz_plugin_pdf_style_settings_section');
 }
 add_action('admin_init', 'wp_quiz_plugin_pdf_style_settings_init');
 
@@ -597,10 +597,10 @@ function wp_quiz_plugin_quizzes_url_slug_callback() {
     ?>
     <div style="margin-bottom: 15px;">
         <label for="wp_quiz_plugin_quizzes_url_slug">
-            <strong><?php esc_html_e('Custom URL Slug for Quizzes:', 'wp_quiz_plugin'); ?></strong>
+            <strong><?php esc_html_e('Custom URL Slug for Quizzes:','wp-quiz-plugin'); ?></strong>
         </label>
         <input type="text" id="wp_quiz_plugin_quizzes_url_slug" name="wp_quiz_plugin_quizzes_url_slug" value="<?php echo esc_attr($url_slug); ?>" class="regular-text" style="max-width: 300px;">
-        <p class="description"><?php esc_html_e('Set a custom slug for your quizzes URL. Example: "my-quizzes".', 'wp_quiz_plugin'); ?></p>
+        <p class="description"><?php esc_html_e('Set a custom slug for your quizzes URL. Example: "my-quizzes".','wp-quiz-plugin'); ?></p>
     </div>
     <?php
 }
@@ -624,10 +624,10 @@ function wp_quiz_plugin_number_of_questions_callback() {
     ?>
     <div style="margin-bottom: 15px;">
         <label for="wp_quiz_plugin_number_of_questions">
-            <strong><?php esc_html_e('Comma-separated list of numbers for questions dropdown:', 'wp_quiz_plugin'); ?></strong>
+            <strong><?php esc_html_e('Comma-separated list of numbers for questions dropdown:','wp-quiz-plugin'); ?></strong>
         </label>
         <input type="text" id="wp_quiz_plugin_number_of_questions" name="wp_quiz_plugin_number_of_questions" value="<?php echo esc_attr($options); ?>" class="regular-text" style="max-width: 300px;">
-        <p class="description"><?php esc_html_e('Enter numbers separated by commas (e.g., "1, 5, 10") to define the options for the number of questions users can select.', 'wp_quiz_plugin'); ?></p>
+        <p class="description"><?php esc_html_e('Enter numbers separated by commas (e.g., "1, 5, 10") to define the options for the number of questions users can select.','wp-quiz-plugin'); ?></p>
     </div>
     <?php
 }
@@ -767,7 +767,7 @@ function wp_quiz_plugin_openai_settings_init() {
     // Add a new section
     add_settings_section(
         'wp_quiz_plugin_openai_section',
-        __('OpenAI API Settings', 'wp_quiz_plugin'),
+        __('OpenAI API Settings','wp-quiz-plugin'),
         null,
         'wp_quiz_plugin_general'
     );
@@ -775,7 +775,7 @@ function wp_quiz_plugin_openai_settings_init() {
     // Add settings fields for model selection
     add_settings_field(
         'wp_quiz_plugin_openai_model',
-        __('OpenAI Model', 'wp_quiz_plugin'),
+        __('OpenAI Model','wp-quiz-plugin'),
         'wp_quiz_plugin_openai_model_callback',
         'wp_quiz_plugin_general',
         'wp_quiz_plugin_openai_section'
@@ -784,7 +784,7 @@ function wp_quiz_plugin_openai_settings_init() {
     // Add settings fields for max tokens
     add_settings_field(
         'wp_quiz_plugin_openai_max_tokens',
-        __('Max Tokens', 'wp_quiz_plugin'),
+        __('Max Tokens','wp-quiz-plugin'),
         'wp_quiz_plugin_openai_max_tokens_callback',
         'wp_quiz_plugin_general',
         'wp_quiz_plugin_openai_section'
@@ -793,7 +793,7 @@ function wp_quiz_plugin_openai_settings_init() {
     // Add settings fields for temperature
     add_settings_field(
         'wp_quiz_plugin_openai_temperature',
-        __('Temperature', 'wp_quiz_plugin'),
+        __('Temperature','wp-quiz-plugin'),
         'wp_quiz_plugin_openai_temperature_callback',
         'wp_quiz_plugin_general',
         'wp_quiz_plugin_openai_section'
@@ -811,7 +811,7 @@ function wp_quiz_plugin_openai_model_callback() {
         <option value="gpt-4o" <?php selected($model, 'gpt-4o'); ?>>GPT-4.0</option>
         <option value="gpt-4" <?php selected($model, 'gpt-4'); ?>>GPT-4</option>
     </select>
-    <p class="description"><?php esc_html_e('Select the OpenAI model to use.', 'wp_quiz_plugin'); ?></p>
+    <p class="description"><?php esc_html_e('Select the OpenAI model to use.','wp-quiz-plugin'); ?></p>
     <?php
 }
 
@@ -820,7 +820,7 @@ function wp_quiz_plugin_openai_max_tokens_callback() {
     $max_tokens = get_option('wp_quiz_plugin_openai_max_tokens', 50);
     ?>
     <input type="number" name="wp_quiz_plugin_openai_max_tokens" value="<?php echo esc_attr($max_tokens); ?>" min="50" max="300" step="1">
-    <p class="description"><?php esc_html_e('Set the maximum number of tokens for the response (50 to 300).', 'wp_quiz_plugin'); ?></p>
+    <p class="description"><?php esc_html_e('Set the maximum number of tokens for the response (50 to 300).','wp-quiz-plugin'); ?></p>
     <?php
 }
 
@@ -829,7 +829,7 @@ function wp_quiz_plugin_openai_temperature_callback() {
     $temperature = get_option('wp_quiz_plugin_openai_temperature', 0.5);
     ?>
     <input type="number" name="wp_quiz_plugin_openai_temperature" value="<?php echo esc_attr($temperature); ?>" min="0" max="1" step="0.1">
-    <p class="description"><?php esc_html_e('Set the temperature for response randomness (0 to 1).', 'wp_quiz_plugin'); ?></p>
+    <p class="description"><?php esc_html_e('Set the temperature for response randomness (0 to 1).','wp-quiz-plugin'); ?></p>
     <?php
 }
 
@@ -841,7 +841,7 @@ function wp_quiz_plugin_quizzes_styles_settings_init() {
     register_setting('wp_quiz_plugin_quizzes_settings', 'wp_quiz_plugin_text_color');
     register_setting('wp_quiz_plugin_quizzes_settings', 'wp_quiz_plugin_text_font_size');
     add_settings_field('wp_quiz_plugin_text_font_size', 'Font Size for Questions', 'wp_quiz_plugin_text_font_size_callback', 'wp_quiz_plugin', 'wp_quiz_plugin_question_styles_section');
-    add_settings_section('wp_quiz_plugin_question_styles_section', 'Question Styles', null, 'wp_quiz_plugin');
+    add_settings_section('wp_quiz_plugin_question_styles_section', 'Question Styles', null,'wp-quiz-plugin');
     add_settings_field('wp_quiz_plugin_text_font', 'Text Font for Questions', 'wp_quiz_plugin_text_font_callback', 'wp_quiz_plugin', 'wp_quiz_plugin_question_styles_section');
     add_settings_field('wp_quiz_plugin_text_color', 'Text Color for Questions', 'wp_quiz_plugin_text_color_callback', 'wp_quiz_plugin', 'wp_quiz_plugin_question_styles_section');
 }
@@ -851,29 +851,29 @@ function wp_quiz_plugin_text_font_callback() {
     $font = get_option('wp_quiz_plugin_text_font', 'Arial');
     $google_fonts = wp_quiz_plugin_get_google_fonts();
     echo '<div style="margin-bottom: 15px;">
-            <label for="wp_quiz_plugin_text_font"><strong>' . esc_html__('Select Question Font:', 'wp_quiz_plugin') . '</strong></label>
+            <label for="wp_quiz_plugin_text_font"><strong>' . esc_html__('Select Question Font:','wp-quiz-plugin') . '</strong></label>
             <select id="wp_quiz_plugin_text_font" name="wp_quiz_plugin_text_font" class="regular-text">';
     foreach ($google_fonts as $key => $label) {
         echo '<option value="' . esc_attr($key) . '" ' . selected($font, $key, false) . '>' . esc_html($label) . '</option>';
     }
-    echo '</select><p class="description">' . esc_html__('Choose the font for quiz questions.', 'wp_quiz_plugin') . '</p></div>';
+    echo '</select><p class="description">' . esc_html__('Choose the font for quiz questions.','wp-quiz-plugin') . '</p></div>';
 }
 
 function wp_quiz_plugin_text_color_callback() {
     $color = get_option('wp_quiz_plugin_text_color', '#000000');
     echo '<div style="margin-bottom: 15px;">
-            <label for="wp_quiz_plugin_text_color"><strong>' . esc_html__('Question Text Color:', 'wp_quiz_plugin') . '</strong></label>
+            <label for="wp_quiz_plugin_text_color"><strong>' . esc_html__('Question Text Color:','wp-quiz-plugin') . '</strong></label>
             <input type="text" id="wp_quiz_plugin_text_color" name="wp_quiz_plugin_text_color" value="' . esc_attr($color) . '" class="wp-color-picker-field" data-default-color="#000000">
-            <p class="description">' . esc_html__('Set the color for the quiz questions text.', 'wp_quiz_plugin') . '</p>
+            <p class="description">' . esc_html__('Set the color for the quiz questions text.','wp-quiz-plugin') . '</p>
           </div>';
 }
 // Callback function for Font size
 function wp_quiz_plugin_text_font_size_callback() {
     $font_size = get_option('wp_quiz_plugin_text_font_size', '16px');
     echo '<div style="margin-bottom: 15px;">
-            <label for="wp_quiz_plugin_text_font_size"><strong>' . esc_html__('Font Size for Questions:', 'wp_quiz_plugin') . '</strong></label>
+            <label for="wp_quiz_plugin_text_font_size"><strong>' . esc_html__('Font Size for Questions:','wp-quiz-plugin') . '</strong></label>
             <input type="text" id="wp_quiz_plugin_text_font_size" name="wp_quiz_plugin_text_font_size" value="' . esc_attr($font_size) . '" class="regular-text" style="max-width: 100px;">
-            <p class="description">' . esc_html__('Set the font size for the quiz questions (e.g., "16px").', 'wp_quiz_plugin') . '</p>
+            <p class="description">' . esc_html__('Set the font size for the quiz questions (e.g., "16px").','wp-quiz-plugin') . '</p>
           </div>';
 }
 
@@ -881,7 +881,7 @@ function wp_quiz_plugin_answers_styles_settings_init() {
     register_setting('wp_quiz_plugin_quizzes_settings', 'wp_quiz_plugin_answer_text_font_size');
     register_setting('wp_quiz_plugin_quizzes_settings', 'wp_quiz_plugin_answer_text_font');
     register_setting('wp_quiz_plugin_quizzes_settings', 'wp_quiz_plugin_answer_text_color');
-    add_settings_section('wp_quiz_plugin_answer_styles_section', 'Answer Styles', null, 'wp_quiz_plugin');
+    add_settings_section('wp_quiz_plugin_answer_styles_section', 'Answer Styles', null,'wp-quiz-plugin');
     add_settings_field('wp_quiz_plugin_answer_text_font_size', 'Font Size for Answers', 'wp_quiz_plugin_answer_text_font_size_callback', 'wp_quiz_plugin', 'wp_quiz_plugin_answer_styles_section');
 
     add_settings_field('wp_quiz_plugin_answer_text_font', 'Text Font for Answers', 'wp_quiz_plugin_answer_text_font_callback', 'wp_quiz_plugin', 'wp_quiz_plugin_answer_styles_section');
@@ -893,28 +893,28 @@ function wp_quiz_plugin_answer_text_font_callback() {
     $font = get_option('wp_quiz_plugin_answer_text_font', 'Arial');
     $google_fonts = wp_quiz_plugin_get_google_fonts();
     echo '<div style="margin-bottom: 15px;">
-            <label for="wp_quiz_plugin_answer_text_font"><strong>' . esc_html__('Select Answer Font:', 'wp_quiz_plugin') . '</strong></label>
+            <label for="wp_quiz_plugin_answer_text_font"><strong>' . esc_html__('Select Answer Font:','wp-quiz-plugin') . '</strong></label>
             <select id="wp_quiz_plugin_answer_text_font" name="wp_quiz_plugin_answer_text_font" class="regular-text">';
     foreach ($google_fonts as $key => $label) {
         echo '<option value="' . esc_attr($key) . '" ' . selected($font, $key, false) . '>' . esc_html($label) . '</option>';
     }
-    echo '</select><p class="description">' . esc_html__('Choose the font for quiz answers.', 'wp_quiz_plugin') . '</p></div>';
+    echo '</select><p class="description">' . esc_html__('Choose the font for quiz answers.','wp-quiz-plugin') . '</p></div>';
 }
 
 function wp_quiz_plugin_answer_text_color_callback() {
     $color = get_option('wp_quiz_plugin_answer_text_color', '#000000');
     echo '<div style="margin-bottom: 15px;">
-            <label for="wp_quiz_plugin_answer_text_color"><strong>' . esc_html__('Answer Text Color:', 'wp_quiz_plugin') . '</strong></label>
+            <label for="wp_quiz_plugin_answer_text_color"><strong>' . esc_html__('Answer Text Color:','wp-quiz-plugin') . '</strong></label>
             <input type="text" id="wp_quiz_plugin_answer_text_color" name="wp_quiz_plugin_answer_text_color" value="' . esc_attr($color) . '" class="wp-color-picker-field" data-default-color="#000000">
-            <p class="description">' . esc_html__('Set the color for the quiz answers text.', 'wp_quiz_plugin') . '</p>
+            <p class="description">' . esc_html__('Set the color for the quiz answers text.','wp-quiz-plugin') . '</p>
           </div>';
 }
 function wp_quiz_plugin_answer_text_font_size_callback() {
     $font_size = get_option('wp_quiz_plugin_answer_text_font_size', '16px');
     echo '<div style="margin-bottom: 15px;">
-            <label for="wp_quiz_plugin_answer_text_font_size"><strong>' . esc_html__('Font Size for Answers:', 'wp_quiz_plugin') . '</strong></label>
+            <label for="wp_quiz_plugin_answer_text_font_size"><strong>' . esc_html__('Font Size for Answers:','wp-quiz-plugin') . '</strong></label>
             <input type="text" id="wp_quiz_plugin_answer_text_font_size" name="wp_quiz_plugin_answer_text_font_size" value="' . esc_attr($font_size) . '" class="regular-text" style="max-width: 100px;">
-            <p class="description">' . esc_html__('Set the font size for the quiz answers (e.g., "16px").', 'wp_quiz_plugin') . '</p>
+            <p class="description">' . esc_html__('Set the font size for the quiz answers (e.g., "16px").','wp-quiz-plugin') . '</p>
           </div>';
 }
 
@@ -937,7 +937,7 @@ function wp_quiz_plugin_initialize_button_settings() {
     foreach ($buttons as $button) {
         add_settings_section("{$button['prefix']}_section", "{$button['label']} Settings", function() use ($button) { 
             wp_quiz_plugin_render_button_settings_group($button); 
-        }, 'wp_quiz_plugin');
+        },'wp-quiz-plugin');
 
         // Register the settings for font, color, font color, and font size
         foreach (['font', 'color', 'font_color', 'font_size'] as $type) {
@@ -984,7 +984,7 @@ function wp_quiz_plugin_render_input_field($option_name, $type, $default_value, 
         echo '<input type="text" id="' . esc_attr($option_name) . '" name="' . esc_attr($option_name) . '" value="' . esc_attr($value) . '" class="wp-color-picker-field" data-default-color="' . esc_attr($default_value) . '" style="max-width: 100px;">';
     }
 
-    echo '<p class="description">' . esc_html__('Adjust the settings to customize the appearance of the button.', 'wp_quiz_plugin') . '</p></div>';
+    echo '<p class="description">' . esc_html__('Adjust the settings to customize the appearance of the button.','wp-quiz-plugin') . '</p></div>';
 }
 
 function wp_quiz_plugin_enqueue_admin_styles() {
@@ -1112,17 +1112,17 @@ function wp_quiz_plugin_swal_button_background_color_callback() {
 function wp_quiz_plugin_swal_font_size_callback() {
     $font_size = get_option('wp_quiz_plugin_swal_font_size', '16px');
     echo '<div style="margin-bottom: 15px;">
-            <label for="wp_quiz_plugin_swal_font_size"><strong>' . esc_html__('Popup Font Size:', 'wp_quiz_plugin') . '</strong></label>
+            <label for="wp_quiz_plugin_swal_font_size"><strong>' . esc_html__('Popup Font Size:','wp-quiz-plugin') . '</strong></label>
             <input type="text" id="wp_quiz_plugin_swal_font_size" name="wp_quiz_plugin_swal_font_size" value="' . esc_attr($font_size) . '" class="regular-text" style="max-width: 100px;">
-            <p class="description">' . esc_html__('Set the font size for the SweetAlert popup (e.g., "16px").', 'wp_quiz_plugin') . '</p>
+            <p class="description">' . esc_html__('Set the font size for the SweetAlert popup (e.g., "16px").','wp-quiz-plugin') . '</p>
           </div>';
 }
 function wp_quiz_plugin_swal_button_font_size_callback() {
     $button_font_size = get_option('wp_quiz_plugin_swal_button_font_size', '14px');
     echo '<div style="margin-bottom: 15px;">
-            <label for="wp_quiz_plugin_swal_button_font_size"><strong>' . esc_html__('Popup Button Font Size:', 'wp_quiz_plugin') . '</strong></label>
+            <label for="wp_quiz_plugin_swal_button_font_size"><strong>' . esc_html__('Popup Button Font Size:','wp-quiz-plugin') . '</strong></label>
             <input type="text" id="wp_quiz_plugin_swal_button_font_size" name="wp_quiz_plugin_swal_button_font_size" value="' . esc_attr($button_font_size) . '" class="regular-text" style="max-width: 100px;">
-            <p class="description">' . esc_html__('Set the font size for the SweetAlert popup buttons (e.g., "14px").', 'wp_quiz_plugin') . '</p>
+            <p class="description">' . esc_html__('Set the font size for the SweetAlert popup buttons (e.g., "14px").','wp-quiz-plugin') . '</p>
           </div>';
 }
 
@@ -1152,7 +1152,7 @@ function wp_quiz_plugin_frontend_styles_settings_init() {
     // Add a new section for Question Style Settings under Frontend Styles
     add_settings_section(
         'wp_quiz_plugin_frontend_question_style_section',
-        __('Question Style Settings', 'wp_quiz_plugin'),
+        __('Question Style Settings','wp-quiz-plugin'),
         null,
         'wp_quiz_plugin_frontend'
     );
@@ -1160,7 +1160,7 @@ function wp_quiz_plugin_frontend_styles_settings_init() {
     // Add settings fields for font family, font size, and color
     add_settings_field(
         'wp_quiz_plugin_frontend_question_font_family',
-        __('Font Family', 'wp_quiz_plugin'),
+        __('Font Family','wp-quiz-plugin'),
         'wp_quiz_plugin_frontend_question_font_family_callback',
         'wp_quiz_plugin_frontend',
         'wp_quiz_plugin_frontend_question_style_section'
@@ -1168,7 +1168,7 @@ function wp_quiz_plugin_frontend_styles_settings_init() {
 
     add_settings_field(
         'wp_quiz_plugin_frontend_question_font_size',
-        __('Font Size', 'wp_quiz_plugin'),
+        __('Font Size','wp-quiz-plugin'),
         'wp_quiz_plugin_frontend_question_font_size_callback',
         'wp_quiz_plugin_frontend',
         'wp_quiz_plugin_frontend_question_style_section'
@@ -1176,7 +1176,7 @@ function wp_quiz_plugin_frontend_styles_settings_init() {
 
     add_settings_field(
         'wp_quiz_plugin_frontend_question_font_color',
-        __('Font Color', 'wp_quiz_plugin'),
+        __('Font Color','wp-quiz-plugin'),
         'wp_quiz_plugin_frontend_question_font_color_callback',
         'wp_quiz_plugin_frontend',
         'wp_quiz_plugin_frontend_question_style_section'
@@ -1185,7 +1185,7 @@ function wp_quiz_plugin_frontend_styles_settings_init() {
     // Add Reset to Default button
     add_settings_field(
         'wp_quiz_plugin_frontend_question_reset_defaults',
-        __('Reset to Default', 'wp_quiz_plugin'),
+        __('Reset to Default','wp-quiz-plugin'),
         'wp_quiz_plugin_frontend_question_reset_defaults_callback',
         'wp_quiz_plugin_frontend',
         'wp_quiz_plugin_frontend_question_style_section'
@@ -1195,7 +1195,7 @@ function wp_quiz_plugin_frontend_styles_settings_init() {
     // Add a new section for Answers Style Settings
     add_settings_section(
         'wp_quiz_plugin_frontend_answer_style_section',
-        __('Answers Style Settings', 'wp_quiz_plugin'),
+        __('Answers Style Settings','wp-quiz-plugin'),
         null,
         'wp_quiz_plugin_frontend'
     );
@@ -1203,7 +1203,7 @@ function wp_quiz_plugin_frontend_styles_settings_init() {
     // Add new field for Answers font-family
     add_settings_field(
         'wp_quiz_plugin_frontend_answer_font_family',
-        __('Font Family', 'wp_quiz_plugin'),
+        __('Font Family','wp-quiz-plugin'),
         'wp_quiz_plugin_frontend_answer_font_family_callback',
         'wp_quiz_plugin_frontend',
         'wp_quiz_plugin_frontend_answer_style_section'
@@ -1212,7 +1212,7 @@ function wp_quiz_plugin_frontend_styles_settings_init() {
     // Add new field for Answers font-color
     add_settings_field(
         'wp_quiz_plugin_frontend_answer_font_color',
-        __('Font Color', 'wp_quiz_plugin'),
+        __('Font Color','wp-quiz-plugin'),
         'wp_quiz_plugin_frontend_answer_font_color_callback',
         'wp_quiz_plugin_frontend',
         'wp_quiz_plugin_frontend_answer_style_section'
@@ -1221,7 +1221,7 @@ function wp_quiz_plugin_frontend_styles_settings_init() {
     // Add new field for Answers font size
     add_settings_field(
         'wp_quiz_plugin_frontend_answer_font_size',
-        __('Font Size', 'wp_quiz_plugin'),
+        __('Font Size','wp-quiz-plugin'),
         'wp_quiz_plugin_frontend_answer_font_size_callback',
         'wp_quiz_plugin_frontend',
         'wp_quiz_plugin_frontend_answer_style_section'
@@ -1230,7 +1230,7 @@ function wp_quiz_plugin_frontend_styles_settings_init() {
     // Add the reset button for Answers styles
     add_settings_field(
         'wp_quiz_plugin_frontend_answer_reset_defaults',
-        __('Reset to Default', 'wp_quiz_plugin'),
+        __('Reset to Default','wp-quiz-plugin'),
         'wp_quiz_plugin_frontend_answer_reset_defaults_callback',
         'wp_quiz_plugin_frontend',
         'wp_quiz_plugin_frontend_answer_style_section'
@@ -1371,7 +1371,7 @@ function wp_quiz_plugin_frontend_question_font_color_callback() {
 
 // Callback function for Reset to Default button
 function wp_quiz_plugin_frontend_question_reset_defaults_callback() {
-    echo '<button type="button" class="button-secondary" id="wp_quiz_plugin_reset_frontend_question_styles">' . __('Reset to Default', 'wp_quiz_plugin') . '</button>';
+    echo '<button type="button" class="button-secondary" id="wp_quiz_plugin_reset_frontend_question_styles">' . __('Reset to Default','wp-quiz-plugin') . '</button>';
     
     // JavaScript to handle resetting
     ?>
@@ -1423,7 +1423,7 @@ function wp_quiz_plugin_frontend_answer_font_size_callback() {
 
 // Callback function for reset button (Answers)
 function wp_quiz_plugin_frontend_answer_reset_defaults_callback() {
-    echo '<button type="button" class="button-secondary" id="wp_quiz_plugin_reset_answer_styles">' . __('Reset to Default', 'wp_quiz_plugin') . '</button>';
+    echo '<button type="button" class="button-secondary" id="wp_quiz_plugin_reset_answer_styles">' . __('Reset to Default','wp-quiz-plugin') . '</button>';
     
     // JavaScript to handle resetting
     ?>
@@ -1541,7 +1541,7 @@ function wp_quiz_plugin_prompt_settings_init() {
     // Add settings section for prompt templates
     add_settings_section(
         'wp_quiz_plugin_prompt_settings_section',
-        __('Prompt Customization', 'wp_quiz_plugin'),
+        __('Prompt Customization','wp-quiz-plugin'),
         null,
         'wp_quiz_plugin_general'
     );
@@ -1549,7 +1549,7 @@ function wp_quiz_plugin_prompt_settings_init() {
     // MCQ Prompt Template
     add_settings_field(
         'wp_quiz_plugin_mcq_prompt_template',
-        __('MCQ Prompt Template', 'wp_quiz_plugin'),
+        __('MCQ Prompt Template','wp-quiz-plugin'),
         'wp_quiz_plugin_mcq_prompt_template_callback',
         'wp_quiz_plugin_general',
         'wp_quiz_plugin_prompt_settings_section'
@@ -1558,7 +1558,7 @@ function wp_quiz_plugin_prompt_settings_init() {
     // True/False Prompt Template
     add_settings_field(
         'wp_quiz_plugin_tf_prompt_template',
-        __('True/False Prompt Template', 'wp_quiz_plugin'),
+        __('True/False Prompt Template','wp-quiz-plugin'),
         'wp_quiz_plugin_tf_prompt_template_callback',
         'wp_quiz_plugin_general',
         'wp_quiz_plugin_prompt_settings_section'
@@ -1567,7 +1567,7 @@ function wp_quiz_plugin_prompt_settings_init() {
     // Text Answer Prompt Template
     add_settings_field(
         'wp_quiz_plugin_text_prompt_template',
-        __('Text Answer Prompt Template', 'wp_quiz_plugin'),
+        __('Text Answer Prompt Template','wp-quiz-plugin'),
         'wp_quiz_plugin_text_prompt_template_callback',
         'wp_quiz_plugin_general',
         'wp_quiz_plugin_prompt_settings_section'
@@ -1586,8 +1586,8 @@ function wp_quiz_plugin_mcq_prompt_template_callback() {
     // Output the textarea with proper escaping
     ?>
     <textarea id="wp_quiz_plugin_mcq_prompt_template" name="wp_quiz_plugin_mcq_prompt_template" class="large-text" rows="10"><?php echo esc_textarea(str_replace('\n', "\n", $mcq_prompt)); ?></textarea>
-    <button type="button" onclick="document.getElementById('wp_quiz_plugin_mcq_prompt_template').value='<?php echo esc_js(str_replace('\n', "\\n", $default_prompt)); ?>';" class="button-secondary"><?php _e('Use Default', 'wp_quiz_plugin'); ?></button>
-    <p class="description"><?php _e('Customize the prompt template for MCQ questions. Use variables like [Your question text], [Option A], [Correct Answer].', 'wp_quiz_plugin'); ?></p>
+    <button type="button" onclick="document.getElementById('wp_quiz_plugin_mcq_prompt_template').value='<?php echo esc_js(str_replace('\n', "\\n", $default_prompt)); ?>';" class="button-secondary"><?php _e('Use Default','wp-quiz-plugin'); ?></button>
+    <p class="description"><?php _e('Customize the prompt template for MCQ questions. Use variables like [Your question text], [Option A], [Correct Answer].','wp-quiz-plugin'); ?></p>
     <?php
 }
 
@@ -1603,8 +1603,8 @@ function wp_quiz_plugin_tf_prompt_template_callback() {
     // Output the textarea with proper escaping
     ?>
     <textarea id="wp_quiz_plugin_tf_prompt_template" name="wp_quiz_plugin_tf_prompt_template" class="large-text" rows="5"><?php echo esc_textarea(str_replace('\n', "\n", $tf_prompt)); ?></textarea>
-    <button type="button" onclick="document.getElementById('wp_quiz_plugin_tf_prompt_template').value='<?php echo esc_js(str_replace('\n', "\\n", $default_prompt)); ?>';" class="button-secondary"><?php _e('Use Default', 'wp_quiz_plugin'); ?></button>
-    <p class="description"><?php _e('Customize the prompt template for True/False questions.', 'wp_quiz_plugin'); ?></p>
+    <button type="button" onclick="document.getElementById('wp_quiz_plugin_tf_prompt_template').value='<?php echo esc_js(str_replace('\n', "\\n", $default_prompt)); ?>';" class="button-secondary"><?php _e('Use Default','wp-quiz-plugin'); ?></button>
+    <p class="description"><?php _e('Customize the prompt template for True/False questions.','wp-quiz-plugin'); ?></p>
     <?php
 }
 
@@ -1620,8 +1620,8 @@ function wp_quiz_plugin_text_prompt_template_callback() {
     // Output the textarea with proper escaping
     ?>
     <textarea id="wp_quiz_plugin_text_prompt_template" name="wp_quiz_plugin_text_prompt_template" class="large-text" rows="5"><?php echo esc_textarea(str_replace('\n', "\n", $text_prompt)); ?></textarea>
-    <button type="button" onclick="document.getElementById('wp_quiz_plugin_text_prompt_template').value='<?php echo esc_js(str_replace('\n', "\\n", $default_prompt)); ?>';" class="button-secondary"><?php _e('Use Default', 'wp_quiz_plugin'); ?></button>
-    <p class="description"><?php _e('Customize the prompt template for Text answer questions.', 'wp_quiz_plugin'); ?></p>
+    <button type="button" onclick="document.getElementById('wp_quiz_plugin_text_prompt_template').value='<?php echo esc_js(str_replace('\n', "\\n", $default_prompt)); ?>';" class="button-secondary"><?php _e('Use Default','wp-quiz-plugin'); ?></button>
+    <p class="description"><?php _e('Customize the prompt template for Text answer questions.','wp-quiz-plugin'); ?></p>
     <?php
 }
 

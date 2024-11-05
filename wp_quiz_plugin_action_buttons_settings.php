@@ -3,7 +3,7 @@
 function wp_quiz_plugin_action_buttons_settings_init() {
     // Register settings with default values
     register_setting('wp_quiz_plugin_action_buttons_settings', 'wp_quiz_plugin_open_tab_button_label', [
-        'default' => __('Open in New Tab', 'wp_quiz_plugin')
+        'default' => __('Open in New Tab','wp-quiz-plugin')
     ]);
     register_setting('wp_quiz_plugin_action_buttons_settings', 'wp_quiz_plugin_open_tab_button_color', [
         'default' => '#007BFF'
@@ -14,7 +14,7 @@ function wp_quiz_plugin_action_buttons_settings_init() {
 
     // Second Heading: Copy URL
     register_setting('wp_quiz_plugin_action_buttons_settings', 'wp_quiz_plugin_copy_url_button_label', [
-        'default' => __('Copy URL to Clipboard', 'wp_quiz_plugin')
+        'default' => __('Copy URL to Clipboard','wp-quiz-plugin')
     ]);
     register_setting('wp_quiz_plugin_action_buttons_settings', 'wp_quiz_plugin_copy_url_button_color', [
         'default' => '#007BFF'
@@ -25,7 +25,7 @@ function wp_quiz_plugin_action_buttons_settings_init() {
 
     // Third Heading: Share Via Email
     register_setting('wp_quiz_plugin_action_buttons_settings', 'wp_quiz_plugin_share_email_button_label', [
-        'default' => __('Share via Email', 'wp_quiz_plugin')
+        'default' => __('Share via Email','wp-quiz-plugin')
     ]);
     register_setting('wp_quiz_plugin_action_buttons_settings', 'wp_quiz_plugin_share_email_button_color', [
         'default' => '#007BFF'
@@ -34,10 +34,10 @@ function wp_quiz_plugin_action_buttons_settings_init() {
         'default' => '16px'
     ]);
     register_setting('wp_quiz_plugin_action_buttons_settings', 'wp_quiz_plugin_share_email_subject', [
-        'default' => __('New Quiz Assessment Available', 'wp_quiz_plugin')
+        'default' => __('New Quiz Assessment Available','wp-quiz-plugin')
     ]);
     register_setting('wp_quiz_plugin_action_buttons_settings', 'wp_quiz_plugin_share_email_body', [
-        'default' => __('Hello,\n\nPlease attempt this quiz on time. Here is the quiz link:\n\n[URL]\n\nBest regards,', 'wp_quiz_plugin')
+        'default' => __('Hello,\n\nPlease attempt this quiz on time. Here is the quiz link:\n\n[URL]\n\nBest regards,','wp-quiz-plugin')
     ]);
 
     // Add sections and fields
@@ -65,7 +65,7 @@ function wp_quiz_plugin_action_buttons_settings_init() {
     // Add Reset to Default Button
     add_settings_field(
         'wp_quiz_plugin_reset_defaults_field',
-        __('Reset to Default', 'wp_quiz_plugin'),
+        __('Reset to Default','wp-quiz-plugin'),
         'wp_quiz_plugin_reset_defaults_callback',
         'wp_quiz_plugin_action_buttons',
         'wp_quiz_plugin_share_email_section'
@@ -113,10 +113,10 @@ function wp_quiz_plugin_textarea_callback($args) {
     ">';
     echo '<span style="font-size: 18px; font-weight: bold; color: #3b82f6; margin-right: 12px;">&#9432;</span>'; // Information icon
     echo '<div>';
-    echo '<strong>' . __('Note:', 'wp_quiz_plugin') . '</strong> ' . __('Use [URL] to insert the active quiz URL in your email. For example:', 'wp_quiz_plugin') . '<br><br>' .
-         __('Hello,', 'wp_quiz_plugin') . '<br>' .
-         __('Please attempt this quiz on time: [URL]', 'wp_quiz_plugin') . '<br>' .
-         __('Best regards,', 'wp_quiz_plugin');
+    echo '<strong>' . __('Note:','wp-quiz-plugin') . '</strong> ' . __('Use [URL] to insert the active quiz URL in your email. For example:','wp-quiz-plugin') . '<br><br>' .
+         __('Hello,','wp-quiz-plugin') . '<br>' .
+         __('Please attempt this quiz on time: [URL]','wp-quiz-plugin') . '<br>' .
+         __('Best regards,','wp-quiz-plugin');
     echo '</div>';
     echo '</div>';
 
@@ -127,24 +127,24 @@ function wp_quiz_plugin_textarea_callback($args) {
 
 // Callback function for Reset to Default button
 function wp_quiz_plugin_reset_defaults_callback() {
-    echo '<button type="button" class="button-secondary" id="wp_quiz_plugin_reset_defaults">' . __('Reset to Default', 'wp_quiz_plugin') . '</button>';
+    echo '<button type="button" class="button-secondary" id="wp_quiz_plugin_reset_defaults">' . __('Reset to Default','wp-quiz-plugin') . '</button>';
     ?>
     <script>
     jQuery(document).ready(function($) {
         $('#wp_quiz_plugin_reset_defaults').on('click', function() {
-            if (confirm("<?php _e('Are you sure you want to reset to default settings?', 'wp_quiz_plugin'); ?>")) {
+            if (confirm("<?php _e('Are you sure you want to reset to default settings?','wp-quiz-plugin'); ?>")) {
                 var defaultValues = {
-                    'wp_quiz_plugin_open_tab_button_label': '<?php echo __('Open in New Tab', 'wp_quiz_plugin'); ?>',
+                    'wp_quiz_plugin_open_tab_button_label': '<?php echo __('Open in New Tab','wp-quiz-plugin'); ?>',
                     'wp_quiz_plugin_open_tab_button_color': '#007BFF',
                     'wp_quiz_plugin_open_tab_button_font_size': '16',
-                    'wp_quiz_plugin_copy_url_button_label': '<?php echo __('Copy URL to Clipboard', 'wp_quiz_plugin'); ?>',
+                    'wp_quiz_plugin_copy_url_button_label': '<?php echo __('Copy URL to Clipboard','wp-quiz-plugin'); ?>',
                     'wp_quiz_plugin_copy_url_button_color': '#007BFF',
                     'wp_quiz_plugin_copy_url_button_font_size': '16',
-                    'wp_quiz_plugin_share_email_button_label': '<?php echo __('Share via Email', 'wp_quiz_plugin'); ?>',
+                    'wp_quiz_plugin_share_email_button_label': '<?php echo __('Share via Email','wp-quiz-plugin'); ?>',
                     'wp_quiz_plugin_share_email_button_color': '#007BFF',
                     'wp_quiz_plugin_share_email_button_font_size': '16',
-                    'wp_quiz_plugin_share_email_subject': '<?php echo __('New Quiz Assessment Available', 'wp_quiz_plugin'); ?>',
-                    'wp_quiz_plugin_share_email_body': '<?php echo __('Hello,\n\nPlease attempt this quiz on time. Here is the quiz link:\n\n[URL]\n\nBest regards,', 'wp_quiz_plugin'); ?>'
+                    'wp_quiz_plugin_share_email_subject': '<?php echo __('New Quiz Assessment Available','wp-quiz-plugin'); ?>',
+                    'wp_quiz_plugin_share_email_body': '<?php echo __('Hello,\n\nPlease attempt this quiz on time. Here is the quiz link:\n\n[URL]\n\nBest regards,','wp-quiz-plugin'); ?>'
                 };
 
                 // Reset each field to its default value in the input fields only
