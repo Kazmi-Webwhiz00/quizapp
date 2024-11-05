@@ -2,7 +2,7 @@
 /*
 Plugin Name: WP Quiz Plugin
 Description: A WordPress plugin to create and manage quizzes with questions and user submissions.
-Version: 1.8.0
+Version: 1.8.2
 Author: Kazmi Webwhiz
 Author URI: https://kazmiwebwhiz.com
 Text Domain: wp-quiz-plugin
@@ -23,6 +23,8 @@ include_once plugin_dir_path(__FILE__) . 'kw-quiz-post-and-taxonomies.php';  // 
 include_once plugin_dir_path(__FILE__) . 'kw-questions-metabox-header.php';  // Include Submissions page file
 include_once plugin_dir_path(__FILE__) . 'utils/short-code-helpers.php'; 
 include_once plugin_dir_path(__FILE__) . 'utils/constants.php'; 
+include_once plugin_dir_path(__FILE__) . 'kw-quiz-features-buttons.php';
+
 // Enqueue Plugin Styles for Admin
 function wp_quiz_plugin_enqueue_styles() {
     $stylesheets = array(
@@ -104,14 +106,14 @@ function create_quiz_questions_table() {
 
     // SQL statement for creating the custom table with all fields
     $sql = "CREATE TABLE $table_name (
-        QuesID BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,  -- Primary Key
-        QuizID BIGINT(20) UNSIGNED NOT NULL,                 -- Foreign Key to Quizzes Table
-        Title VARCHAR(255) NOT NULL,                         -- Title of the Question
-        TitleImage VARCHAR(255),                             -- URL of the image for the question title
-        Answer LONGTEXT NOT NULL,                            -- JSON storing answer details
-        QuestionType ENUM('MCQ', 'T/F', 'Text') NOT NULL,    -- Type of Question (MCQ, T/F, Text)
-        `Order` INT(11) DEFAULT 0,                           -- Order of question display
-        PRIMARY KEY (QuesID)                                 -- Define Primary Key
+        QuesID BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+        QuizID BIGINT(20) UNSIGNED NOT NULL,
+        Title VARCHAR(255) NOT NULL,
+        TitleImage VARCHAR(255),
+        Answer LONGTEXT NOT NULL,
+        QuestionType ENUM('MCQ', 'T/F', 'Text') NOT NULL,
+        `Order` INT(11) DEFAULT 0,
+        PRIMARY KEY (QuesID)
     ) $charset_collate;";
 
     require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
