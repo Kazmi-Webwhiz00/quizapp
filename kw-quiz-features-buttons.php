@@ -25,16 +25,16 @@ function quizzes_meta_box_callback($post) {
         ?>
         <div id="quizzes_action_buttons_container">
             <!-- Button to open post in a new tab -->
-            <button type="button" onclick="window.open('<?php echo esc_url($post_url); ?>', '_blank')">Open in New Tab</button>
+            <button class ="kw_button kw_button-primary" type="button" onclick="window.open('<?php echo esc_url($post_url); ?>', '_blank')">Open in New Tab</button>
 
             <!-- Hidden input field for URL copying -->
             <input id="copyable-url" type="text" value="<?php echo esc_url($post_url); ?>" readonly style="position:absolute; left:-9999px;">
             
             <!-- Button to copy URL to clipboard -->
-            <button type="button" id="copy-url-button">Copy URL to Clipboard</button>
+            <button class ="kw_button kw_button-primary" type="button" id="copy-url-button">Copy URL to Clipboard</button>
 
             <!-- Button to open mailbox with default message -->
-            <button type="button" onclick="openMailClient('<?php echo esc_url($post_url); ?>')">Share via Email</button>
+            <button class ="kw_button kw_button-primary" type="button" onclick="openMailClient('<?php echo esc_url($post_url); ?>')">Share via Email</button>
 
             <!-- Div to show copy confirmation message -->
             <div id="quizzes_copy_message" style="display:none; color:green; margin-top:10px;">Copied to clipboard!</div>

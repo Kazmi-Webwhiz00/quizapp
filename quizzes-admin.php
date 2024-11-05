@@ -6,6 +6,8 @@ if (!defined('ABSPATH')) exit;
 
 include_once plugin_dir_path(__FILE__) . 'kw-quiz-shortcode-settings.php';
 include_once plugin_dir_path(__FILE__) . './custom-meta-boxes/quiz_seo_text_admin_settings.php';
+// Include the Action Buttons settings file
+include_once plugin_dir_path(__FILE__) . 'wp_quiz_plugin_action_buttons_settings.php';
 
 
 function wp_quiz_plugin_enqueue_admin_scripts($hook_suffix) {
@@ -51,6 +53,8 @@ function wp_quiz_plugin_render_quizzes_settings_page() { ?>
             <a href="#pdf-strings-text-settings" class="nav-tab"><?php esc_html_e('PDF Strings Text', 'wp_quiz_plugin'); ?></a> 
             <a href="#pdf-style-settings" class="nav-tab"><?php esc_html_e('PDF Style Settings', 'wp_quiz_plugin'); ?></a> 
             <a href="#kw-quiz-shortcode-settings" class="nav-tab"><?php esc_html_e('Shortcode Settings', 'wp_quiz_plugin'); ?></a> 
+            <a href="#action-buttons-settings" class="nav-tab"><?php esc_html_e('Action Buttons Settings', 'wp_quiz_plugin'); ?></a> <!-- New tab -->
+
         </h2>
 
         <!-- General Settings Tab Content -->
@@ -129,6 +133,18 @@ function wp_quiz_plugin_render_quizzes_settings_page() { ?>
                 ?>
             </form>
         </div>
+
+        <!-- Action Buttons Settings -->
+        <div id="action-buttons-settings" class="tab-content" style="display: none;">
+            <form method="post" action="options.php">
+                <?php 
+                settings_fields('wp_quiz_plugin_action_buttons_settings');  // New settings group
+                do_settings_sections('wp_quiz_plugin_action_buttons');      // New settings page identifier
+                submit_button(); 
+                ?>
+            </form>
+        </div>
+
 
 
     </div>
