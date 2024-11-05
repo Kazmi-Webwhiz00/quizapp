@@ -106,14 +106,14 @@ function create_quiz_questions_table() {
 
     // SQL statement for creating the custom table with all fields
     $sql = "CREATE TABLE $table_name (
-        QuesID BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,  -- Primary Key
-        QuizID BIGINT(20) UNSIGNED NOT NULL,                 -- Foreign Key to Quizzes Table
-        Title VARCHAR(255) NOT NULL,                         -- Title of the Question
-        TitleImage VARCHAR(255),                             -- URL of the image for the question title
-        Answer LONGTEXT NOT NULL,                            -- JSON storing answer details
-        QuestionType ENUM('MCQ', 'T/F', 'Text') NOT NULL,    -- Type of Question (MCQ, T/F, Text)
-        `Order` INT(11) DEFAULT 0,                           -- Order of question display
-        PRIMARY KEY (QuesID)                                 -- Define Primary Key
+        QuesID BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+        QuizID BIGINT(20) UNSIGNED NOT NULL,
+        Title VARCHAR(255) NOT NULL,
+        TitleImage VARCHAR(255),
+        Answer LONGTEXT NOT NULL,
+        QuestionType ENUM('MCQ', 'T/F', 'Text') NOT NULL,
+        `Order` INT(11) DEFAULT 0,
+        PRIMARY KEY (QuesID)
     ) $charset_collate;";
 
     require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
