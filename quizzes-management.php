@@ -2,7 +2,7 @@
 /*
 Plugin Name: WP Quiz Plugin
 Description: A WordPress plugin to create and manage quizzes with questions and user submissions.
-Version: 1.8.0
+Version: 1.8.1
 Author: Kazmi Webwhiz
 Author URI: https://kazmiwebwhiz.com
 Text Domain: wp-quiz-plugin
@@ -23,6 +23,8 @@ include_once plugin_dir_path(__FILE__) . 'kw-quiz-post-and-taxonomies.php';  // 
 include_once plugin_dir_path(__FILE__) . 'kw-questions-metabox-header.php';  // Include Submissions page file
 include_once plugin_dir_path(__FILE__) . 'utils/short-code-helpers.php'; 
 include_once plugin_dir_path(__FILE__) . 'utils/constants.php'; 
+include_once plugin_dir_path(__FILE__) . 'kw-quiz-features-buttons.php';
+
 // Enqueue Plugin Styles for Admin
 function wp_quiz_plugin_enqueue_styles() {
     $stylesheets = array(
