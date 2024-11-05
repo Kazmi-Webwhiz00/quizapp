@@ -458,69 +458,99 @@ function save_quiz_description_meta_box($post_id) {
 add_action('save_post', 'save_quiz_description_meta_box');
 
 
-// Hook to prevent saving if no taxonomy is selected
-function wp_quiz_plugin_require_all_taxonomy_selection($post_id) {
-    // Verify that we're not doing an autosave, user has the right permissions, and it's for the 'quizzes' post type
-    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
-        return;
+
+// Hook to modify post data before saving
+function wp_quiz_plugin_validate_taxonomies($data, $postarr) {
+    // Only apply to 'quizzes' post type
+    if ($data['post_type'] !== 'quizzes') {
+        return $data;
     }
 
-    if (!current_user_can('edit_post', $post_id)) {
-        return;
-    }
-    
-    if (get_post_type($post_id) !== 'quizzes') {
-        return;
+    // Verify user capabilities
+    if (!current_user_can('edit_post', $postarr['ID'])) {
+        return $data;
     }
 
-    // Get selected terms for each taxonomy
-    $selected_school = wp_get_post_terms($post_id, 'quiz_category', array('parent' => 0)); // Top-level (School)
-    
-    // Initialize error message variable
+    // Skip validation if the post is being deleted or auto-drafted
+    if (in_array($data['post_status'], array('trash', 'auto-draft', 'inherit'), true)) {
+        return $data;
+    }
+
+    // Also, skip validation if the current action is 'trash', 'delete', or 'untrash'
+    if (isset($_REQUEST['action']) && in_array($_REQUEST['action'], array('trash', 'delete', 'untrash'), true)) {
+        return $data;
+    }
+
+    // **Retrieve 'quiz_listing_visibility_status' Meta Value**
+    $quiz_visibility = '';
+
+    // Attempt to get the value from $postarr['meta_input']
+    if (isset($postarr['meta_input']['quiz_listing_visibility_status'])) {
+        $quiz_visibility = sanitize_text_field($postarr['meta_input']['quiz_listing_visibility_status']);
+    } elseif (isset($_POST['quiz_visibility'])) {
+        // If not in meta_input, try to get it from $_POST
+        $quiz_visibility = sanitize_text_field($_POST['quiz_visibility']);
+    } else {
+        // For existing posts, retrieve the current meta value
+        $post_id = isset($postarr['ID']) ? intval($postarr['ID']) : 0;
+        if ($post_id) {
+            $quiz_visibility = get_post_meta($post_id, 'quiz_listing_visibility_status', true);
+        }
+    }
+
+    // If 'quiz_visibility' is 'private', skip validation
+    if ($quiz_visibility === 'private') {
+        return $data;
+    }
+
+    // Initialize error messages array
     $error_messages = array();
 
-    $quiz_listing_visibility_status = get_post_meta($post_id, 'quiz_listing_visibility_status', true);
+    // **Retrieve Selected Terms from $_POST**
+    $selected_school    = isset($_POST['selected_school']) ? intval($_POST['selected_school']) : 0;
+    $selected_class     = isset($_POST['selected_class']) ? intval($_POST['selected_class']) : 0;
+    $selected_subject   = isset($_POST['selected_subject']) ? intval($_POST['selected_subject']) : 0;
 
+    // **Begin Validation Logic**
 
-    if(!($quiz_listing_visibility_status === 'private')){
-    // If no school is selected, add error
-        if (empty($selected_school)) {
-            $error_messages[] = __('Please select School.', 'wp-quiz-plugin');
-        } else {
-            $school_id = $selected_school[0]->term_id; // Get the selected school's ID
+    // Check if a School is selected
+    if (empty($selected_school)) {
+        $error_messages[] = __('Please select a School.', 'wp-quiz-plugin');
+    } else {
+        // Get Classes under the selected School
+        $class_terms = get_terms(array(
+            'taxonomy'   => 'quiz_category',
+            'parent'     => $selected_school,
+            'hide_empty' => false,
+        ));
 
-            // Check if the selected school has any direct child classes
-            $class_terms = get_terms(array(
-                'taxonomy' => 'quiz_category',
-                'parent' => $school_id,
-                'hide_empty' => false,
-            ));
-
-            // If the school has no classes, allow saving without further checks
-            if (!empty($class_terms)) {
-                // If classes exist, get selected class
-                $selected_class = wp_get_post_terms($post_id, 'quiz_category', array('parent' => $school_id)); // Classes under selected school
-                
-                // Check if a class is selected
-                if (empty($selected_class)) {
-                    $error_messages[] = __('Please select all required categories.', 'wp-quiz-plugin');
+        if (!is_wp_error($class_terms) && !empty($class_terms)) {
+            // If Classes exist under the School, ensure a Class is selected
+            if (empty($selected_class)) {
+                $error_messages[] = __('Please select a Class.', 'wp-quiz-plugin');
+            } else {
+                // Verify that the selected Class is indeed a child of the selected School
+                $class_ids = wp_list_pluck($class_terms, 'term_id');
+                if (!in_array($selected_class, $class_ids, true)) {
+                    $error_messages[] = __('Selected Class is invalid for the chosen School.', 'wp-quiz-plugin');
                 } else {
-                    $class_id = $selected_class[0]->term_id; // Get the selected class's ID
-
-                    // Check for subjects under the selected class
+                    // Get Subjects under the selected Class
                     $subject_terms = get_terms(array(
-                        'taxonomy' => 'quiz_category',
-                        'parent' => $class_id,
+                        'taxonomy'   => 'quiz_category',
+                        'parent'     => $selected_class,
                         'hide_empty' => false,
                     ));
 
-                    // If subjects exist, check if a subject is selected
-                    if (!empty($subject_terms)) {
-                        $selected_subject = wp_get_post_terms($post_id, 'quiz_category', array('parent' => $class_id)); // Subjects under selected class
-                        
-                        // Check if a subject is selected
+                    if (!is_wp_error($subject_terms) && !empty($subject_terms)) {
+                        // If Subjects exist under the Class, ensure a Subject is selected
                         if (empty($selected_subject)) {
-                            $error_messages[] = __('Please select all required categories.', 'wp-quiz-plugin');
+                            $error_messages[] = __('Please select a Subject.', 'wp-quiz-plugin');
+                        } else {
+                            // Verify that the selected Subject is indeed a child of the selected Class
+                            $subject_ids = wp_list_pluck($subject_terms, 'term_id');
+                            if (!in_array($selected_subject, $subject_ids, true)) {
+                                $error_messages[] = __('Selected Subject is invalid for the chosen Class.', 'wp-quiz-plugin');
+                            }
                         }
                     }
                 }
@@ -528,25 +558,48 @@ function wp_quiz_plugin_require_all_taxonomy_selection($post_id) {
         }
     }
 
-    // If there are any error messages, store them in the URL for the redirect
+    // **End Validation Logic**
+
+    // If there are errors, handle accordingly
     if (!empty($error_messages)) {
-        add_filter('redirect_post_location', function($location) use ($error_messages) {
-            return add_query_arg('taxonomy_error', urlencode(implode(' ', $error_messages)), $location);
-        }, 99);
+        // Only change the post status if attempting to publish
+        if ($data['post_status'] === 'publish') {
+            $data['post_status'] = 'draft';
+        }
+
+        // Store error messages in a transient for display
+        set_transient('wp_quiz_plugin_errors_' . $postarr['ID'], $error_messages, 30);
+    }
+
+    return $data;
+}
+add_filter('wp_insert_post_data', 'wp_quiz_plugin_validate_taxonomies', 10, 2);
+
+// Function to display the admin notice with error messages
+function wp_quiz_plugin_display_errors() {
+    $screen = get_current_screen();
+
+    // Only display on the 'quizzes' post type
+    if ($screen && $screen->post_type === 'quizzes') {
+        global $post;
+        $post_id = isset($post->ID) ? $post->ID : 0;
+
+        if ($post_id) {
+            $error_messages = get_transient('wp_quiz_plugin_errors_' . $post_id);
+
+            if ($error_messages) {
+                delete_transient('wp_quiz_plugin_errors_' . $post_id);
+
+                echo '<div class="notice notice-error is-dismissible">';
+                foreach ($error_messages as $message) {
+                    echo '<p>' . esc_html($message) . '</p>';
+                }
+                echo '</div>';
+            }
+        }
     }
 }
-add_action('save_post', 'wp_quiz_plugin_require_all_taxonomy_selection');
-
- add_action('save_post', 'wp_quiz_plugin_require_all_taxonomy_selection');
-
-// Function to display the alert message on the post edit screen if there are missing taxonomies
-function wp_quiz_plugin_taxonomy_error_notice() {
-    if (isset($_GET['taxonomy_error'])) {
-        $missing_taxonomies = esc_html($_GET['taxonomy_error']);
-        echo "<script type='text/javascript'>alert('$missing_taxonomies');</script>";
-    }
-}
-add_action('admin_notices', 'wp_quiz_plugin_taxonomy_error_notice');
+add_action('admin_notices', 'wp_quiz_plugin_display_errors');
 
 // Limit non-admin users to see only their own quizzes in the admin area
 function wp_quiz_plugin_filter_quizzes_for_non_admins($query) {
