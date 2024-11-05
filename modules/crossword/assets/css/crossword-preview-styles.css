@@ -22,3 +22,43 @@
 .empty-cell {
     background-color: #fff;
 }
+
+.crossword-table {
+    border-collapse: collapse;
+}
+
+.crossword-table td {
+    width: 30px;
+    height: 30px;
+    border: 1px solid #000;
+    text-align: center;
+    vertical-align: middle;
+    position: relative;
+    min-width: 30px;
+}
+
+.filled-cell {
+    background-color: #333333;
+    color: white;
+}
+
+.empty-cell {
+    background-color: #eeeeee;
+}
+
+.clue-number {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    font-size: 10px;
+}
+
+.letter {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.clue-image {
+    max-width: 100px;
+    margin-top: 5px;
+}

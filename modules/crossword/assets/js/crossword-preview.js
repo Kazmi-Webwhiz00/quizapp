@@ -1,21 +1,33 @@
 jQuery(document).ready(function ($) {
     function generateCrosswordGrid(container) {
-        // Fetch words from the input fields
-        let words = [];
+        // Fetch words, clues, and clue images from the input fields
+        let wordsData = [];
         $('.crossword-word-clue').each(function () {
             const index = $(this).data('index');
             const word = $(`input[name="crossword_words[${index}][word]"]`).val();
+            const clue = $(`input[name="crossword_words[${index}][clue]"]`).val();
+            const image = $(`input[name="crossword_words[${index}][image]"]`).val(); // Assuming image URL or path
 
             if (word) {
-                words.push(word.toUpperCase());
+                wordsData.push({
+                    word: word.toUpperCase(),
+                    clue: clue || '',
+                    image: image || '',
+                });
             }
         });
 
+        if (wordsData.length === 0) {
+            $(container).empty().append('<p>Please add some words to generate the crossword.</p>');
+            $('#clues-container').empty();
+            return;
+        }
+
         // Sort words by length in descending order
-        words.sort((a, b) => b.length - a.length);
+        wordsData.sort((a, b) => b.word.length - a.word.length);
 
         // Initialize grid size
-        const gridSize = 15; // Adjust as needed
+        const gridSize = 20; // Increased grid size
         let grid = [];
         for (let i = 0; i < gridSize; i++) {
             grid[i] = new Array(gridSize).fill(null);
@@ -28,10 +40,13 @@ jQuery(document).ready(function ($) {
         const ACROSS = 'across';
         const DOWN = 'down';
 
+        // Initialize clue numbering
+        let clueNumber = 1;
+
         // Function to check if a word can be placed at the given position and direction
         function canPlaceWord(word, x, y, direction) {
             if (direction === ACROSS) {
-                if (x < 0 || x + word.length > gridSize) return false;
+                if (x < 0 || x + word.length > gridSize || y < 0 || y >= gridSize) return false;
                 for (let i = 0; i < word.length; i++) {
                     const cell = grid[y][x + i];
                     if (cell && cell.letter !== word[i]) {
@@ -45,7 +60,7 @@ jQuery(document).ready(function ($) {
                     }
                 }
             } else if (direction === DOWN) {
-                if (y < 0 || y + word.length > gridSize) return false;
+                if (y < 0 || y + word.length > gridSize || x < 0 || x >= gridSize) return false;
                 for (let i = 0; i < word.length; i++) {
                     const cell = grid[y + i][x];
                     if (cell && cell.letter !== word[i]) {
@@ -63,8 +78,12 @@ jQuery(document).ready(function ($) {
         }
 
         // Function to place a word on the grid
-        function placeWord(word, x, y, direction) {
-            const wordObj = { word, x, y, direction };
+        function placeWord(wordObj, x, y, direction) {
+            const { word } = wordObj;
+            wordObj.x = x;
+            wordObj.y = y;
+            wordObj.direction = direction;
+            wordObj.clueNumber = clueNumber++;
             placedWords.push(wordObj);
 
             if (direction === ACROSS) {
@@ -138,10 +157,12 @@ jQuery(document).ready(function ($) {
                                 let x, y, direction;
 
                                 if (placedWord.direction === ACROSS) {
+                                    // Try placing word vertically
                                     direction = DOWN;
                                     x = placedWord.x + j;
                                     y = placedWord.y - i;
                                 } else {
+                                    // Try placing word horizontally
                                     direction = ACROSS;
                                     x = placedWord.x - i;
                                     y = placedWord.y + j;
@@ -160,28 +181,43 @@ jQuery(document).ready(function ($) {
 
         // Recursive function to try placing words
         function placeWords(index) {
-            if (index >= words.length) {
+            if (index >= wordsData.length) {
                 return true; // All words placed
             }
 
-            const word = words[index];
-            const positions = findPositions(word);
+            const wordObj = wordsData[index];
+            const positions = findPositions(wordObj.word);
+
+            // Shuffle positions to add randomness
+            positions.sort(() => Math.random() - 0.5);
 
             for (let pos of positions) {
-                placeWord(word, pos.x, pos.y, pos.direction);
+                placeWord(wordObj, pos.x, pos.y, pos.direction);
                 if (placeWords(index + 1)) {
                     return true;
                 }
-                removeWord(placedWords[placedWords.length - 1]);
+                removeWord(wordObj);
             }
-            return false; // Unable to place word
+
+            return false; // Unable to place word at any position
         }
 
         // Start placing words
         const success = placeWords(0);
 
+        // If not all words could be placed, collect unplaced words
+        let unplacedWords = [];
         if (!success) {
-            console.warn("Unable to place all words on the grid.");
+            unplacedWords = wordsData.slice(placedWords.length).map(w => w.word);
+        }
+
+        // If unplaced words exist, display a message
+        if (unplacedWords.length > 0) {
+            const unplacedList = unplacedWords.join(', ');
+            const message = `Keep adding new words! The following words can't be included in the crossword puzzle because they do not have enough letters in common with other words: ${unplacedList}`;
+            $('#error-message').text(message).show();
+        } else {
+            $('#error-message').hide();
         }
 
         // Render the grid in the container
@@ -192,8 +228,15 @@ jQuery(document).ready(function ($) {
                 const cell = grid[y][x];
                 const tableCell = $('<td></td>');
                 if (cell) {
-                    tableCell.text(cell.letter);
                     tableCell.addClass('filled-cell');
+                    if (
+                        (cell.across && cell.across.x === x && cell.across.y === y) ||
+                        (cell.down && cell.down.x === x && cell.down.y === y)
+                    ) {
+                        const clueNum = cell.across?.clueNumber || cell.down?.clueNumber;
+                        tableCell.append(`<span class="clue-number">${clueNum}</span>`);
+                    }
+                    tableCell.append(`<span class="letter">${cell.letter}</span>`);
                 } else {
                     tableCell.addClass('empty-cell');
                 }
@@ -203,18 +246,34 @@ jQuery(document).ready(function ($) {
         }
 
         $(container).empty().append(table);
+
+        // Display clues with optional images
+        const acrossClues = $('<ul></ul>');
+        const downClues = $('<ul></ul>');
+        placedWords.forEach((wordObj) => {
+            const clueItem = $('<li></li>');
+            clueItem.append(`<strong>${wordObj.clueNumber}.</strong> ${wordObj.clue}`);
+            if (wordObj.image) {
+                clueItem.append(`<br><img src="${wordObj.image}" alt="Clue image" class="clue-image">`);
+            }
+            if (wordObj.direction === ACROSS) {
+                acrossClues.append(clueItem);
+            } else {
+                downClues.append(clueItem);
+            }
+        });
+
+        $('#clues-container').empty();
+        $('#clues-container').append('<h3>Across</h3>');
+        $('#clues-container').append(acrossClues);
+        $('#clues-container').append('<h3>Down</h3>');
+        $('#clues-container').append(downClues);
     }
 
     // Function to show/hide crossword answers based on the checkbox state
     function toggleAnswers() {
         const showAnswers = $('#toggle-answers').is(':checked');
-        $('.crossword-table td.filled-cell').each(function () {
-            if (showAnswers) {
-                $(this).css('color', '#000');
-            } else {
-                $(this).css('color', 'transparent');
-            }
-        });
+        $('.letter').css('color', showAnswers ? 'white' : 'transparent');
     }
 
     // Update grid when inputs change
@@ -232,6 +291,12 @@ jQuery(document).ready(function ($) {
             generateCrosswordGrid('#crossword-grid');
             toggleAnswers();
         }, 100);
+    });
+
+    // Shuffle button functionality
+    $('#shuffle-button').on('click', function () {
+        generateCrosswordGrid('#crossword-grid');
+        toggleAnswers();
     });
 
     // Trigger grid generation and set the initial visibility when the page loads

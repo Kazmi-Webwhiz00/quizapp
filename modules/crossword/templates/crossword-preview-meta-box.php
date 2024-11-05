@@ -7,13 +7,19 @@ if (empty($words_clues) || !is_array($words_clues)) {
 }
 ?>
 
-<div class="crossword-preview-container">
-    <h2><?php echo esc_html(get_the_title($post->ID)); ?></h2>
-    <div>
-        <input type="checkbox" id="toggle-answers" name="toggle-answers" />
-        <label for="toggle-answers">Show Answers</label>
-    </div>
-    <div id="crossword-grid" class="crossword-grid">
-        <!-- The crossword grid will be rendered here -->
-    </div>
-</div>
+<!-- Error Message Display -->
+<div id="error-message" style="display: none; color: red;"></div>
+
+<!-- Crossword Grid Container -->
+<div id="crossword-grid"></div>
+
+<!-- Clues Container -->
+<div id="clues-container"></div>
+
+<!-- Controls -->
+<label>
+    <input type="checkbox" id="toggle-answers"> Show Answers
+</label>
+<button id="shuffle-button">Shuffle</button>
+
+
