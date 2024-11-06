@@ -19,6 +19,21 @@ function load_crossword_assets($hook) {
         // Enqueue the JS file with jQuery as a dependency
         wp_enqueue_script('crossword-script', plugin_dir_url(__FILE__) . 'assets/js/crossword-scripts.js', array('jquery'), null, true);
         wp_enqueue_script('generate-pdf-script', plugin_dir_url(__FILE__) . 'assets/js/crossword-pdfGenerator.js', array('jquery'), null, true);
+
+        wp_enqueue_script('crossword-generate-with-ai', plugin_dir_url(__FILE__) . 'assets/js/crossword-generate-with-ai.js', array('jquery'), null, true);
+
+        // Localize variables for use in JavaScript
+        wp_localize_script('crossword-generate-with-ai', 'wpQuizPlugin', array(
+            'apiKey' => get_option('wp_quiz_plugin_openai_api_key'),
+            'model' => get_option('wp_quiz_plugin_openai_model', 'gpt-4o-mini'),
+            'maxTokens' => esc_js(get_option('wp_quiz_plugin_openai_max_tokens', 50)),  // Cast to integer
+            'temperature' =>  esc_js(get_option('wp_quiz_plugin_openai_temperature', 0.5)),  // Cast to float
+            'ajaxUrl' => admin_url('admin-ajax.php'),
+            'generatingText' => __('Generating...', 'wp-quiz-plugin'),
+            'generateWithAiText' => __('Generate with AI', 'wp-quiz-plugin')
+        ));
+
+        wp_enqueue_script('sweetalert2', 'https://cdn.jsdelivr.net/npm/sweetalert2@11', array(), null, true);
 }
 
 add_action('admin_enqueue_scripts', 'load_crossword_assets');

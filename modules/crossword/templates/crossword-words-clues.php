@@ -48,9 +48,9 @@ if (empty($words_clues) || !is_array($words_clues)) {
      <!-- New left side section -->
      <div id="generate-ai-container">
         <h3>Generate with AI</h3>
-        <input type="text" id="ai-topic" placeholder="Topic" />
-        <input type="text" id="ai-age" placeholder="Age" />
-        <input type="number" id="ai-questions" placeholder="Number of questions" min="1" />
+        <input type="text" id="ai-topic" placeholder="Topic" required/>
+        <input type="text" id="ai-age" placeholder="Age" required/>
+        <input type="number" id="ai-questions" placeholder="Number of questions" min="1" required />
         <button type="button" id="generate-ai-button">Generate with AI</button>
     </div>
 
