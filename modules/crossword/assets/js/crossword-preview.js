@@ -281,21 +281,14 @@ jQuery(document).ready(function ($) {
     }
 
     // Update grid when inputs change
-    $(document).on('input', '.crossword-word-clue input', function () {
+    $(document).on('input', '.crossword-word-clue input[name^="crossword_words"][name$="[word]"]', function () {
         generateCrosswordGrid('#crossword-grid');
         toggleAnswers();
     });
-
+    
     // Update grid when the checkbox is toggled
     $('#toggle-answers').on('change', toggleAnswers);
 
-    // Update grid when a new word is added
-    $('#add-word-button').on('click', function () {
-        setTimeout(() => {
-            generateCrosswordGrid('#crossword-grid');
-            toggleAnswers();
-        }, 100);
-    });
 
     // Shuffle button functionality
     $('#shuffle-button').on('click', function () {
