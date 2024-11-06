@@ -1,17 +1,55 @@
 jQuery(document).ready(function ($) {
 
 
+    /**
+     * Generates the prompt content for the OpenAI API request.
+     * 
+     * @param {number} number - The number of words to generate.
+     * @param {string} topic - The topic for the crossword.
+     * @param {number} age - The age group of the user.
+     * @returns {string} - The complete prompt content.
+     */
     function generatePrompt(number, topic, age) {
-        const generationPrompt = `Generate a crossword with ${number} words on the topic "${topic}" for users aged ${age}.`;
-        const returnFormatPrompt = `Return only the JSON array immediately, with no additional text. Format as follows:
-    
-    [
-      { "word": "exampleWord1", "clue": "Example clue for word 1" },
-      { "word": "exampleWord2", "clue": "Example clue for word 2" },
-      ...
-    ]`;
+        // Retrieve existing words in the crossword to avoid duplicates
+        const existingWords = getCrosswordWordsList();
         
-        return `${generationPrompt} ${returnFormatPrompt}`;
+        // Context prompt to avoid duplicate words
+        const context = existingWords.length > 0 
+            ? `Avoid using the following words: ${existingWords.join(', ')}.`
+            : '';
+
+        // Main prompt to generate crossword words and clues
+        const generationPrompt = `
+        Generate a crossword with ${number} words on the topic "${topic}" suitable for users aged ${age}.`;
+
+        // Specify the response format explicitly
+        const returnFormatPrompt = `
+        Provide the output in the following JSON array format, with no additional text:
+        
+    [
+    { "word": "exampleWord1", "clue": "Example clue for word 1" },
+    { "word": "exampleWord2", "clue": "Example clue for word 2" },
+    ...
+    ]`;
+
+        // Combine all parts into the final prompt
+        return `${generationPrompt} ${context} ${returnFormatPrompt}`;
+    }
+
+    
+    function getCrosswordWordsList() {
+        let wordsList = [];
+    
+        $('.crossword-word-clue').each(function () {
+            const index = $(this).data('index');
+            const word = $(`input[name="crossword_words[${index}][word]"]`).val();
+    
+            if (word) {
+                wordsList.push(word.toUpperCase());
+            }
+        });
+    
+        return wordsList;
     }
     
     
@@ -47,6 +85,7 @@ jQuery(document).ready(function ($) {
             return;
         }
 
+        console.log(generatePrompt(number,topic,age));
         // Prepare data for OpenAI API request
         const data = {
             model: wpQuizPlugin.model,

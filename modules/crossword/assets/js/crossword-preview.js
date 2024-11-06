@@ -6,7 +6,7 @@ jQuery(document).ready(function ($) {
             const index = $(this).data('index');
             const word = $(`input[name="crossword_words[${index}][word]"]`).val();
             const clue = $(`input[name="crossword_words[${index}][clue]"]`).val();
-            const image = $(`input[name="crossword_words[${index}][image]"]`).val(); // Assuming image URL or path
+            const image = $(`input[name="crossword_words[${index}][image]"]`).val();
 
             if (word) {
                 wordsData.push({
