@@ -5,9 +5,6 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 
-// Include TCPDF library (adjust the path as needed)
-require_once(plugin_dir_path(__FILE__) . 'lib/tcpdf.php');
-
 // AJAX Handler to Download Quiz PDF (Questions Only)
 function kw_download_quiz_pdf_callback() {
 

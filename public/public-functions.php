@@ -71,8 +71,6 @@ function wp_quiz_load_question() {
 add_action('wp_ajax_load_question', 'wp_quiz_load_question');
 add_action('wp_ajax_nopriv_load_question', 'wp_quiz_load_question');
 
-
-
 // Include TCPDF library
 require_once(plugin_dir_path(__FILE__) . '../lib/tcpdf.php');
 

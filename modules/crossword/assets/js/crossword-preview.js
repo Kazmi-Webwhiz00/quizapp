@@ -26,8 +26,13 @@ jQuery(document).ready(function ($) {
         // Sort words by length in descending order
         wordsData.sort((a, b) => b.word.length - a.word.length);
 
-        // Initialize grid size
-        const gridSize = 20; // Increased grid size
+        // Calculate dynamic grid size based on words
+        const longestWordLength = wordsData[0].word.length;
+        const totalLetters = wordsData.reduce((sum, wordObj) => sum + wordObj.word.length, 0);
+        let gridSize = Math.max(longestWordLength + 5, Math.ceil(Math.sqrt(totalLetters)) + 5);
+        gridSize = Math.min(gridSize, 50); // Set a maximum grid size to prevent excessive size
+
+        // Initialize grid
         let grid = [];
         for (let i = 0; i < gridSize; i++) {
             grid[i] = new Array(gridSize).fill(null);
@@ -52,7 +57,6 @@ jQuery(document).ready(function ($) {
                     if (cell && cell.letter !== word[i]) {
                         return false;
                     }
-                    // Additional checks to ensure crossword rules are followed
                     // Check adjacent cells for conflicts
                     if (cell === null) {
                         if (y > 0 && grid[y - 1][x + i] && grid[y - 1][x + i].letter) return false;
@@ -66,7 +70,6 @@ jQuery(document).ready(function ($) {
                     if (cell && cell.letter !== word[i]) {
                         return false;
                     }
-                    // Additional checks to ensure crossword rules are followed
                     // Check adjacent cells for conflicts
                     if (cell === null) {
                         if (x > 0 && grid[y + i][x - 1] && grid[y + i][x - 1].letter) return false;
@@ -273,7 +276,7 @@ jQuery(document).ready(function ($) {
     // Function to show/hide crossword answers based on the checkbox state
     function toggleAnswers() {
         const showAnswers = $('#toggle-answers').is(':checked');
-        $('.letter').css('color', showAnswers ? 'white' : 'transparent');
+        $('.letter').css('color', showAnswers ? '#000' : 'transparent');
     }
 
     // Update grid when inputs change
@@ -287,6 +290,7 @@ jQuery(document).ready(function ($) {
 
     // Update grid when a new word is added
     $('#add-word-button').on('click', function () {
+        alert("testing working");
         setTimeout(() => {
             generateCrosswordGrid('#crossword-grid');
             toggleAnswers();
@@ -297,7 +301,7 @@ jQuery(document).ready(function ($) {
     $('#shuffle-button').on('click', function () {
         generateCrosswordGrid('#crossword-grid');
         toggleAnswers();
-    });
+    });    
 
     // Trigger grid generation and set the initial visibility when the page loads
     generateCrosswordGrid('#crossword-grid');

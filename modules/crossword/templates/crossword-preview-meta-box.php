@@ -6,20 +6,23 @@ if (empty($words_clues) || !is_array($words_clues)) {
     $words_clues = [];
 }
 ?>
-
+<div style="padding: 20px 5px;">
+<span id="shuffle-button" class="cross-word-primary-button">Shuffle</span>
+<span id="download-pdf-button" class="cross-word-primary-button">Download as PDF</span>
+</div>
 <!-- Error Message Display -->
 <div id="error-message" style="display: none; color: red;"></div>
 
-<!-- Crossword Grid Container -->
-<div id="crossword-grid"></div>
+<!-- Crossword Container -->
+<div id="crossword-container">
+    <!-- Crossword Grid Container -->
+    <div id="crossword-grid"></div>
 
-<!-- Clues Container -->
-<div id="clues-container"></div>
+    <!-- Clues Container -->
+    <div id="clues-container"></div>
+</div>
 
 <!-- Controls -->
 <label>
     <input type="checkbox" id="toggle-answers"> Show Answers
 </label>
-<button id="shuffle-button">Shuffle</button>
-
-

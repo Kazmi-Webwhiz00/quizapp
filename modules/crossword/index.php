@@ -5,6 +5,7 @@ include_once plugin_dir_path(__FILE__) . '/crossword-functions.php';
 include_once plugin_dir_path(__FILE__) . '/crossword-settings.php';
 include_once plugin_dir_path(__FILE__) . '/utils/crossword-helpers.php';
 include_once plugin_dir_path(__FILE__) . '/custom-post-type-registration.php';
+include_once plugin_dir_path(__FILE__) . '/crossword-download.php';
 
 
 function load_crossword_assets($hook) {
@@ -17,7 +18,7 @@ function load_crossword_assets($hook) {
         
         // Enqueue the JS file with jQuery as a dependency
         wp_enqueue_script('crossword-script', plugin_dir_url(__FILE__) . 'assets/js/crossword-scripts.js', array('jquery'), null, true);
-    
+        wp_enqueue_script('generate-pdf-script', plugin_dir_url(__FILE__) . 'assets/js/crossword-pdfGenerator.js', array('jquery'), null, true);
 }
 
 add_action('admin_enqueue_scripts', 'load_crossword_assets');
@@ -47,11 +48,9 @@ function crossword_enqueue_preview_assets($hook) {
 
             // Localize the script to pass the crossword data
             wp_localize_script(
-                'crossword-preview-script',
-                'crosswordData', // This will be the global JS object name
-                array(
-                    'wordsClues' => $words_clues
-                )
+                'generate-pdf-script',
+                'cross_ajax_obj',
+                array('ajax_url' => admin_url('admin-ajax.php'))
             );
         }
     }

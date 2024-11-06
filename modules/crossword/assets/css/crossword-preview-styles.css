@@ -1,27 +1,3 @@
-.crossword-table {
-    border-collapse: collapse;
-    width: 100%;
-    max-width: 400px; /* Adjust as needed */
-    margin-top: 20px;
-}
-
-.crossword-table td {
-    width: 30px;
-    height: 30px;
-    border: 1px solid #000;
-    text-align: center;
-    vertical-align: middle;
-    font-size: 14px;
-    font-weight: bold;
-}
-
-.filled-cell {
-    background-color: #9b4a4a;
-}
-
-.empty-cell {
-    background-color: #fff;
-}
 
 .crossword-table {
     border-collapse: collapse;
@@ -34,16 +10,14 @@
     text-align: center;
     vertical-align: middle;
     position: relative;
-    min-width: 30px;
 }
 
 .filled-cell {
-    background-color: #333333;
-    color: white;
+    background-color: #fff;
 }
 
 .empty-cell {
-    background-color: #eeeeee;
+    background-color: #000;
 }
 
 .clue-number {
@@ -61,4 +35,29 @@
 .clue-image {
     max-width: 100px;
     margin-top: 5px;
+}
+
+#clues-container {
+    margin-top: 20px;
+}
+
+#crossword-container {
+    width: 100%;
+}
+
+.cross-word-primary-button{
+    padding: 10px;
+    display: inline;
+    border-radius: 2px;
+    font-family: "Arial";
+    border: 0;
+    margin: 0 10px;
+    background: rgb(0, 68, 255);
+    font-size: 15px;    
+    line-height: 15px;
+    color: white;
+    width: auto;
+    height: auto;
+    box-sizing: content-box;
+    cursor: pointer;
 }
