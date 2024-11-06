@@ -1,4 +1,8 @@
 jQuery(document).ready(function ($) {
+    // Declare gridSize and grid at a higher scope so they are accessible in all functions
+    let gridSize;
+    let grid;
+
     function generateCrosswordGrid(container) {
         // Fetch words, clues, and clue images from the input fields
         let wordsData = [];
@@ -13,6 +17,7 @@ jQuery(document).ready(function ($) {
                     word: word.toUpperCase(),
                     clue: clue || '',
                     image: image || '',
+                    clueNumber: null, // Initialize clueNumber
                 });
             }
         });
@@ -29,11 +34,11 @@ jQuery(document).ready(function ($) {
         // Calculate dynamic grid size based on words
         const longestWordLength = wordsData[0].word.length;
         const totalLetters = wordsData.reduce((sum, wordObj) => sum + wordObj.word.length, 0);
-        let gridSize = Math.max(longestWordLength + 10, Math.ceil(Math.sqrt(totalLetters)) + 10);
+        gridSize = Math.max(longestWordLength + 10, Math.ceil(Math.sqrt(totalLetters)) + 10);
         gridSize = Math.min(gridSize, 100); // Set a maximum grid size to prevent excessive size
 
         // Initialize grid
-        let grid = [];
+        grid = [];
         for (let i = 0; i < gridSize; i++) {
             grid[i] = new Array(gridSize).fill(null);
         }
@@ -44,9 +49,6 @@ jQuery(document).ready(function ($) {
         // Directions
         const ACROSS = 'across';
         const DOWN = 'down';
-
-        // Initialize clue numbering
-        let clueNumber = 1;
 
         // Function to check if a word can be placed at the given position and direction
         function canPlaceWord(word, x, y, direction) {
@@ -86,13 +88,12 @@ jQuery(document).ready(function ($) {
             wordObj.x = x;
             wordObj.y = y;
             wordObj.direction = direction;
-            wordObj.clueNumber = clueNumber++;
             placedWords.push(wordObj);
 
             if (direction === ACROSS) {
                 for (let i = 0; i < word.length; i++) {
                     if (!grid[y][x + i]) {
-                        grid[y][x + i] = { letter: word[i], across: wordObj, down: null };
+                        grid[y][x + i] = { letter: word[i], across: wordObj, down: null, clueNumber: null };
                     } else {
                         grid[y][x + i].across = wordObj;
                     }
@@ -100,7 +101,7 @@ jQuery(document).ready(function ($) {
             } else if (direction === DOWN) {
                 for (let i = 0; i < word.length; i++) {
                     if (!grid[y + i][x]) {
-                        grid[y + i][x] = { letter: word[i], across: null, down: wordObj };
+                        grid[y + i][x] = { letter: word[i], across: null, down: wordObj, clueNumber: null };
                     } else {
                         grid[y + i][x].down = wordObj;
                     }
@@ -223,6 +224,9 @@ jQuery(document).ready(function ($) {
             $('#error-message').hide();
         }
 
+        // Assign clue numbers after all words have been placed
+        assignClueNumbers();
+
         // Render the grid in the container
         const table = $('<table class="crossword-table"></table>');
         for (let y = 0; y < gridSize; y++) {
@@ -232,12 +236,8 @@ jQuery(document).ready(function ($) {
                 const tableCell = $('<td></td>');
                 if (cell) {
                     tableCell.addClass('filled-cell');
-                    if (
-                        (cell.across && cell.across.x === x && cell.across.y === y) ||
-                        (cell.down && cell.down.x === x && cell.down.y === y)
-                    ) {
-                        const clueNum = cell.across?.clueNumber || cell.down?.clueNumber;
-                        tableCell.append(`<span class="clue-number">${clueNum}</span>`);
+                    if (cell.clueNumber && !tableCell.find('.clue-number').length) {
+                        tableCell.append(`<span class="clue-number">${cell.clueNumber}</span>`);
                     }
                     tableCell.append(`<span class="letter">${cell.letter}</span>`);
                 } else {
@@ -271,7 +271,50 @@ jQuery(document).ready(function ($) {
         $('#clues-container').append(acrossClues);
         $('#clues-container').append('<h3>Down</h3>');
         $('#clues-container').append(downClues);
-        crossword.updateHiddenFields();
+
+        // If you have a function to update hidden fields, make sure it's defined
+        if (typeof crossword !== 'undefined' && typeof crossword.updateHiddenFields === 'function') {
+            crossword.updateHiddenFields();
+        }
+    }
+
+    // Function to assign clue numbers based on grid positions
+    function assignClueNumbers() {
+        let clueNumber = 1;
+        for (let y = 0; y < gridSize; y++) {
+            for (let x = 0; x < gridSize; x++) {
+                const cell = grid[y][x];
+                if (cell && cell.letter && !cell.clueNumber) {
+                    let isStartOfWord = false;
+                    // Check for across word
+                    if (
+                        cell.across &&
+                        cell.across.x === x &&
+                        cell.across.y === y &&
+                        !cell.across.clueNumber &&
+                        ((x === 0) || (grid[y][x - 1] === null))
+                    ) {
+                        cell.across.clueNumber = clueNumber;
+                        isStartOfWord = true;
+                    }
+                    // Check for down word
+                    if (
+                        cell.down &&
+                        cell.down.x === x &&
+                        cell.down.y === y &&
+                        !cell.down.clueNumber &&
+                        ((y === 0) || (grid[y - 1][x] === null))
+                    ) {
+                        cell.down.clueNumber = clueNumber;
+                        isStartOfWord = true;
+                    }
+                    if (isStartOfWord) {
+                        cell.clueNumber = clueNumber;
+                        clueNumber++;
+                    }
+                }
+            }
+        }
     }
 
     // Function to show/hide crossword answers based on the checkbox state
@@ -281,100 +324,21 @@ jQuery(document).ready(function ($) {
     }
 
     // Update grid when inputs change
-    $(document).on('input', '.crossword-word-clue input[name^="crossword_words"][name$="[word]"]', function () {
+    $(document).on('input', '.crossword-word-clue input[name^="crossword_words"]', function () {
         generateCrosswordGrid('#crossword-grid');
         toggleAnswers();
     });
-    
+
     // Update grid when the checkbox is toggled
     $('#toggle-answers').on('change', toggleAnswers);
-
 
     // Shuffle button functionality
     $('#shuffle-button').on('click', function () {
         generateCrosswordGrid('#crossword-grid');
         toggleAnswers();
-    });    
+    });
 
-    function populateCrosswordFromData(container) {
-        // Read data from the hidden field
-        let crosswordData = $('#crossword-data').val();
-        if (!crosswordData) {
-            console.error('No crossword data found in #crossword-data');
-            return;
-        }
-    
-        // Parse the JSON data
-        let data;
-        try {
-            data = JSON.parse(crosswordData);
-        } catch (e) {
-            console.error('Invalid JSON data in #crossword-data');
-            return;
-        }
-    
-        let gridData = data.grid;
-        let cluesData = data.clues;
-    
-        // Render the grid
-        const table = $('<table class="crossword-table"></table>');
-        for (let y = 0; y < gridData.length; y++) {
-            const tableRow = $('<tr></tr>');
-            for (let x = 0; x < gridData[y].length; x++) {
-                const cell = gridData[y][x];
-                const tableCell = $('<td></td>');
-                if (cell && cell.letter) {
-                    tableCell.addClass('filled-cell');
-                    if (cell.clueNumber) {
-                        tableCell.append(`<span class="clue-number">${cell.clueNumber}</span>`);
-                    }
-                    tableCell.append(`<span class="letter">${cell.letter}</span>`);
-                } else {
-                    tableCell.addClass('empty-cell');
-                }
-                tableRow.append(tableCell);
-            }
-            table.append(tableRow);
-        }
-    
-        // Append the grid to the container
-        $(container).empty().append(table);
-    
-        // Render the clues
-        const acrossClues = $('<ul></ul>');
-        const downClues = $('<ul></ul>');
-    
-        cluesData.across.forEach((clueObj) => {
-            const clueItem = $('<li></li>');
-            clueItem.append(`<strong>${clueObj.clueNumber}.</strong> ${clueObj.clueText}`);
-            if (clueObj.clueImage) {
-                clueItem.append(`<br><img src="${clueObj.clueImage}" alt="Clue image" class="clue-image">`);
-            }
-            acrossClues.append(clueItem);
-        });
-    
-        cluesData.down.forEach((clueObj) => {
-            const clueItem = $('<li></li>');
-            clueItem.append(`<strong>${clueObj.clueNumber}.</strong> ${clueObj.clueText}`);
-            if (clueObj.clueImage) {
-                clueItem.append(`<br><img src="${clueObj.clueImage}" alt="Clue image" class="clue-image">`);
-            }
-            downClues.append(clueItem);
-        });
-    
-        // Append the clues to the clues container
-        $('#clues-container').empty();
-        $('#clues-container').append('<h3>Across</h3>');
-        $('#clues-container').append(acrossClues);
-        $('#clues-container').append('<h3>Down</h3>');
-        $('#clues-container').append(downClues);
-    
-        // Apply the show/hide answers functionality
-        toggleAnswers();
-    }
-    
-    // Trigger grid generation and set the initial visibility when the page loads
-    populateCrosswordFromData('#crossword-grid');
+    // Initial grid generation
+    crossword.populateCrosswordFromData('#crossword-grid');
     toggleAnswers();
-
 });
