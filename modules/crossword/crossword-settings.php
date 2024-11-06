@@ -51,6 +51,52 @@ function crossword_save_meta_box_data($post_id) {
     } else {
         delete_post_meta($post_id, '_crossword_words_clues');
     }
+
+    if (isset($_POST['crossword_data'])) {
+        // Remove any slashes added by WordPress
+        $crossword_data_json = wp_unslash($_POST['crossword_data']);
+
+        // Decode JSON to verify its validity
+        $crossword_data_array = json_decode($crossword_data_json, true);
+
+        if (json_last_error() === JSON_ERROR_NONE && is_array($crossword_data_array)) {
+            // Extract grid data
+            if (isset($crossword_data_array['grid']) && is_array($crossword_data_array['grid'])) {
+                $grid_data = $crossword_data_array['grid'];
+
+                // Optional: Perform additional sanitization on grid data
+                foreach ($grid_data as &$row) {
+                    foreach ($row as &$cell) {
+                        if (isset($cell['letter'])) {
+                            $cell['letter'] = sanitize_text_field($cell['letter']);
+                        }
+                        if (isset($cell['clueNumber'])) {
+                            $cell['clueNumber'] = sanitize_text_field($cell['clueNumber']);
+                        }
+                    }
+                }
+                unset($row, $cell); // Break references
+
+                // Re-encode to ensure proper formatting before saving
+                $sanitized_grid_data = wp_json_encode($grid_data);
+
+                // Save the sanitized grid data as post meta
+                update_post_meta($post_id, '_crossword_grid_data', $crossword_data_json);
+            } else {
+                // If grid data is not set or invalid, delete the meta to avoid storing corrupted data
+                delete_post_meta($post_id, '_crossword_grid_data');
+            }
+
+            
+        } else {
+            // If JSON is invalid, delete the grid meta to avoid storing corrupted data
+            delete_post_meta($post_id, '_crossword_grid_data');
+        }
+    } else {
+        // If crossword_data is not set, delete any existing grid meta
+        delete_post_meta($post_id, '_crossword_grid_data');
+    }
+    error_log("save successfully ::");
 }
 add_action('save_post', 'crossword_save_meta_box_data');
 

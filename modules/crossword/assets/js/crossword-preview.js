@@ -300,6 +300,7 @@ jQuery(document).ready(function ($) {
     $('#shuffle-button').on('click', function () {
         generateCrosswordGrid('#crossword-grid');
         toggleAnswers();
+        crossword.updateHiddenFields();
     });    
 
     // Trigger grid generation and set the initial visibility when the page loads

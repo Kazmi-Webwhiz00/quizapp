@@ -12,16 +12,17 @@ function load_crossword_assets($hook) {
     // Get the current screen information
     $screen = get_current_screen();
 
-    // Check if the current screen is for the 'crossword' post type
+    // Check if the current screen is for the 'crossword' post typegenerate
         // Enqueue the CSS file
         wp_enqueue_style('crossword-style', plugin_dir_url(__FILE__) . 'assets/css/crossword-styles.css');
         
         // Enqueue the JS file with jQuery as a dependency
         wp_enqueue_script('crossword-script', plugin_dir_url(__FILE__) . 'assets/js/crossword-scripts.js', array('jquery'), null, true);
+        wp_enqueue_script('goku', plugin_dir_url(__FILE__) . 'assets/js/utils.js', array('jquery'), null, true);
         wp_enqueue_script('generate-pdf-script', plugin_dir_url(__FILE__) . 'assets/js/crossword-pdfGenerator.js', array('jquery'), null, true);
 
         wp_enqueue_script('crossword-generate-with-ai', plugin_dir_url(__FILE__) . 'assets/js/crossword-generate-with-ai.js', array('jquery'), null, true);
-
+        
         // Localize variables for use in JavaScript
         wp_localize_script('crossword-generate-with-ai', 'wpQuizPlugin', array(
             'apiKey' => get_option('wp_quiz_plugin_openai_api_key'),

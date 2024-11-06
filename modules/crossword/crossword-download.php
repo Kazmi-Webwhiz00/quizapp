@@ -7,19 +7,31 @@ function generate_crossword_pdf_callback() {
     // Include TCPDF library (adjust the path as needed)
     require_once("/home/gulzaib/Local Sites/quizapp/app/public/wp-content/plugins/Quiz/lib/tcpdf.php");
 
-    // Get the crossword data from the AJAX request
-    if (!isset($_POST['crossword_data'])) {
-        wp_send_json_error('No crossword data received.');
+    // Validate and sanitize the crossword_id parameter
+    if (!isset($_GET['crossword_id']) || !is_numeric($_GET['crossword_id'])) {
+        wp_die(__('Invalid request.', 'wp-crossword-plugin'));
+    }
+
+    // Sanitize and cast crossword_id to integer
+    $crossword_id = intval($_GET['crossword_id']);
+
+    // Fetch crossword data from post meta using crossword_id as post ID
+    $crossword_data = get_post_meta($crossword_id, '_crossword_grid_data', true);
+
+    // Check if crossword data exists
+    if (empty($crossword_data)) {
+        wp_send_json_error('No crossword data found.');
         wp_die();
     }
 
-    $crossword_data = json_decode(stripslashes($_POST['crossword_data']), true);
+    // Decode JSON data to work with it as an array
+    $crossword_data_array = json_decode($crossword_data, true);
 
-    if (json_last_error() !== JSON_ERROR_NONE) {
-        wp_send_json_error('Invalid crossword data.');
+    // Check for JSON decoding errors
+    if (json_last_error() !== JSON_ERROR_NONE || !is_array($crossword_data_array)) {
+        wp_send_json_error('Invalid crossword data format.');
         wp_die();
     }
-
     $pdf = new TCPDF();
     $pdf->SetCreator('Crossword Generator');
     $pdf->SetAuthor('Your Website');
@@ -32,7 +44,7 @@ function generate_crossword_pdf_callback() {
 
     // Generate the crossword grid
     $html = '<table cellpadding="4" cellspacing="0">';
-    foreach ($crossword_data['grid'] as $row) {
+    foreach ($crossword_data_array['grid'] as $row) {
         $html .= '<tr>';
         foreach ($row as $cell) {
             $letter = $cell['letter'];
@@ -42,7 +54,7 @@ function generate_crossword_pdf_callback() {
                 if ($clueNumber !== '') {
                     $cellContent .= '<div style="font-size:6px;">' . htmlspecialchars($clueNumber) . '</div>';
                 }
-                $cellContent .= '<div style="font-size:12px;">&nbsp;</div>';
+                $cellContent .= '<div style="font-size:12px;">' . htmlspecialchars($letter) .'</div>';
                 $html .= '<td border="1">' . $cellContent . '</td>';
             } else {
                 $html .= '<td bgcolor="#F5F5DC"></td>';
@@ -118,16 +130,16 @@ function generate_crossword_pdf_callback() {
   }
 
   // Render Across clues
-  if (!empty($crossword_data['clues']['across'])) {
-      render_clues($pdf, $crossword_data['clues']['across'], 'Across');
+  if (!empty($crossword_data_array['clues']['across'])) {
+      render_clues($pdf, $crossword_data_array['clues']['across'], 'Across');
   }
 
   // Add some vertical space between Across and Down clues
   $pdf->Ln(5);
 
   // Render Down clues
-  if (!empty($crossword_data['clues']['down'])) {
-      render_clues($pdf, $crossword_data['clues']['down'], 'Down');
+  if (!empty($crossword_data_array['clues']['down'])) {
+      render_clues($pdf, $crossword_data_array['clues']['down'], 'Down');
   }
 
   // Output the PDF as a string
