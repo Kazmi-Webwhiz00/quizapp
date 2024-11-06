@@ -141,5 +141,9 @@ jQuery(document).ready(function ($) {
         toggleAnswers();
     }
     
+    function toggleAnswers() {
+        const showAnswers = $('#toggle-answers').is(':checked');
+        $('.letter').css('color', showAnswers ? '#000' : 'transparent');
+    }
 });
 

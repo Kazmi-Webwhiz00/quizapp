@@ -1,6 +1,5 @@
 jQuery(document).ready(function($) {
     $('#download-pdf-button').on('click', function(e) {
-        alert("hi");
         e.preventDefault();
 
         // Get crossword_id from data attribute on the button (or replace with appropriate selector)

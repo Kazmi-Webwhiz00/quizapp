@@ -254,16 +254,18 @@ jQuery(document).ready(function ($) {
         const acrossClues = $('<ul></ul>');
         const downClues = $('<ul></ul>');
         placedWords.forEach((wordObj) => {
-            const clueItem = $('<li></li>');
-            clueItem.append(`<strong>${wordObj.clueNumber}.</strong> ${wordObj.clue}`);
-            if (wordObj.image) {
-                clueItem.append(`<br><img src="${wordObj.image}" alt="Clue image" class="clue-image">`);
-            }
-            if (wordObj.direction === ACROSS) {
-                acrossClues.append(clueItem);
-            } else {
-                downClues.append(clueItem);
-            }
+            if(wordObj.clue) {
+                const clueItem = $('<li></li>');
+                clueItem.append(`<strong>${wordObj.clueNumber}.</strong> ${wordObj.clue}`);
+                if (wordObj.image) {
+                    clueItem.append(`<br><img src="${wordObj.image}" alt="Clue image" class="clue-image">`);
+                }
+                if (wordObj.direction === ACROSS) {
+                    acrossClues.append(clueItem);
+                } else {
+                    downClues.append(clueItem);
+                }
+        }
         });
 
         $('#clues-container').empty();
