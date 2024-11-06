@@ -31,7 +31,7 @@ function generate_crossword_pdf_callback() {
     $pdf->SetFont('helvetica', '', 12);
 
     // Generate the crossword grid
-    $html = '<table border="1" cellpadding="4" cellspacing="0">';
+    $html = '<table cellpadding="4" cellspacing="0">';
     foreach ($crossword_data['grid'] as $row) {
         $html .= '<tr>';
         foreach ($row as $cell) {
@@ -43,9 +43,9 @@ function generate_crossword_pdf_callback() {
                     $cellContent .= '<div style="font-size:6px;">' . htmlspecialchars($clueNumber) . '</div>';
                 }
                 $cellContent .= '<div style="font-size:12px;">&nbsp;</div>';
-                $html .= '<td width="20" height="20">' . $cellContent . '</td>';
+                $html .= '<td border="1">' . $cellContent . '</td>';
             } else {
-                $html .= '<td width="20" height="20" bgcolor="#000000"></td>';
+                $html .= '<td bgcolor="#F5F5DC"></td>';
             }
         }
         $html .= '</tr>';
