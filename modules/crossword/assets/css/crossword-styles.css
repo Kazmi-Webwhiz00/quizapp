@@ -28,7 +28,7 @@
 /* Input fields styling */
 .crossword-word-clue input[type="text"], 
 .crossword-word-clue input[type="file"] {
-    flex: 1;
+    
     padding: 5px;
     font-size: 14px;
     border: 1px solid #ccc; /* Light border color */

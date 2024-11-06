@@ -9,6 +9,10 @@ if (empty($words_clues) || !is_array($words_clues)) {
 <div style="padding: 20px 5px;">
 <span id="shuffle-button" class="cross-word-primary-button">Shuffle</span>
 <span id="download-pdf-button" class="cross-word-primary-button">Download as PDF</span>
+<!-- Controls -->
+<label>
+    <input type="checkbox" id="toggle-answers"> Show Answers
+</label>
 </div>
 <!-- Error Message Display -->
 <div id="error-message" style="display: none; color: red;"></div>
@@ -22,7 +26,3 @@ if (empty($words_clues) || !is_array($words_clues)) {
     <div id="clues-container"></div>
 </div>
 
-<!-- Controls -->
-<label>
-    <input type="checkbox" id="toggle-answers"> Show Answers
-</label>
