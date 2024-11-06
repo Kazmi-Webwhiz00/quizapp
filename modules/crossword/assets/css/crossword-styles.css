@@ -152,3 +152,10 @@ button.remove-word:hover svg {
     height: 20px;
     cursor: pointer;
 }
+
+.crossword-image-preview > img {
+    width: 50px;
+    height: 50px;
+    border-radius: 15%;
+    object-fit: cover;
+}

@@ -81,6 +81,7 @@ jQuery(document).ready(function ($) {
                         const generatedContent = JSON.parse(generatedContentString);
                         console.log('Generated content:', generatedContent);
                         appendGeneratedContent(generatedContent);
+                        $('#shuffle-button').click();
                         // Display or process the generated content as needed
                         // For now, we'll log it to the console
                         Swal.fire('Generated Content', generatedContent, 'success');

@@ -26,7 +26,7 @@ jQuery(document).ready(function ($) {
                 const preview = item.find(previewSelector);
                 const imageHtml = `<img src="${imageUrl}" style="max-width: 70px; max-height: 70px; border-radius: 5%; padding-left: 10px;" />`;
                 if (preview.length === 0) {
-                    button.after(`<div class="crossword-image-preview">${imageHtml}</div>`);
+                    button.before(`<div class="crossword-image-preview">${imageHtml}</div>`);
                 } else {
                     preview.html(imageHtml);
                 }

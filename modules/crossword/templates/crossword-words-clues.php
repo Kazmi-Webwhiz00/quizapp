@@ -22,7 +22,7 @@ if (empty($words_clues) || !is_array($words_clues)) {
                     <?php if (!empty($entry['image'])): ?>
                         <input type="hidden" class="crossword-image-url" name="crossword_words[<?php echo $index; ?>][image]" value="<?php echo esc_url($entry['image']); ?>" />
                         <div class="crossword-image-preview">
-                            <img src="<?php echo esc_url($entry['image']); ?>" style="max-width: 70px; max-height: 70px; border-radius: 5%; padding-left: 10px;" />
+                            <img src="<?php echo esc_url($entry['image']); ?>" />
                         </div>
                     <?php endif; ?>
                     <span class="upload-crossword-image-btn">
@@ -48,9 +48,9 @@ if (empty($words_clues) || !is_array($words_clues)) {
      <!-- New left side section -->
      <div id="generate-ai-container">
         <h3>Generate with AI</h3>
-        <input type="text" id="ai-topic" placeholder="Topic" required/>
-        <input type="text" id="ai-age" placeholder="Age" required/>
-        <input type="number" id="ai-questions" placeholder="Number of questions" min="1" required />
+        <input type="text" id="ai-topic" placeholder="Topic" />
+        <input type="text" id="ai-age" placeholder="Age" />
+        <input type="number" id="ai-questions" placeholder="Number of questions" min="1" />
         <button type="button" id="generate-ai-button">Generate with AI</button>
     </div>
 
@@ -59,9 +59,11 @@ if (empty($words_clues) || !is_array($words_clues)) {
 
 <script type="text/template" id="crossword-word-clue-template">
     <div class="crossword-word-clue" data-index="{{index}}">
-        <span class="word-number">{{number}}.</span>
-        <input type="text" name="crossword_words[{{index}}][word]" placeholder="Word" value="" />
-        <input type="text" name="crossword_words[{{index}}][clue]" placeholder="Clue" value="" />
+        <div style="flex: 0.9;">
+            <span class="word-number">{{number}}.</span>
+            <input type="text" name="crossword_words[{{index}}][word]" placeholder="Word" value="" />
+            <input type="text" name="crossword_words[{{index}}][clue]" placeholder="Clue" value="" />
+        </div>
         <span class="upload-crossword-image-btn">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M160 80l352 0c8.8 0 16 7.2 16 16l0 224c0 8.8-7.2 16-16 16l-21.2 0L388.1 178.9c-4.4-6.8-12-10.9-20.1-10.9s-15.7 4.1-20.1 10.9l-52.2 79.8-12.4-16.9c-4.5-6.2-11.7-9.8-19.4-9.8s-14.8 3.6-19.4 9.8L175.6 336 160 336c-8.8 0-16-7.2-16-16l0-224c0-8.8 7.2-16 16-16zM96 96l0 224c0 35.3 28.7 64 64 64l352 0c35.3 0 64-28.7 64-64l0-224c0-35.3-28.7-64-64-64L160 32c-35.3 0-64 28.7-64 64zM48 120c0-13.3-10.7-24-24-24S0 106.7 0 120L0 344c0 75.1 60.9 136 136 136l320 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-320 0c-48.6 0-88-39.4-88-88l0-224zm208 24a32 32 0 1 0 -64 0 32 32 0 1 0 64 0z"/></svg>
         </span>
