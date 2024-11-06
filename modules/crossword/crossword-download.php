@@ -54,94 +54,96 @@ function generate_crossword_pdf_callback() {
 
     $pdf->writeHTML($html, true, false, false, false, '');
 
-    // Add clues
-    $pdf->Ln(10);
-    $pdf->SetFont('helvetica', 'B', 14);
-    $pdf->Cell(0, 10, 'Across', 0, 1);
+  // Add some vertical space before clues
+  $pdf->Ln(10);
 
-    $pdf->SetFont('helvetica', '', 12);
-    foreach ($crossword_data['clues']['across'] as $clueData) {
-        $clueNumber = htmlspecialchars($clueData['clueNumber']);
-        $clueText = htmlspecialchars($clueData['clueText']);
-        $clueImage = $clueData['clueImage'];
 
-        // Set a larger cell with padding to fit the text and image side by side
-        $pdf->SetFillColor(230, 230, 230); // Light grey background for the clue cell
-        $pdf->MultiCell(140, 12, "$clueNumber. $clueText", 0, 'L', true, 0);
+  // Function to render clues (both Across and Down)
+  function render_clues($pdf, $clues, $title) {
+      // Add section title
+      $pdf->SetFont('helvetica', 'B', 14);
+      $pdf->Cell(0, 10, $title, 0, 1, 'L');
 
-        if (!empty($clueImage)) {
-            // Convert URL to absolute path or ensure it's accessible
-            $imagePath = $clueImage;
+      // Set font for clues
+      $pdf->SetFont('helvetica', '', 12);
 
-            // If the image URL is relative, convert it to an absolute path
-            if (strpos($clueImage, home_url()) !== false) {
-                $imagePath = str_replace(home_url('/'), ABSPATH, $clueImage);
-            } elseif (strpos($clueImage, '/') === 0) {
-                $imagePath = ABSPATH . ltrim($clueImage, '/');
-            }
+      foreach ($clues as $clueData) {
+          $clueNumber = htmlspecialchars($clueData['clueNumber']);
+          $clueText = htmlspecialchars($clueData['clueText']);
+          $clueImage = $clueData['clueImage'];
 
-            // Check if file exists and add the image next to the clue text
-            if (file_exists($imagePath)) {
-                $pdf->Image($imagePath, $pdf->GetX() - 35, $pdf->GetY() - 4, 25, 20, '', '', '', false, 300, '', false, false, 0, false, false, false);
-            } else {
-                $pdf->Image($clueImage, $pdf->GetX() - 35, $pdf->GetY() - 4, 25, 20, '', '', '', false, 300, '', false, false, 0, false, false, false);
-            }
-        }
-        
-        $pdf->Ln(14); // Add extra space after each row
-    }
+          // Start a new table row for each clue
+          $html = '<table cellpadding="4" cellspacing="0" style="width: 100%; margin-bottom: 10px;">';
+          $html .= '<tr>';
 
-    // Down clues section
-    $pdf->Ln(5);
-    $pdf->SetFont('helvetica', 'B', 14);
-    $pdf->Cell(0, 10, 'Down', 0, 1);
+          // Clue text cell with increased padding and background color
+          $html .= '<td style="width: 60%; background-color: #E8E8E8; padding: 8px;">';
+          $html .= "<strong>{$clueNumber}.</strong> {$clueText}";
+          $html .= '</td>';
 
-    $pdf->SetFont('helvetica', '', 12);
-    foreach ($crossword_data['clues']['down'] as $clueData) {
-        $clueNumber = htmlspecialchars($clueData['clueNumber']);
-        $clueText = htmlspecialchars($clueData['clueText']);
-        $clueImage = $clueData['clueImage'];
+          // Clue image cell with padding if an image exists
+          if (!empty($clueImage)) {
+              // Convert URL to absolute path or ensure it's accessible
+              $imagePath = $clueImage;
 
-        // Same styling for Down clues
-        $pdf->SetFillColor(230, 230, 230); // Light grey background for the clue cell
-        $pdf->MultiCell(140, 12, "$clueNumber. $clueText", 0, 'L', true, 0);
+              // If the image URL is relative, convert it to an absolute path
+              if (strpos($clueImage, home_url()) !== false) {
+                  $imagePath = str_replace(home_url('/'), ABSPATH, $clueImage);
+              } elseif (strpos($clueImage, '/') === 0) {
+                  $imagePath = ABSPATH . ltrim($clueImage, '/');
+              }
 
-        if (!empty($clueImage)) {
-            // Convert URL to absolute path or ensure it's accessible
-            $imagePath = $clueImage;
+              // Check if file exists
+              if (file_exists($imagePath)) {
+                  $imageSrc = $imagePath;
+              } else {
+                  $imageSrc = $clueImage; // Assume it's a URL
+              }
 
-            // If the image URL is relative, convert it to an absolute path
-            if (strpos($clueImage, home_url()) !== false) {
-                $imagePath = str_replace(home_url('/'), ABSPATH, $clueImage);
-            } elseif (strpos($clueImage, '/') === 0) {
-                $imagePath = ABSPATH . ltrim($clueImage, '/');
-            }
+              // Add image with padding
+              $html .= '<td style="width: 40%; text-align: center; padding: 8px;  background-color: #E8E8E8;">';
+              $html .= '<img src="' . htmlspecialchars($imageSrc) . '" style="width: 50px; height: 50px;" />';
+              $html .= '</td>';
+          } else {
+              // If no image, add an empty cell for alignment
+              $html .= '<td style="width: 40%;"></td>';
+          }
 
-            // Check if file exists and add the image next to the clue text
-            if (file_exists($imagePath)) {
-                $pdf->Image($imagePath, $pdf->GetX() - 35, $pdf->GetY() - 4, 25, 20, '', '', '', false, 300, '', false, false, 0, false, false, false);
-            } else {
-                $pdf->Image($clueImage, $pdf->GetX() - 35, $pdf->GetY() - 4, 25, 20, '', '', '', false, 300, '', false, false, 0, false, false, false);
-            }
-        }
+          $html .= '</tr>';
+          $html .= '</table>';
 
-        $pdf->Ln(14); // Add extra space after each row
-    }
+          // Write the clues HTML to the PDF
+          $pdf->writeHTML($html, true, false, false, false, '');
+      }
+  }
 
-    // Output the PDF as a string
-    $pdf_content = $pdf->Output('crossword.pdf', 'S');
+  // Render Across clues
+  if (!empty($crossword_data['clues']['across'])) {
+      render_clues($pdf, $crossword_data['clues']['across'], 'Across');
+  }
 
-    // Clean output buffer
-    if (ob_get_length()) {
-        ob_end_clean();
-    }
+  // Add some vertical space between Across and Down clues
+  $pdf->Ln(5);
 
-    // Send the PDF back to the browser
-    header('Content-Type: application/pdf');
-    header('Content-Disposition: attachment; filename="crossword.pdf"');
-    header('Content-Length: ' . strlen($pdf_content));
+  // Render Down clues
+  if (!empty($crossword_data['clues']['down'])) {
+      render_clues($pdf, $crossword_data['clues']['down'], 'Down');
+  }
 
-    echo $pdf_content;
+  // Output the PDF as a string
+  $pdf_content = $pdf->Output('crossword.pdf', 'S');
 
-    wp_die(); // Terminate AJAX handler
+  // Clean output buffer
+  if (ob_get_length()) {
+      ob_end_clean();
+  }
+
+  // Send the PDF back to the browser
+  header('Content-Type: application/pdf');
+  header('Content-Disposition: attachment; filename="crossword.pdf"');
+  header('Content-Length: ' . strlen($pdf_content));
+
+  echo $pdf_content;
+
+  wp_die(); // Terminate AJAX handler
 }
