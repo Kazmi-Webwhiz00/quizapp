@@ -75,21 +75,21 @@ function crossword_enqueue_preview_assets($hook) {
 add_action('admin_enqueue_scripts', 'crossword_enqueue_preview_assets');
 
 
-function load_crossword_assets_fe() {
-    // Check if the shortcode exists on the page
-    global $post;
+// function load_crossword_assets_fe() {
+//     // Check if the shortcode exists on the page
+//     global $post;
   
         
-        // Enqueue the CSS file
-        wp_enqueue_style('crossword-style', plugin_dir_url(__FILE__) . 'assets/css/crossword-styles.css');
-        wp_enqueue_style('crossword-preview-style', plugin_dir_url(__FILE__) . 'assets/css/crossword-preview-styles.css');
-        // Enqueue the JS files with dependencies
-        wp_enqueue_script('goku', plugin_dir_url(__FILE__) . 'assets/js/utils.js', array('jquery'), null, true);
-        wp_enqueue_script('generate-pdf-script', plugin_dir_url(__FILE__) . 'assets/js/crossword-pdfGenerator.js', array('jquery'), null, true);
+//         // Enqueue the CSS file
+//         wp_enqueue_style('crossword-style', plugin_dir_url(__FILE__) . 'assets/css/crossword-styles.css');
+//         wp_enqueue_style('crossword-preview-style', plugin_dir_url(__FILE__) . 'assets/css/crossword-preview-styles.css');
+//         // Enqueue the JS files with dependencies
+//         wp_enqueue_script('goku', plugin_dir_url(__FILE__) . 'assets/js/utils.js', array('jquery'), null, true);
+//         wp_enqueue_script('generate-pdf-script', plugin_dir_url(__FILE__) . 'assets/js/crossword-pdfGenerator.js', array('jquery'), null, true);
 
         
-}
+// }
 
-// Hook into frontend script enqueue
-add_action('wp_enqueue_scripts', 'load_crossword_assets_fe');
+// // Hook into frontend script enqueue
+// add_action('wp_enqueue_scripts', 'load_crossword_assets_fe');
 ?>
