@@ -5,7 +5,7 @@ add_action('wp_ajax_nopriv_generate_crossword_pdf', 'generate_crossword_pdf_call
 
 function generate_crossword_pdf_callback() {
     // Include TCPDF library (adjust the path as needed)
-    require_once("/home/gulzaib/Local Sites/quizapp/app/public/wp-content/plugins/Quiz/lib/tcpdf.php");
+    include_once plugin_dir_path(__FILE__) . '/../../lib/tcpdf.php';
 
     // Validate and sanitize the crossword_id parameter
     if (!isset($_GET['crossword_id']) || !is_numeric($_GET['crossword_id'])) {

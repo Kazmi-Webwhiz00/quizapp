@@ -22,7 +22,9 @@ $grid_data = get_post_meta($post->ID, '_crossword_grid_data', true);
 <!-- Crossword Container -->
 <div id="crossword-container">
     <!-- Crossword Grid Container -->
-    <div id="crossword-grid"></div>
+    <div id="crossword-grid">
+    Please add some words to generate the crossword.
+    </div>
 
     <!-- Clues Container -->
     <div id="clues-container"></div>

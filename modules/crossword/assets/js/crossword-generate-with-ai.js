@@ -79,9 +79,9 @@ jQuery(document).ready(function ($) {
         const age = $('#ai-age').val().trim();
         const number = $('#ai-questions').val().trim();
 
-        // Validate fields
-        if (!topic || !age || !number) {
-            Swal.fire('Error', 'Please fill in all fields: Topic, Age, and Number.', 'warning');
+        // Check if the number is between 1 and 10
+        if (number < 1 || number > 10) {
+            Swal.fire('Error', 'The number must be between 1 and 10.', 'warning');
             return;
         }
 

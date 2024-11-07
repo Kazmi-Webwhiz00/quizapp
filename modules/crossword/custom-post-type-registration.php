@@ -28,4 +28,33 @@ function register_crossword_post_type() {
     register_post_type( 'crossword', $args ); // Singular post type key
 }
 add_action( 'init', 'register_crossword_post_type' );
+
+function register_crossword_taxonomy() {
+    $labels = array(
+        'name'              => _x('Crossword Categories', 'taxonomy general name', 'textdomain'),
+        'singular_name'     => _x('Crossword Category', 'taxonomy singular name', 'textdomain'),
+        'search_items'      => __('Search Crossword Categories', 'textdomain'),
+        'all_items'         => __('All Crossword Categories', 'textdomain'),
+        'parent_item'       => __('Parent Crossword Category', 'textdomain'),
+        'parent_item_colon' => __('Parent Crossword Category:', 'textdomain'),
+        'edit_item'         => __('Edit Crossword Category', 'textdomain'),
+        'update_item'       => __('Update Crossword Category', 'textdomain'),
+        'add_new_item'      => __('Add New Crossword Category', 'textdomain'),
+        'new_item_name'     => __('New Crossword Category Name', 'textdomain'),
+        'menu_name'         => __('Crossword Categories', 'textdomain'),
+    );
+
+    $args = array(
+        'hierarchical'      => true, // Set to false if you want a non-hierarchical taxonomy (like tags)
+        'labels'            => $labels,
+        'show_ui'           => true,
+        'show_admin_column' => true,
+        'query_var'         => true,
+        'rewrite'           => array('slug' => 'crossword-category'),
+    );
+
+    register_taxonomy('crossword_category', array('crossword'), $args);
+}
+add_action('init', 'register_crossword_taxonomy');
+
 ?>

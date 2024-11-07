@@ -61,6 +61,7 @@ jQuery(document).ready(function ($) {
         element.find('.remove-word').on('click', function () {
             $(this).closest('.crossword-word-clue').remove();
             updateIndices();
+            $('#shuffle-button').click();
         });
     }
 
@@ -96,7 +97,7 @@ jQuery(document).ready(function ($) {
     container.children('.crossword-word-clue').each(function () {
         attachRemoveButtonEvent($(this));
     });
-
+    
     $('form').on('submit', function(event) { 
         crossword.updateHiddenFields();
     });

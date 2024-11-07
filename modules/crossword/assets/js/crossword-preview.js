@@ -322,7 +322,7 @@ jQuery(document).ready(function ($) {
     }
 
     // Update grid when inputs change
-    $(document).on('input', '.crossword-word-clue input[name^="crossword_words"]', function () {
+    $(document).on('input', '.crossword-word-clue input', function () {
         generateCrosswordGrid('#crossword-grid');
         toggleAnswers();
     });
