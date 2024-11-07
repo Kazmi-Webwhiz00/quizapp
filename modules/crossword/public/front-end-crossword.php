@@ -40,7 +40,7 @@ if (isset($_GET['download']) && $_GET['download'] === 'json') {
         <div id="clues-container">
             <!-- Download Button -->
              <div class= "fe-download-button-container">
-                 <a href="?download=json" style="padding: 10px 20px; background-color: #00796b; color: white; text-decoration: none; border-radius: 5px;">Download</a>
+                 <span id="download-pdf-button" data-crossword-id="<?php echo esc_attr($post->ID); ?>" >Download</span>
             </div>
             <h3>Across</h3>
             <ul id="across-clues"></ul>

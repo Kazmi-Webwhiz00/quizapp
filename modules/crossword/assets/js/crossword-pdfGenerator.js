@@ -11,7 +11,7 @@ jQuery(document).ready(function($) {
         }
 
         $.ajax({
-            url: ajaxurl, // WordPress AJAX URL
+            url: cross_ajax_obj.ajax_url, // WordPress AJAX URL
             type: 'GET',
             data: {
                 action: 'generate_crossword_pdf',

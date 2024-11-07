@@ -1,15 +1,18 @@
 <?php
 
-function load_crossword_assets_fe() {
-    // Check if the shortcode exists on the page
-    global $post;
-  
-        
-        // Enqueue the CSS file
-        wp_enqueue_style('fe-crossword-style', plugin_dir_url(__FILE__) . 'assets/css/fe-crossword-styles.css');
-        wp_enqueue_script('fe-crossword-script', plugin_dir_url(__FILE__) . 'assets/js/fe-crossword-script.js', array('jquery'), null, true);
-        
+function load_crossword_assets_fe() { 
+    // Enqueue the CSS file
+    wp_enqueue_style('fe-crossword-style', plugin_dir_url(__FILE__) . 'assets/css/fe-crossword-styles.css');
+    wp_enqueue_script('fe-crossword-script', plugin_dir_url(__FILE__) . 'assets/js/fe-crossword-script.js', array('jquery'), null, true);
+    wp_enqueue_script('fe-crossword-download-script', plugin_dir_url(__FILE__) . '../assets/js/crossword-pdfGenerator.js', array('jquery'), null, true);
+    
+    wp_localize_script(
+        'fe-crossword-download-script',
+        'cross_ajax_obj',
+        array('ajax_url' => admin_url('admin-ajax.php'))
+    );
 }
+
 
 // Hook into frontend script enqueue
 add_action('wp_enqueue_scripts', 'load_crossword_assets_fe');

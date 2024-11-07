@@ -143,3 +143,12 @@ h3 {
     padding: 20px;
     border-radius: 20px;
 }
+
+.fe-download-button-container > span {
+    padding: 10px 20px;
+    background-color: #00796b;
+    color: white; 
+    text-decoration: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
