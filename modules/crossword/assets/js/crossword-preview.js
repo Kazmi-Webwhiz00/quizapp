@@ -274,10 +274,8 @@ jQuery(document).ready(function ($) {
         $('#clues-container').append('<h3>Down</h3>');
         $('#clues-container').append(downClues);
 
-        // If you have a function to update hidden fields, make sure it's defined
-        if (typeof crossword !== 'undefined' && typeof crossword.updateHiddenFields === 'function') {
-            crossword.updateHiddenFields();
-        }
+        crossword.updateHiddenFields();
+        
     }
 
     // Function to assign clue numbers based on grid positions

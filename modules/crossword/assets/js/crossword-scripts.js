@@ -41,6 +41,7 @@ jQuery(document).ready(function ($) {
     const container = $('#crossword-words-clues-container');
     const addButton = $('#add-word-button');
     const clearButton = $('#clear-list-button');
+    const crosswordDataField = $('#crossword-data');
     const template = $('#crossword-word-clue-template').html();
 
     // Function to render the HTML using the template
@@ -73,6 +74,8 @@ jQuery(document).ready(function ($) {
     clearButton.on('click', function () {
         container.empty();
         updateIndices();
+        crosswordDataField.val('');
+        $('#shuffle-button').click();
     });
 
     // Update indices when rows are added or removed
