@@ -1,25 +1,31 @@
 <?php
-global $post; // Ensure $post is accessible
-?>
+/*
+Template Name: Crossword Puzzle Template
+*/
 
-<?php
-// Fetch existing words and clues from the post meta
+// Ensure this file is accessed within WordPress
+if (!defined('ABSPATH')) exit;
+
+// Fetch existing crossword grid data from the post meta
+global $post;
 $grid_data = get_post_meta($post->ID, '_crossword_grid_data', true);
 ?>
-<!-- Error Message Display -->
-<div id="error-message" style="display: none; color: red;"></div>
 
-<!-- Hidden Fields -->
-<input type="hidden" id="crossword-data" name="crossword_data" value="<?php echo $grid_data ? esc_attr($grid_data) : ''; ?>">
-
-<!-- Crossword Container -->
 <div id="crossword-container">
+    <!-- Error Message Display -->
+    <div id="error-message" style="display: none; color: red;"></div>
+
+    <!-- Hidden Field to Store Crossword Data -->
+    <input type="hidden" id="crossword-data" name="crossword_data" value="<?php echo esc_attr($grid_data); ?>">
+
     <!-- Crossword Grid Container -->
     <div id="crossword-grid"></div>
 
     <!-- Clues Container -->
-    <div id="clues-container"></div>
+    <div id="clues-container">
+        <h3>Across</h3>
+        <ul id="across-clues"></ul>
+        <h3>Down</h3>
+        <ul id="down-clues"></ul>
+    </div>
 </div>
-
-<!-- Nonce Field for Security -->
-<?php wp_nonce_field('crossword_save_meta_box_data', 'crossword_meta_box_nonce'); ?>
