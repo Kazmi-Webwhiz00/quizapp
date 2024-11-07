@@ -274,8 +274,6 @@ jQuery(document).ready(function ($) {
         $('#clues-container').append('<h3>Down</h3>');
         $('#clues-container').append(downClues);
 
-        crossword.updateHiddenFields();
-        
     }
 
     // Function to assign clue numbers based on grid positions

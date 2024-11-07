@@ -6,8 +6,8 @@ jQuery(document).ready(function ($) {
             let rowData = [];
             $(this).find('td').each(function (colIndex) {
                 const cell = $(this);
-                const letter = cell.find('.letter').text() || '';
-                const clueNumber = cell.find('.clue-number').text() || '';
+                const letter = cell.find('.letter').text().trim() || '';
+                const clueNumber = cell.find('.clue-number').text().trim() || '';
                 rowData.push({
                     letter: letter,
                     clueNumber: clueNumber
@@ -15,16 +15,16 @@ jQuery(document).ready(function ($) {
             });
             gridData.push(rowData);
         });
-        return gridData;
+        return gridData.length ? gridData : ''; // Return empty string if no data
     }
-
+    
     crossword.getCluesData = function() {
         let acrossClues = [];
         $('#clues-container h3:contains("Across")').next('ul').find('li').each(function () {
-            const clueNumber = $(this).find('strong').text().replace('.', '').trim();
+            const clueNumber = $(this).find('strong').text().replace('.', '').trim() || '';
             const clueText = $(this).contents().filter(function() {
                 return this.nodeType === 3; // Node.TEXT_NODE
-            }).text().trim();
+            }).text().trim() || '';
             const clueImage = $(this).find('img').attr('src') || '';
             acrossClues.push({
                 clueNumber: clueNumber,
@@ -32,13 +32,13 @@ jQuery(document).ready(function ($) {
                 clueImage: clueImage
             });
         });
-
+    
         let downClues = [];
         $('#clues-container h3:contains("Down")').next('ul').find('li').each(function () {
-            const clueNumber = $(this).find('strong').text().replace('.', '').trim();
+            const clueNumber = $(this).find('strong').text().replace('.', '').trim() || '';
             const clueText = $(this).contents().filter(function() {
                 return this.nodeType === 3; // Node.TEXT_NODE
-            }).text().trim();
+            }).text().trim() || '';
             const clueImage = $(this).find('img').attr('src') || '';
             downClues.push({
                 clueNumber: clueNumber,
@@ -46,24 +46,37 @@ jQuery(document).ready(function ($) {
                 clueImage: clueImage
             });
         });
-
+    
         return {
-            across: acrossClues,
-            down: downClues
+            across: acrossClues.length ? acrossClues : '',
+            down: downClues.length ? downClues : ''
         };
     }
-
+    
     // Function to update hidden fields
     crossword.updateHiddenFields = function() {
         const crosswordData = {
-            grid: crossword.getGridData(),
-            clues: crossword.getCluesData()
+            grid: crossword.getGridData() || '',
+            clues: crossword.getCluesData() || { across: '', down: '' }
         };
-        const crosswordDataJson = JSON.stringify(crosswordData);
-        console.log(crosswordDataJson); // For debugging purposes
-        $('#crossword-data').val(crosswordDataJson);
-    }
-
+    
+        // Check if crosswordData is empty
+        const isEmptyCrosswordData = (
+            (crosswordData.grid === '' || crosswordData.grid.length === 0) &&
+            (crosswordData.clues.across === '' || crosswordData.clues.across.length === 0) &&
+            (crosswordData.clues.down === '' || crosswordData.clues.down.length === 0)
+        );
+    
+        // Set value of #crossword-data based on emptiness
+        if (isEmptyCrosswordData) {
+            $('#crossword-data').val(''); // Set to empty string if crosswordData is empty
+        } else {
+            const crosswordDataJson = JSON.stringify(crosswordData);
+            console.log(crosswordDataJson); // For debugging purposes
+            $('#crossword-data').val(crosswordDataJson);
+        }
+    }    
+    
     crossword.populateCrosswordFromData = function (container) {
         // Read data from the hidden field
         let crosswordData = $('#crossword-data').val();

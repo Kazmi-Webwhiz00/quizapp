@@ -74,7 +74,6 @@ jQuery(document).ready(function ($) {
     clearButton.on('click', function () {
         container.empty();
         updateIndices();
-        crosswordDataField.val('');
         $('#shuffle-button').click();
     });
 
@@ -96,5 +95,9 @@ jQuery(document).ready(function ($) {
     // Attach event listener for existing items
     container.children('.crossword-word-clue').each(function () {
         attachRemoveButtonEvent($(this));
+    });
+
+    $('form').on('submit', function(event) { 
+        crossword.updateHiddenFields();
     });
 });
