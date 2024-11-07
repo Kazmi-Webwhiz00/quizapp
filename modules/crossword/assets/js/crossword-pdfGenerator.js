@@ -3,6 +3,7 @@ jQuery(document).ready(function($) {
     $('#download-pdf-button').on('click', function(e) {
         e.preventDefault();
 
+        $('#download-pdf-button').text(cross_ajax_obj.downloadingText).prop('disabled', true);
         var crossword_id = $(this).data('crossword-id'); // Get crossword ID from the button
 
         if (!crossword_id) {
@@ -34,6 +35,9 @@ jQuery(document).ready(function($) {
             },
             error: function(xhr, status, error) {
                 alert('An error occurred while generating the PDF.');
+            },
+            complete: function(){
+                $('#download-pdf-button').text('Download as PDF').prop('disabled', true);
             }
         });
     });
@@ -42,7 +46,7 @@ jQuery(document).ready(function($) {
         // Handler for the regular PDF download
         $('#crossword-download-key').on('click', function(e) {
             e.preventDefault();
-    
+            $('#download-pdf-button').text(cross_ajax_obj.downloadingText).prop('disabled', true);
             var crossword_id = $(this).data('crossword-id'); // Get crossword ID from the button
     
             if (!crossword_id) {
@@ -74,6 +78,9 @@ jQuery(document).ready(function($) {
                 },
                 error: function(xhr, status, error) {
                     alert('An error occurred while generating the PDF.');
+                },
+                complete: function(){
+                    $('#crossword-download-key').text('Download Key').prop('disabled', true);
                 }
             });
         });
