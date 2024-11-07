@@ -3,7 +3,7 @@
 $grid_data = get_post_meta($post->ID, '_crossword_grid_data', true);
 ?>
 
-<div style="padding: 20px 5px;">
+<div  class="be-crossword-preview-action-container">
     <span id="shuffle-button" class="cross-word-primary-button">Shuffle</span>
     <span id="download-pdf-button" class="cross-word-primary-button" data-crossword-id="<?php echo esc_attr($post->ID); ?>">Download as PDF</span>
     <!-- Controls -->
