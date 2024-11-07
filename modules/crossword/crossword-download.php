@@ -15,6 +15,8 @@ function generate_crossword_pdf_callback() {
     // Sanitize and cast crossword_id to integer
     $crossword_id = intval($_GET['crossword_id']);
 
+    $showkeys = intval($_GET['show_keys']) === 1;;
+
     // Fetch crossword data from post meta using crossword_id as post ID
     $crossword_data = get_post_meta($crossword_id, '_crossword_grid_data', true);
 
@@ -54,7 +56,8 @@ function generate_crossword_pdf_callback() {
                 if ($clueNumber !== '') {
                     $cellContent .= '<div style="font-size:6px;">' . htmlspecialchars($clueNumber) . '</div>';
                 }
-                $cellContent .= '<div style="font-size:12px;">' . htmlspecialchars($letter) .'</div>';
+                $showLetter = $showkeys ? $letter : '';
+                $cellContent .= '<div style="font-size:12px;">' . htmlspecialchars($showLetter) .'</div>';
                 $html .= '<td border="1">' . $cellContent . '</td>';
             } else {
                 $html .= '<td bgcolor="#F5F5DC"></td>';
