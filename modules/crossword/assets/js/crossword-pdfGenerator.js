@@ -46,7 +46,7 @@ jQuery(document).ready(function($) {
         // Handler for the regular PDF download
         $('#crossword-download-key').on('click', function(e) {
             e.preventDefault();
-            $('#download-pdf-button').text(cross_ajax_obj.downloadingText).prop('disabled', true);
+            $('#crossword-download-key').text(cross_ajax_obj.downloadingText).prop('disabled', true);
             var crossword_id = $(this).data('crossword-id'); // Get crossword ID from the button
     
             if (!crossword_id) {

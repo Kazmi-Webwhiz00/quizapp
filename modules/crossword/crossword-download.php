@@ -31,6 +31,12 @@ function generate_crossword_pdf_callback() {
         wp_die();
     }
 
+    $crossword_title = get_the_title($crossword_id);
+
+    // Define PDF filename
+    $file_suffix = $showkeys ? 'keys' : 'game';
+    $pdf_filename = 'crossword_' . sanitize_title($crossword_title) . '_' . $file_suffix . '.pdf';
+
     // PDF setup
     $pdf = new TCPDF();
     $pdf->SetCreator('Crossword Generator');
@@ -47,47 +53,36 @@ function generate_crossword_pdf_callback() {
     $pdf->SetAutoPageBreak(TRUE, 25);
     $pdf->AddPage();
 
-    // Add header image if provided
-    $pdf_image_url = esc_url(get_option('wp_quiz_plugin_pdf_image_url'));
-    if (!empty($pdf_image_url)) {
-        $image_path = ABSPATH . str_replace(home_url('/'), '', $pdf_image_url);
-        if (file_exists($image_path)) {
-            $pdf->Image($image_path, 150, 10, 40, 15, '', '', '', false, 300, '', false, false, 1, false, false, false);
-            $pdf->SetY($pdf->GetY() + 10);
-        }
-    }
-
     // Display the current crossword title as post title
     $pdf->SetFont('helvetica', 'B', 16);
-    $pdf->Cell(0, 10, get_the_title($crossword_id), 0, 1, 'C');
+    $pdf->Cell(0, 10, $crossword_title , 0, 1, 'C');
     $pdf->Ln(5);
 
-    // Student Name and Date fields with shaded background
+    // Generate the crossword grid
     $pdf->SetFont('helvetica', '', 12);
-    $pdf->SetFillColor(224, 230, 248); // Light gray background
-    $pdf->Cell(120, 10, 'Student Name: _______________________', 0, 1, 'L', 1);
-    $pdf->Ln(5);
-    $pdf->Cell(60, 10, 'Date: ___________', 0, 1, 'L', 1);
-    $pdf->Ln(10);
+    $html = '<div style="padding: 20px;">
+                <table cellpadding="0" cellspacing="0" style="border-collapse: separate; border-spacing: 0; border: 2px solid #ccc; border-radius: 10px; overflow: hidden;">';
 
-    // Generate the crossword grid with padding and square cells
-    $pdf->SetFont('helvetica', '', 12);
-    $html = '<div style="padding: 20px;"><table cellpadding="0" cellspacing="0" style="border-collapse: collapse;">';
+    $cellSize = 30;
+
     foreach ($crossword_data_array['grid'] as $row) {
         $html .= '<tr>';
         foreach ($row as $cell) {
             $letter = $cell['letter'];
             $clueNumber = $cell['clueNumber'];
             if ($letter !== '') {
-                $cellContent = '';
+                $cellContent = '<div style="text-align: center; font-size:12px; line-height: ' . $cellSize . 'px;">';
+                
                 if ($clueNumber !== '') {
-                    $cellContent .= '<div style="font-size:10px; position: absolute; top: 2px; left: 2px;">' . htmlspecialchars($clueNumber) . '</div>';
+                    $cellContent .= '<span style="position: absolute; top: 0px; left: 0px; font-size:8px;">' . htmlspecialchars($clueNumber) . '</span>';
                 }
-                $showLetter = $showkeys ? $letter : '';
-                $cellContent .= '<div style="font-size:12px; text-align: center; margin-top: 8px;">' . htmlspecialchars($showLetter) . '</div>';
-                $html .= '<td style="width: 25px; height: 25px; border: 1px solid #000; position: relative; background-color: #a3e3ff;">' . $cellContent . '</td>';
+                
+                $cellContent .= $showkeys ? htmlspecialchars($letter) : '';
+                $cellContent .= '</div>';
+
+                $html .= '<td style="width: ' . $cellSize . 'px; height: ' . $cellSize . 'px; border: 1px solid #ccc; position: relative; background-color: #d9eefa;">' . $cellContent . '</td>';
             } else {
-                $html .= '<td style="width: 25px; height: 25px; background-color: white; border: 1px solid #000;"></td>';
+                $html .= '<td style="width: ' . $cellSize . 'px; height: ' . $cellSize . 'px; background-color: white;"></td>';
             }
         }
         $html .= '</tr>';
@@ -95,70 +90,12 @@ function generate_crossword_pdf_callback() {
     $html .= '</table></div>';
     $pdf->writeHTML($html, true, false, false, false, '');
 
-    // Add some vertical space before clues
-    $pdf->Ln(10);
-
-    // Function to render clues (both Across and Down)
-    function render_clues($pdf, $clues, $title) {
-        $pdf->SetFont('helvetica', 'B', 14);
-        $pdf->Cell(0, 10, $title, 0, 1, 'L');
-        $pdf->SetFont('helvetica', '', 12);
-
-        foreach ($clues as $clueData) {
-            $clueNumber = htmlspecialchars($clueData['clueNumber']);
-            $clueText = htmlspecialchars($clueData['clueText']);
-            $clueImage = $clueData['clueImage'];
-            $html = '<table cellpadding="4" cellspacing="0" style="width: 100%; margin-bottom: 10px;">';
-            $html .= '<tr>';
-            $html .= '<td style="width: 60%; background-color: #E8E8E8; padding: 8px;"><strong>' . $clueNumber . '.</strong> ' . $clueText . '</td>';
-
-            if (!empty($clueImage)) {
-                $imagePath = $clueImage;
-                if (strpos($clueImage, home_url()) !== false) {
-                    $imagePath = str_replace(home_url('/'), ABSPATH, $clueImage);
-                } elseif (strpos($clueImage, '/') === 0) {
-                    $imagePath = ABSPATH . ltrim($clueImage, '/');
-                }
-
-                $html .= '<td style="width: 40%; text-align: center; padding: 8px; background-color: #E8E8E8;">';
-                $html .= '<img src="' . htmlspecialchars($imagePath) . '" style="width: 50px; height: 50px;" />';
-                $html .= '</td>';
-            } else {
-                $html .= '<td style="width: 40%;"></td>';
-            }
-
-            $html .= '</tr></table>';
-            $pdf->writeHTML($html, true, false, false, false, '');
-        }
-    }
-
-    // Render Across clues
-    if (!empty($crossword_data_array['clues']['across'])) {
-        render_clues($pdf, $crossword_data_array['clues']['across'], 'Across');
-    }
-
-    // Add space between Across and Down clues
-    $pdf->Ln(5);
-
-    // Render Down clues
-    if (!empty($crossword_data_array['clues']['down'])) {
-        render_clues($pdf, $crossword_data_array['clues']['down'], 'Down');
-    }
-
-    // Define PDF filename based on showkeys
-    $file_suffix = $showkeys ? 'keys' : 'game';
-    $pdf_filename = 'crossword_' . get_the_title($crossword_id) . '_' . $file_suffix . '.pdf';
-
-    // Output PDF with dynamic filename
-    $pdf_content = $pdf->Output($pdf_filename, 'S');
+    // Clear the output buffer to prevent interference
     if (ob_get_length()) {
         ob_end_clean();
     }
 
-    header('Content-Type: application/pdf');
-    header('Content-Disposition: attachment; filename="' . $pdf_filename . '"');
-    header('Content-Length: ' . strlen($pdf_content));
-    echo $pdf_content;
-
-    wp_die();
+    // Output the PDF and enforce the download with the correct filename
+    $pdf->Output($pdf_filename, 'D');
+    wp_die(); // Ensure no additional output is sent
 }
