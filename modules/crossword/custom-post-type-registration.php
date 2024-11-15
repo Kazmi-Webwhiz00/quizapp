@@ -1,6 +1,8 @@
 <?php
 // In your plugin's main file or a dedicated file for custom post types
 function register_crossword_post_type() {
+    $custom_slug = get_option('crossword_custom_url_slug', 'crossword'); // Fetch the saved slug
+
     $labels = array(
         'name'               => __( 'Crosswords', 'your-text-domain' ),
         'singular_name'      => __( 'Crossword', 'your-text-domain' ),
@@ -22,7 +24,7 @@ function register_crossword_post_type() {
         'menu_icon'          => 'dashicons-editor-table',
         'supports'           => array( 'title' ),
         'has_archive'        => true,
-        'rewrite'            => array( 'slug' => 'crossword' ), // Singular slug
+        'rewrite'            => array('slug' => $custom_slug), // Singular slug
     );
 
     register_post_type( 'crossword', $args ); // Singular post type key

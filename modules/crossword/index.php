@@ -9,6 +9,7 @@ include_once plugin_dir_path(__FILE__) . '/crossword-download.php';
 include_once plugin_dir_path(__FILE__) . '/public/crossword-fe-index.php';
 include_once plugin_dir_path(__FILE__) . '/custom-metaboxes/kw-crossword-seo-text-area.php';
 include_once plugin_dir_path(__FILE__) . '/custom-metaboxes/kw-crossword-features-buttons.php';
+include_once plugin_dir_path(__FILE__) . '/admin/admin-settings.php';
 
 function load_crossword_assets($hook) {
     // Get the current screen information
@@ -68,7 +69,9 @@ function crossword_enqueue_preview_assets($hook) {
             wp_localize_script(
                 'generate-pdf-script',
                 'cross_ajax_obj',
-                array('ajax_url' => admin_url('admin-ajax.php'))
+                array(
+                    'ajax_url' => admin_url('admin-ajax.php'),
+                    'downloadingText' => 'Downloadin....')
             );
         }
     }

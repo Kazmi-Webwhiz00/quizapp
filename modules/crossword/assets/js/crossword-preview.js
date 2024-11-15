@@ -34,7 +34,7 @@ jQuery(document).ready(function ($) {
         // Calculate dynamic grid size based on words
         const longestWordLength = wordsData[0].word.length;
         const totalLetters = wordsData.reduce((sum, wordObj) => sum + wordObj.word.length, 0);
-        gridSize = Math.max(longestWordLength + 10, Math.ceil(Math.sqrt(totalLetters)) + 10);
+        gridSize = Math.max(longestWordLength + 5, Math.ceil(Math.sqrt(totalLetters)) + 5);
         gridSize = Math.min(gridSize, 100); // Set a maximum grid size to prevent excessive size
 
         // Initialize grid
