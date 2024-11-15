@@ -14,7 +14,7 @@
     padding: 15px;
     border: 1px solid #d1d9e6;
     border-radius: 5px;
-    width: 300px;
+    width: auto;
     max-width: 300px;
     max-height: 300px;
 }
@@ -158,4 +158,23 @@ button.remove-word:hover svg {
     height: 50px;
     border-radius: 15%;
     object-fit: cover;
+}
+
+.kw-crossword-words-clues-action-button-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.kw-crossword-words-clues-container{
+width: 80%;
+}
+
+@media (max-width: 500px) {
+    .crossword-word-clue input[type="text"] {
+        width: 100%;
+        box-sizing: border-box; /* Ensure padding and border are included in the width */
+        margin: 5px;
+    }
 }

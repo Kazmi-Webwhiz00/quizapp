@@ -24,6 +24,26 @@ function crossword_preview_meta_box() {
 }
 add_action('add_meta_boxes', 'crossword_preview_meta_box');
 
+
+function crossword_register_create_with_ai_meta_box() {
+    add_meta_box(
+        'crossword_ai_meta_box',         // Meta box ID
+        'Generate with AI',              // Title
+        'crossword_render_ai_meta_box',  // Callback function
+        'Crossword',                          // Post type
+        'side'                           // Context: side, normal, advanced
+    );
+}
+add_action('add_meta_boxes', 'crossword_register_create_with_ai_meta_box');
+
+
+function crossword_render_ai_meta_box($post) {
+    wp_nonce_field('crossword_save_meta_box_data', 'crossword_meta_box_nonce');
+
+    // Include the template file where the HTML is defined
+    include plugin_dir_path(__FILE__) . 'templates/generate-with-ai.php';
+}
+
 // Meta box callback function
 function crossword_words_clues_meta_box_callback($post) {
     // Add  // Add nonce for security and authentication
