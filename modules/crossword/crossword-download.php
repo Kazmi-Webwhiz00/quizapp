@@ -76,7 +76,7 @@ function generate_crossword_pdf_callback() {
                 <table cellpadding="0" cellspacing="0" style="border-collapse: separate; border-spacing: 0; border: 2px solid #ccc; border-radius: 10px; overflow: hidden;">';
 
     // Set a consistent size for width and height for square cells
-    $cellSize = 30;
+    $cellSize = 20;
 
     foreach ($crossword_data_array['grid'] as $row) {
         $html .= '<tr>';
