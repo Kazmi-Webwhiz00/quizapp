@@ -13,6 +13,15 @@ function add_seo_text_meta_box() {
         'side', // Position
         'low' // Priority
     );
+
+    add_meta_box(
+        'quiz_seo_text2', // ID of the meta box
+        __(esc_html($meta_box_title),'wp-quiz-plugin'), // Title of the meta box dynamically set
+        'render_seo_text_meta_box', // Callback function to display the input field
+        'crossword', // Post type (quizzes)
+        'side', // Position
+        'low' // Priority
+    );
 }
 add_action('add_meta_boxes', 'add_seo_text_meta_box');
 
