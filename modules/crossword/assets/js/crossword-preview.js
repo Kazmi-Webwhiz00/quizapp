@@ -225,7 +225,7 @@ jQuery(document).ready(function ($) {
         }
 
         // Assign clue numbers after all words have been placed
-        assignClueNumbers();
+        assignClueNumbers(placedWords);
 
         // Render the grid in the container
         const table = $('<table class="crossword-table"></table>');
@@ -276,44 +276,43 @@ jQuery(document).ready(function ($) {
 
     }
 
-    // Function to assign clue numbers based on grid positions
-    function assignClueNumbers() {
-        let clueNumber = 1;
+
+    function assignClueNumbers(placedWords) {
+        // Reset clue numbers for all cells and words
         for (let y = 0; y < gridSize; y++) {
             for (let x = 0; x < gridSize; x++) {
                 const cell = grid[y][x];
-                if (cell && cell.letter && !cell.clueNumber) {
-                    let isStartOfWord = false;
-                    // Check for across word
-                    if (
-                        cell.across &&
-                        cell.across.x === x &&
-                        cell.across.y === y &&
-                        !cell.across.clueNumber &&
-                        ((x === 0) || (grid[y][x - 1] === null))
-                    ) {
-                        cell.across.clueNumber = clueNumber;
-                        isStartOfWord = true;
-                    }
-                    // Check for down word
-                    if (
-                        cell.down &&
-                        cell.down.x === x &&
-                        cell.down.y === y &&
-                        !cell.down.clueNumber &&
-                        ((y === 0) || (grid[y - 1][x] === null))
-                    ) {
-                        cell.down.clueNumber = clueNumber;
-                        isStartOfWord = true;
-                    }
-                    if (isStartOfWord) {
-                        cell.clueNumber = clueNumber;
-                        clueNumber++;
-                    }
+                if (cell) {
+                    cell.clueNumber = null;
                 }
             }
         }
+        placedWords.forEach((wordObj) => {
+            wordObj.clueNumber = null;
+        });
+    
+        let clueNumber = 1;
+    
+        // Assign clue numbers to each word and their starting cells
+        placedWords.forEach((wordObj) => {
+            const { x, y, direction } = wordObj;
+            const cell = grid[y][x];
+    
+            if (cell) {
+                if (cell.clueNumber) {
+                    // If the cell already has a clue number, use it
+                    wordObj.clueNumber = cell.clueNumber;
+                } else {
+                    // Assign a new clue number
+                    cell.clueNumber = clueNumber;
+                    wordObj.clueNumber = clueNumber;
+                    clueNumber++;
+                }
+            }
+        });
     }
+    
+    
 
     // Function to show/hide crossword answers based on the checkbox state
     function toggleAnswers() {

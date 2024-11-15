@@ -126,22 +126,27 @@ jQuery(document).ready(function ($) {
         const downClues = $('<ul></ul>');
     
         cluesData.across.forEach((clueObj) => {
-            const clueItem = $('<li></li>');
-            clueItem.append(`<strong>${clueObj.clueNumber}.</strong> ${clueObj.clueText}`);
-            if (clueObj.clueImage) {
-                clueItem.append(`<br><img src="${clueObj.clueImage}" alt="Clue image" class="clue-image">`);
+            if (clueObj.clueText && clueObj.clueNumber && clueObj.clueNumber != 'null') { // Check if clueText and clueNumber exist
+                const clueItem = $('<li></li>');
+                clueItem.append(`<strong>${clueObj.clueNumber}.</strong> ${clueObj.clueText}`);
+                if (clueObj.clueImage) {
+                    clueItem.append(`<br><img src="${clueObj.clueImage}" alt="Clue image" class="clue-image">`);
+                }
+                acrossClues.append(clueItem);
             }
-            acrossClues.append(clueItem);
         });
-    
+        
         cluesData.down.forEach((clueObj) => {
-            const clueItem = $('<li></li>');
-            clueItem.append(`<strong>${clueObj.clueNumber}.</strong> ${clueObj.clueText}`);
-            if (clueObj.clueImage) {
-                clueItem.append(`<br><img src="${clueObj.clueImage}" alt="Clue image" class="clue-image">`);
+            if (clueObj.clueText && clueObj.clueNumber && clueObj.clueNumber != 'null') { // Check if clueText and clueNumber exist
+                const clueItem = $('<li></li>');
+                clueItem.append(`<strong>${clueObj.clueNumber}.</strong> ${clueObj.clueText}`);
+                if (clueObj.clueImage) {
+                    clueItem.append(`<br><img src="${clueObj.clueImage}" alt="Clue image" class="clue-image">`);
+                }
+                downClues.append(clueItem);
             }
-            downClues.append(clueItem);
         });
+        
     
         // Append the clues to the clues container
         $('#clues-container').empty();
