@@ -146,20 +146,26 @@ jQuery(document).ready(function ($) {
         // Function to find possible positions to place a word
         function findPositions(word) {
             let positions = [];
-
+        
             if (placedWords.length === 0) {
                 // Place the first word in the center
                 const x = Math.floor((gridSize - word.length) / 2);
                 const y = Math.floor(gridSize / 2);
-                positions.push({ x, y, direction: ACROSS });
-                positions.push({ x, y, direction: DOWN });
+                // Check if the word can be placed horizontally
+                if (canPlaceWord(word, x, y, ACROSS)) {
+                    positions.push({ x, y, direction: ACROSS });
+                }
+                // Check if the word can be placed vertically
+                if (canPlaceWord(word, x, y, DOWN)) {
+                    positions.push({ x, y, direction: DOWN });
+                }
             } else {
                 for (let placedWord of placedWords) {
                     for (let i = 0; i < word.length; i++) {
                         for (let j = 0; j < placedWord.word.length; j++) {
                             if (word[i] === placedWord.word[j]) {
                                 let x, y, direction;
-
+        
                                 if (placedWord.direction === ACROSS) {
                                     // Try placing word vertically
                                     direction = DOWN;
@@ -171,7 +177,7 @@ jQuery(document).ready(function ($) {
                                     x = placedWord.x - i;
                                     y = placedWord.y + j;
                                 }
-
+        
                                 if (canPlaceWord(word, x, y, direction)) {
                                     positions.push({ x, y, direction });
                                 }
@@ -182,6 +188,7 @@ jQuery(document).ready(function ($) {
             }
             return positions;
         }
+        
 
         // Recursive function to try placing words
         function placeWords(index) {

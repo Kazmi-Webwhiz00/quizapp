@@ -7,7 +7,6 @@ include_once plugin_dir_path(__FILE__) . '/utils/crossword-helpers.php';
 include_once plugin_dir_path(__FILE__) . '/custom-post-type-registration.php';
 include_once plugin_dir_path(__FILE__) . '/crossword-download.php';
 include_once plugin_dir_path(__FILE__) . '/public/crossword-fe-index.php';
-include_once plugin_dir_path(__FILE__) . '/custom-metaboxes/kw-crossword-seo-text-area.php';
 include_once plugin_dir_path(__FILE__) . '/custom-metaboxes/kw-crossword-features-buttons.php';
 include_once plugin_dir_path(__FILE__) . '/admin/admin-settings.php';
 
