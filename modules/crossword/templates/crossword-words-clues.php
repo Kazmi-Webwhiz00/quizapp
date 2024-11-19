@@ -50,8 +50,9 @@ if (empty($words_clues) || !is_array($words_clues)) {
 
 <script type="text/template" id="crossword-word-clue-template">
     <div class="crossword-word-clue" data-index="{{index}}">
-        <div style="flex: 0.9;">
-            <span class="word-number">{{number}}.</span>
+    <span class="word-number">{{number}}.</span>
+        <div class="kw-crossword-words-clues-container" >
+            
             <input type="text" name="crossword_words[{{index}}][word]" placeholder="Word" value="" />
             <input type="text" name="crossword_words[{{index}}][clue]" placeholder="Clue" value="" />
         </div>
