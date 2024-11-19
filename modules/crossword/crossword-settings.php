@@ -31,7 +31,8 @@ function crossword_register_create_with_ai_meta_box() {
         'Generate with AI',              // Title
         'crossword_render_ai_meta_box',  // Callback function
         'Crossword',                          // Post type
-        'side'                           // Context: side, normal, advanced
+        'normal',
+        'high'
     );
 }
 add_action('add_meta_boxes', 'crossword_register_create_with_ai_meta_box');

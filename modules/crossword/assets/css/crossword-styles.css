@@ -15,7 +15,6 @@
     border: 1px solid #d1d9e6;
     border-radius: 5px;
     width: auto;
-    max-width: 300px;
     max-height: 300px;
 }
 
@@ -177,4 +176,18 @@ width: 80%;
         box-sizing: border-box; /* Ensure padding and border are included in the width */
         margin: 5px;
     }
+}
+
+ /* custom meta box styling */
+
+#crossword_ai_meta_box {
+    max-width: 500px;
+    width: 100%;
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+#crossword_ai_meta_box .inside {
+    text-align: left;
+    padding: 10px;
 }
