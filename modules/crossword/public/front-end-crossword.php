@@ -4,7 +4,9 @@ Template Name: Crossword Puzzle Template
 */
 
 // Ensure this file is accessed within WordPress
-if (!defined('ABSPATH')) exit;
+if (!defined('ABSPATH')) {
+    exit;
+}
 
 // Fetch existing crossword grid data from the post meta
 global $post;
@@ -21,8 +23,7 @@ if (isset($_GET['download']) && $_GET['download'] === 'json') {
 ?>
 
 <div class="fe-crossword-wrapper">
-
-<div class="fe-corssword-header-container">
+    <div class="fe-corssword-header-container">
         <h1><?php the_title(); ?></h1>
     </div>
     <div id="crossword-container">
@@ -33,14 +34,27 @@ if (isset($_GET['download']) && $_GET['download'] === 'json') {
         <input type="hidden" id="crossword-data" name="crossword_data" value="<?php echo esc_attr($grid_data); ?>">
 
         <!-- Crossword Grid Container -->
-         <div class="fe-crossword-grid-wrapper">
+        <div class="fe-crossword-grid-wrapper">
+            <!-- Checkbox for Live Word Check -->
+            <div class="checkbox-wrapper-16">
+                <label class="checkbox-wrapper">
+                    <input type="checkbox" class="checkbox-input" id="check-words" />
+                    <span class="checkbox-tile">
+                        <span class="checkbox-icon"></span>
+                        <span class="checkbox-label">Enable Live Word Check</span>
+                    </span>
+                </label>
+            </div>
+
             <div id="crossword-grid"></div>
         </div>
+
         <!-- Clues Container -->
         <div id="clues-container">
             <!-- Download Button -->
-             <div class= "fe-download-button-container">
-                 <span id="download-pdf-button" data-crossword-id="<?php echo esc_attr($post->ID); ?>" >Download</span>
+            <div class="fe-download-button-container">
+                <button class="kw-validate-crossword-button" id="validate-crossword">Check Crossword</button>
+                <span id="download-pdf-button" data-crossword-id="<?php echo esc_attr($post->ID); ?>">Download</span>
             </div>
             <h3>Across</h3>
             <ul id="across-clues"></ul>
@@ -49,9 +63,3 @@ if (isset($_GET['download']) && $_GET['download'] === 'json') {
         </div>
     </div>
 </div>
-
-<script>
-    jQuery(document).ready(function ($) {
-       
-    })
-</script>

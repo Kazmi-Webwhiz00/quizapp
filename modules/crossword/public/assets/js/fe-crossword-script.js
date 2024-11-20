@@ -46,14 +46,6 @@ jQuery(document).ready(function ($) {
         // Render clues
         renderClues(data.clues);
 
-        // Add a checkbox for live validation
-        const checkContainer = $('<div class="check-container"></div>');
-        const checkBox = $('<input type="checkbox" id="check-words" />');
-        checkContainer.append(checkBox);
-        checkContainer.append('<label for="check-words">Check Words</label>');
-        const checkButton = $('<button id="validate-crossword">Check Crossword</button>');
-        checkContainer.append(checkButton);
-        $(container).append(checkContainer);
 
         // Attach validation logic
         $('#validate-crossword').on('click', function () {

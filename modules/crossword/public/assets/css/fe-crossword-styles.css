@@ -204,4 +204,76 @@ h3 {
     display: flex;
     gap: 10px;
     align-items: center;
+    justify-content: end;
 }
+
+.kw-validate-crossword-button {
+    padding: 6px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+
+
+
+.checkbox-wrapper-16 * {
+    box-sizing: border-box;
+  }
+  
+  .checkbox-wrapper-16 .checkbox-input {
+    display: none;
+  }
+  
+  .checkbox-wrapper-16 .checkbox-tile {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    gap: 10px;
+    min-width: 220px;
+    min-height: 50px;
+    padding: 5px 15px;
+    border-radius: 8px;
+    border: 2px solid #b5bfd9;
+    background-color: #fff;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+    cursor: pointer;
+    position: relative;
+  }
+  
+  .checkbox-wrapper-16 .checkbox-input:checked + .checkbox-tile {
+    border-color: #00796b;
+    box-shadow: 0 5px 15px rgba(0, 121, 107, 0.2);
+  }
+  
+  .checkbox-wrapper-16 .checkbox-tile:hover {
+    border-color: #00796b;
+  }
+  
+  .checkbox-wrapper-16 .checkbox-icon {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid #b5bfd9;
+    background-color: #fff;
+    position: relative;
+    transition: background-color 0.25s ease, border-color 0.25s ease;
+  }
+  
+  .checkbox-wrapper-16 .checkbox-input:checked + .checkbox-tile .checkbox-icon {
+    background-color: #00796b;
+    border-color: #00796b;
+    box-shadow: inset 0 0 5px rgba(255, 255, 255, 0.7);
+  }
+  
+  .checkbox-wrapper-16 .checkbox-label {
+    font-size: 1rem;
+    color: #494949;
+    transition: color 0.25s ease;
+  }
+  
+  .checkbox-wrapper-16 .checkbox-input:checked + .checkbox-tile .checkbox-label {
+    color: #00796b;
+  }
+  
