@@ -167,6 +167,7 @@ jQuery(document).ready(function ($) {
                 confirmButtonText: 'Awesome!',
                 confirmButtonColor:'#00796b',
             });
+            $('#kw-reset-crossword').show();
         } else {
             // SweetAlert2 for errors
             Swal.fire({
@@ -175,6 +176,7 @@ jQuery(document).ready(function ($) {
                 icon: 'error',
                 confirmButtonText: 'Try Again'
             });
+            $('#kw-reset-crossword').hide();
         }
     }
 
@@ -198,6 +200,10 @@ jQuery(document).ready(function ($) {
         $('.letter-input').off('input');
         $('.crossword-table td').removeClass('correct-word');
     }
+
+    $('#kw-reset-crossword').on('click', function () {
+        location.reload(); // Reload the current page
+    });
 
     // Initialize the crossword grid
     populateCrosswordFromData('#crossword-grid');

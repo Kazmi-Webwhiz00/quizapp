@@ -36,6 +36,9 @@ if (isset($_GET['download']) && $_GET['download'] === 'json') {
         <!-- Crossword Grid Container -->
         <div class="fe-crossword-grid-wrapper">
             <!-- Checkbox for Live Word Check -->
+
+
+            <div class="kw-crossword-fe-replay-container">
             <div class="checkbox-wrapper-16">
                 <label class="checkbox-wrapper">
                     <input type="checkbox" class="checkbox-input" id="check-words" />
@@ -45,6 +48,11 @@ if (isset($_GET['download']) && $_GET['download'] === 'json') {
                     </span>
                 </label>
             </div>
+    <span class="kw-crossword-reset-button" id="kw-reset-crossword">
+    <svg width="30" height="30" fill="#fff" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M426.667 106.667v42.666l-68.666-.003c36.077 31.659 58.188 77.991 58.146 128.474-.065 78.179-53.242 146.318-129.062 165.376s-154.896-15.838-191.92-84.695C58.141 289.63 72.637 204.42 130.347 151.68a85.33 85.33 0 0 0 33.28 30.507 124.59 124.59 0 0 0-46.294 97.066c1.05 69.942 58.051 126.088 128 126.08 64.072 1.056 118.71-46.195 126.906-109.749 6.124-47.483-15.135-92.74-52.236-118.947L320 256h-42.667V106.667zM202.667 64c23.564 0 42.666 19.103 42.666 42.667s-19.102 42.666-42.666 42.666S160 130.231 160 106.667 179.103 64 202.667 64" fill-rule="white"/></svg>
+        </span>
+</div>
+
 
             <div id="crossword-grid"></div>
         </div>

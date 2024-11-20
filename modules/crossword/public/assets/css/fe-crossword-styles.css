@@ -277,3 +277,25 @@ h3 {
     color: #00796b;
   }
   
+
+  /* Reset / Replay Button Styling */
+.kw-crossword-reset-button {
+    display: none;
+    background-color: #00796b;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 100%;
+    transition: background-color 0.25s ease;
+}
+
+.kw-crossword-reset-button:hover {
+    background-color: #005f56;
+}
+ .kw-crossword-fe-replay-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+ }
