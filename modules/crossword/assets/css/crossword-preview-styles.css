@@ -61,6 +61,8 @@
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    width: 100%;
+    max-width: 800px;
 }
 
 /* Crossword table and cell styling */
@@ -117,8 +119,10 @@
 /* Clues container styling */
 #clues-container {
     width: 100%;
+    max-width: 350px;;
     padding: 10px;
     display: flex;
+    flex-direction: column;
     gap: 10px;
     justify-content: space-between;
 }

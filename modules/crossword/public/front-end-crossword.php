@@ -61,7 +61,7 @@ if (isset($_GET['download']) && $_GET['download'] === 'json') {
             <div id="crossword-grid"></div>
 
                     <!-- Clues Container -->
-        <div id="clues-container">
+        <div id="clues-container-fe">
             <div class="kw-across-clue-wrapper">
                 <h3>Across</h3>
                 <ul id="across-clues"></ul>
