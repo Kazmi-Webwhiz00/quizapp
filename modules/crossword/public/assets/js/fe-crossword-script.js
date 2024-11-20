@@ -158,9 +158,23 @@ jQuery(document).ready(function ($) {
         });
 
         if (allCorrect) {
-            alert('Congratulations! You have correctly filled the crossword!');
+            // SweetAlert2 for success
+            Swal.fire({
+                title: 'Congratulations!',
+                text: 'You have correctly filled the crossword!',
+                icon: 'success',
+                iconColor:'#00796b',
+                confirmButtonText: 'Awesome!',
+                confirmButtonColor:'#00796b',
+            });
         } else {
-            alert('Some answers are incorrect. Keep trying!');
+            // SweetAlert2 for errors
+            Swal.fire({
+                title: 'Oops!',
+                text: 'Some answers are incorrect. Keep trying!',
+                icon: 'error',
+                confirmButtonText: 'Try Again'
+            });
         }
     }
 

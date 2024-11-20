@@ -11,6 +11,8 @@ function load_crossword_assets_fe() {
         'cross_ajax_obj',
         array('ajax_url' => admin_url('admin-ajax.php'))
     );
+
+    wp_enqueue_script('sweetalert2', 'https://cdn.jsdelivr.net/npm/sweetalert2@11', array(), null, true);
 }
 
 
