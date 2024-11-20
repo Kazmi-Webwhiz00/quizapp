@@ -152,3 +152,56 @@ h3 {
     border-radius: 5px;
     cursor: pointer;
 }
+
+
+.letter-input:focus {
+    background-color: #e1f5fe;
+}
+
+.filled-cell {
+    position: relative;
+    background-color: #e1f5fe;
+    border: 1px solid #d0d0d0 !important;
+    padding: 0;
+}
+
+.filled-cell .clue-number {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    font-size: 10px;
+    color: #757575;
+}
+
+.empty-cell {
+    background-color: #ffffff;
+}
+
+.filled-cell > input {
+   padding: 0px !important;
+   border: 0px !important;
+}
+
+.letter-input {
+    width: 100%;
+    height: 100%;
+    border: none;
+    text-align: center;
+    font-size: 16px;
+    text-transform: uppercase;
+    background: transparent;
+    outline: none;
+    cursor: text;
+}
+
+.correct-word {
+    background-color: #d4edda;
+    transition: background-color 0.3s ease;
+}
+
+.check-container {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}

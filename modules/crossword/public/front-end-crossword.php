@@ -49,3 +49,9 @@ if (isset($_GET['download']) && $_GET['download'] === 'json') {
         </div>
     </div>
 </div>
+
+<script>
+    jQuery(document).ready(function ($) {
+       
+    })
+</script>
