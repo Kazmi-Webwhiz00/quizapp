@@ -116,8 +116,11 @@
 
 /* Clues container styling */
 #clues-container {
-    width: 350px;
+    width: 100%;
     padding: 10px;
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
 }
 
 /* Clues header styling */

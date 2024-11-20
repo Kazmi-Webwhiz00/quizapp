@@ -2,7 +2,7 @@
 /*
 Plugin Name: WP Quiz Plugin
 Description: A WordPress plugin to create and manage quizzes with questions and user submissions.
-Version: 2.1.2
+Version: 2.2.0
 Author: Kazmi Webwhiz
 Author URI: https://kazmiwebwhiz.com
 Text Domain: wp-quiz-plugin

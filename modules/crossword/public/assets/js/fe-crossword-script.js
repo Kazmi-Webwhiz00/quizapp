@@ -176,7 +176,6 @@ jQuery(document).ready(function ($) {
                 icon: 'error',
                 confirmButtonText: 'Try Again'
             });
-            $('#kw-reset-crossword').hide();
         }
     }
 

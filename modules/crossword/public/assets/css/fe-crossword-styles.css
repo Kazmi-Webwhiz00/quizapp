@@ -1,5 +1,6 @@
 #crossword-container {
     display: flex;
+    flex-direction: column;
     gap: 40px;
     max-width: 100%;
     margin: 0 auto;
@@ -16,6 +17,7 @@
     border-radius: 4px;
     overflow: hidden;
     padding: 10px;
+    table-layout: fixed !important;
 }
 
 .crossword-table td {
@@ -54,9 +56,13 @@
     display: none;
 }
 
+/* Clues container styling */
 #clues-container {
-    width: 350px;
+    width: 100%;
     padding: 10px;
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
 }
 
 h3 {
@@ -135,7 +141,10 @@ h3 {
 
 .fe-download-button-container{
     margin-bottom: 25px;
-    text-align: end;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap:10px;
 }
 
 .fe-crossword-grid-wrapper {
@@ -144,7 +153,10 @@ h3 {
     border-radius: 20px;
 }
 
-.fe-download-button-container > span {
+.fe-download-button-wrapper {
+    margin-bottom: 10px;
+}
+.fe-download-button-wrapper > span {
     padding: 10px 20px;
     background-color: #00796b;
     color: white; 
@@ -214,11 +226,14 @@ h3 {
     cursor: pointer;
 }
 
-
-
+.checkbox-wrapper-16,
+.checkbox-wrapper{
+    width: 100% !important;
+}
 
 .checkbox-wrapper-16 * {
     box-sizing: border-box;
+    width: 100%;
   }
   
   .checkbox-wrapper-16 .checkbox-input {
@@ -230,7 +245,6 @@ h3 {
     align-items: center;
     justify-content: start;
     gap: 10px;
-    min-width: 220px;
     min-height: 50px;
     padding: 5px 15px;
     border-radius: 8px;
@@ -280,7 +294,6 @@ h3 {
 
   /* Reset / Replay Button Styling */
 .kw-crossword-reset-button {
-    display: none;
     background-color: #00796b;
     color: white;
     border: none;
@@ -297,5 +310,9 @@ h3 {
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: space-between;
+    justify-content: end;
+ }
+
+ #crossword-grid {
+    overflow: auto;
  }
