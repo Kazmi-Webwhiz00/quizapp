@@ -30,6 +30,8 @@ jQuery(document).ready(function ($) {
                     const input = $('<input type="text" maxlength="1" class="letter-input">');
                     input.data('x', x);
                     input.data('y', y);
+                    input.on('keydown', handleNavigation); // Arrow key and Backspace handling
+                    input.on('input', handleInput); // Prevent spaces
                     tableCell.append(input);
                 } else {
                     tableCell.addClass('empty-cell');
@@ -65,6 +67,53 @@ jQuery(document).ready(function ($) {
                 disableLiveValidation();
             }
         });
+    }
+
+    function handleInput(e) {
+        const input = $(e.target);
+
+        // Remove spaces if entered
+        const value = input.val();
+        if (value.includes(' ')) {
+            input.val(value.replace(/ /g, ''));
+        }
+    }
+
+    function handleNavigation(e) {
+        const input = $(e.target);
+        const x = input.data('x');
+        const y = input.data('y');
+        const table = $('.crossword-table');
+
+        switch (e.key) {
+            case 'ArrowUp':
+                navigateToCell(table, x, y - 1);
+                break;
+            case 'ArrowDown':
+                navigateToCell(table, x, y + 1);
+                break;
+            case 'ArrowLeft':
+                navigateToCell(table, x - 1, y);
+                break;
+            case 'ArrowRight':
+                navigateToCell(table, x + 1, y);
+                break;
+            case 'Backspace':
+                // Clear the current cell
+                input.val('');
+                e.preventDefault(); // Prevent default backspace behavior
+                break;
+        }
+    }
+
+    function navigateToCell(table, x, y) {
+        const targetInput = table.find(`.letter-input`).filter(function () {
+            return $(this).data('x') === x && $(this).data('y') === y;
+        });
+
+        if (targetInput.length) {
+            targetInput.focus();
+        }
     }
 
     function renderClues(cluesData) {
