@@ -16,7 +16,7 @@ function crossword_register_ai_settings() {
     // Add a new section
     add_settings_section(
         'kw_crossword_openai_settings_section', // Updated section ID for clarity
-        __('OpenAI Settings Section', 'wp-quiz-plugin'), // Updated section name
+        null, // Updated section name
         'crossword_render_openai_settings_section',
         'kw-crossword-ai-settings-page' // Page slug
     );
@@ -28,7 +28,7 @@ add_action('admin_init', 'crossword_register_ai_settings');
  */
 function crossword_render_ai_settings_page() {
     ?>
-    <div class="wrap">
+    <div class="kw-settings-wrap">
         <h1><?php esc_html_e('AI Settings', 'wp-quiz-plugin'); ?></h1>
         <form method="post" action="options.php">
             <?php

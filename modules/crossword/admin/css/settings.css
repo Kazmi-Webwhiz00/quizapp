@@ -73,3 +73,160 @@
     color: #007cba;
     text-decoration: underline;
 }
+
+
+
+/*  */
+
+.kw-settings-wrap {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    margin: 0; /* Remove any centering margin */
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-wrap: wrap; /* Enable wrapping for sections */
+    justify-content: flex-start; /* Align sections to the left */
+    align-content: flex-start; /* Align all rows to the top */
+    align-items: flex-start; /* Align individual items to the top */
+    gap: 20px; /* Add spacing between sections */
+    box-sizing: border-box; /* Include padding in width/height */
+}
+
+.kw-settings-wrap h1 {
+    font-size: 1.75rem;
+    color: #333;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #007cba;
+    padding-bottom: 10px;
+    text-align: left;
+    width: 100%;
+}
+
+.kw-settings-wrap form {
+    width: 100%;
+}
+
+.kw-settings-section {
+    background-color: #f9f9f9;
+    padding: 20px; /* Increased padding inside each section */
+    border: 1px solid #ddd;
+    border-radius: 8px; /* Softer edges for sections */
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05); /* Subtle shadow for better separation */
+    width: calc(50% - 20px); /* Two sections per row */
+    min-width: 300px; /* Minimum width for smaller screens */
+    flex: 0 0 calc(50% - 20px); /* Prevent growth or shrinkage */
+    margin-bottom: 20px; /* Add space between sections */
+    align-self: flex-start; /* Ensure each section aligns to the top */
+}
+
+.kw-settings-wrap form .kw-settings-section h2 {
+    font-size: 1.25rem; /* Consistent font size for section headers */
+    margin-bottom: 20px;
+    color: #444;
+    text-align: left;
+    width: 100%;
+}
+
+.kw-settings-wrap form label {
+    display: block; /* Ensure labels appear above inputs */
+    font-weight: bold;
+    margin-bottom: 8px; /* Increased space between label and input */
+    font-size: 1rem; /* Slightly larger label font */
+    color: #333; /* Darker text for better readability */
+    padding-left: 2px; /* Subtle padding for alignment consistency */
+}
+
+.kw-settings-wrap form input[type="text"],
+.kw-settings-wrap form input[type="number"],
+.kw-settings-wrap form select {
+    width: 100%; /* Full width inputs */
+    max-width: 500px;;
+    padding: 10px; /* Larger padding for better spacing */
+    font-size: 1rem; /* Consistent font size */
+    border: 1px solid #ccc; /* Standard border */
+    border-radius: 6px; /* Softer rounded corners */
+    background-color: #f9f9f9; /* Slightly gray background */
+    margin-bottom: 16px; /* Add space below inputs for better separation */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transition */
+}
+
+.kw-settings-wrap form input[type="text"]:focus,
+.kw-settings-wrap form input[type="number"]:focus,
+.kw-settings-wrap form select:focus {
+    border-color: #007cba; /* Highlight border on focus */
+    box-shadow: 0 0 5px rgba(0, 124, 186, 0.5); /* Subtle shadow on focus */
+    outline: none; /* Remove default focus outline */
+    background-color: #ffffff; /* Bright background on focus */
+}
+
+.kw-settings-wrap form select {
+    appearance: none; /* Remove browser-specific dropdown styles */
+    -moz-appearance: none; /* Firefox compatibility */
+    -webkit-appearance: none; /* Safari compatibility */
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='none' stroke='%23333' stroke-width='2' d='M7 7l3 3 3-3'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 14px;
+    padding-right: 40px; /* Add space for dropdown arrow */
+}
+
+.kw-settings-wrap form .description {
+    font-size: 0.9rem; /* Slightly larger for better readability */
+    color: #666; /* Muted color for description text */
+    margin-top: -8px; /* Reduce gap between input and description */
+    margin-bottom: 16px; /* Add consistent space below descriptions */
+    line-height: 1.5; /* Improve readability */
+}
+
+.kw-settings-wrap form input.small-text {
+    max-width: 100px; /* Restrict size for smaller inputs */
+    padding: 10px; /* Add consistent padding for smaller inputs */
+    font-size: 0.9rem;
+    text-align: center; /* Center-align text for numeric inputs */
+}
+
+/* Buttons */
+button,
+.kw-settings-wrap form input[type="submit"] {
+    background-color: #007cba;
+    color: #fff;
+    border: none;
+    padding: 14px 24px; /* Add larger padding for better spacing */
+    font-size: 1rem;
+    border-radius: 6px; /* Softer edges */
+    cursor: pointer;
+    display: inline-block;
+    text-align: center;
+    transition: background-color 0.3s ease;
+    margin-top: 20px;
+}
+
+button:hover,
+.kw-settings-wrap form input[type="submit"]:hover {
+    background-color: #005f8d;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .kw-settings-wrap {
+        padding: 15px;
+    }
+
+    .kw-settings-wrap form .kw-settings-section {
+        width: 100%; /* Full width on small screens */
+        flex: 0 0 100%; /* Prevent wrapping issues */
+    }
+
+    .kw-settings-wrap h1 {
+        font-size: 1.5rem;
+    }
+
+    button,
+    .kw-settings-wrap form input[type="submit"] {
+        font-size: 0.9rem;
+        padding: 12px 20px;
+    }
+}

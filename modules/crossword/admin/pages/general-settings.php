@@ -42,7 +42,7 @@ add_action('admin_init', 'crossword_register_general_settings');
  */
 function crossword_render_general_settings_page() {
     ?>
-    <div class="wrap">
+    <div class="kw-settings-wrap">
         <h1><?php esc_html_e('General Settings', 'wp-quiz-plugin'); ?></h1>
         <form method="post" action="options.php">
             <?php
