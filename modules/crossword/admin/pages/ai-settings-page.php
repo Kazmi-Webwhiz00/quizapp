@@ -8,17 +8,27 @@ if (!defined('ABSPATH')) {
  * Register AI Settings
  */
 function crossword_register_ai_settings() {
-    // Register settings
+    // Register existing settings
     register_setting('kw_crossword_ai_settings', 'kw_crossword_openai_model');
     register_setting('kw_crossword_ai_settings', 'kw_crossword_openai_max_tokens');
     register_setting('kw_crossword_ai_settings', 'kw_crossword_openai_temperature');
 
-    // Add a new section
+    // Add the OpenAI settings section
     add_settings_section(
-        'kw_crossword_openai_settings_section', // Updated section ID for clarity
-        null, // Updated section name
+        'kw_crossword_openai_settings_section',
+        null, // No title for this section
         'crossword_render_openai_settings_section',
-        'kw-crossword-ai-settings-page' // Page slug
+        'kw-crossword-ai-settings-page'
+    );
+
+    // Register the new Prompt Customization section
+    register_setting('kw_crossword_ai_settings', 'kw_crossword_prompt_main');
+
+    add_settings_section(
+        'kw_crossword_prompt_customization_section',
+        '',
+        'crossword_render_prompt_customization_section',
+        'kw-crossword-ai-settings-page'
     );
 }
 add_action('admin_init', 'crossword_register_ai_settings');
@@ -32,8 +42,8 @@ function crossword_render_ai_settings_page() {
         <h1><?php esc_html_e('AI Settings', 'wp-quiz-plugin'); ?></h1>
         <form method="post" action="options.php">
             <?php
-            settings_fields('kw_crossword_ai_settings'); // Option group
-            do_settings_sections('kw-crossword-ai-settings-page'); // Render sections
+            settings_fields('kw_crossword_ai_settings');
+            do_settings_sections('kw-crossword-ai-settings-page');
             submit_button();
             ?>
         </form>
@@ -45,5 +55,12 @@ function crossword_render_ai_settings_page() {
  * Render the OpenAI Settings Section
  */
 function crossword_render_openai_settings_section() {
-    include plugin_dir_path(__FILE__) . '../templates/sections/ai/open-ai-settings-section.php'; // Adjusted template file path
+    include plugin_dir_path(__FILE__) . '../templates/sections/ai/open-ai-settings-section.php';
+}
+
+/**
+ * Render the Prompt Customization Section
+ */
+function crossword_render_prompt_customization_section() {
+    include plugin_dir_path(__FILE__) . '../templates/sections/ai/prompt-customization-section.php';
 }

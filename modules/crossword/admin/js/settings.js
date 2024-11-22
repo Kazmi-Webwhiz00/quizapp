@@ -24,4 +24,14 @@ jQuery(document).ready(function ($) {
     // Initialize the active tab based on the URL hash
     const activeTab = window.location.hash.substring(1) || 'general';
     activateTab(activeTab);
+
+
+
+        // Default value for the crossword prompt
+        const defaultPrompt = "Generate a crossword puzzle prompt.";
+
+        // Reset button click handler
+        $("#kw-reset-default-prompt").on("click", function () {
+            $("#kw_crossword_prompt_main").val(defaultPrompt);
+        });
 });
