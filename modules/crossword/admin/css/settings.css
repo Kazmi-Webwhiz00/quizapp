@@ -51,3 +51,25 @@
 .kw-crossword-tab-pane[style*="display: block"] {
     display: block;
 }
+
+
+.kw-settings-notice-box {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: #f5f7fa;
+    border-left: 4px solid #007cba; /* Blue highlight */
+    margin-bottom: 20px;
+    border-radius: 3px;
+}
+
+.kw-settings-icon {
+    font-size: 16px;
+    margin-right: 10px;
+    color: #007cba;
+}
+
+.kw-settings-notice-content a {
+    color: #007cba;
+    text-decoration: underline;
+}

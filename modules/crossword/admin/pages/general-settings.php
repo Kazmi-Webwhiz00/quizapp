@@ -30,15 +30,6 @@ function crossword_register_general_settings() {
         'crossword_render_slugurl_section', // Callback for rendering the section
         'kw-crossword-general-settings-page' // Page slug
     );
-
-    // Register the field
-    add_settings_field(
-        'crossword_custom_url_slug',
-        __('Custom URL Slug', 'wp-quiz-plugin'), // Field label
-        'crossword_render_slug_field', // Callback for rendering the field
-        'kw-crossword-general-settings-page', // Page slug
-        'slugurl_section' // Section ID
-    );
 }
 add_action('admin_init', 'crossword_register_general_settings');
 
@@ -71,19 +62,5 @@ function crossword_render_general_settings_page() {
  * This function includes the template for the "Custom Slug Settings" section.
  */
 function crossword_render_slugurl_section() {
-    echo '<p>' . esc_html__('Customize the URL slug for crosswords.', 'wp-quiz-plugin') . '</p>';
-}
-
-/**
- * ==========================================================
- * Render the Slug Field
- * ==========================================================
- * This function renders the input field for the "Custom Slug" option.
- */
-function crossword_render_slug_field() {
-    $value = get_option('crossword_custom_url_slug', 'crossword');
-    ?>
-    <input type="text" id="crossword_custom_url_slug" name="crossword_custom_url_slug" value="<?php echo esc_attr($value); ?>" class="regular-text" />
-    <p class="description"><?php esc_html_e('Set a custom slug for crossword URLs.', 'wp-quiz-plugin'); ?></p>
-    <?php
+    include plugin_dir_path(__FILE__) . '../templates/sections/slugurl-section.php';
 }
