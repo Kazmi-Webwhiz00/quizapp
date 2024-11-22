@@ -4,22 +4,22 @@ function register_crossword_post_type() {
     $custom_slug = get_option('crossword_custom_url_slug', 'crossword'); // Fetch the saved slug
 
     $labels = array(
-        'name'               => __( 'Crosswords', 'your-text-domain' ),
-        'singular_name'      => __( 'Crossword', 'your-text-domain' ),
-        'menu_name'          => __( 'Crosswords', 'your-text-domain' ),
-        'add_new'            => __( 'Add New', 'your-text-domain' ),
-        'add_new_item'       => __( 'Add New Crossword', 'your-text-domain' ),
-        'edit_item'          => __( 'Edit Crossword', 'your-text-domain' ),
-        'new_item'           => __( 'New Crossword', 'your-text-domain' ),
-        'view_item'          => __( 'View Crossword', 'your-text-domain' ),
-        'search_items'       => __( 'Search Crosswords', 'your-text-domain' ),
-        'not_found'          => __( 'No crosswords found', 'your-text-domain' ),
-        'not_found_in_trash' => __( 'No crosswords found in Trash', 'your-text-domain' ),
+        'name'               => __( 'Crosswords', 'wp-quiz-plugin' ),
+        'singular_name'      => __( 'Crossword', 'wp-quiz-plugin' ),
+        'menu_name'          => __( 'Crosswords', 'wp-quiz-plugin' ),
+        'add_new'            => __( 'Add New', 'wp-quiz-plugin' ),
+        'add_new_item'       => __( 'Add New Crossword', 'wp-quiz-plugin' ),
+        'edit_item'          => __( 'Edit Crossword', 'wp-quiz-plugin' ),
+        'new_item'           => __( 'New Crossword', 'wp-quiz-plugin' ),
+        'view_item'          => __( 'View Crossword', 'wp-quiz-plugin' ),
+        'search_items'       => __( 'Search Crosswords', 'wp-quiz-plugin' ),
+        'not_found'          => __( 'No crosswords found', 'wp-quiz-plugin' ),
+        'not_found_in_trash' => __( 'No crosswords found in Trash', 'wp-quiz-plugin' ),
     );
 
     $args = array(
         'labels'             => $labels,
-        'description'        => __( 'Crosswords custom post type.', 'your-text-domain' ),
+        'description'        => __( 'Crosswords custom post type.', 'wp-quiz-plugin' ),
         'public'             => true,
         'menu_icon'          => 'dashicons-editor-table',
         'supports'           => array( 'title' ),

@@ -6,19 +6,60 @@ if (!defined('ABSPATH')) {
 
 // Include individual settings pages
 require_once plugin_dir_path(__FILE__) . 'pages/general-settings.php';
-// Add more settings pages here
-// require_once plugin_dir_path(__FILE__) . 'pages/advanced-settings.php';
+require_once plugin_dir_path(__FILE__) . 'pages/ai-settings-page.php';
 
 /**
  * Register all settings pages.
  */
 function crossword_register_all_settings_pages() {
-    if (function_exists('crossword_register_general_settings_page')) {
-        crossword_register_general_settings_page();
-    }
-    // Register other pages
+    add_submenu_page(
+        'edit.php?post_type=crossword', // Parent menu (Crossword CPT)
+        __('Settings', 'wp-quiz-plugin'), // Page title
+        __('Settings', 'wp-quiz-plugin'), // Menu title
+        'manage_options', // Capability required to access
+        'crossword-settings', // Menu slug
+        'crossword_render_settings_page' // Callback to render the settings page
+    );
 }
 add_action('admin_menu', 'crossword_register_all_settings_pages');
+
+/**
+ * Render the settings page with tabs.
+ */
+function crossword_render_settings_page() {
+    // Define tabs
+    $tabs = array(
+        'general' => __('General Settings', 'wp-quiz-plugin'),
+        'ai'      => __('AI Settings', 'wp-quiz-plugin'),
+    );
+
+    ?>
+    <div class="wrap">
+        <h1><?php esc_html_e('Crossword Settings', 'wp-quiz-plugin'); ?></h1>
+
+        <!-- Tab Navigation -->
+        <h2 class="kw-crossword-nav-tab-wrapper">
+            <?php foreach ($tabs as $tab_key => $tab_label): ?>
+                <a href="#<?php echo esc_attr($tab_key); ?>" class="kw-crossword-nav-tab" data-tab="<?php echo esc_attr($tab_key); ?>">
+                    <?php echo esc_html($tab_label); ?>
+                </a>
+            <?php endforeach; ?>
+        </h2>
+
+        <!-- Render Tab Content -->
+        <div class="kw-crossword-tab-content">
+            <div id="kw-crossword-general" class="kw-crossword-tab-pane" style="display: none;">
+                <?php crossword_render_general_settings_page(); ?>
+            </div>
+            <div id="kw-crossword-ai" class="kw-crossword-tab-pane" style="display: none;">
+            <?php crossword_render_ai_settings_page(); ?>
+            </div>
+        </div>
+    </div>
+
+    <?php
+}
+
 
 // Enqueue admin styles and scripts
 function crossword_admin_enqueue_assets($hook) {

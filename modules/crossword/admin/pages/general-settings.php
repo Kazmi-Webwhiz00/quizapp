@@ -6,44 +6,10 @@ if (!defined('ABSPATH')) {
 
 /**
  * ==========================================================
- * Register the Settings Page
- * ==========================================================
- * This function registers the settings page under the custom 
- * post type menu.
- */
-function crossword_register_general_settings_page() {
-    add_submenu_page(
-        'edit.php?post_type=crossword',
-        __('General Settings', 'your-text-domain'), // Updated title for the page
-        __('Settings', 'your-text-domain'),
-        'manage_options',
-        'crossword-general-settings',
-        'crossword_render_general_settings_page'
-    );
-}
-
-// Render the settings page
-function crossword_render_general_settings_page() {
-    ?>
-    <div class="wrap">
-        <h1><?php esc_html_e('General Settings', 'your-text-domain'); ?></h1>
-        <form method="post" action="options.php">
-            <?php
-            settings_fields('crossword_general_settings');
-            do_settings_sections('crossword-general-settings');
-            submit_button();
-            ?>
-        </form>
-    </div>
-    <?php
-}
-
-/**
- * ==========================================================
  * Register the Settings, Sections, and Fields
  * ==========================================================
  * This function registers the settings, sections, and fields 
- * for the "General Settings" page.
+ * for the "General Settings" page using the page slug.
  */
 function crossword_register_general_settings() {
     // Register the setting
@@ -59,29 +25,65 @@ function crossword_register_general_settings() {
 
     // Register the section
     add_settings_section(
-        'slugurl_section', // Updated Section ID
-        __('Custom Slug Settings', 'your-text-domain'), // Section Title
+        'slugurl_section', // Section ID
+        __('Custom Slug Settings', 'wp-quiz-plugin'), // Section Title
         'crossword_render_slugurl_section', // Callback for rendering the section
-        'crossword-general-settings'
+        'kw-crossword-general-settings-page' // Page slug
     );
 
     // Register the field
     add_settings_field(
         'crossword_custom_url_slug',
-        '', // No label here since it's rendered in the template
-        '__return_false', // No separate callback for the field since it's rendered in the section
-        'crossword-general-settings',
-        'slugurl_section' // Updated Section ID
+        __('Custom URL Slug', 'wp-quiz-plugin'), // Field label
+        'crossword_render_slug_field', // Callback for rendering the field
+        'kw-crossword-general-settings-page', // Page slug
+        'slugurl_section' // Section ID
     );
 }
 add_action('admin_init', 'crossword_register_general_settings');
 
 /**
  * ==========================================================
- * Render the Custom Slug Section
+ * Render the Settings Page
+ * ==========================================================
+ * This function renders the "General Settings" page for 
+ * crossword settings.
+ */
+function crossword_render_general_settings_page() {
+    ?>
+    <div class="wrap">
+        <h1><?php esc_html_e('General Settings', 'wp-quiz-plugin'); ?></h1>
+        <form method="post" action="options.php">
+            <?php
+            settings_fields('crossword_general_settings'); // Option group
+            do_settings_sections('kw-crossword-general-settings-page'); // Render sections
+            submit_button();
+            ?>
+        </form>
+    </div>
+    <?php
+}
+
+/**
+ * ==========================================================
+ * Render the Slug Section
  * ==========================================================
  * This function includes the template for the "Custom Slug Settings" section.
  */
 function crossword_render_slugurl_section() {
-    include plugin_dir_path(__FILE__) . '../templates/sections/slugurl-section.php';
+    echo '<p>' . esc_html__('Customize the URL slug for crosswords.', 'wp-quiz-plugin') . '</p>';
+}
+
+/**
+ * ==========================================================
+ * Render the Slug Field
+ * ==========================================================
+ * This function renders the input field for the "Custom Slug" option.
+ */
+function crossword_render_slug_field() {
+    $value = get_option('crossword_custom_url_slug', 'crossword');
+    ?>
+    <input type="text" id="crossword_custom_url_slug" name="crossword_custom_url_slug" value="<?php echo esc_attr($value); ?>" class="regular-text" />
+    <p class="description"><?php esc_html_e('Set a custom slug for crossword URLs.', 'wp-quiz-plugin'); ?></p>
+    <?php
 }

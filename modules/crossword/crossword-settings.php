@@ -3,7 +3,7 @@
 function crossword_add_meta_boxes() {
     add_meta_box(
         'crossword_words_clues',
-        __( 'Words and Clues 2', 'your-text-domain' ),
+        __( 'Words and Clues 2', 'wp-quiz-plugin' ),
         'crossword_words_clues_meta_box_callback',
         'Crossword', // Post type should be singular 'crossword' as registered
         'normal',
@@ -15,7 +15,7 @@ add_action('add_meta_boxes', 'crossword_add_meta_boxes');
 function crossword_preview_meta_box() {
     add_meta_box(
         'crossword_preview_meta_box_id', // Unique ID for the meta box
-        __('Crossword Full View', 'your-text-domain'), // Meta box title
+        __('Crossword Full View', 'wp-quiz-plugin'), // Meta box title
         'crossword_preview_meta_box_callback', // Callback function
         'crossword', // Post type where it should appear
         'normal', // Context ('normal', 'side', 'advanced')

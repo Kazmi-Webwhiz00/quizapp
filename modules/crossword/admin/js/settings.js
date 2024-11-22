@@ -1,16 +1,27 @@
-(function ($) {
-    $(document).ready(function () {
-        console.log('KW Crossword Admin Scripts Loaded.');
+jQuery(document).ready(function ($) {
+    const tabs = $('.kw-crossword-nav-tab');
+    const panes = $('.kw-crossword-tab-pane');
 
-        // Example: Highlight the active tab
-        $('.kw-crossword-tab').on('click', function (e) {
-            e.preventDefault();
-            $('.kw-crossword-tab').removeClass('kw-crossword-tab-active');
-            $(this).addClass('kw-crossword-tab-active');
-        });
+    // Function to activate a tab
+    function activateTab(tabKey) {
+        tabs.removeClass('kw-crossword-nav-tab-active');
+        panes.hide();
 
-        // Example: Using localized script variables
-        console.log('AJAX URL:', kwCrosswordAdmin.ajaxUrl);
-        console.log('Nonce:', kwCrosswordAdmin.nonce);
+        $(`.kw-crossword-nav-tab[data-tab="${tabKey}"]`).addClass('kw-crossword-nav-tab-active');
+        $(`#kw-crossword-${tabKey}`).show();
+    }
+
+    // Add click event listeners to tabs
+    tabs.on('click', function (event) {
+        event.preventDefault();
+        const tabKey = $(this).data('tab');
+        activateTab(tabKey);
+
+        // Update the URL hash without reloading the page
+        history.pushState(null, '', `#${tabKey}`);
     });
-})(jQuery);
+
+    // Initialize the active tab based on the URL hash
+    const activeTab = window.location.hash.substring(1) || 'general';
+    activateTab(activeTab);
+});
