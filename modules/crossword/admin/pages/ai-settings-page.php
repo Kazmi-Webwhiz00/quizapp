@@ -12,7 +12,7 @@ function crossword_register_ai_settings() {
     register_setting('kw_crossword_ai_settings', 'kw_crossword_openai_api_key');
     register_setting('kw_crossword_ai_settings', 'kw_crossword_openai_model');
     register_setting('kw_crossword_ai_settings', 'kw_crossword_openai_max_tokens');
-    register_setting('kw_crossword_ai_settings', 'kw_crossword_openai_temperature');   
+    register_setting('kw_crossword_ai_settings', 'kw_crossword_openai_temperature');
 
     // Add the OpenAI settings section
     add_settings_section(
@@ -22,7 +22,7 @@ function crossword_register_ai_settings() {
         'kw-crossword-ai-settings-page'
     );
 
-    // Register the new Prompt Customization settings
+    // Register the Prompt Customization settings
     register_setting('kw_crossword_ai_settings', 'kw_crossword_context_prompt');
     register_setting('kw_crossword_ai_settings', 'kw_crossword_generation_prompt');
     register_setting('kw_crossword_ai_settings', 'kw_crossword_return_format_prompt');
@@ -31,6 +31,28 @@ function crossword_register_ai_settings() {
         'kw_crossword_prompt_customization_section',
         '',
         'crossword_render_prompt_customization_section',
+        'kw-crossword-ai-settings-page'
+    );
+
+    // Register the new AI Box settings
+    register_setting('kw_crossword_ai_settings', 'kw_genreate_with_ai_button_color', [
+        'default' => 'red',
+    ]);
+    register_setting('kw_crossword_ai_settings', 'kw_genreate_with_ai_button_label', [
+        'default' => 'Generate with AI',
+    ]);
+    register_setting('kw_crossword_ai_settings', 'kw_genreate_with_ai_box_title', [
+        'default' => 'Generate with AI',
+    ]);
+    register_setting('kw_crossword_ai_settings', 'kw_genreate_with_ai_max_limit', [
+        'default' => 10,
+    ]);
+
+    // Add the AI Box settings section
+    add_settings_section(
+        'kw_crossword_ai_box_settings_section',
+        null,
+        'crossword_render_ai_box_settings_section',
         'kw-crossword-ai-settings-page'
     );
 }
@@ -66,4 +88,11 @@ function crossword_render_openai_settings_section() {
  */
 function crossword_render_prompt_customization_section() {
     include plugin_dir_path(__FILE__) . '../templates/sections/ai/prompt-customization-section.php';
+}
+
+/**
+ * Render the AI Box Settings Section
+ */
+function crossword_render_ai_box_settings_section() {
+    include plugin_dir_path(__FILE__) . '../templates/sections/ai/ai-box-settings-section.php';
 }

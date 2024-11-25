@@ -1,10 +1,24 @@
+<?php
+// Ensure this file is loaded in the correct context
+if (!defined('ABSPATH')) {
+    exit;
+}
+
+// Get saved values or use defaults
+$ai_box_title = get_option('kw_genreate_with_ai_box_title', __('Generate with AI', 'wp-quiz-plugin'));
+$ai_button_label = get_option('kw_genreate_with_ai_button_label', __('Generate with AI', 'wp-quiz-plugin'));
+$ai_button_color = get_option('kw_genreate_with_ai_button_color', '#6c9bd1'); // Default to blue
+?>
+
 <!-- New left side section -->
 <div id="generate-ai-container">
-    <h3>Generate with AI</h3>
-    <input type="text" id="ai-topic" placeholder="Topic" />
-    <input type="text" id="ai-age" placeholder="Age" />
-    <input type="text" id="ai-language" placeholder="Language" />
-    <input type="number" id="ai-questions" placeholder="Number of questions" min="1" />
+    <h3><?php echo esc_html($ai_box_title); ?></h3>
+    <input type="text" id="ai-topic" placeholder="<?php esc_attr_e('Topic', 'wp-quiz-plugin'); ?>" />
+    <input type="text" id="ai-age" placeholder="<?php esc_attr_e('Age', 'wp-quiz-plugin'); ?>" />
+    <input type="text" id="ai-language" placeholder="<?php esc_attr_e('Language', 'wp-quiz-plugin'); ?>" />
+    <input type="number" id="ai-questions" placeholder="<?php esc_attr_e('Number of questions', 'wp-quiz-plugin'); ?>" min="1" max="<?php echo esc_attr($ai_max_limit); ?>" />
 
-    <button type="button" id="generate-ai-button">Generate with AI</button>
+    <button type="button" id="generate-ai-button" style="background-color: <?php echo esc_attr($ai_button_color); ?>;">
+        <?php echo esc_html($ai_button_label); ?>
+    </button>
 </div>

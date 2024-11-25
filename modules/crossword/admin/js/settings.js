@@ -1,4 +1,5 @@
 jQuery(document).ready(function ($) {
+    $('.kw-color-picker').wpColorPicker();
     const tabs = $('.kw-crossword-nav-tab');
     const panes = $('.kw-crossword-tab-pane');
 

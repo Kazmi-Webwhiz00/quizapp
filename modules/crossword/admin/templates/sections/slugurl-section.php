@@ -1,7 +1,9 @@
 <div class="kw-settings-section">
 <h2><?php esc_html_e('Custom  Slug Settings', 'wp-quiz-plugin'); ?></h2>
+
+
     <div class="kw-settings-field">
-        <div class="kw-settings-notice-box">
+    <div class="kw-settings-notice-box">
             <span class="kw-settings-icon">ⓘ</span>
             <div class="kw-settings-notice-content">
                 <strong><?php esc_html_e('Note:', 'wp-quiz-plugin'); ?></strong>
@@ -14,9 +16,7 @@
                 ?>
             </div>
         </div>
-    </div>
-
-    <div class="kw-settings-field">
+        
         <label for="crossword_custom_url_slug"><?php esc_html_e('Custom URL Slug', 'wp-quiz-plugin'); ?></label>
         <?php $url_slug = get_option('crossword_custom_url_slug', 'crossword'); ?>
         <input type="text" id="crossword_custom_url_slug" name="crossword_custom_url_slug" value="<?php echo esc_attr($url_slug); ?>" class="regular-text">

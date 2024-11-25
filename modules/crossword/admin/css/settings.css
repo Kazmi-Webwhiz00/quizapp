@@ -55,12 +55,13 @@
 
 .kw-settings-notice-box {
     display: flex;
-    align-items: center;
+    align-items: start;
     padding: 10px;
     background-color: #f5f7fa;
     border-left: 4px solid #007cba; /* Blue highlight */
     margin-bottom: 20px;
     border-radius: 3px;
+    font-size: 16px;
 }
 
 .kw-settings-icon {

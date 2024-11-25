@@ -92,10 +92,10 @@ function generatePrompt(number, topic, age, language) {
         const age = $('#ai-age').val().trim();
         const number = $('#ai-questions').val().trim();
         const language = $('#ai-language').val().trim();
-
+        const maxNumberOfWords = parseInt(wpQuizPlugin.maxNumberOfWords);
         // Check if the number is between 1 and 10
-        if (number < 1 || number > 10) {
-            Swal.fire('Error', 'The number must be between 1 and 10.', 'warning');
+        if (number < 1 || number > maxNumberOfWords) {
+            Swal.fire('Error', `The number must be between 1 and ${wpQuizPlugin.maxNumberOfWords}.`, 'warning');
             return;
         }
 

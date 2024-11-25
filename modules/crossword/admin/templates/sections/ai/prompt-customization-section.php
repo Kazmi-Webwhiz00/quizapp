@@ -20,6 +20,16 @@ $return_format_prompt_value = get_option('kw_crossword_return_format_prompt', $d
 
     <!-- Context Prompt -->
     <div class="kw-settings-field">
+        <div class="kw-settings-notice-box">
+            <span class="kw-settings-icon">ⓘ</span>
+            <div class="kw-settings-notice-content">
+                <strong><?php esc_html_e('Note:', 'wp-quiz-plugin'); ?></strong>
+                <?php esc_html_e('This prompt helps avoid using words that are already present in the current crossword game. It automatically includes all existing words as context to prevent duplicates in generated words.', 'wp-quiz-plugin'); ?>
+                <br>
+                <br>
+                <?php esc_html_e('To use a custom-defined prompt, make sure to include the placeholder [existing_words], which will automatically populate with the existing words from the current crossword.', 'wp-quiz-plugin'); ?>
+            </div>
+        </div>
         <label for="kw_crossword_context_prompt" class="kw-label">
             <?php esc_html_e('Context Prompt', 'wp-quiz-plugin'); ?>
         </label>
@@ -34,6 +44,20 @@ $return_format_prompt_value = get_option('kw_crossword_return_format_prompt', $d
 
     <!-- Generate Prompt -->
     <div class="kw-settings-field">
+        <div class="kw-settings-notice-box">
+            <span class="kw-settings-icon">ⓘ</span>
+            <div class="kw-settings-notice-content">
+                <strong><?php esc_html_e('Note:', 'wp-quiz-plugin'); ?></strong>
+                <?php esc_html_e('This prompt defines the parameters for generating the crossword. Use the following placeholders to specify the details:', 'wp-quiz-plugin'); ?>
+                <ul>
+                    <li><strong><?php esc_html_e('[number]:', 'wp-quiz-plugin'); ?></strong> <?php esc_html_e('The number of words to include in the crossword.', 'wp-quiz-plugin'); ?></li>
+                    <li><strong><?php esc_html_e('[topic]:', 'wp-quiz-plugin'); ?></strong> <?php esc_html_e('The topic on which the crossword will be based.', 'wp-quiz-plugin'); ?></li>
+                    <li><strong><?php esc_html_e('[age]:', 'wp-quiz-plugin'); ?></strong> <?php esc_html_e('The age group for which the crossword should be created.', 'wp-quiz-plugin'); ?></li>
+                    <li><strong><?php esc_html_e('[language]:', 'wp-quiz-plugin'); ?></strong> <?php esc_html_e('The language in which the crossword should be created.', 'wp-quiz-plugin'); ?></li>
+                </ul>
+                <?php esc_html_e('Ensure the placeholders are used correctly to guide the generation process effectively.', 'wp-quiz-plugin'); ?>
+            </div>
+        </div>
         <label for="kw_crossword_generation_prompt" class="kw-label">
             <?php esc_html_e('Generate Prompt', 'wp-quiz-plugin'); ?>
         </label>
@@ -48,6 +72,16 @@ $return_format_prompt_value = get_option('kw_crossword_return_format_prompt', $d
 
     <!-- Return Format Prompt -->
     <div class="kw-settings-field">
+        <div class="kw-settings-notice-box">
+            <span class="kw-settings-icon">ⓘ</span>
+            <div class="kw-settings-notice-content">
+                <strong><?php esc_html_e('Note:', 'wp-quiz-plugin'); ?></strong>
+                <?php esc_html_e('This prompt specifies the format of the generated crossword output. No additional placeholders are needed for this section.', 'wp-quiz-plugin'); ?>
+                <br>
+                <br>
+                <strong><?php esc_html_e('⚠️ It is highly recommended not to change this prompt, as it is critical for the AI crossword generation process. Incorrect changes may result in errors or invalid output.', 'wp-quiz-plugin'); ?></strong>
+            </div>
+        </div>
         <label for="kw_crossword_return_format_prompt" class="kw-label">
             <?php esc_html_e('Return Format Prompt', 'wp-quiz-plugin'); ?>
         </label>
