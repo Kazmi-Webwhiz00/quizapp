@@ -8,25 +8,53 @@ if (!defined('ABSPATH')) {
 $default_settings = [
     'restart_button' => [
         'color' => '#00796b',
+        'text_color' => '#ffffff',
+        'font_size' => '16px',
+        'font_family' => 'Arial',
     ],
     'download_button' => [
         'text' => __('Download', 'wp-quiz-plugin'),
         'bg_color' => '#00796b',
         'text_color' => '#ffffff',
+        'font_size' => '16px',
+        'font_family' => 'Arial',
     ],
     'check_crossword_button' => [
         'text' => __('Check Crossword', 'wp-quiz-plugin'),
         'bg_color' => '#00796b',
         'text_color' => '#ffffff',
+        'font_size' => '16px',
+        'font_family' => 'Arial',
     ],
     'enable_live_word_check_button' => [
         'text' => __('Enable Live Word Check', 'wp-quiz-plugin'),
         'bg_color' => '#ffffff',
+        'text_color' => '#000000',
         'enabled_color' => '#00796b',
+        'font_size' => '16px',
+        'font_family' => 'Arial',
     ],
     'filled_cell' => [
         'bg_color' => '#e1f5fe', // Default background color for filled cells
     ],
+    'corrected_cell' => [
+        'bg_color' => '#d4edda', // Default background color for corrected cells
+    ],
+    'wrong_cell' => [
+        'bg_color' => '#d66868', // Default background color for wrong cells
+    ],
+];
+
+// Dropdown font-family options
+$font_family_options = [
+    'Arial',
+    'Helvetica',
+    'Times New Roman',
+    'Courier New',
+    'Georgia',
+    'Verdana',
+    'Trebuchet MS',
+    'Lucida Sans',
 ];
 
 // Retrieve saved values or use defaults
@@ -44,157 +72,89 @@ foreach ($default_settings as $key => $values) {
     <hr>
 
     <!-- Restart Button -->
-    <div class="kw-settings-field">
-        <label for="kw_fe_restart_button_color" class="kw-label">
-            <?php esc_html_e('Restart Button Background Color', 'wp-quiz-plugin'); ?>
-        </label>
-        <input type="text" id="kw_fe_restart_button_color" name="kw_fe_restart_button_color" class="kw-color-picker wp-color-picker" 
-            value="<?php echo esc_attr($settings['restart_button']['color']); ?>" 
-            data-default="<?php echo esc_attr($default_settings['restart_button']['color']); ?>">
-        <p class="description"><?php esc_html_e('Select the background color for the Restart button.', 'wp-quiz-plugin'); ?></p>
+    <div class="kw-settings-section">
+        <h3><?php esc_html_e('Restart Button Settings', 'wp-quiz-plugin'); ?></h3>
+        <div class="kw-settings-field">
+            <label for="kw_fe_restart_button_color"><?php esc_html_e('Background Color', 'wp-quiz-plugin'); ?></label>
+            <input type="text" id="kw_fe_restart_button_color" name="kw_fe_restart_button_color" class="kw-color-picker wp-color-picker"
+                value="<?php echo esc_attr($settings['restart_button']['color']); ?>" 
+                data-default="<?php echo esc_attr($default_settings['restart_button']['color']); ?>">
+        </div>
+        <div class="kw-settings-field">
+            <label for="kw_fe_restart_button_text_color"><?php esc_html_e('Text Color', 'wp-quiz-plugin'); ?></label>
+            <input type="text" id="kw_fe_restart_button_text_color" name="kw_fe_restart_button_text_color" class="kw-color-picker wp-color-picker" 
+                value="<?php echo esc_attr($settings['restart_button']['text_color']); ?>" 
+                data-default="<?php echo esc_attr($default_settings['restart_button']['text_color']); ?>">
+        </div>
+        <div class="kw-settings-field">
+            <label for="kw_fe_restart_button_font_size"><?php esc_html_e('Font Size (px)', 'wp-quiz-plugin'); ?></label>
+            <input type="number" id="kw_fe_restart_button_font_size" name="kw_fe_restart_button_font_size" class="regular-text"
+                value="<?php echo intval($settings['restart_button']['font_size']); ?>" 
+                data-default="<?php echo intval($default_settings['restart_button']['font_size']); ?>"> px
+        </div>
+        <div class="kw-settings-field">
+            <label for="kw_fe_restart_button_font_family"><?php esc_html_e('Font Family', 'wp-quiz-plugin'); ?></label>
+            <select id="kw_fe_restart_button_font_family" name="kw_fe_restart_button_font_family" class="regular-select">
+                <?php foreach ($font_family_options as $font): ?>
+                    <option value="<?php echo esc_attr($font); ?>" <?php selected($settings['restart_button']['font_family'], $font); ?>>
+                        <?php echo esc_html($font); ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </div>
     </div>
 
-    <!-- Download Button -->
-    <div class="kw-settings-field">
-        <label for="kw_fe_download_button_text" class="kw-label">
-            <?php esc_html_e('Download Button Text', 'wp-quiz-plugin'); ?>
-        </label>
-        <input type="text" id="kw_fe_download_button_text" name="kw_fe_download_button_text" class="regular-text kw-input" 
-            value="<?php echo esc_attr($settings['download_button']['text']); ?>" 
-            data-default="<?php echo esc_attr($default_settings['download_button']['text']); ?>">
-        <p class="description"><?php esc_html_e('Set the label for the Download button.', 'wp-quiz-plugin'); ?></p>
+    <!-- Group similar settings for Download Button, Check Crossword Button, Enable Live Word Check Button -->
+    <?php foreach (['download_button', 'check_crossword_button', 'enable_live_word_check_button'] as $button_key): ?>
+        <div class="kw-settings-section">
+            <h3><?php esc_html_e(ucwords(str_replace('_', ' ', $button_key)) . ' Settings', 'wp-quiz-plugin'); ?></h3>
+            <?php foreach ($default_settings[$button_key] as $sub_key => $default_value): ?>
+                <div class="kw-settings-field">
+                    <label for="kw_fe_<?php echo esc_attr($button_key . '_' . $sub_key); ?>">
+                        <?php echo esc_html(ucwords(str_replace('_', ' ', $sub_key))); ?>
+                    </label>
+                    <?php if ($sub_key === 'font_family'): ?>
+                        <select id="kw_fe_<?php echo esc_attr($button_key . '_' . $sub_key); ?>" 
+                            name="kw_fe_<?php echo esc_attr($button_key . '_' . $sub_key); ?>" 
+                            class="regular-select">
+                            <?php foreach ($font_family_options as $font): ?>
+                                <option value="<?php echo esc_attr($font); ?>" <?php selected($settings[$button_key][$sub_key], $font); ?>>
+                                    <?php echo esc_html($font); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    <?php elseif ($sub_key === 'font_size'): ?>
+                        <input type="number" id="kw_fe_<?php echo esc_attr($button_key . '_' . $sub_key); ?>" 
+                            name="kw_fe_<?php echo esc_attr($button_key . '_' . $sub_key); ?>" 
+                            class="regular-text"
+                            value="<?php echo intval($settings[$button_key][$sub_key]); ?>"
+                            data-default="<?php echo intval($default_settings[$button_key][$sub_key]); ?>"> px
+                    <?php else: ?>
+                        <input type="text" id="kw_fe_<?php echo esc_attr($button_key . '_' . $sub_key); ?>" 
+                            name="kw_fe_<?php echo esc_attr($button_key . '_' . $sub_key); ?>" 
+                            class="<?php echo strpos($sub_key, 'color') !== false ? 'kw-color-picker wp-color-picker' : 'regular-text'; ?>"
+                            value="<?php echo esc_attr($settings[$button_key][$sub_key]); ?>"
+                            data-default="<?php echo esc_attr($default_settings[$button_key][$sub_key]); ?>">
+                    <?php endif; ?>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    <?php endforeach; ?>
 
-        <label for="kw_fe_download_button_bg_color" class="kw-label">
-            <?php esc_html_e('Download Button Background Color', 'wp-quiz-plugin'); ?>
-        </label>
-        <input type="text" id="kw_fe_download_button_bg_color" name="kw_fe_download_button_bg_color" class="kw-color-picker wp-color-picker" 
-            value="<?php echo esc_attr($settings['download_button']['bg_color']); ?>" 
-            data-default="<?php echo esc_attr($default_settings['download_button']['bg_color']); ?>">
-        <p class="description"><?php esc_html_e('Select the background color for the Download button.', 'wp-quiz-plugin'); ?></p>
-
-        <label for="kw_fe_download_button_text_color" class="kw-label">
-            <?php esc_html_e('Download Button Text Color', 'wp-quiz-plugin'); ?>
-        </label>
-        <input type="text" id="kw_fe_download_button_text_color" name="kw_fe_download_button_text_color" class="kw-color-picker wp-color-picker" 
-            value="<?php echo esc_attr($settings['download_button']['text_color']); ?>" 
-            data-default="<?php echo esc_attr($default_settings['download_button']['text_color']); ?>">
-        <p class="description"><?php esc_html_e('Select the text color for the Download button.', 'wp-quiz-plugin'); ?></p>
+    <!-- Additional Settings -->
+    <div class="kw-settings-section">
+        <h3><?php esc_html_e('Cell Background Colors', 'wp-quiz-plugin'); ?></h3>
+        <?php foreach (['filled_cell', 'corrected_cell', 'wrong_cell'] as $cell_key): ?>
+            <div class="kw-settings-field">
+                <label for="kw_fe_<?php echo esc_attr($cell_key . '_bg_color'); ?>">
+                    <?php esc_html_e(ucwords(str_replace('_', ' ', $cell_key)) . ' Background Color', 'wp-quiz-plugin'); ?>
+                </label>
+                <input type="text" id="kw_fe_<?php echo esc_attr($cell_key . '_bg_color'); ?>" 
+                    name="kw_fe_<?php echo esc_attr($cell_key . '_bg_color'); ?>" 
+                    class="kw-color-picker wp-color-picker"
+                    value="<?php echo esc_attr($settings[$cell_key]['bg_color']); ?>"
+                    data-default="<?php echo esc_attr($default_settings[$cell_key]['bg_color']); ?>">
+            </div>
+        <?php endforeach; ?>
     </div>
-
-    <!-- Check Crossword Button -->
-    <div class="kw-settings-field">
-        <label for="kw_fe_check_crossword_button_text" class="kw-label">
-            <?php esc_html_e('Check Crossword Button Text', 'wp-quiz-plugin'); ?>
-        </label>
-        <input type="text" id="kw_fe_check_crossword_button_text" name="kw_fe_check_crossword_button_text" class="regular-text kw-input" 
-            value="<?php echo esc_attr($settings['check_crossword_button']['text']); ?>" 
-            data-default="<?php echo esc_attr($default_settings['check_crossword_button']['text']); ?>">
-        <p class="description"><?php esc_html_e('Set the label for the Check Crossword button.', 'wp-quiz-plugin'); ?></p>
-
-        <label for="kw_fe_check_crossword_button_bg_color" class="kw-label">
-            <?php esc_html_e('Check Crossword Button Background Color', 'wp-quiz-plugin'); ?>
-        </label>
-        <input type="text" id="kw_fe_check_crossword_button_bg_color" name="kw_fe_check_crossword_button_bg_color" class="kw-color-picker wp-color-picker" 
-            value="<?php echo esc_attr($settings['check_crossword_button']['bg_color']); ?>" 
-            data-default="<?php echo esc_attr($default_settings['check_crossword_button']['bg_color']); ?>">
-        <p class="description"><?php esc_html_e('Select the background color for the Check Crossword button.', 'wp-quiz-plugin'); ?></p>
-
-        <label for="kw_fe_check_crossword_button_text_color" class="kw-label">
-            <?php esc_html_e('Check Crossword Button Text Color', 'wp-quiz-plugin'); ?>
-        </label>
-        <input type="text" id="kw_fe_check_crossword_button_text_color" name="kw_fe_check_crossword_button_text_color" class="kw-color-picker wp-color-picker" 
-            value="<?php echo esc_attr($settings['check_crossword_button']['text_color']); ?>" 
-            data-default="<?php echo esc_attr($default_settings['check_crossword_button']['text_color']); ?>">
-        <p class="description"><?php esc_html_e('Select the text color for the Check Crossword button.', 'wp-quiz-plugin'); ?></p>
-    </div>
-
-    <!-- Enable Live Word Check Button -->
-    <div class="kw-settings-field">
-        <label for="kw_fe_enable_live_word_check_button_text" class="kw-label">
-            <?php esc_html_e('Enable Live Word Check Button Text', 'wp-quiz-plugin'); ?>
-        </label>
-        <input type="text" id="kw_fe_enable_live_word_check_button_text" name="kw_fe_enable_live_word_check_button_text" class="regular-text kw-input" 
-            value="<?php echo esc_attr($settings['enable_live_word_check_button']['text']); ?>" 
-            data-default="<?php echo esc_attr($default_settings['enable_live_word_check_button']['text']); ?>">
-        <p class="description"><?php esc_html_e('Set the label for the Enable Live Word Check button.', 'wp-quiz-plugin'); ?></p>
-
-        <label for="kw_fe_enable_live_word_check_button_bg_color" class="kw-label">
-            <?php esc_html_e('Enable Live Word Check Button Background Color', 'wp-quiz-plugin'); ?>
-        </label>
-        <input type="text" id="kw_fe_enable_live_word_check_button_bg_color" name="kw_fe_enable_live_word_check_button_bg_color" class="kw-color-picker wp-color-picker" 
-            value="<?php echo esc_attr($settings['enable_live_word_check_button']['bg_color']); ?>" 
-            data-default="<?php echo esc_attr($default_settings['enable_live_word_check_button']['bg_color']); ?>">
-        <p class="description"><?php esc_html_e('Select the background color for the Enable Live Word Check button.', 'wp-quiz-plugin'); ?></p>
-
-        <label for="kw_fe_enable_live_word_check_button_enabled_color" class="kw-label">
-            <?php esc_html_e('Enable Live Word Check Button Enabled Color', 'wp-quiz-plugin'); ?>
-        </label>
-        <input type="text" id="kw_fe_enable_live_word_check_button_enabled_color" name="kw_fe_enable_live_word_check_button_enabled_color" class="kw-color-picker wp-color-picker" 
-            value="<?php echo esc_attr($settings['enable_live_word_check_button']['enabled_color']); ?>" 
-            data-default="<?php echo esc_attr($default_settings['enable_live_word_check_button']['enabled_color']); ?>">
-        <p class="description"><?php esc_html_e('Select the color for the Enabled state of the Enable Live Word Check button.', 'wp-quiz-plugin'); ?></p>
-    </div>
-
-    <!-- Filled Cell Background Color -->
-    <div class="kw-settings-field">
-        <label for="kw_fe_filled_cell_bg_color" class="kw-label">
-            <?php esc_html_e('Filled Cell Background Color', 'wp-quiz-plugin'); ?>
-        </label>
-        <input type="text" id="kw_fe_filled_cell_bg_color" name="kw_fe_filled_cell_bg_color" class="kw-color-picker wp-color-picker" 
-            value="<?php echo esc_attr($settings['filled_cell']['bg_color']); ?>" 
-            data-default="<?php echo esc_attr($default_settings['filled_cell']['bg_color']); ?>">
-        <p class="description"><?php esc_html_e('Select the background color for filled cells in the crossword.', 'wp-quiz-plugin'); ?></p>
-    </div>
-
-    <!-- Corrected Cell Background Color -->
-    <div class="kw-settings-field">
-        <label for="kw_fe_corrected_cell_bg_color" class="kw-label">
-            <?php esc_html_e('Correct Word Background Color', 'wp-quiz-plugin'); ?>
-        </label>
-        <input type="text" id="kw_fe_corrected_cell_bg_color" name="kw_fe_corrected_cell_bg_color" class="kw-color-picker wp-color-picker" 
-            value="<?php echo esc_attr(get_option('kw_fe_corrected_cell_bg_color', '#d4edda')); ?>" 
-            data-default="#d4edda">
-        <p class="description"><?php esc_html_e('Select the background color for corrected cells in the crossword.', 'wp-quiz-plugin'); ?></p>
-    </div>
-
-    <!-- Wrong Cell Background Color -->
-    <div class="kw-settings-field">
-        <label for="kw_fe_wrong_cell_bg_color" class="kw-label">
-            <?php esc_html_e('Wrong Cell Background Color', 'wp-quiz-plugin'); ?>
-        </label>
-        <input type="text" id="kw_fe_wrong_cell_bg_color" name="kw_fe_wrong_cell_bg_color" class="kw-color-picker wp-color-picker" 
-            value="<?php echo esc_attr(get_option('kw_fe_wrong_cell_bg_color', '#d66868')); ?>" 
-            data-default="#d66868">
-        <p class="description"><?php esc_html_e('Select the background color for wrong cells in the crossword.', 'wp-quiz-plugin'); ?></p>
-    </div>
-
-
 </div>
-
-<script>
-document.querySelectorAll('.kw-reset-button').forEach(button => {
-    button.addEventListener('click', function () {
-        const parentField = this.closest('.kw-settings-field');
-        const labelField = parentField.querySelector('input[type="text"]');
-        const colorField = parentField.querySelector('.wp-color-picker');
-
-        // Reset label field
-        if (labelField) {
-            const defaultLabel = this.getAttribute('data-label-default');
-            labelField.value = defaultLabel;
-        }
-
-        // Reset color picker
-        if (colorField) {
-            const defaultColor = this.getAttribute('data-color-default');
-            colorField.value = defaultColor;
-
-            // Update color picker UI
-            const colorPickerContainer = jQuery(colorField).closest('.wp-picker-container');
-            const colorResultButton = colorPickerContainer.find('.wp-color-result');
-            colorResultButton.css('background-color', defaultColor);
-            colorField.dispatchEvent(new Event('change', { bubbles: true }));
-        }
-    });
-});
-</script>

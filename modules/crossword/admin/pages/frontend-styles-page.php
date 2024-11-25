@@ -9,47 +9,43 @@ if (!defined('ABSPATH')) {
  */
 function crossword_register_frontend_styles_settings() {
     // Register settings with default values
-    register_setting('kw_crossword_fe_settings', 'kw_fe_restart_button_color', [
-        'default' => '#00796b',
-    ]);
-    register_setting('kw_crossword_fe_settings', 'kw_fe_download_button_text', [
-        'default' => __('Download', 'wp-quiz-plugin'),
-    ]);
-    register_setting('kw_crossword_fe_settings', 'kw_fe_download_button_bg_color', [
-        'default' => '#00796b',
-    ]);
-    register_setting('kw_crossword_fe_settings', 'kw_fe_download_button_text_color', [
-        'default' => '#ffffff',
-    ]);
-    register_setting('kw_crossword_fe_settings', 'kw_fe_check_crossword_button_text', [
-        'default' => __('Check Crossword', 'wp-quiz-plugin'),
-    ]);
-    register_setting('kw_crossword_fe_settings', 'kw_fe_check_crossword_button_text_color', [
-        'default' => '#ffffff',
-    ]);
-    register_setting('kw_crossword_fe_settings', 'kw_fe_check_crossword_button_bg_color', [
-        'default' => '#00796b',
-    ]);
-    register_setting('kw_crossword_fe_settings', 'kw_fe_enable_live_word_check_button_text', [
-        'default' => __('Enable Live Word Check', 'wp-quiz-plugin'),
-    ]);
-    register_setting('kw_crossword_fe_settings', 'kw_fe_enable_live_word_check_button_bg_color', [
-        'default' => '#ffffff',
-    ]);
-    register_setting('kw_crossword_fe_settings', 'kw_fe_enable_live_word_check_button_enabled_color', [
-        'default' => '#00796b',
-    ]);
-    register_setting('kw_crossword_fe_settings', 'kw_fe_filled_cell_bg_color', [ // New setting
-        'default' => '#e1f5fe', // Default background color for filled cells
-    ]);
 
-    register_setting('kw_crossword_fe_settings', 'kw_fe_corrected_cell_bg_color', [ // New setting
-        'default' => '#e1f5fe', // Default background color for filled cells
-    ]);
+    // Restart Button
+    register_setting('kw_crossword_fe_settings', 'kw_fe_restart_button_color', ['default' => '#00796b']);
+    register_setting('kw_crossword_fe_settings', 'kw_fe_restart_button_font_size', ['default' => '16px']);
+    register_setting('kw_crossword_fe_settings', 'kw_fe_restart_button_font_family', ['default' => 'Arial, sans-serif']);
+    register_setting('kw_crossword_fe_settings', 'kw_fe_restart_button_text_color', ['default' => '#ffffff']);
 
-    register_setting('kw_crossword_fe_settings', 'kw_fe_wrong_cell_bg_color', [ // New setting
-        'default' => '#e1f5fe', // Default background color for filled cells
-    ]);
+    // Download Button
+    register_setting('kw_crossword_fe_settings', 'kw_fe_download_button_text', ['default' => __('Download', 'wp-quiz-plugin')]);
+    register_setting('kw_crossword_fe_settings', 'kw_fe_download_button_bg_color', ['default' => '#00796b']);
+    register_setting('kw_crossword_fe_settings', 'kw_fe_download_button_text_color', ['default' => '#ffffff']);
+    register_setting('kw_crossword_fe_settings', 'kw_fe_download_button_font_size', ['default' => '16px']);
+    register_setting('kw_crossword_fe_settings', 'kw_fe_download_button_font_family', ['default' => 'Arial, sans-serif']);
+
+    // Check Crossword Button
+    register_setting('kw_crossword_fe_settings', 'kw_fe_check_crossword_button_text', ['default' => __('Check Crossword', 'wp-quiz-plugin')]);
+    register_setting('kw_crossword_fe_settings', 'kw_fe_check_crossword_button_bg_color', ['default' => '#00796b']);
+    register_setting('kw_crossword_fe_settings', 'kw_fe_check_crossword_button_text_color', ['default' => '#ffffff']);
+    register_setting('kw_crossword_fe_settings', 'kw_fe_check_crossword_button_font_size', ['default' => '16px']);
+    register_setting('kw_crossword_fe_settings', 'kw_fe_check_crossword_button_font_family', ['default' => 'Arial, sans-serif']);
+
+    // Enable Live Word Check Button
+    register_setting('kw_crossword_fe_settings', 'kw_fe_enable_live_word_check_button_text', ['default' => __('Enable Live Word Check', 'wp-quiz-plugin')]);
+    register_setting('kw_crossword_fe_settings', 'kw_fe_enable_live_word_check_button_bg_color', ['default' => '#ffffff']);
+    register_setting('kw_crossword_fe_settings', 'kw_fe_enable_live_word_check_button_enabled_color', ['default' => '#00796b']);
+    register_setting('kw_crossword_fe_settings', 'kw_fe_enable_live_word_check_button_text_color', ['default' => '#000000']);
+    register_setting('kw_crossword_fe_settings', 'kw_fe_enable_live_word_check_button_font_size', ['default' => '16px']);
+    register_setting('kw_crossword_fe_settings', 'kw_fe_enable_live_word_check_button_font_family', ['default' => 'Arial, sans-serif']);
+
+    // Filled Cell Background
+    register_setting('kw_crossword_fe_settings', 'kw_fe_filled_cell_bg_color', ['default' => '#e1f5fe']);
+
+    // Corrected Cell Background
+    register_setting('kw_crossword_fe_settings', 'kw_fe_corrected_cell_bg_color', ['default' => '#d4edda']);
+
+    // Wrong Cell Background
+    register_setting('kw_crossword_fe_settings', 'kw_fe_wrong_cell_bg_color', ['default' => '#d66868']);
 
     // Add a settings section for Frontend Styles
     add_settings_section(
