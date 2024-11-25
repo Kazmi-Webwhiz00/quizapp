@@ -1,40 +1,43 @@
 jQuery(document).ready(function ($) {
 
 
-    /**
-     * Generates the prompt content for the OpenAI API request.
-     * 
-     * @param {number} number - The number of words to generate.
-     * @param {string} topic - The topic for the crossword.
-     * @param {number} age - The age group of the user.
-     * @returns {string} - The complete prompt content.
-     */
-    function generatePrompt(number, topic, age) {
-        // Retrieve existing words in the crossword to avoid duplicates
-        const existingWords = getCrosswordWordsList();
-        
-        // Context prompt to avoid duplicate words
-        const context = existingWords.length > 0 
-            ? `Avoid using the following words: ${existingWords.join(', ')}.`
-            : '';
+/**
+ * Generates the prompt content for the OpenAI API request.
+ * 
+ * @param {number} number - The number of words to generate.
+ * @param {string} topic - The topic for the crossword.
+ * @param {number} age - The age group of the user.
+ * @param {string} language - The language for the crossword.
+ * @returns {string} - The complete prompt content.
+ */
+function generatePrompt(number, topic, age, language) {
+    // Retrieve existing words in the crossword to avoid duplicates
+    const existingWords = getCrosswordWordsList();
+    
+    // Context prompt to avoid duplicate words
+    const context = existingWords.length > 0 
+        ? `Avoid using the following words: ${existingWords.join(', ')}.`
+        : '';
 
-        // Main prompt to generate crossword words and clues
-        const generationPrompt = `
-        Generate a crossword with ${number} words on the topic "${topic}" suitable for users aged ${age}.`;
+    // Main prompt to generate crossword words and clues
+    const generationPrompt = `
+    Generate a crossword with ${number} words on the topic "${topic}" suitable for users aged ${age}. 
+    The crossword should be created in the "${language}" language.`;
 
-        // Specify the response format explicitly
-        const returnFormatPrompt = `
-        Provide the output in the following JSON array format, with no additional text:
-        
-    [
-    { "word": "exampleWord1", "clue": "Example clue for word 1" },
-    { "word": "exampleWord2", "clue": "Example clue for word 2" },
-    ...
-    ]`;
+    // Specify the response format explicitly
+    const returnFormatPrompt = `
+    Provide the output in the following JSON array format, with no additional text:
+    
+[
+{ "word": "exampleWord1", "clue": "Example clue for word 1" },
+{ "word": "exampleWord2", "clue": "Example clue for word 2" },
+...
+]`;
 
-        // Combine all parts into the final prompt
-        return `${generationPrompt} ${context} ${returnFormatPrompt}`;
-    }
+    // Combine all parts into the final prompt
+    return `${generationPrompt} ${context} ${returnFormatPrompt}`;
+}
+
 
     
     function getCrosswordWordsList() {
@@ -78,6 +81,7 @@ jQuery(document).ready(function ($) {
         const topic = $('#ai-topic').val().trim();
         const age = $('#ai-age').val().trim();
         const number = $('#ai-questions').val().trim();
+        const language = $('#ai-language').val().trim();
 
         // Check if the number is between 1 and 10
         if (number < 1 || number > 10) {
@@ -85,13 +89,13 @@ jQuery(document).ready(function ($) {
             return;
         }
 
-        console.log(generatePrompt(number,topic,age));
+        console.log(generatePrompt(number,topic,age,language));
         // Prepare data for OpenAI API request
         const data = {
             model: wpQuizPlugin.model,
             messages: [{
                 role: 'user',
-                content: generatePrompt(number,topic,age)
+                content: generatePrompt(number,topic,age,language)
             }],
             max_tokens: parseInt(wpQuizPlugin.maxTokens),
             temperature: parseFloat(wpQuizPlugin.temperature)

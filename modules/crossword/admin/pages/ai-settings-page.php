@@ -9,9 +9,10 @@ if (!defined('ABSPATH')) {
  */
 function crossword_register_ai_settings() {
     // Register existing settings
+    register_setting('kw_crossword_ai_settings', 'kw_crossword_openai_api_key');
     register_setting('kw_crossword_ai_settings', 'kw_crossword_openai_model');
     register_setting('kw_crossword_ai_settings', 'kw_crossword_openai_max_tokens');
-    register_setting('kw_crossword_ai_settings', 'kw_crossword_openai_temperature');
+    register_setting('kw_crossword_ai_settings', 'kw_crossword_openai_temperature');   
 
     // Add the OpenAI settings section
     add_settings_section(
