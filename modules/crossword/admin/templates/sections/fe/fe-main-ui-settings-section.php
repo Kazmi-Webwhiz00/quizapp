@@ -145,6 +145,30 @@ foreach ($default_settings as $key => $values) {
             data-default="<?php echo esc_attr($default_settings['filled_cell']['bg_color']); ?>">
         <p class="description"><?php esc_html_e('Select the background color for filled cells in the crossword.', 'wp-quiz-plugin'); ?></p>
     </div>
+
+    <!-- Corrected Cell Background Color -->
+    <div class="kw-settings-field">
+        <label for="kw_fe_corrected_cell_bg_color" class="kw-label">
+            <?php esc_html_e('Correct Word Background Color', 'wp-quiz-plugin'); ?>
+        </label>
+        <input type="text" id="kw_fe_corrected_cell_bg_color" name="kw_fe_corrected_cell_bg_color" class="kw-color-picker wp-color-picker" 
+            value="<?php echo esc_attr(get_option('kw_fe_corrected_cell_bg_color', '#d4edda')); ?>" 
+            data-default="#d4edda">
+        <p class="description"><?php esc_html_e('Select the background color for corrected cells in the crossword.', 'wp-quiz-plugin'); ?></p>
+    </div>
+
+    <!-- Wrong Cell Background Color -->
+    <div class="kw-settings-field">
+        <label for="kw_fe_wrong_cell_bg_color" class="kw-label">
+            <?php esc_html_e('Wrong Cell Background Color', 'wp-quiz-plugin'); ?>
+        </label>
+        <input type="text" id="kw_fe_wrong_cell_bg_color" name="kw_fe_wrong_cell_bg_color" class="kw-color-picker wp-color-picker" 
+            value="<?php echo esc_attr(get_option('kw_fe_wrong_cell_bg_color', '#d66868')); ?>" 
+            data-default="#d66868">
+        <p class="description"><?php esc_html_e('Select the background color for wrong cells in the crossword.', 'wp-quiz-plugin'); ?></p>
+    </div>
+
+
 </div>
 
 <script>

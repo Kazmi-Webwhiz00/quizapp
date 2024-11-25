@@ -43,6 +43,14 @@ function crossword_register_frontend_styles_settings() {
         'default' => '#e1f5fe', // Default background color for filled cells
     ]);
 
+    register_setting('kw_crossword_fe_settings', 'kw_fe_corrected_cell_bg_color', [ // New setting
+        'default' => '#e1f5fe', // Default background color for filled cells
+    ]);
+
+    register_setting('kw_crossword_fe_settings', 'kw_fe_wrong_cell_bg_color', [ // New setting
+        'default' => '#e1f5fe', // Default background color for filled cells
+    ]);
+
     // Add a settings section for Frontend Styles
     add_settings_section(
         'kw_crossword_fe_settings_section',

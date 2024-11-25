@@ -8,6 +8,7 @@ function load_crossword_assets_fe() {
     
     // Fetch the filled cell background color with a default value
     $filled_cell_bg_color = get_option('kw_fe_filled_cell_bg_color', '#e1f5fe');
+    $correctedCellColor = get_option('kw_fe_corrected_cell_bg_color', '#d4edda');
 
     // Localize the script with additional settings
     wp_localize_script(
@@ -16,7 +17,7 @@ function load_crossword_assets_fe() {
         array(
             'ajax_url' => admin_url('admin-ajax.php'),
             'filledCellColor' => esc_attr($filled_cell_bg_color),
-            'correctedCellColor' => 'green',
+            'correctedCellColor' => esc_attr($correctedCellColor)
         )
     );
 
