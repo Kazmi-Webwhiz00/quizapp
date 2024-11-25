@@ -22,8 +22,10 @@ function crossword_register_ai_settings() {
         'kw-crossword-ai-settings-page'
     );
 
-    // Register the new Prompt Customization section
-    register_setting('kw_crossword_ai_settings', 'kw_crossword_prompt_main');
+    // Register the new Prompt Customization settings
+    register_setting('kw_crossword_ai_settings', 'kw_crossword_context_prompt');
+    register_setting('kw_crossword_ai_settings', 'kw_crossword_generation_prompt');
+    register_setting('kw_crossword_ai_settings', 'kw_crossword_return_format_prompt');
 
     add_settings_section(
         'kw_crossword_prompt_customization_section',

@@ -2,43 +2,53 @@ jQuery(document).ready(function ($) {
 
 
 /**
- * Generates the prompt content for the OpenAI API request.
- * 
+ * Replaces placeholders in a string using an object of key-value pairs.
+ *
+ * @param {string} template - The string template containing placeholders (e.g., [key]).
+ * @param {object} variables - An object with key-value pairs for replacement.
+ * @returns {string} - The template with placeholders replaced by actual values.
+ */
+function replacePlaceholders(template, variables) {
+    Object.keys(variables).forEach((key) => {
+        const placeholder = `[${key}]`; // Match the placeholder format [key]
+        template = template.replace(placeholder, variables[key]);
+    });
+    return template;
+}
+
+/**
+ * Generates the complete prompt content by replacing placeholders in context,
+ * generation, and return format prompts.
+ *
  * @param {number} number - The number of words to generate.
  * @param {string} topic - The topic for the crossword.
  * @param {number} age - The age group of the user.
  * @param {string} language - The language for the crossword.
- * @returns {string} - The complete prompt content.
+ * @returns {string} - The final combined prompt content.
  */
 function generatePrompt(number, topic, age, language) {
-    // Retrieve existing words in the crossword to avoid duplicates
+    // Retrieve localized default prompts
+    const contextPromptTemplate = wpQuizPlugin.defaultContextPrompt;
+    const generationPromptTemplate = wpQuizPlugin.defaultGenerationPrompt;
+    const returnFormatPrompt = wpQuizPlugin.defaultReturnFormatPrompt;
+
+    // Replace [existing_words] in context prompt
     const existingWords = getCrosswordWordsList();
-    
-    // Context prompt to avoid duplicate words
-    const context = existingWords.length > 0 
-        ? `Avoid using the following words: ${existingWords.join(', ')}.`
-        : '';
+    const contextPrompt = replacePlaceholders(contextPromptTemplate, {
+        existing_words: existingWords.join(', '),
+    });
 
-    // Main prompt to generate crossword words and clues
-    const generationPrompt = `
-    Generate a crossword with ${number} words on the topic "${topic}" suitable for users aged ${age}. 
-    The crossword should be created in the "${language}" language.`;
+    // Replace [number], [topic], [age], and [language] in generation prompt
+    const generationPrompt = replacePlaceholders(generationPromptTemplate, {
+        number: number,
+        topic: topic,
+        age: age,
+        language: language,
+    });
 
-    // Specify the response format explicitly
-    const returnFormatPrompt = `
-    Provide the output in the following JSON array format, with no additional text:
-    
-[
-{ "word": "exampleWord1", "clue": "Example clue for word 1" },
-{ "word": "exampleWord2", "clue": "Example clue for word 2" },
-...
-]`;
-
-    // Combine all parts into the final prompt
-    return `${generationPrompt} ${context} ${returnFormatPrompt}`;
+    // Combine prompts into the final prompt
+    return `${generationPrompt} ${contextPrompt} ${returnFormatPrompt}`;
 }
-
-
     
     function getCrosswordWordsList() {
         let wordsList = [];

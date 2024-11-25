@@ -115,7 +115,6 @@
     border: 1px solid #ddd;
     border-radius: 8px; /* Softer edges for sections */
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05); /* Subtle shadow for better separation */
-    width: calc(50% - 20px); /* Two sections per row */
     min-width: 300px; /* Minimum width for smaller screens */
     flex: 0 0 calc(50% - 20px); /* Prevent growth or shrinkage */
     margin-bottom: 20px; /* Add space between sections */
@@ -233,7 +232,9 @@ button:hover,
 
 
 
-
+.large-text{
+    height: 250px;
+}
 
 .kw-textarea {
     width: 100%;
@@ -275,4 +276,15 @@ button#kw-reset-default-prompt {
 
 button#kw-reset-default-prompt:hover {
     background-color: #005f8d; /* Darker blue on hover */
+}
+
+.kw-settings-field{
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.kw-reset-button{
+max-width: 140px;
 }

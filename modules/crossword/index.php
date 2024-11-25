@@ -25,16 +25,40 @@ function load_crossword_assets($hook) {
 
         wp_enqueue_script('crossword-generate-with-ai', plugin_dir_url(__FILE__) . 'assets/js/crossword-generate-with-ai.js', array('jquery'), null, true);
         
+
+        // Default values for prompts
+        $default_context_prompt = 'Avoid using the following words:[existing_words]';
+        $default_generation_prompt = 'Generate a crossword with [number] words on the topic [topic] suitable for users aged [age]. The crossword should be created in the [language] language.';
+        $default_return_format_prompt = "\nProvide the output in the following JSON array format, with no additional text:\n\n[\n{ \"word\": \"exampleWord1\", \"clue\": \"Example clue for word 1\" },\n{ \"word\": \"exampleWord2\", \"clue\": \"Example clue for word 2\" },\n...]\n";
+
+
         // Localize variables for use in JavaScript
-        wp_localize_script('crossword-generate-with-ai', 'wpQuizPlugin', array(
-            'apiKey' => get_option('wp_quiz_plugin_openai_api_key'),
-            'model' => get_option('wp_quiz_plugin_openai_model', 'gpt-4o-mini'),
-            'maxTokens' => esc_js(get_option('wp_quiz_plugin_openai_max_tokens', 50)),  // Cast to integer
-            'temperature' =>  esc_js(get_option('wp_quiz_plugin_openai_temperature', 0.5)),  // Cast to float
+        wp_localize_script('crossword-generate-with-ai', 'wpQuizPlugin', [
+            // Crossword GPT API settings
+            'apiKey' => get_option('kw_crossword_openai_api_key'),
+            'model' => get_option('kw_crossword_openai_model', 'gpt-4o-mini'),
+            'maxTokens' => (int) get_option('kw_crossword_openai_max_tokens', 50),  // Cast to integer
+            'temperature' => (float) get_option('kw_crossword_openai_temperature', 0.5),  // Cast to float
+
+            // AJAX URL for WordPress admin-ajax
             'ajaxUrl' => admin_url('admin-ajax.php'),
+
+            // UI text settings
             'generatingText' => __('Generating...', 'wp-quiz-plugin'),
-            'generateWithAiText' => __('Generate with AI', 'wp-quiz-plugin')
-        ));
+            'generateWithAiText' => __('Generate with AI', 'wp-quiz-plugin'),
+
+            // Localized prompt settings
+            'defaultContextPrompt' => get_option('kw_crossword_context_prompt', 'Avoid using the following words:[existing_words]'),
+            'defaultGenerationPrompt' => get_option(
+                'kw_crossword_generation_prompt',
+                'Generate a crossword with [number] words on the topic [topic] suitable for users aged [age]. The crossword should be created in the [language] language.'
+            ),
+            'defaultReturnFormatPrompt' => get_option(
+                'kw_crossword_return_format_prompt',
+                "\nProvide the output in the following JSON array format, with no additional text:\n\n[\n{ \"word\": \"exampleWord1\", \"clue\": \"Example clue for word 1\" },\n{ \"word\": \"exampleWord2\", \"clue\": \"Example clue for word 2\" },\n...]\n"
+            ),
+        ]);
+
 
         wp_enqueue_script('sweetalert2', 'https://cdn.jsdelivr.net/npm/sweetalert2@11', array(), null, true);
 }
