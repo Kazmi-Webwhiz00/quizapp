@@ -7,6 +7,7 @@ if (!defined('ABSPATH')) {
 // Include individual settings pages
 require_once plugin_dir_path(__FILE__) . 'pages/general-settings.php';
 require_once plugin_dir_path(__FILE__) . 'pages/ai-settings-page.php';
+require_once plugin_dir_path(__FILE__) . 'pages/admin-strings-setting-page.php';
 
 /**
  * Register all settings pages.
@@ -31,6 +32,7 @@ function crossword_render_settings_page() {
     $tabs = array(
         'general' => __('General Settings', 'wp-quiz-plugin'),
         'ai'      => __('AI Settings', 'wp-quiz-plugin'),
+        'admin-strings' => __('Admin Strings Text', 'wp-quiz-plugin'), // New Tab
     );
 
     ?>
@@ -52,14 +54,16 @@ function crossword_render_settings_page() {
                 <?php crossword_render_general_settings_page(); ?>
             </div>
             <div id="kw-crossword-ai" class="kw-crossword-tab-pane" style="display: none;">
-            <?php crossword_render_ai_settings_page(); ?>
+                <?php crossword_render_ai_settings_page(); ?>
+            </div>
+            <div id="kw-crossword-admin-strings" class="kw-crossword-tab-pane" style="display: none;">
+                <?php crossword_render_admin_strings_settings_page(); ?>
             </div>
         </div>
     </div>
 
     <?php
 }
-
 
 // Enqueue admin styles and scripts
 function crossword_admin_enqueue_assets($hook) {

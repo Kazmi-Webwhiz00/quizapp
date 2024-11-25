@@ -150,9 +150,9 @@ jQuery(document).ready(function ($) {
     
         // Append the clues to the clues container
         $('#clues-container').empty();
-        $('#clues-container').append('<h3>Across</h3>');
+        $('#clues-container').append(`<h3>${crosswordLabels.acrossLabel}</h3>`);
         $('#clues-container').append(acrossClues);
-        $('#clues-container').append('<h3>Down</h3>');
+        $('#clues-container').append(`<h3>${crosswordLabels.downLabel}</h3>`);
         $('#clues-container').append(downClues);
     
         // Apply the show/hide answers functionality

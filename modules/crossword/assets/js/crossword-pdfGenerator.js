@@ -37,7 +37,7 @@ jQuery(document).ready(function($) {
                 alert('An error occurred while generating the PDF.');
             },
             complete: function(){
-                $('#download-pdf-button').text('Download as PDF').prop('disabled', true);
+                $('#download-pdf-button').text(cross_ajax_obj.pdfButtonText).prop('disabled', true);
             }
         });
     });
@@ -80,7 +80,7 @@ jQuery(document).ready(function($) {
                     alert('An error occurred while generating the PDF.');
                 },
                 complete: function(){
-                    $('#crossword-download-key').text('Download Key').prop('disabled', true);
+                    $('#crossword-download-key').text(cross_ajax_obj.keyButtonText).prop('disabled', true);
                 }
             });
         });

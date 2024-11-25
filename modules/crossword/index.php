@@ -20,11 +20,20 @@ function load_crossword_assets($hook) {
         
         // Enqueue the JS file with jQuery as a dependency
         wp_enqueue_script('crossword-script', plugin_dir_url(__FILE__) . 'assets/js/crossword-scripts.js', array('jquery'), null, true);
-        wp_enqueue_script('goku', plugin_dir_url(__FILE__) . 'assets/js/utils.js', array('jquery'), null, true);
+        wp_enqueue_script('crossword-utils-js', plugin_dir_url(__FILE__) . 'assets/js/utils.js', array('jquery'), null, true);
         wp_enqueue_script('generate-pdf-script', plugin_dir_url(__FILE__) . 'assets/js/crossword-pdfGenerator.js', array('jquery'), null, true);
 
         wp_enqueue_script('crossword-generate-with-ai', plugin_dir_url(__FILE__) . 'assets/js/crossword-generate-with-ai.js', array('jquery'), null, true);
         
+
+        wp_localize_script(
+            'crossword-utils-js',
+            'crosswordLabels',
+            array(
+                'acrossLabel' => esc_html(get_option('kw_crossword_admin_across_label', __('Across', 'wp-quiz-plugin'))),
+                'downLabel'   => esc_html(get_option('kw_crossword_admin_down_label', __('Down', 'wp-quiz-plugin'))),
+            )
+        );
 
         // Default values for prompts
         $default_context_prompt = 'Avoid using the following words:[existing_words]';
@@ -79,6 +88,17 @@ function crossword_enqueue_preview_assets($hook) {
                 '1.0',
                 true
             );
+            
+            // Localize script to pass "across" and "down" labels
+            wp_localize_script(
+                'crossword-preview-script',
+                'crosswordLabels',
+                array(
+                    'acrossLabel' => esc_html(get_option('kw_crossword_admin_across_label', __('Across', 'wp-quiz-plugin'))),
+                    'downLabel'   => esc_html(get_option('kw_crossword_admin_down_label', __('Down', 'wp-quiz-plugin'))),
+                )
+            );
+            
 
             // Enqueue the custom CSS for the crossword styling
             wp_enqueue_style('crossword-preview-style', plugin_dir_url(__FILE__) . 'assets/css/crossword-preview-styles.css');
@@ -89,13 +109,22 @@ function crossword_enqueue_preview_assets($hook) {
                 $words_clues = [];
             }
 
-            // Localize the script to pass the crossword data
+            // Retrieve settings for "Download as PDF" and "Download Key" buttons
+            $default_pdf_label = __('Download as PDF', 'wp-quiz-plugin');
+            $default_key_label = __('Download Key', 'wp-quiz-plugin');
+
+            $pdf_button_text = get_option('kw_crossword_admin_download_pdf_button_label', $default_pdf_label);
+            $key_button_text = get_option('kw_crossword_admin_download_key_button_label', $default_key_label);
+
             wp_localize_script(
                 'generate-pdf-script',
                 'cross_ajax_obj',
                 array(
                     'ajax_url' => admin_url('admin-ajax.php'),
-                    'downloadingText' => 'Downloadin....')
+                    'downloadingText' => __('Downloading...', 'wp-quiz-plugin'),
+                    'pdfButtonText' => $pdf_button_text,
+                    'keyButtonText' => $key_button_text,
+                )
             );
         }
     }

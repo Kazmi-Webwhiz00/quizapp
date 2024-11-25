@@ -1,15 +1,60 @@
 <?php
 // Fetch existing words and clues from the post meta
 $grid_data = get_post_meta($post->ID, '_crossword_grid_data', true);
+
+// Retrieve settings for buttons and checkbox
+$default_settings = [
+    'shuffle' => [
+        'label' => __('Shuffle', 'wp-quiz-plugin'),
+        'bg_color' => '#0073aa',
+        'text_color' => '#ffffff',
+    ],
+    'download_pdf' => [
+        'label' => __('Download as PDF', 'wp-quiz-plugin'),
+        'bg_color' => '#0073aa',
+        'text_color' => '#ffffff',
+    ],
+    'download_key' => [
+        'label' => __('Download Key', 'wp-quiz-plugin'),
+        'bg_color' => '#0073aa',
+        'text_color' => '#ffffff',
+    ],
+    'show_answers' => [
+        'label' => __('Show Answers', 'wp-quiz-plugin'),
+    ],
+];
+
+// Retrieve saved settings or use defaults
+$settings = [];
+foreach ($default_settings as $key => $values) {
+    $settings[$key]['label'] = get_option("kw_crossword_admin_{$key}_button_label", $values['label']);
+    if (isset($values['bg_color'])) {
+        $settings[$key]['bg_color'] = get_option("kw_crossword_admin_{$key}_button_color", $values['bg_color']);
+        $settings[$key]['text_color'] = get_option("kw_crossword_admin_{$key}_button_text_color", $values['text_color']);
+    }
+}
 ?>
 
-<div  class="be-crossword-preview-action-container">
-    <span id="shuffle-button" class="cross-word-primary-button">Shuffle</span>
-    <span id="download-pdf-button" class="cross-word-primary-button" data-crossword-id="<?php echo esc_attr($post->ID); ?>">Download as PDF</span>
-    <span id="crossword-download-key" class="cross-word-primary-button" data-crossword-id="<?php echo esc_attr($post->ID); ?>">Download Key</span>
-    <!-- Controls -->
+<div class="be-crossword-preview-action-container">
+    <!-- Shuffle Button -->
+    <span id="shuffle-button" class="cross-word-primary-button" style="background-color: <?php echo esc_attr($settings['shuffle']['bg_color']); ?>; color: <?php echo esc_attr($settings['shuffle']['text_color']); ?>;">
+        <?php echo esc_html($settings['shuffle']['label']); ?>
+    </span>
+
+    <!-- Download as PDF Button -->
+    <span id="download-pdf-button" class="cross-word-primary-button" data-crossword-id="<?php echo esc_attr($post->ID); ?>" style="background-color: <?php echo esc_attr($settings['download_pdf']['bg_color']); ?>; color: <?php echo esc_attr($settings['download_pdf']['text_color']); ?>;">
+        <?php echo esc_html($settings['download_pdf']['label']); ?>
+    </span>
+
+    <!-- Download Key Button -->
+    <span id="crossword-download-key" class="cross-word-primary-button" data-crossword-id="<?php echo esc_attr($post->ID); ?>" style="background-color: <?php echo esc_attr($settings['download_key']['bg_color']); ?>; color: <?php echo esc_attr($settings['download_key']['text_color']); ?>;">
+        <?php echo esc_html($settings['download_key']['label']); ?>
+    </span>
+
+    <!-- Show Answers Checkbox -->
     <label>
-        <input type="checkbox" id="toggle-answers"> Show Answers
+        <input type="checkbox" id="toggle-answers">
+        <?php  echo esc_attr(get_option('kw_crossword_admin_show_answers_checkbox_label', __('Show Answers', 'wp-quiz-plugin'))); ?>
     </label>
 </div>
 
@@ -23,7 +68,7 @@ $grid_data = get_post_meta($post->ID, '_crossword_grid_data', true);
 <div id="crossword-container">
     <!-- Crossword Grid Container -->
     <div id="crossword-grid">
-    Please add some words to generate the crossword.
+        <?php esc_html_e('Please add some words to generate the crossword.', 'wp-quiz-plugin'); ?>
     </div>
 
     <!-- Clues Container -->
