@@ -47,11 +47,28 @@ function crossword_register_frontend_styles_settings() {
     // Wrong Cell Background
     register_setting('kw_crossword_fe_settings', 'kw_fe_wrong_cell_bg_color', ['default' => '#d66868']);
 
+
+    // Clues Settings
+    register_setting('kw_crossword_fe_settings', 'kw_fe_clue_title_font_color', ['default' => '#000000']); // Default black
+    register_setting('kw_crossword_fe_settings', 'kw_fe_clue_title_font_size', ['default' => '25']); // Default font size
+    register_setting('kw_crossword_fe_settings', 'kw_fe_clue_title_font_family', ['default' => 'Arial']); // Default font family
+    register_setting('kw_crossword_fe_settings', 'kw_fe_body_text_font_color', ['default' => 'rgb(85, 85, 85)']); // Default gray
+    register_setting('kw_crossword_fe_settings', 'kw_fe_body_text_font_size', ['default' => '16']); // Default font size
+    register_setting('kw_crossword_fe_settings', 'kw_fe_body_text_font_family', ['default' => 'Arial']); // Default font family
+
+
     // Add a settings section for Frontend Styles
     add_settings_section(
         'kw_crossword_fe_settings_section',
         __('Frontend Styles', 'wp-quiz-plugin'),
         'crossword_render_frontend_styles_section',
+        'kw-crossword-frontend-styles-page'
+    );
+
+    add_settings_section(
+        'kw_fe_clues_settings_section',
+        null,
+        'crossword_render_clues_settings_section',
         'kw-crossword-frontend-styles-page'
     );
 }
@@ -63,6 +80,14 @@ add_action('admin_init', 'crossword_register_frontend_styles_settings');
  */
 function crossword_render_frontend_styles_section() {
     include plugin_dir_path(__FILE__) . '../templates/sections/fe/fe-main-ui-settings-section.php';
+}
+
+
+/**
+ * Render the Clues Settings Section
+ */
+function crossword_render_clues_settings_section() {
+    include plugin_dir_path(__FILE__) . '../templates/sections/fe/fe-clue-settings-section.php';
 }
 
 /**
@@ -82,4 +107,6 @@ function crossword_render_frontend_styles_page() {
     </div>
     <?php
 }
+
+
 ?>
