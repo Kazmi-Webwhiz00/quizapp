@@ -6,11 +6,20 @@ function load_crossword_assets_fe() {
     wp_enqueue_script('fe-crossword-script', plugin_dir_url(__FILE__) . 'assets/js/fe-crossword-script.js', array('jquery'), null, true);
     wp_enqueue_script('fe-crossword-download-script', plugin_dir_url(__FILE__) . '../assets/js/crossword-pdfGenerator.js', array('jquery'), null, true);
     
+    // Fetch the filled cell background color with a default value
+    $filled_cell_bg_color = get_option('kw_fe_filled_cell_bg_color', '#e1f5fe');
+
+    // Localize the script with additional settings
     wp_localize_script(
         'fe-crossword-download-script',
         'cross_ajax_obj',
-        array('ajax_url' => admin_url('admin-ajax.php'))
+        array(
+            'ajax_url' => admin_url('admin-ajax.php'),
+            'filledCellColor' => esc_attr($filled_cell_bg_color),
+            'correctedCellColor' => 'green',
+        )
     );
+
 
     wp_enqueue_script('sweetalert2', 'https://cdn.jsdelivr.net/npm/sweetalert2@11', array(), null, true);
 }

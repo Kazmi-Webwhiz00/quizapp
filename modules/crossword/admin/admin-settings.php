@@ -8,6 +8,7 @@ if (!defined('ABSPATH')) {
 require_once plugin_dir_path(__FILE__) . 'pages/general-settings.php';
 require_once plugin_dir_path(__FILE__) . 'pages/ai-settings-page.php';
 require_once plugin_dir_path(__FILE__) . 'pages/admin-strings-setting-page.php';
+require_once plugin_dir_path(__FILE__) . 'pages/frontend-styles-page.php'; // Include new Frontend Styles page
 
 /**
  * Register all settings pages.
@@ -30,9 +31,10 @@ add_action('admin_menu', 'crossword_register_all_settings_pages');
 function crossword_render_settings_page() {
     // Define tabs
     $tabs = array(
-        'general' => __('General Settings', 'wp-quiz-plugin'),
-        'ai'      => __('AI Settings', 'wp-quiz-plugin'),
-        'admin-strings' => __('Admin Strings Text', 'wp-quiz-plugin'), // New Tab
+        'general'        => __('General Settings', 'wp-quiz-plugin'),
+        'ai'             => __('AI Settings', 'wp-quiz-plugin'),
+        'admin-strings'  => __('Admin Strings Text', 'wp-quiz-plugin'),
+        'frontend-styles' => __('Frontend Styles', 'wp-quiz-plugin'), // New Tab
     );
 
     ?>
@@ -58,6 +60,9 @@ function crossword_render_settings_page() {
             </div>
             <div id="kw-crossword-admin-strings" class="kw-crossword-tab-pane" style="display: none;">
                 <?php crossword_render_admin_strings_settings_page(); ?>
+            </div>
+            <div id="kw-crossword-frontend-styles" class="kw-crossword-tab-pane" style="display: none;">
+                <?php crossword_render_frontend_styles_page(); ?>
             </div>
         </div>
     </div>
@@ -96,3 +101,5 @@ function crossword_admin_enqueue_assets($hook) {
     wp_enqueue_script('kw-color-picker-script', plugins_url('/js/color-picker.js', __FILE__), ['wp-color-picker'], false, true);
 }
 add_action('admin_enqueue_scripts', 'crossword_admin_enqueue_assets');
+
+?>

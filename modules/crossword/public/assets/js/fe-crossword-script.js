@@ -17,6 +17,18 @@ jQuery(document).ready(function ($) {
         let gridData = data.grid;
         const table = $('<table class="crossword-table"></table>');
 
+                // Set the filled-cell background color from the localized variable
+                $('head').append(`
+                    <style>
+                        .filled-cell {
+                            background-color: ${cross_ajax_obj.filledCellColor};
+                        }
+                        .correct-word {
+                        background-color: ${cross_ajax_obj.correctedCellColor};
+                        };
+                    </style>
+                `);
+
         for (let y = 0; y < gridData.length; y++) {
             const tableRow = $('<tr></tr>');
             for (let x = 0; x < gridData[y].length; x++) {
@@ -92,7 +104,7 @@ jQuery(document).ready(function ($) {
                 break;
             case 'Backspace':
                 // Clear the current cell
-                input.val('');
+                input.val('').closest('td').removeClass('correct-word');
                 e.preventDefault(); // Prevent default backspace behavior
                 break;
         }

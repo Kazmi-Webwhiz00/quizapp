@@ -20,7 +20,7 @@ jQuery(document).ready(function ($) {
     
     crossword.getCluesData = function() {
         let acrossClues = [];
-        $('#clues-container h3:contains("Across")').next('ul').find('li').each(function () {
+        $(`#clues-container h3:contains(${crosswordLabels.acrossLabel})`).next('ul').find('li').each(function () {
             const clueNumber = $(this).find('strong').text().replace('.', '').trim() || '';
             const clueText = $(this).contents().filter(function() {
                 return this.nodeType === 3; // Node.TEXT_NODE
@@ -34,7 +34,7 @@ jQuery(document).ready(function ($) {
         });
     
         let downClues = [];
-        $('#clues-container h3:contains("Down")').next('ul').find('li').each(function () {
+        $(`#clues-container h3:contains(${crosswordLabels.downLabel})`).next('ul').find('li').each(function () {
             const clueNumber = $(this).find('strong').text().replace('.', '').trim() || '';
             const clueText = $(this).contents().filter(function() {
                 return this.nodeType === 3; // Node.TEXT_NODE
