@@ -1,21 +1,30 @@
 <?php
 // Add meta box for crosswords
 function crossword_add_meta_boxes() {
+    // Retrieve the meta value for the container label, or fall back to the default
+    $default_label = __('Words and Clues', 'wp-quiz-plugin');
+    $meta_label = get_option('kw_crossword_admin_words_clue_container_label', $default_label);
+
     add_meta_box(
         'crossword_words_clues',
-        __( 'Words and Clues 2', 'wp-quiz-plugin' ),
+        esc_html($meta_label), // Use the retrieved label
         'crossword_words_clues_meta_box_callback',
-        'Crossword', // Post type should be singular 'crossword' as registered
+        'crossword', // Ensure the post type matches the registered singular value
         'normal',
         'high'
     );
 }
 add_action('add_meta_boxes', 'crossword_add_meta_boxes');
 
+
 function crossword_preview_meta_box() {
+    // Retrieve the meta value for the full view container label, or fall back to the default
+    $default_label = __('Crossword Full View', 'wp-quiz-plugin');
+    $meta_label = get_option('kw_crossword_admin_full_view_container_label', $default_label);
+
     add_meta_box(
         'crossword_preview_meta_box_id', // Unique ID for the meta box
-        __('Crossword Full View', 'wp-quiz-plugin'), // Meta box title
+        esc_html($meta_label), // Use the retrieved label as the meta box title
         'crossword_preview_meta_box_callback', // Callback function
         'crossword', // Post type where it should appear
         'normal', // Context ('normal', 'side', 'advanced')

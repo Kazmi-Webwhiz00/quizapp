@@ -105,7 +105,7 @@ jQuery(document).ready(function ($) {
                 const cell = gridData[y][x];
                 const tableCell = $('<td></td>');
                 if (cell && cell.letter) {
-                    tableCell.addClass('filled-cell');
+                    tableCell.addClass('filled-cell').css('background-color', crosswordLabels.filledCellColor);
                     if (cell.clueNumber) {
                         tableCell.append(`<span class="clue-number">${cell.clueNumber}</span>`);
                     }

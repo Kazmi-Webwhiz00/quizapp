@@ -35,6 +35,13 @@ if (!defined('ABSPATH')) {
         'default' => __('Down', 'wp-quiz-plugin'),
     ]);
 
+    register_setting('kw_crossword_admin_view_strings', 'kw_crossword_admin_words_clue_container_label', [
+        'default' => __('Words and Clues', 'wp-quiz-plugin'),
+    ]);
+    register_setting('kw_crossword_admin_view_strings', 'kw_crossword_admin_full_view_container_label', [
+        'default' => __('Crossword Full View', 'wp-quiz-plugin'),
+    ]);
+
     // Register individual settings with default values for background colors
     register_setting('kw_crossword_admin_view_strings', 'kw_crossword_admin_add_word_button_color', [
         'default' => '#0073aa', // Default color
@@ -67,6 +74,10 @@ if (!defined('ABSPATH')) {
     ]);
     register_setting('kw_crossword_admin_view_strings', 'kw_crossword_admin_download_key_button_text_color', [
         'default' => '#ffffff', // Default text color
+    ]);
+
+    register_setting('kw_crossword_admin_view_strings', 'kw_crossword_admin_filled_cell_color', [
+        'default' => '#e1f5fe', // Default text color
     ]);
 
     // Add a settings section for Admin Strings

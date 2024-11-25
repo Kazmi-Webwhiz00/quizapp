@@ -242,7 +242,7 @@ jQuery(document).ready(function ($) {
                 const cell = grid[y][x];
                 const tableCell = $('<td></td>');
                 if (cell) {
-                    tableCell.addClass('filled-cell');
+                    tableCell.addClass('filled-cell').css('background-color', crosswordLabels.filledCellColor);
                     if (cell.clueNumber && !tableCell.find('.clue-number').length) {
                         tableCell.append(`<span class="clue-number">${cell.clueNumber}</span>`);
                     }

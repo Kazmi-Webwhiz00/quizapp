@@ -32,8 +32,11 @@ function load_crossword_assets($hook) {
             array(
                 'acrossLabel' => esc_html(get_option('kw_crossword_admin_across_label', __('Across', 'wp-quiz-plugin'))),
                 'downLabel'   => esc_html(get_option('kw_crossword_admin_down_label', __('Down', 'wp-quiz-plugin'))),
+                'filledCellColor' => esc_html(get_option('kw_crossword_admin_filled_cell_color', '#e1f5fe')),
             )
         );
+        
+        
 
         // Default values for prompts
         $default_context_prompt = 'Avoid using the following words:[existing_words]';
@@ -96,6 +99,7 @@ function crossword_enqueue_preview_assets($hook) {
                 array(
                     'acrossLabel' => esc_html(get_option('kw_crossword_admin_across_label', __('Across', 'wp-quiz-plugin'))),
                     'downLabel'   => esc_html(get_option('kw_crossword_admin_down_label', __('Down', 'wp-quiz-plugin'))),
+                    'filledCellColor' => esc_html(get_option('kw_crossword_admin_filled_cell_color', '#e1f5fe')),
                 )
             );
             
