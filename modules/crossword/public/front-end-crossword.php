@@ -20,6 +20,14 @@ if (isset($_GET['download']) && $_GET['download'] === 'json') {
     echo $grid_data;
     exit;
 }
+
+
+// Fetch font and style options
+$clue_title_font_color = esc_attr(get_option('kw_fe_clue_title_font_color', '#000000'));
+$clue_title_font_size = intval(get_option('kw_fe_clue_title_font_size', 25)) . 'px';
+$clue_title_font_family = esc_attr(get_option('kw_fe_clue_title_font_family', 'Arial'));
+
+
 ?>
 
 <div class="fe-crossword-wrapper">
@@ -60,17 +68,18 @@ if (isset($_GET['download']) && $_GET['download'] === 'json') {
             </div>
             <div id="crossword-grid"></div>
 
-                    <!-- Clues Container -->
-        <div id="clues-container-fe">
-            <div class="kw-across-clue-wrapper">
-                <h3>Across</h3>
-                <ul id="across-clues"></ul>
+            <!-- Clues Container -->
+            <div id="clues-container-fe">
+                <div class="kw-across-clue-wrapper">
+                    <h3 style="color: <?php echo $clue_title_font_color; ?>; font-size: <?php echo $clue_title_font_size; ?>; font-family: <?php echo $clue_title_font_family; ?>; font-weight: bold;">Across</h3>
+                    <ul id="across-clues"></ul>
+                </div>
+                <div class="kw-down-clue-wrapper">
+                    <h3 style="color: <?php echo $clue_title_font_color; ?>; font-size: <?php echo $clue_title_font_size; ?>; font-family: <?php echo $clue_title_font_family; ?>; font-weight: bold;">Down</h3>
+                    <ul id="down-clues"></ul>
+                </div>
             </div>
-            <div class="kw-down-clue-wrapper">
-                <h3>Down</h3>
-                <ul id="down-clues"></ul>
-            </div>
-        </div>
+
         </div>
 
 

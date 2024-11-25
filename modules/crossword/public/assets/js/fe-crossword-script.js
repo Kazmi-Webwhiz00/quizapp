@@ -25,6 +25,12 @@ jQuery(document).ready(function ($) {
                         }
                         .correct-word {
                         background-color: ${cross_ajax_obj.correctedCellColor};
+                        }
+
+                        #clues-container-fe ul li {
+                            font-size: ${cross_ajax_obj.fontSize};
+                            font-family: ${cross_ajax_obj.fontFamily};
+                            color: ${cross_ajax_obj.fontColor};
                         };
                     </style>
                 `);
