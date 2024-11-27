@@ -9,7 +9,8 @@ function load_crossword_assets_fe() {
     // Fetch the filled cell background color with a default value
     $filled_cell_bg_color = get_option('kw_fe_filled_cell_bg_color', '#e1f5fe');
     $correctedCellColor = get_option('kw_fe_corrected_cell_bg_color', '#d4edda');
-    $highlightColor = get_option('kw_crossword_admin_highlight_cell_color', 'yellow');
+    $wrongCellColor = get_option('kw_fe_wrong_cell_bg_color', '#d66868');
+    $highlightColor = get_option('kw_crossword_highlight_cell_color', 'yellow');
 
     // Get options for body text styling
     $body_text_font_color = esc_attr(get_option('kw_fe_body_text_font_color', 'red'));
@@ -30,7 +31,7 @@ function load_crossword_assets_fe() {
         'fontFamily' => $body_text_font_family,
         'filledCellColor' => esc_attr($filled_cell_bg_color),
         'correctedCellColor' => esc_attr($correctedCellColor),
-        'wrongCellColor' => 'red',
+        'wrongCellColor' => esc_attr($wrongCellColor),
         'highlightColor' => esc_attr($highlightColor),
         'clueImageHeight' => $clue_image_height . 'px',
         'clueImageWidth' => $clue_image_width . 'px',
@@ -52,6 +53,10 @@ function load_crossword_assets_fe() {
             'iconColor' => '#d66868',
             'buttonColor' => '#d66868',
         ),
+
+        'cellFontColor' => get_option('kw_crossword_cell_font_color', 'black'),
+        'clueFontColor' => get_option('kw_crossword_cell_clue_font_color', 'black'),
+        'cellBorderColor' => get_option('kw_crossword_cell_border_color', 'lightgrey'),
     ));
 
 

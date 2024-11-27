@@ -47,6 +47,18 @@ function crossword_register_frontend_styles_settings() {
     // Wrong Cell Background
     register_setting('kw_crossword_fe_settings', 'kw_fe_wrong_cell_bg_color', ['default' => '#d66868']);
 
+    // Highlighted Cell Background
+    register_setting('kw_crossword_fe_settings', 'kw_crossword_highlight_cell_color', ['default' => 'yellow']);
+
+    // Cell Font Color
+    register_setting('kw_crossword_fe_settings', 'kw_crossword_cell_font_color', ['default' => 'black']);
+
+    // Cell Clue Font Color
+    register_setting('kw_crossword_fe_settings', 'kw_crossword_cell_clue_font_color', ['default' => 'black']);
+    // Cell Border Color
+    register_setting('kw_crossword_fe_settings', 'kw_crossword_cell_border_color', ['default' => 'lightgrey']);
+
+
 
     // Clues Settings
     register_setting('kw_crossword_fe_settings', 'kw_fe_clue_title_font_color', ['default' => '#000000']); // Default black

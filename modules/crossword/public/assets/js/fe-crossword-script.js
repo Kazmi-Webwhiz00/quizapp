@@ -44,6 +44,11 @@ jQuery(document).ready(function ($) {
                 <style id="crossword-styles">
                     .filled-cell {
                         background-color: ${cross_ajax_obj.filledCellColor};
+                        border: 1px solid ${cross_ajax_obj.cellBorderColor} !important;
+                    }
+
+                    .filled-cell input{
+                        color:  ${cross_ajax_obj.cellFontColor} !important;
                     }
                     .correct-cell input{
                         background-color: ${cross_ajax_obj.correctedCellColor} !important;
@@ -65,6 +70,9 @@ jQuery(document).ready(function ($) {
                     .clue-image {
                         height: ${cross_ajax_obj.clueImageHeight} !important;
                         width: ${cross_ajax_obj.clueImageWidth} !important;
+                    }
+                    .clue-number{
+                        color:  ${cross_ajax_obj.clueFontColor} !important;
                     }
                 </style>
             `);
