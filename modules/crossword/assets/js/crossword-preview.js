@@ -54,28 +54,44 @@ jQuery(document).ready(function ($) {
         function canPlaceWord(word, x, y, direction) {
             if (direction === ACROSS) {
                 if (x < 0 || x + word.length > gridSize || y < 0 || y >= gridSize) return false;
+
+                // Check the cells before and after the word in x direction
+                if (x > 0 && grid[y][x - 1]) return false;
+                if (x + word.length < gridSize && grid[y][x + word.length]) return false;
+
                 for (let i = 0; i < word.length; i++) {
                     const cell = grid[y][x + i];
-                    if (cell && cell.letter !== word[i]) {
-                        return false;
-                    }
-                    // Check adjacent cells for conflicts
-                    if (cell === null) {
-                        if (y > 0 && grid[y - 1][x + i] && grid[y - 1][x + i].letter) return false;
-                        if (y < gridSize - 1 && grid[y + 1][x + i] && grid[y + 1][x + i].letter) return false;
+
+                    // Check adjacent cells above and below
+                    if (cell) {
+                        if (cell.letter !== word[i]) {
+                            return false;
+                        }
+                    } else {
+                        // Check for adjacent cells above and below
+                        if (y > 0 && grid[y - 1][x + i]) return false;
+                        if (y < gridSize - 1 && grid[y + 1][x + i]) return false;
                     }
                 }
             } else if (direction === DOWN) {
                 if (y < 0 || y + word.length > gridSize || x < 0 || x >= gridSize) return false;
+
+                // Check the cells before and after the word in y direction
+                if (y > 0 && grid[y - 1][x]) return false;
+                if (y + word.length < gridSize && grid[y + word.length][x]) return false;
+
                 for (let i = 0; i < word.length; i++) {
                     const cell = grid[y + i][x];
-                    if (cell && cell.letter !== word[i]) {
-                        return false;
-                    }
-                    // Check adjacent cells for conflicts
-                    if (cell === null) {
-                        if (x > 0 && grid[y + i][x - 1] && grid[y + i][x - 1].letter) return false;
-                        if (x < gridSize - 1 && grid[y + i][x + 1] && grid[y + i][x + 1].letter) return false;
+
+                    // Check adjacent cells left and right
+                    if (cell) {
+                        if (cell.letter !== word[i]) {
+                            return false;
+                        }
+                    } else {
+                        // Check for adjacent cells left and right
+                        if (x > 0 && grid[y + i][x - 1]) return false;
+                        if (x < gridSize - 1 && grid[y + i][x + 1]) return false;
                     }
                 }
             }
@@ -146,7 +162,7 @@ jQuery(document).ready(function ($) {
         // Function to find possible positions to place a word
         function findPositions(word) {
             let positions = [];
-        
+
             if (placedWords.length === 0) {
                 // Place the first word in the center
                 const x = Math.floor((gridSize - word.length) / 2);
@@ -165,7 +181,7 @@ jQuery(document).ready(function ($) {
                         for (let j = 0; j < placedWord.word.length; j++) {
                             if (word[i] === placedWord.word[j]) {
                                 let x, y, direction;
-        
+
                                 if (placedWord.direction === ACROSS) {
                                     // Try placing word vertically
                                     direction = DOWN;
@@ -177,7 +193,7 @@ jQuery(document).ready(function ($) {
                                     x = placedWord.x - i;
                                     y = placedWord.y + j;
                                 }
-        
+
                                 if (canPlaceWord(word, x, y, direction)) {
                                     positions.push({ x, y, direction });
                                 }
@@ -188,7 +204,6 @@ jQuery(document).ready(function ($) {
             }
             return positions;
         }
-        
 
         // Recursive function to try placing words
         function placeWords(index) {
@@ -283,7 +298,6 @@ jQuery(document).ready(function ($) {
 
     }
 
-
     function assignClueNumbers(placedWords) {
         // Reset clue numbers for all cells and words
         for (let y = 0; y < gridSize; y++) {
@@ -297,14 +311,14 @@ jQuery(document).ready(function ($) {
         placedWords.forEach((wordObj) => {
             wordObj.clueNumber = null;
         });
-    
+
         let clueNumber = 1;
-    
+
         // Assign clue numbers to each word and their starting cells
         placedWords.forEach((wordObj) => {
             const { x, y, direction } = wordObj;
             const cell = grid[y][x];
-    
+
             if (cell) {
                 if (cell.clueNumber) {
                     // If the cell already has a clue number, use it
@@ -318,8 +332,6 @@ jQuery(document).ready(function ($) {
             }
         });
     }
-    
-    
 
     // Function to show/hide crossword answers based on the checkbox state
     function toggleAnswers() {
