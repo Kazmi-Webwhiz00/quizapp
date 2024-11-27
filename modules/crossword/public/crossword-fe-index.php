@@ -15,6 +15,10 @@ function load_crossword_assets_fe() {
     $body_text_font_size = intval(get_option('kw_fe_body_text_font_size', 16)) . 'px';
     $body_text_font_family = esc_attr(get_option('kw_fe_body_text_font_family', 'Arial'));
 
+    // Get options for clue image dimensions
+    $clue_image_height = intval(get_option('kw_fe_clue_image_height', 150)); // Default height
+    $clue_image_width = intval(get_option('kw_fe_clue_image_width', 150)); // Default width
+
     // Enqueue the JavaScript file
     wp_enqueue_script('fe-crossword-script', plugin_dir_url(__FILE__) . 'assets/js/fe-crossword-script.js', array('jquery'), null, true);
 
@@ -24,8 +28,11 @@ function load_crossword_assets_fe() {
         'fontSize' => $body_text_font_size,
         'fontFamily' => $body_text_font_family,
         'filledCellColor' => esc_attr($filled_cell_bg_color),
-        'correctedCellColor' => esc_attr($correctedCellColor)
+        'correctedCellColor' => esc_attr($correctedCellColor),
+        'clueImageHeight' => $clue_image_height . 'px',
+        'clueImageWidth' => $clue_image_width . 'px',
     ));
+
 
     // Localize the script with additional settings
     wp_localize_script(

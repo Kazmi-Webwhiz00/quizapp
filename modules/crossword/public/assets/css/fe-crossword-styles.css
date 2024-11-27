@@ -87,9 +87,10 @@ h3 {
 }
 
 .clue-image {
-    max-width: 90px !important;
-    max-height: 90px !important;
+    max-width: 200px !important;
+    max-height: 200px !important;
     height: 90px !important;
+    width: 90px !important;
     margin-top: 5px !important;
     margin-bottom: 5px !important;
     border-radius: 6px !important;

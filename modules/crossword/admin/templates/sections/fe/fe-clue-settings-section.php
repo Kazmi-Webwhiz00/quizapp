@@ -10,6 +10,8 @@
         'kw_fe_body_text_font_color' => 'rgb(85, 85, 85)',
         'kw_fe_body_text_font_size' => 16,
         'kw_fe_body_text_font_family' => 'Arial',
+        'kw_fe_clue_image_height' => 100,
+        'kw_fe_clue_image_width' => 100,
     ];
     ?>
 
@@ -71,6 +73,21 @@
         </div>
     </div>
 
+    <!-- Clue Image Settings -->
+    <div class="kw-settings-group">
+        <h3><?php esc_html_e('Clue Image Settings', 'wp-quiz-plugin'); ?></h3>
+        <div class="kw-settings-field">
+            <label for="kw_fe_clue_image_height"><?php esc_html_e('Image Height (px)', 'wp-quiz-plugin'); ?></label>
+            <input type="number" id="kw_fe_clue_image_height" name="kw_fe_clue_image_height" class="regular-text"
+                value="<?php echo intval(get_option('kw_fe_clue_image_height', $clue_defaults['kw_fe_clue_image_height'])); ?>"> px
+        </div>
+        <div class="kw-settings-field">
+            <label for="kw_fe_clue_image_width"><?php esc_html_e('Image Width (px)', 'wp-quiz-plugin'); ?></label>
+            <input type="number" id="kw_fe_clue_image_width" name="kw_fe_clue_image_width" class="regular-text"
+                value="<?php echo intval(get_option('kw_fe_clue_image_width', $clue_defaults['kw_fe_clue_image_width'])); ?>"> px
+        </div>
+    </div>
+
     <!-- Reset Button -->
     <div class="kw-settings-reset">
         <button type="button" class="kw-reset-button" id="reset-clue-settings"><?php esc_html_e('Reset to Default', 'wp-quiz-plugin'); ?></button>
@@ -80,14 +97,7 @@
 <script>
 document.getElementById('reset-clue-settings').addEventListener('click', function () {
     // Default values map
-    const defaultValues = {
-        kw_fe_clue_title_font_color: '<?php echo esc_js($clue_defaults['kw_fe_clue_title_font_color']); ?>',
-        kw_fe_clue_title_font_size: '<?php echo esc_js($clue_defaults['kw_fe_clue_title_font_size']); ?>',
-        kw_fe_clue_title_font_family: '<?php echo esc_js($clue_defaults['kw_fe_clue_title_font_family']); ?>',
-        kw_fe_body_text_font_color: '<?php echo esc_js($clue_defaults['kw_fe_body_text_font_color']); ?>',
-        kw_fe_body_text_font_size: '<?php echo esc_js($clue_defaults['kw_fe_body_text_font_size']); ?>',
-        kw_fe_body_text_font_family: '<?php echo esc_js($clue_defaults['kw_fe_body_text_font_family']); ?>',
-    };
+    const defaultValues = <?php echo json_encode($clue_defaults); ?>;
 
     // Reset fields to their default values
     for (const [key, value] of Object.entries(defaultValues)) {

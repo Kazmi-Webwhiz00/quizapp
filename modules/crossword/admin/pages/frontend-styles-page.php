@@ -56,6 +56,11 @@ function crossword_register_frontend_styles_settings() {
     register_setting('kw_crossword_fe_settings', 'kw_fe_body_text_font_size', ['default' => '16']); // Default font size
     register_setting('kw_crossword_fe_settings', 'kw_fe_body_text_font_family', ['default' => 'Arial']); // Default font family
 
+    // Clue Image Settings
+    register_setting('kw_crossword_fe_settings', 'kw_fe_clue_image_height', ['default' => '100']); // Default height
+    register_setting('kw_crossword_fe_settings', 'kw_fe_clue_image_width', ['default' => '100']); // Default width
+
+
 
     // Add a settings section for Frontend Styles
     add_settings_section(

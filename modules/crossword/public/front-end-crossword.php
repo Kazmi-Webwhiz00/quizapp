@@ -27,6 +27,25 @@ $clue_title_font_color = esc_attr(get_option('kw_fe_clue_title_font_color', '#00
 $clue_title_font_size = intval(get_option('kw_fe_clue_title_font_size', 25)) . 'px';
 $clue_title_font_family = esc_attr(get_option('kw_fe_clue_title_font_family', 'Arial'));
 
+$restart_button_bg_color = esc_attr(get_option('kw_fe_restart_button_color', '#00796b'));
+$restart_button_text_color = esc_attr(get_option('kw_fe_restart_button_text_color', '#ffffff'));
+$restart_button_font_size = esc_attr(get_option('kw_fe_restart_button_font_size', '16px'));
+$restart_button_font_family = esc_attr(get_option('kw_fe_restart_button_font_family', 'Arial, sans-serif'));
+
+$download_button_bg_color = esc_attr(get_option('kw_fe_download_button_bg_color', '#00796b'));
+$download_button_text_color = esc_attr(get_option('kw_fe_download_button_text_color', '#ffffff'));
+$download_button_font_size = esc_attr(get_option('kw_fe_download_button_font_size', '16px'));
+$download_button_font_family = esc_attr(get_option('kw_fe_download_button_font_family', 'Arial, sans-serif'));
+
+$check_button_bg_color = esc_attr(get_option('kw_fe_check_crossword_button_bg_color', '#00796b'));
+$check_button_text_color = esc_attr(get_option('kw_fe_check_crossword_button_text_color', '#ffffff'));
+$check_button_font_size = esc_attr(get_option('kw_fe_check_crossword_button_font_size', '16px'));
+$check_button_font_family = esc_attr(get_option('kw_fe_check_crossword_button_font_family', 'Arial, sans-serif'));
+
+$clue_across_text = esc_html(get_option('kw_fe_clue_title_across', 'Across'));
+$clue_down_text = esc_html(get_option('kw_fe_clue_title_down', 'Down'));
+
+
 
 ?>
 

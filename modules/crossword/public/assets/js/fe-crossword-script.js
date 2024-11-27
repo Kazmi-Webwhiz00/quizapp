@@ -17,23 +17,26 @@ jQuery(document).ready(function ($) {
         let gridData = data.grid;
         const table = $('<table class="crossword-table"></table>');
 
-                // Set the filled-cell background color from the localized variable
-                $('head').append(`
-                    <style>
-                        .filled-cell {
-                            background-color: ${cross_ajax_obj.filledCellColor};
-                        }
-                        .correct-word {
-                        background-color: ${cross_ajax_obj.correctedCellColor};
-                        }
-
-                        #clues-container-fe ul li {
-                            font-size: ${cross_ajax_obj.fontSize};
-                            font-family: ${cross_ajax_obj.fontFamily};
-                            color: ${cross_ajax_obj.fontColor};
-                        };
-                    </style>
-                `);
+        $('head').append(`
+            <style>
+                .filled-cell {
+                    background-color: ${cross_ajax_obj.filledCellColor};
+                }
+                .correct-word {
+                    background-color: ${cross_ajax_obj.correctedCellColor};
+                }
+                #clues-container-fe ul li {
+                    font-size: ${cross_ajax_obj.fontSize};
+                    font-family: ${cross_ajax_obj.fontFamily};
+                    color: ${cross_ajax_obj.fontColor};
+                }
+                .clue-image {
+                    height: ${cross_ajax_obj.clueImageHeight} !important;
+                    width: ${cross_ajax_obj.clueImageWidth} !important;
+                }
+            </style>
+        `);
+        
 
         for (let y = 0; y < gridData.length; y++) {
             const tableRow = $('<tr></tr>');
