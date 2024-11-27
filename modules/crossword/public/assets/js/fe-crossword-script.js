@@ -1,6 +1,7 @@
 jQuery(document).ready(function ($) {
     let words = [];
     let currentWord = null; // Keep track of the current word
+    let gridData = null; // Move gridData to a higher scope
 
     function populateCrosswordFromData(container) {
         let crosswordData = $('#crossword-data').val();
@@ -17,7 +18,7 @@ jQuery(document).ready(function ($) {
             return;
         }
 
-        let gridData = data.grid;
+        gridData = data.grid; // Assign to the global gridData variable
 
         // Extract words from gridData
         words = extractWordsFromGrid(gridData, data);
@@ -36,32 +37,34 @@ jQuery(document).ready(function ($) {
 
         const table = $('<table class="crossword-table"></table>');
 
-        $('head').append(`
-            <style>
-                .filled-cell {
-                    background-color: ${cross_ajax_obj.filledCellColor};
-                }
-                .correct-word {
-                    background-color: ${cross_ajax_obj.correctedCellColor};
-                }
-                .highlighted-word input {
-                    background-color: yellow !important;
-                }
-                .highlighted-clue {
-                    background-color: yellow;
-                }
-                #clues-container-fe ul li {
-                    font-size: ${cross_ajax_obj.fontSize};
-                    font-family: ${cross_ajax_obj.fontFamily};
-                    color: ${cross_ajax_obj.fontColor};
-                }
-                .clue-image {
-                    height: ${cross_ajax_obj.clueImageHeight} !important;
-                    width: ${cross_ajax_obj.clueImageWidth} !important;
-                }
-            </style>
-        `);
-        
+        // Add CSS classes (no inline CSS)
+        if (!$('#crossword-styles').length) {
+            $('head').append(`
+                <style id="crossword-styles">
+                    .filled-cell {
+                        background-color: ${cross_ajax_obj.filledCellColor};
+                    }
+                    .correct-cell {
+                        background-color: ${cross_ajax_obj.correctedCellColor} !important;
+                    }
+                    .highlighted-cell input {
+                        background-color: ${cross_ajax_obj.highlightColor} !important;
+                    }
+                    .highlighted-clue {
+                        background-color: ${cross_ajax_obj.highlightColor};
+                    }
+                    #clues-container-fe ul li {
+                        font-size: ${cross_ajax_obj.fontSize};
+                        font-family: ${cross_ajax_obj.fontFamily};
+                        color: ${cross_ajax_obj.fontColor};
+                    }
+                    .clue-image {
+                        height: ${cross_ajax_obj.clueImageHeight} !important;
+                        width: ${cross_ajax_obj.clueImageWidth} !important;
+                    }
+                </style>
+            `);
+        }
 
         for (let y = 0; y < gridData.length; y++) {
             const tableRow = $('<tr></tr>');
@@ -100,15 +103,14 @@ jQuery(document).ready(function ($) {
         // Render clues
         renderClues(data.clues);
 
-
         // Attach validation logic
         $('#validate-crossword').on('click', function () {
-            validateCrossword(data);
+            validateCrossword();
         });
 
         $('#check-words').on('change', function () {
             if ($(this).is(':checked')) {
-                enableLiveValidation(data);
+                enableLiveValidation();
             } else {
                 disableLiveValidation();
             }
@@ -190,6 +192,14 @@ jQuery(document).ready(function ($) {
         let value = input.val().slice(-1).toUpperCase();
         input.val(value);
 
+        // Remove 'correct-cell' class when user changes input
+        input.closest('td').removeClass('correct-cell');
+
+        // Live validation
+        if ($('#check-words').is(':checked')) {
+            validateCell(input);
+        }
+
         // Move to next cell in the current word
         if (currentWord) {
             // Find the index of the current cell in the word
@@ -215,6 +225,14 @@ jQuery(document).ready(function ($) {
             e.preventDefault(); // Prevent default input
             input.val(e.key.toUpperCase());
 
+            // Remove 'correct-cell' class when user changes input
+            input.closest('td').removeClass('correct-cell');
+
+            // Live validation
+            if ($('#check-words').is(':checked')) {
+                validateCell(input);
+            }
+
             // Move to next cell in the current word
             if (currentWord) {
                 const currentIndex = currentWord.cells.findIndex(cell => cell.x === x && cell.y === y);
@@ -239,7 +257,7 @@ jQuery(document).ready(function ($) {
                     break;
                 case 'Backspace':
                     // Clear the current cell
-                    input.val('').closest('td').removeClass('correct-word');
+                    input.val('').closest('td').removeClass('correct-cell');
                     e.preventDefault(); // Prevent default backspace behavior
 
                     // Move to previous cell in the current word
@@ -259,7 +277,7 @@ jQuery(document).ready(function ($) {
         const input = $(e.target);
 
         // Remove previous highlights
-        $('.letter-input').closest('td').removeClass('highlighted-word');
+        $('.letter-input').closest('td').removeClass('highlighted-cell');
         $('#clues-container-fe li').removeClass('highlighted-clue');
 
         const wordsAtCell = input.data('words');
@@ -276,7 +294,7 @@ jQuery(document).ready(function ($) {
                 let cellInput = $('.letter-input').filter(function () {
                     return $(this).data('x') === cell.x && $(this).data('y') === cell.y;
                 });
-                cellInput.closest('td').addClass('highlighted-word');
+                cellInput.closest('td').addClass('highlighted-cell');
             });
 
             // Highlight the clue
@@ -322,7 +340,7 @@ jQuery(document).ready(function ($) {
                 }
                 clueItem.on('click', function() {
                     // Remove previous highlights
-                    $('.letter-input').closest('td').removeClass('highlighted-word');
+                    $('.letter-input').closest('td').removeClass('highlighted-cell');
                     $('#clues-container-fe li').removeClass('highlighted-clue');
 
                     // Highlight the clue
@@ -342,7 +360,7 @@ jQuery(document).ready(function ($) {
                             let cellInput = $('.letter-input').filter(function () {
                                 return $(this).data('x') === cell.x && $(this).data('y') === cell.y;
                             });
-                            cellInput.closest('td').addClass('highlighted-word');
+                            cellInput.closest('td').addClass('highlighted-cell');
                         });
 
                         // Focus on the first cell of the word
@@ -365,7 +383,7 @@ jQuery(document).ready(function ($) {
                 }
                 clueItem.on('click', function() {
                     // Remove previous highlights
-                    $('.letter-input').closest('td').removeClass('highlighted-word');
+                    $('.letter-input').closest('td').removeClass('highlighted-cell');
                     $('#clues-container-fe li').removeClass('highlighted-clue');
 
                     // Highlight the clue
@@ -385,7 +403,7 @@ jQuery(document).ready(function ($) {
                             let cellInput = $('.letter-input').filter(function () {
                                 return $(this).data('x') === cell.x && $(this).data('y') === cell.y;
                             });
-                            cellInput.closest('td').addClass('highlighted-word');
+                            cellInput.closest('td').addClass('highlighted-cell');
                         });
 
                         // Focus on the first cell of the word
@@ -398,13 +416,12 @@ jQuery(document).ready(function ($) {
         }
     }
 
-    function validateCrossword(data) {
-        const gridData = data.grid;
+    function validateCrossword() {
         const inputs = $('.letter-input');
         let allCorrect = true;
 
         // Reset styles
-        $('.crossword-table td').removeClass('correct-word');
+        $('.letter-input').closest('td').removeClass('correct-cell');
 
         inputs.each(function () {
             const input = $(this);
@@ -414,7 +431,7 @@ jQuery(document).ready(function ($) {
             const correctAnswer = gridData[y][x]?.letter?.toUpperCase() || '';
 
             if (userAnswer === correctAnswer) {
-                input.closest('td').addClass('correct-word');
+                input.closest('td').addClass('correct-cell');
             } else {
                 allCorrect = false;
             }
@@ -442,25 +459,27 @@ jQuery(document).ready(function ($) {
         }
     }
 
-    function enableLiveValidation(data) {
-        $('.letter-input').on('input', function () {
-            const input = $(this);
-            const x = input.data('x');
-            const y = input.data('y');
-            const userAnswer = input.val().toUpperCase();
-            const correctAnswer = data.grid[y][x]?.letter?.toUpperCase() || '';
+    function validateCell(input) {
+        const x = input.data('x');
+        const y = input.data('y');
+        const userAnswer = input.val().toUpperCase();
+        const correctAnswer = gridData[y][x]?.letter?.toUpperCase() || '';
 
-            if (userAnswer === correctAnswer) {
-                input.closest('td').addClass('correct-word');
-            } else {
-                input.closest('td').removeClass('correct-word');
-            }
+        if (userAnswer === correctAnswer && userAnswer !== '') {
+            input.closest('td').addClass('correct-cell');
+        } else {
+            input.closest('td').removeClass('correct-cell');
+        }
+    }
+
+    function enableLiveValidation() {
+        $('.letter-input').each(function () {
+            validateCell($(this));
         });
     }
 
     function disableLiveValidation() {
-        $('.letter-input').off('input');
-        $('.crossword-table td').removeClass('correct-word');
+        $('.letter-input').closest('td').removeClass('correct-cell');
     }
 
     $('#kw-reset-crossword').on('click', function () {
