@@ -457,21 +457,23 @@ jQuery(document).ready(function ($) {
         if (allCorrect) {
             // SweetAlert2 for success
             Swal.fire({
-                title: 'Congratulations!',
-                text: 'You have correctly filled the crossword!',
+                title: cross_ajax_obj.successPopup.title,
+                text: cross_ajax_obj.successPopup.bodyText,
                 icon: 'success',
-                iconColor:'#00796b',
-                confirmButtonText: 'Awesome!',
-                confirmButtonColor:'#00796b',
+                iconColor: cross_ajax_obj.successPopup.iconColor,
+                confirmButtonText: cross_ajax_obj.successPopup.buttonText,
+                confirmButtonColor: cross_ajax_obj.successPopup.buttonColor,
             });
             $('#kw-reset-crossword').show();
         } else {
             // SweetAlert2 for errors
             Swal.fire({
-                title: 'Oops!',
-                text: 'Some answers are incorrect. Keep trying!',
+                title: cross_ajax_obj.failurePopup.title,
+                text: cross_ajax_obj.failurePopup.bodyText,
                 icon: 'error',
-                confirmButtonText: 'Try Again'
+                iconColor: cross_ajax_obj.failurePopup.iconColor,
+                confirmButtonText: cross_ajax_obj.failurePopup.buttonText,
+                confirmButtonColor: cross_ajax_obj.failurePopup.buttonColor,
             });
         }
     }

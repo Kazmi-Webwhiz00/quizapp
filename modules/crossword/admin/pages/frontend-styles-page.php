@@ -61,6 +61,31 @@ function crossword_register_frontend_styles_settings() {
     register_setting('kw_crossword_fe_settings', 'kw_fe_clue_image_width', ['default' => '100']); // Default width
 
 
+     // Success Popup Settings
+     register_setting('kw_crossword_fe_settings', 'kw_crossword_success_popup_title', ['default' => __('Success!', 'wp-quiz-plugin')]);
+     register_setting('kw_crossword_fe_settings', 'kw_crossword_success_popup_body_text', ['default' => __('You have successfully completed the crossword!', 'wp-quiz-plugin')]);
+     register_setting('kw_crossword_fe_settings', 'kw_crossword_success_popup_button_text', ['default' => __('Close', 'wp-quiz-plugin')]);
+ 
+     // Failure Popup Settings
+     register_setting('kw_crossword_fe_settings', 'kw_crossword_failure_popup_title', ['default' => __('Are you Sure ?', 'wp-quiz-plugin')]);
+     register_setting('kw_crossword_fe_settings', 'kw_crossword_failure_popup_body_text', ['default' => __('Not all words are typed !', 'wp-quiz-plugin')]);
+     register_setting('kw_crossword_fe_settings', 'kw_crossword_failure_popup_button_text', ['default' => __('Retry', 'wp-quiz-plugin')]);
+ 
+     // Add a settings section for Success Popup
+     add_settings_section(
+         'kw_success_popup_settings_section',
+         __('Success Popup Settings', 'wp-quiz-plugin'),
+         'crossword_render_success_popup_section',
+         'kw-crossword-frontend-styles-page'
+     );
+ 
+     // Add a settings section for Failure Popup
+     add_settings_section(
+         'kw_failure_popup_settings_section',
+         __('Failure Popup Settings', 'wp-quiz-plugin'),
+         'crossword_render_failure_popup_section',
+         'kw-crossword-frontend-styles-page'
+     );
 
     // Add a settings section for Frontend Styles
     add_settings_section(
@@ -93,6 +118,21 @@ function crossword_render_frontend_styles_section() {
  */
 function crossword_render_clues_settings_section() {
     include plugin_dir_path(__FILE__) . '../templates/sections/fe/fe-clue-settings-section.php';
+}
+
+
+/**
+ * Render Success Popup Section
+ */
+function crossword_render_success_popup_section() {
+    include plugin_dir_path(__FILE__) . '../templates/sections/fe/success-popup-settings-section.php';
+}
+
+/**
+ * Render Failure Popup Section
+ */
+function crossword_render_failure_popup_section() {
+    include plugin_dir_path(__FILE__) . '../templates/sections/fe/failure-popup-settings-section.php';
 }
 
 /**

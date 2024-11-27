@@ -23,7 +23,7 @@ function load_crossword_assets_fe() {
     // Enqueue the JavaScript file
     wp_enqueue_script('fe-crossword-script', plugin_dir_url(__FILE__) . 'assets/js/fe-crossword-script.js', array('jquery'), null, true);
 
-    // Localize the script with the body text style settings
+    // Localize the script with the body text style settings and popup settings
     wp_localize_script('fe-crossword-script', 'cross_ajax_obj', array(
         'fontColor' => $body_text_font_color,
         'fontSize' => $body_text_font_size,
@@ -34,6 +34,24 @@ function load_crossword_assets_fe() {
         'highlightColor' => esc_attr($highlightColor),
         'clueImageHeight' => $clue_image_height . 'px',
         'clueImageWidth' => $clue_image_width . 'px',
+
+        // Success Popup Settings
+        'successPopup' => array(
+            'title' => get_option('kw_crossword_success_popup_title', __('Success!', 'wp-quiz-plugin')),
+            'bodyText' => get_option('kw_crossword_success_popup_body_text', __('You have successfully completed the crossword!', 'wp-quiz-plugin')),
+            'buttonText' => get_option('kw_crossword_success_popup_button_text', __('Awesome!', 'wp-quiz-plugin')),
+            'iconColor' => '#00796b',
+            'buttonColor' => '#00796b',
+        ),
+
+        // Failure Popup Settings
+        'failurePopup' => array(
+            'title' => get_option('kw_crossword_failure_popup_title', __('Oops!', 'wp-quiz-plugin')),
+            'bodyText' => get_option('kw_crossword_failure_popup_body_text', __('Some answers are incorrect. Keep trying!', 'wp-quiz-plugin')),
+            'buttonText' => get_option('kw_crossword_failure_popup_button_text', __('Try Again', 'wp-quiz-plugin')),
+            'iconColor' => '#d66868',
+            'buttonColor' => '#d66868',
+        ),
     ));
 
 

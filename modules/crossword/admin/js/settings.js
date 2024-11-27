@@ -22,6 +22,18 @@ jQuery(document).ready(function ($) {
         history.pushState(null, '', `#${tabKey}`);
     });
 
+        $('.kw-reset-button').on('click', function () {
+            console.log("test");
+            const $parentSection = $(this).closest('.kw-settings-section');
+    
+            // Reset all input fields with 'data-default'
+            $parentSection.find('input[data-default], textarea[data-default]').each(function () {
+                const defaultValue = $(this).data('default');
+                $(this).val(defaultValue);
+            });
+        });
+    
+
     // Initialize the active tab based on the URL hash
     const activeTab = window.location.hash.substring(1) || 'general';
     activateTab(activeTab);
