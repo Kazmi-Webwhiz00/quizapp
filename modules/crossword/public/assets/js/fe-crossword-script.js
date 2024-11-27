@@ -22,6 +22,7 @@ jQuery(document).ready(function ($) {
 
         // Extract words from gridData
         words = extractWordsFromGrid(gridData, data);
+        console.log('Words array:', words); // Log the words array
 
         // Build a mapping from cell positions to words
         let cellToWordsMap = {};
@@ -44,10 +45,10 @@ jQuery(document).ready(function ($) {
                     .filled-cell {
                         background-color: ${cross_ajax_obj.filledCellColor};
                     }
-                    .correct-cell input {
+                    .correct-cell input{
                         background-color: ${cross_ajax_obj.correctedCellColor} !important;
                     }
-                    .highlighted-cell  {
+                    .highlighted-cell {
                         background-color: ${cross_ajax_obj.highlightColor} !important;
                     }
                     .highlighted-clue {
@@ -74,6 +75,7 @@ jQuery(document).ready(function ($) {
                 if (cell && cell.letter) {
                     tableCell.addClass('filled-cell');
                     if (cell.clueNumber) {
+                        cell.clueNumber = parseInt(cell.clueNumber); // Ensure clueNumber is an integer
                         tableCell.append(`<span class="clue-number">${cell.clueNumber}</span>`);
                     }
                     const input = $('<input type="text" maxlength="1" class="letter-input">');
@@ -139,6 +141,9 @@ jQuery(document).ready(function ($) {
             for (let x = 0; x < gridWidth; x++) {
                 let cell = gridData[y][x];
                 if (cell && cell.letter) {
+                    if (cell.clueNumber) {
+                        cell.clueNumber = parseInt(cell.clueNumber); // Ensure clueNumber is an integer
+                    }
                     // Check for ACROSS word starting here
                     let isStartOfAcross = (x === 0 || !gridData[y][x - 1] || !gridData[y][x - 1].letter) &&
                         (x + 1 < gridWidth && gridData[y][x + 1] && gridData[y][x + 1].letter);
@@ -347,12 +352,14 @@ jQuery(document).ready(function ($) {
                     $(this).addClass('highlighted-clue');
 
                     // Find the word
-                    const clueNumber = $(this).data('clue-number');
+                    const clueNumber = parseInt($(this).data('clue-number'));
                     const direction = $(this).data('direction');
+                    console.log('Clicked clueNumber:', clueNumber, 'direction:', direction);
 
                     const wordObj = words.find(word => word.clueNumber === clueNumber && word.direction === direction);
 
                     if (wordObj) {
+                        console.log("word found:", wordObj);
                         currentWord = wordObj; // Update currentWord
 
                         // Highlight the word
@@ -366,6 +373,8 @@ jQuery(document).ready(function ($) {
                         // Focus on the first cell of the word
                         let firstCell = wordObj.cells[0];
                         navigateToCell($('.crossword-table'), firstCell.x, firstCell.y);
+                    } else {
+                        console.log("word not found");
                     }
                 });
                 acrossClues.append(clueItem);
@@ -390,12 +399,14 @@ jQuery(document).ready(function ($) {
                     $(this).addClass('highlighted-clue');
 
                     // Find the word
-                    const clueNumber = $(this).data('clue-number');
+                    const clueNumber = parseInt($(this).data('clue-number'));
                     const direction = $(this).data('direction');
+                    console.log('Clicked clueNumber:', clueNumber, 'direction:', direction);
 
                     const wordObj = words.find(word => word.clueNumber === clueNumber && word.direction === direction);
 
                     if (wordObj) {
+                        console.log("word found:", wordObj);
                         currentWord = wordObj; // Update currentWord
 
                         // Highlight the word
@@ -409,6 +420,8 @@ jQuery(document).ready(function ($) {
                         // Focus on the first cell of the word
                         let firstCell = wordObj.cells[0];
                         navigateToCell($('.crossword-table'), firstCell.x, firstCell.y);
+                    } else {
+                        console.log("word not found");
                     }
                 });
                 downClues.append(clueItem);
@@ -484,7 +497,7 @@ jQuery(document).ready(function ($) {
     }
 
     $('#kw-reset-crossword').on('click', function () {
-        location.reload(); // Reload the current page
+        populateCrosswordFromData('#crossword-grid');
     });
 
     // Initialize the crossword grid
