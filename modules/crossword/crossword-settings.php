@@ -158,4 +158,38 @@ function crossword_preview_meta_box_callback($post) {
         echo '<p>Template file not found.</p>';
     }
 }
+
+// Add meta box for crossword description
+function add_crossword_description_meta_box() {
+    add_meta_box(
+        'crossword_description_meta_box',
+        __('crossword Description', 'wp-quiz-plugin'),
+        'display_crossword_description_meta_box',
+        'crossword',
+        'side',
+        'default'
+    );
+}
+add_action('add_meta_boxes', 'add_crossword_description_meta_box');
+
+function display_crossword_description_meta_box($post) {
+    $description = get_post_meta($post->ID, '_crossword_description', true);
+    ?>
+    <textarea name="crossword_description" style="width:100%; height:100px;"><?php echo esc_textarea($description); ?></textarea>
+    <?php
+}
+
+
+// Save the quiz description
+function save_crossword_description_meta_box($post_id) {
+    if (array_key_exists('crossword_description', $_POST)) {
+        update_post_meta(
+            $post_id,
+            '_crossword_description',
+            sanitize_text_field($_POST['crossword_description'])
+        );
+    }
+}
+add_action('save_post', 'save_crossword_description_meta_box');
+
 ?>
