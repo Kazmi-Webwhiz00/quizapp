@@ -44,10 +44,10 @@ jQuery(document).ready(function ($) {
                     .filled-cell {
                         background-color: ${cross_ajax_obj.filledCellColor};
                     }
-                    .correct-cell {
+                    .correct-cell input {
                         background-color: ${cross_ajax_obj.correctedCellColor} !important;
                     }
-                    .highlighted-cell input {
+                    .highlighted-cell  {
                         background-color: ${cross_ajax_obj.highlightColor} !important;
                     }
                     .highlighted-clue {
@@ -466,6 +466,7 @@ jQuery(document).ready(function ($) {
         const correctAnswer = gridData[y][x]?.letter?.toUpperCase() || '';
 
         if (userAnswer === correctAnswer && userAnswer !== '') {
+            input.closest('td').removeClass('highlighted-cell');
             input.closest('td').addClass('correct-cell');
         } else {
             input.closest('td').removeClass('correct-cell');
