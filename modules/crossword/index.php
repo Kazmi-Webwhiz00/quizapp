@@ -42,7 +42,7 @@ function load_crossword_assets($hook) {
         $default_context_prompt = 'Avoid using the following words:[existing_words]';
         $default_generation_prompt = 'Generate a crossword with [number] words on the topic [topic] suitable for users aged [age]. The crossword should be created in the [language] language.';
         $default_return_format_prompt = "\nProvide the output in the following JSON array format, with no additional text:\n\n[\n{ \"word\": \"exampleWord1\", \"clue\": \"Example clue for word 1\" },\n{ \"word\": \"exampleWord2\", \"clue\": \"Example clue for word 2\" },\n...]\n";
-
+        $ai_button_label = get_option('kw_genreate_with_ai_button_label', __('Generate with AI', 'wp-quiz-plugin'));
 
         // Localize variables for use in JavaScript
         wp_localize_script('crossword-generate-with-ai', 'wpQuizPlugin', [
@@ -58,7 +58,7 @@ function load_crossword_assets($hook) {
 
             // UI text settings
             'generatingText' => __('Generating...', 'wp-quiz-plugin'),
-            'generateWithAiText' => __('Generate with AI', 'wp-quiz-plugin'),
+            'generateWithAiText' => esc_html($ai_button_label),
 
             // Localized prompt settings
             'defaultContextPrompt' => get_option('kw_crossword_context_prompt', 'Avoid using the following words:[existing_words]'),

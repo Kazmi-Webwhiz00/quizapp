@@ -8,7 +8,7 @@
 /* New left section styling */
 #generate-ai-container {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     gap: 10px;
     background-color: #f0f4ff;
     padding: 15px;
@@ -27,10 +27,14 @@
 #generate-ai-container input[type="text"], 
 #generate-ai-container input[type="number"] {
     padding: 5px;
+    width: 100%;
     font-size: 14px;
     border: 1px solid #ccc;
     border-radius: 3px;
     transition: border-color 0.2s, box-shadow 0.2s;
+}
+#generate-ai-container input[type="number"] {
+    max-width: 100px;
 }
 
 #generate-ai-container input[type="text"]:focus, 
@@ -181,7 +185,6 @@ width: 80%;
  /* custom meta box styling */
 
 #crossword_ai_meta_box {
-    max-width: 500px;
     width: 100%;
     margin-bottom: 10px;
     text-align: left;

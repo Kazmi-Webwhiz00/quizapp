@@ -35,9 +35,11 @@ add_action('add_meta_boxes', 'crossword_preview_meta_box');
 
 
 function crossword_register_create_with_ai_meta_box() {
+
+    $ai_box_title = get_option('kw_genreate_with_ai_box_title', __('Generate with AI', 'wp-quiz-plugin'));
     add_meta_box(
         'crossword_ai_meta_box',         // Meta box ID
-        'Generate with AI',              // Title
+        esc_html($ai_box_title),              // Title
         'crossword_render_ai_meta_box',  // Callback function
         'Crossword',                          // Post type
         'normal',
