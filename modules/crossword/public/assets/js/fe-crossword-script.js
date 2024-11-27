@@ -1,4 +1,7 @@
 jQuery(document).ready(function ($) {
+    let words = [];
+    let currentWord = null; // Keep track of the current word
+
     function populateCrosswordFromData(container) {
         let crosswordData = $('#crossword-data').val();
         if (!crosswordData) {
@@ -15,6 +18,22 @@ jQuery(document).ready(function ($) {
         }
 
         let gridData = data.grid;
+
+        // Extract words from gridData
+        words = extractWordsFromGrid(gridData, data);
+
+        // Build a mapping from cell positions to words
+        let cellToWordsMap = {};
+        words.forEach(wordObj => {
+            wordObj.cells.forEach(cell => {
+                let key = cell.x + ',' + cell.y;
+                if (!cellToWordsMap[key]) {
+                    cellToWordsMap[key] = [];
+                }
+                cellToWordsMap[key].push(wordObj);
+            });
+        });
+
         const table = $('<table class="crossword-table"></table>');
 
         $('head').append(`
@@ -24,6 +43,12 @@ jQuery(document).ready(function ($) {
                 }
                 .correct-word {
                     background-color: ${cross_ajax_obj.correctedCellColor};
+                }
+                .highlighted-word input {
+                    background-color: yellow !important;
+                }
+                .highlighted-clue {
+                    background-color: yellow;
                 }
                 #clues-container-fe ul li {
                     font-size: ${cross_ajax_obj.fontSize};
@@ -52,7 +77,15 @@ jQuery(document).ready(function ($) {
                     input.data('x', x);
                     input.data('y', y);
                     input.on('keydown', handleNavigation); // Arrow key and Backspace handling
-                    input.on('input', handleInput); // Prevent spaces
+                    input.on('input', handleInput); // Overwrite existing letters
+                    input.on('focus', handleFocus); // Highlight word and clue
+
+                    // Store the words that this cell is part of
+                    let key = x + ',' + y;
+                    if (cellToWordsMap[key]) {
+                        input.data('words', cellToWordsMap[key]);
+                    }
+
                     tableCell.append(input);
                 } else {
                     tableCell.addClass('empty-cell');
@@ -82,13 +115,92 @@ jQuery(document).ready(function ($) {
         });
     }
 
+    function extractWordsFromGrid(gridData, data) {
+        let words = [];
+        let gridHeight = gridData.length;
+        let gridWidth = gridData[0].length;
+        let clueNumberToClueTextMap = {};
+
+        // Build a map of clue numbers to clue texts
+        if (data.clues && data.clues.across) {
+            data.clues.across.forEach(clueObj => {
+                clueNumberToClueTextMap['A' + clueObj.clueNumber] = clueObj.clueText;
+            });
+        }
+        if (data.clues && data.clues.down) {
+            data.clues.down.forEach(clueObj => {
+                clueNumberToClueTextMap['D' + clueObj.clueNumber] = clueObj.clueText;
+            });
+        }
+
+        for (let y = 0; y < gridHeight; y++) {
+            for (let x = 0; x < gridWidth; x++) {
+                let cell = gridData[y][x];
+                if (cell && cell.letter) {
+                    // Check for ACROSS word starting here
+                    let isStartOfAcross = (x === 0 || !gridData[y][x - 1] || !gridData[y][x - 1].letter) &&
+                        (x + 1 < gridWidth && gridData[y][x + 1] && gridData[y][x + 1].letter);
+                    if (isStartOfAcross) {
+                        let wordObj = {
+                            clueNumber: cell.clueNumber,
+                            direction: 'across',
+                            cells: [],
+                            clueText: clueNumberToClueTextMap['A' + cell.clueNumber] || '',
+                            x: x,
+                            y: y
+                        };
+                        let i = x;
+                        while (i < gridWidth && gridData[y][i] && gridData[y][i].letter) {
+                            wordObj.cells.push({ x: i, y: y, letter: gridData[y][i].letter });
+                            i++;
+                        }
+                        words.push(wordObj);
+                    }
+
+                    // Check for DOWN word starting here
+                    let isStartOfDown = (y === 0 || !gridData[y - 1][x] || !gridData[y - 1][x].letter) &&
+                        (y + 1 < gridHeight && gridData[y + 1][x] && gridData[y + 1][x].letter);
+                    if (isStartOfDown) {
+                        let wordObj = {
+                            clueNumber: cell.clueNumber,
+                            direction: 'down',
+                            cells: [],
+                            clueText: clueNumberToClueTextMap['D' + cell.clueNumber] || '',
+                            x: x,
+                            y: y
+                        };
+                        let i = y;
+                        while (i < gridHeight && gridData[i][x] && gridData[i][x].letter) {
+                            wordObj.cells.push({ x: x, y: i, letter: gridData[i][x].letter });
+                            i++;
+                        }
+                        words.push(wordObj);
+                    }
+                }
+            }
+        }
+
+        return words;
+    }
+
     function handleInput(e) {
         const input = $(e.target);
 
-        // Remove spaces if entered
-        const value = input.val();
-        if (value.includes(' ')) {
-            input.val(value.replace(/ /g, ''));
+        // Overwrite existing letter with the new input
+        let value = input.val().slice(-1).toUpperCase();
+        input.val(value);
+
+        // Move to next cell in the current word
+        if (currentWord) {
+            // Find the index of the current cell in the word
+            const x = input.data('x');
+            const y = input.data('y');
+            const currentIndex = currentWord.cells.findIndex(cell => cell.x === x && cell.y === y);
+            if (currentIndex >= 0 && currentIndex < currentWord.cells.length - 1) {
+                // Move to next cell
+                const nextCell = currentWord.cells[currentIndex + 1];
+                navigateToCell($('.crossword-table'), nextCell.x, nextCell.y);
+            }
         }
     }
 
@@ -98,34 +210,100 @@ jQuery(document).ready(function ($) {
         const y = input.data('y');
         const table = $('.crossword-table');
 
-        switch (e.key) {
-            case 'ArrowUp':
-                navigateToCell(table, x, y - 1);
-                break;
-            case 'ArrowDown':
-                navigateToCell(table, x, y + 1);
-                break;
-            case 'ArrowLeft':
-                navigateToCell(table, x - 1, y);
-                break;
-            case 'ArrowRight':
-                navigateToCell(table, x + 1, y);
-                break;
-            case 'Backspace':
-                // Clear the current cell
-                input.val('').closest('td').removeClass('correct-word');
-                e.preventDefault(); // Prevent default backspace behavior
-                break;
+        // If a letter key is pressed, overwrite the existing value
+        if (e.key.length === 1 && e.key.match(/^[a-zA-Z]$/)) {
+            e.preventDefault(); // Prevent default input
+            input.val(e.key.toUpperCase());
+
+            // Move to next cell in the current word
+            if (currentWord) {
+                const currentIndex = currentWord.cells.findIndex(cell => cell.x === x && cell.y === y);
+                if (currentIndex >= 0 && currentIndex < currentWord.cells.length - 1) {
+                    const nextCell = currentWord.cells[currentIndex + 1];
+                    navigateToCell(table, nextCell.x, nextCell.y);
+                }
+            }
+        } else {
+            switch (e.key) {
+                case 'ArrowUp':
+                    navigateToCell(table, x, y - 1, true);
+                    break;
+                case 'ArrowDown':
+                    navigateToCell(table, x, y + 1, true);
+                    break;
+                case 'ArrowLeft':
+                    navigateToCell(table, x - 1, y, true);
+                    break;
+                case 'ArrowRight':
+                    navigateToCell(table, x + 1, y, true);
+                    break;
+                case 'Backspace':
+                    // Clear the current cell
+                    input.val('').closest('td').removeClass('correct-word');
+                    e.preventDefault(); // Prevent default backspace behavior
+
+                    // Move to previous cell in the current word
+                    if (currentWord) {
+                        const currentIndex = currentWord.cells.findIndex(cell => cell.x === x && cell.y === y);
+                        if (currentIndex > 0) {
+                            const prevCell = currentWord.cells[currentIndex - 1];
+                            navigateToCell(table, prevCell.x, prevCell.y);
+                        }
+                    }
+                    break;
+            }
         }
     }
 
-    function navigateToCell(table, x, y) {
+    function handleFocus(e) {
+        const input = $(e.target);
+
+        // Remove previous highlights
+        $('.letter-input').closest('td').removeClass('highlighted-word');
+        $('#clues-container-fe li').removeClass('highlighted-clue');
+
+        const wordsAtCell = input.data('words');
+        if (wordsAtCell && wordsAtCell.length > 0) {
+            // If currentWord is among them, keep it
+            if (currentWord && wordsAtCell.includes(currentWord)) {
+                // Do nothing
+            } else {
+                currentWord = wordsAtCell[0];
+            }
+
+            // Highlight the cells of the current word
+            currentWord.cells.forEach(cell => {
+                let cellInput = $('.letter-input').filter(function () {
+                    return $(this).data('x') === cell.x && $(this).data('y') === cell.y;
+                });
+                cellInput.closest('td').addClass('highlighted-word');
+            });
+
+            // Highlight the clue
+            let clueSelector = `#clues-container-fe li[data-clue-number="${currentWord.clueNumber}"][data-direction="${currentWord.direction}"]`;
+            $(clueSelector).addClass('highlighted-clue');
+        } else {
+            currentWord = null;
+        }
+    }
+
+    function navigateToCell(table, x, y, fromArrowKey = false) {
         const targetInput = table.find(`.letter-input`).filter(function () {
             return $(this).data('x') === x && $(this).data('y') === y;
         });
 
         if (targetInput.length) {
             targetInput.focus();
+
+            // Update currentWord if navigated via arrow keys
+            if (fromArrowKey) {
+                const wordsAtCell = targetInput.data('words');
+                if (wordsAtCell && wordsAtCell.length > 0) {
+                    currentWord = wordsAtCell[0]; // You may implement logic to choose the word
+                } else {
+                    currentWord = null;
+                }
+            }
         }
     }
 
@@ -136,10 +314,42 @@ jQuery(document).ready(function ($) {
         if (cluesData && cluesData.across) {
             cluesData.across.forEach((clueObj) => {
                 const clueItem = $('<li></li>');
+                clueItem.attr('data-clue-number', clueObj.clueNumber);
+                clueItem.attr('data-direction', 'across');
                 clueItem.append(`<strong>${clueObj.clueNumber}.</strong> ${clueObj.clueText}`);
                 if (clueObj.clueImage) {
                     clueItem.append(`<br><img src="${clueObj.clueImage}" alt="Clue image" class="clue-image">`);
                 }
+                clueItem.on('click', function() {
+                    // Remove previous highlights
+                    $('.letter-input').closest('td').removeClass('highlighted-word');
+                    $('#clues-container-fe li').removeClass('highlighted-clue');
+
+                    // Highlight the clue
+                    $(this).addClass('highlighted-clue');
+
+                    // Find the word
+                    const clueNumber = $(this).data('clue-number');
+                    const direction = $(this).data('direction');
+
+                    const wordObj = words.find(word => word.clueNumber === clueNumber && word.direction === direction);
+
+                    if (wordObj) {
+                        currentWord = wordObj; // Update currentWord
+
+                        // Highlight the word
+                        wordObj.cells.forEach(cell => {
+                            let cellInput = $('.letter-input').filter(function () {
+                                return $(this).data('x') === cell.x && $(this).data('y') === cell.y;
+                            });
+                            cellInput.closest('td').addClass('highlighted-word');
+                        });
+
+                        // Focus on the first cell of the word
+                        let firstCell = wordObj.cells[0];
+                        navigateToCell($('.crossword-table'), firstCell.x, firstCell.y);
+                    }
+                });
                 acrossClues.append(clueItem);
             });
         }
@@ -147,10 +357,42 @@ jQuery(document).ready(function ($) {
         if (cluesData && cluesData.down) {
             cluesData.down.forEach((clueObj) => {
                 const clueItem = $('<li></li>');
+                clueItem.attr('data-clue-number', clueObj.clueNumber);
+                clueItem.attr('data-direction', 'down');
                 clueItem.append(`<strong>${clueObj.clueNumber}.</strong> ${clueObj.clueText}`);
                 if (clueObj.clueImage) {
                     clueItem.append(`<br><img src="${clueObj.clueImage}" alt="Clue image" class="clue-image">`);
                 }
+                clueItem.on('click', function() {
+                    // Remove previous highlights
+                    $('.letter-input').closest('td').removeClass('highlighted-word');
+                    $('#clues-container-fe li').removeClass('highlighted-clue');
+
+                    // Highlight the clue
+                    $(this).addClass('highlighted-clue');
+
+                    // Find the word
+                    const clueNumber = $(this).data('clue-number');
+                    const direction = $(this).data('direction');
+
+                    const wordObj = words.find(word => word.clueNumber === clueNumber && word.direction === direction);
+
+                    if (wordObj) {
+                        currentWord = wordObj; // Update currentWord
+
+                        // Highlight the word
+                        wordObj.cells.forEach(cell => {
+                            let cellInput = $('.letter-input').filter(function () {
+                                return $(this).data('x') === cell.x && $(this).data('y') === cell.y;
+                            });
+                            cellInput.closest('td').addClass('highlighted-word');
+                        });
+
+                        // Focus on the first cell of the word
+                        let firstCell = wordObj.cells[0];
+                        navigateToCell($('.crossword-table'), firstCell.x, firstCell.y);
+                    }
+                });
                 downClues.append(clueItem);
             });
         }
