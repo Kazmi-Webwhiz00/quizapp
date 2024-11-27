@@ -48,6 +48,9 @@ jQuery(document).ready(function ($) {
                     .correct-cell input{
                         background-color: ${cross_ajax_obj.correctedCellColor} !important;
                     }
+                    .wrong-cell input {
+                        background-color: ${cross_ajax_obj.wrongCellColor} !important;
+                    }
                     .highlighted-cell {
                         background-color: ${cross_ajax_obj.highlightColor} !important;
                     }
@@ -446,6 +449,7 @@ jQuery(document).ready(function ($) {
             if (userAnswer === correctAnswer) {
                 input.closest('td').addClass('correct-cell');
             } else {
+                input.closest('td').addClass('wrong-cell');
                 allCorrect = false;
             }
         });

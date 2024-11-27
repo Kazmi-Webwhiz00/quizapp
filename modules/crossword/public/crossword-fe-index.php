@@ -30,6 +30,7 @@ function load_crossword_assets_fe() {
         'fontFamily' => $body_text_font_family,
         'filledCellColor' => esc_attr($filled_cell_bg_color),
         'correctedCellColor' => esc_attr($correctedCellColor),
+        'wrongCellColor' => 'red',
         'highlightColor' => esc_attr($highlightColor),
         'clueImageHeight' => $clue_image_height . 'px',
         'clueImageWidth' => $clue_image_width . 'px',
