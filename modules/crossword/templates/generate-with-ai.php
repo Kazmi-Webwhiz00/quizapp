@@ -16,7 +16,7 @@ $ai_button_color = get_option('kw_genreate_with_ai_button_color', '#6c9bd1'); //
     <input type="text" id="ai-language" placeholder="<?php esc_attr_e('Language', 'wp-quiz-plugin'); ?>" />
     <input type="number" id="ai-questions" placeholder="<?php esc_attr_e('Number', 'wp-quiz-plugin'); ?>" min="1" max="10" />
 
-    <button type="button" id="generate-ai-button" style="background-color: <?php echo esc_attr($ai_button_color); ?>;">
+    <button type="button" id="generate-ai-button" style="background-color: <?php echo esc_attr($ai_button_color); ?>; width: 100%;">
         <?php echo esc_html($ai_button_label); ?>
     </button>
 </div>

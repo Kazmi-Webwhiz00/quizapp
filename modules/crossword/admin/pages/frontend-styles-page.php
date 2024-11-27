@@ -28,7 +28,7 @@ function crossword_register_frontend_styles_settings() {
     // Check Crossword Button
     register_setting('kw_crossword_fe_settings', 'kw_fe_check_crossword_button_text', ['default' => __('Check Crossword', 'wp-quiz-plugin')]);
     register_setting('kw_crossword_fe_settings', 'kw_fe_check_crossword_button_bg_color', ['default' => '#00796b']);
-    register_setting('kw_crossword_fe_settings', 'kw_fe_check_crossword_button_text_color', ['default' => '#ffffff']);
+    register_setting('kw_crossword_fe_settings', 'kw_fe_check_crossword_button_text_color', ['default' => '#CE2525']);
     register_setting('kw_crossword_fe_settings', 'kw_fe_check_crossword_button_font_size', ['default' => '16px']);
     register_setting('kw_crossword_fe_settings', 'kw_fe_check_crossword_button_font_family', ['default' => 'Arial, sans-serif']);
 

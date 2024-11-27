@@ -40,7 +40,7 @@ $download_button_font_family = esc_attr(get_option('kw_fe_download_button_font_f
 $download_button_label = esc_html(get_option('kw_fe_download_button_text', 'Download'));
 
 $check_button_bg_color = esc_attr(get_option('kw_fe_check_crossword_button_bg_color', '#00796b'));
-$check_button_text_color = esc_attr(get_option('kw_fe_check_crossword_button_text_color', '#ffffff'));
+$check_button_text_color = esc_attr(get_option('kw_fe_check_crossword_button_text_color', '#CE2525'));
 $check_button_font_size = esc_attr(get_option('kw_fe_check_crossword_button_font_size', '16px'));
 $check_button_font_family = esc_attr(get_option('kw_fe_check_crossword_button_font_family', 'Arial, sans-serif'));
 $check_button_label = esc_html(get_option('kw_fe_check_crossword_button_text', 'Check Crossword'));

@@ -22,7 +22,7 @@ $default_settings = [
     'check_crossword_button' => [
         'text' => __('Check Crossword', 'wp-quiz-plugin'),
         'bg_color' => '#00796b',
-        'text_color' => '#ffffff',
+        'text_color' => '#CE2525',
         'font_size' => '16px',
         'font_family' => 'Arial',
     ],
