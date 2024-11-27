@@ -22,29 +22,71 @@ jQuery(document).ready(function ($) {
         history.pushState(null, '', `#${tabKey}`);
     });
 
-        $('.kw-reset-button').on('click', function () {
-            console.log("test");
-            const $parentSection = $(this).closest('.kw-settings-section');
-    
-            // Reset all input fields with 'data-default'
-            $parentSection.find('input[data-default], textarea[data-default]').each(function () {
-                const defaultValue = $(this).data('default');
-                $(this).val(defaultValue);
-            });
+    $('.kw-reset-button').on('click', function () {
+        const $parentSection = $(this).closest('.kw-settings-section');
+
+        // Reset all input, textarea, and select fields with 'data-default'
+        $parentSection.find('input[data-default], textarea[data-default], select[data-default]').each(function () {
+            const defaultValue = $(this).data('default');
+            $(this).val(defaultValue);
+
+            // If it's a color picker, update the color
+            if ($(this).hasClass('wp-color-picker')) {
+                $(this).wpColorPicker('color', defaultValue);
+            }
         });
-    
+    });
 
     // Initialize the active tab based on the URL hash
     const activeTab = window.location.hash.substring(1) || 'general';
     activateTab(activeTab);
 
+    // Default value for the crossword prompt
+    const defaultPrompt = "Generate a crossword puzzle prompt.";
+
+    // Reset button click handler
+    $("#kw-reset-default-prompt").on("click", function () {
+        $("#kw_crossword_prompt_main").val(defaultPrompt);
+    });
+});
 
 
-        // Default value for the crossword prompt
-        const defaultPrompt = "Generate a crossword puzzle prompt.";
+jQuery(document).ready(function($) {
 
-        // Reset button click handler
-        $("#kw-reset-default-prompt").on("click", function () {
-            $("#kw_crossword_prompt_main").val(defaultPrompt);
-        });
+    function openTab(event, tabId) {
+        const tabContents = document.getElementsByClassName('tab-content');
+        for (let i = 0; i < tabContents.length; i++) {
+            tabContents[i].style.display = 'none';
+        }
+        const tabs = document.getElementsByClassName('nav-tab');
+        for (let i = 0; i < tabs.length; i++) {
+            tabs[i].classList.remove('nav-tab-active');
+        }
+        document.getElementById(tabId).style.display = 'block';
+        event.currentTarget.classList.add('nav-tab-active');
+    }
+
+    
+    // Copy to clipboard function for Quiz Shortcode
+    $('#quiz-copy-button').on('click', function() {
+        var $input = $('#quiz-copy-input');
+        $input.focus().select();
+        if (document.execCommand('copy')) {
+            showCopyMessage('#quiz-copy-message');
+        }
+    });
+
+    // Copy to clipboard function for Crossword Shortcode
+    $('#crossword-copy-button').on('click', function() {
+        var $input = $('#crossword-copy-input');
+        $input.focus().select();
+        if (document.execCommand('copy')) {
+            showCopyMessage('#crossword-copy-message');
+        }
+    });
+
+    // Function to show "Copied to clipboard" message
+    function showCopyMessage(messageId) {
+        $(messageId).fadeIn().delay(1500).fadeOut();
+    }
 });

@@ -107,32 +107,28 @@ foreach ($default_settings as $key => $values) {
         </label>
         <input type="text" id="kw_crossword_admin_show_answers_checkbox_label" name="kw_crossword_admin_show_answers_checkbox_label" class="regular-text kw-input" 
             value="<?php echo esc_attr(get_option('kw_crossword_admin_show_answers_checkbox_label', __('Show Answers', 'wp-quiz-plugin'))); ?>" 
-            data-default="<?php echo esc_attr($default_settings['show_answers']['label']); ?>">
+            >
         <p class="description"><?php esc_html_e('Set the label for the "Show Answers" checkbox.', 'wp-quiz-plugin'); ?></p>
-        <button type="button" class="button-secondary kw-reset-button" data-label-default="<?php echo esc_js($default_settings['show_answers']['label']); ?>">
-            <?php esc_html_e('Reset to Default', 'wp-quiz-plugin'); ?>
-        </button>
     </div>
 
 
 
-<!-- Across, Down, Words & Clues, and Full View Labels -->
 <!-- Across, Down, Words & Clues, and Full View Labels -->
 <div class="kw-settings-field">
     <label for="kw_crossword_admin_across_label" class="kw-label">
         <?php esc_html_e('Across Label', 'wp-quiz-plugin'); ?>
     </label>
     <input type="text" id="kw_crossword_admin_across_label" name="kw_crossword_admin_across_label" class="regular-text kw-input" 
-        value="<?php echo esc_attr(get_option('kw_crossword_admin_across_label', $default_settings['across_label']['label'])); ?>" 
-        data-default="<?php echo esc_attr($default_settings['across_label']['label']); ?>">
+        value="<?php echo esc_attr(get_option('kw_crossword_admin_across_label', __('Across'))); ?>" 
+        >
     <p class="description"><?php esc_html_e('Set the label for "Across" clues.', 'wp-quiz-plugin'); ?></p>
 
     <label for="kw_crossword_admin_down_label" class="kw-label">
         <?php esc_html_e('Down Label', 'wp-quiz-plugin'); ?>
     </label>
     <input type="text" id="kw_crossword_admin_down_label" name="kw_crossword_admin_down_label" class="regular-text kw-input" 
-        value="<?php echo esc_attr(get_option('kw_crossword_admin_down_label', $default_settings['down_label']['label'])); ?>" 
-        data-default="<?php echo esc_attr($default_settings['down_label']['label']); ?>">
+        value="<?php echo esc_attr(get_option('kw_crossword_admin_down_label', __('Down'))); ?>" 
+        >
     <p class="description"><?php esc_html_e('Set the label for "Down" clues.', 'wp-quiz-plugin'); ?></p>
 
     <label for="kw_crossword_admin_words_clue_container_label" class="kw-label">

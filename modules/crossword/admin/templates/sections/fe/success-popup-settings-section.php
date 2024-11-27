@@ -47,7 +47,7 @@ $success_settings = [
         <textarea 
             id="kw_crossword_success_popup_body_text" 
             name="kw_crossword_success_popup_body_text" 
-            class="large-text" 
+            class="kw-textarea" 
             rows="4" 
             data-default="<?php echo esc_attr($success_defaults['body_text']); ?>"
         ><?php echo esc_textarea($success_settings['body_text']); ?></textarea>

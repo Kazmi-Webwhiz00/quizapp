@@ -288,3 +288,53 @@ button#kw-reset-default-prompt:hover {
 .kw-reset-button{
 max-width: 140px;
 }
+
+
+/* settings docs  */
+
+
+.tab-content {
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-top: none;
+    background-color: #f9f9f9;
+}
+.nav-tab-wrapper {
+    border-bottom: 2px solid #0073aa;
+}
+.nav-tab {
+    color: #0073aa;
+    padding: 8px 16px;
+    border-radius: 8px 8px 0 0;
+    margin-right: 5px;
+    cursor: pointer;
+}
+.nav-tab-active {
+    background-color: #0073aa;
+    color: #fff;
+}
+.copy-button {
+    margin-left: 10px;
+    padding: 6px 12px;
+    background-color: #0073aa;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 0px 10px;
+}
+.shortcode-box {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+.hidden-input {
+    position: absolute;
+    left: -9999px;
+}
+.copy-message {
+    display: none;
+    color: #28a745;
+    font-weight: bold;
+    margin-left: 10px;
+}

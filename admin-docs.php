@@ -5,7 +5,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Register the Documentation Page in the admin menu
-add_action('admin_menu', 'wp_quiz_plugin_register_docs_page');
+// add_action('admin_menu', 'wp_quiz_plugin_register_docs_page');
 
 function wp_quiz_plugin_register_docs_page() {
     add_menu_page(

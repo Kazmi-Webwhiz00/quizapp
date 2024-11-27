@@ -47,7 +47,7 @@ $failure_settings = [
         <textarea 
             id="kw_crossword_failure_popup_body_text" 
             name="kw_crossword_failure_popup_body_text" 
-            class="large-text" 
+            class="kw-textarea" 
             rows="4" 
             data-default="<?php echo esc_attr($failure_defaults['body_text']); ?>"
         ><?php echo esc_textarea($failure_settings['body_text']); ?></textarea>
