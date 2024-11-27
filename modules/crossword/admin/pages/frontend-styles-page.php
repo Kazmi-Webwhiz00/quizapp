@@ -23,6 +23,8 @@ function crossword_register_frontend_styles_settings() {
     register_setting('kw_crossword_fe_settings', 'kw_fe_download_button_font_size', ['default' => '16px']);
     register_setting('kw_crossword_fe_settings', 'kw_fe_download_button_font_family', ['default' => 'Arial, sans-serif']);
 
+    
+
     // Check Crossword Button
     register_setting('kw_crossword_fe_settings', 'kw_fe_check_crossword_button_text', ['default' => __('Check Crossword', 'wp-quiz-plugin')]);
     register_setting('kw_crossword_fe_settings', 'kw_fe_check_crossword_button_bg_color', ['default' => '#00796b']);
