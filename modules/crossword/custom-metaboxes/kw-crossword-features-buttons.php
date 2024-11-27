@@ -12,7 +12,7 @@ function crossword_custom_meta_box() {
     if ($post && $post->post_type === 'crossword' && $post->post_status === 'publish') {
         add_meta_box(
             'crossword_action_buttons_meta_box', // Unique ID for the meta box
-            'Crossword Actions',                  // Title of the meta box
+            __('Crossword Actions','wp-quiz-plugin'),                  // Title of the meta box
             'crossword_meta_box_callback',        // Callback function to display content
             'crossword',                          // Post type
             'normal',                             // Context

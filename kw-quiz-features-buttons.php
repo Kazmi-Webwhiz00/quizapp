@@ -12,7 +12,7 @@ function quizzes_custom_meta_box() {
     if ($post && $post->post_type === 'quizzes' && $post->post_status === 'publish') {
         add_meta_box(
             'quizzes_action_buttons_meta_box', // Updated ID for uniqueness
-            'Quiz Actions',                    // Title
+            __('Quiz Actions','wp-quiz-plugin'),                    // Title
             'quizzes_meta_box_callback',       // Callback function
             'quizzes',                         // Post type
             'normal',                          // Context
