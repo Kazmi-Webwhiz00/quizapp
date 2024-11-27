@@ -43,6 +43,12 @@ $default_settings = [
     'wrong_cell' => [
         'bg_color' => '#d66868', // Default background color for wrong cells
     ],
+    'additional_settings' => [
+        'highlight_cell_color' => 'yellow',
+        'cell_font_color' => 'black',
+        'cell_clue_font_color' => 'black',
+        'cell_border_color' => 'lightgrey',
+    ],
 ];
 
 // Dropdown font-family options
@@ -64,6 +70,13 @@ foreach ($default_settings as $key => $values) {
         $option_name = "kw_fe_{$key}_{$sub_key}";
         $settings[$key][$sub_key] = get_option($option_name, $default_value);
     }
+}
+
+// Additional settings
+$additional_settings = [];
+foreach ($default_settings['additional_settings'] as $key => $default_value) {
+    $option_name = "kw_crossword_{$key}";
+    $additional_settings[$key] = get_option($option_name, $default_value);
 }
 ?>
 
@@ -94,7 +107,8 @@ foreach ($default_settings as $key => $values) {
         </div>
         <div class="kw-settings-field">
             <label for="kw_fe_restart_button_font_family"><?php esc_html_e('Font Family', 'wp-quiz-plugin'); ?></label>
-            <select id="kw_fe_restart_button_font_family" name="kw_fe_restart_button_font_family" class="regular-select">
+            <select id="kw_fe_restart_button_font_family" name="kw_fe_restart_button_font_family" class="regular-select"
+                data-default="<?php echo esc_attr($default_settings['restart_button']['font_family']); ?>">
                 <?php foreach ($font_family_options as $font): ?>
                     <option value="<?php echo esc_attr($font); ?>" <?php selected($settings['restart_button']['font_family'], $font); ?>>
                         <?php echo esc_html($font); ?>
@@ -102,6 +116,10 @@ foreach ($default_settings as $key => $values) {
                 <?php endforeach; ?>
             </select>
         </div>
+        <!-- Reset Button -->
+        <button type="button" class="button-secondary kw-reset-button">
+            <?php esc_html_e('Reset to Default', 'wp-quiz-plugin'); ?>
+        </button>
     </div>
 
     <!-- Group similar settings for Download Button, Check Crossword Button, Enable Live Word Check Button -->
@@ -116,7 +134,8 @@ foreach ($default_settings as $key => $values) {
                     <?php if ($sub_key === 'font_family'): ?>
                         <select id="kw_fe_<?php echo esc_attr($button_key . '_' . $sub_key); ?>" 
                             name="kw_fe_<?php echo esc_attr($button_key . '_' . $sub_key); ?>" 
-                            class="regular-select">
+                            class="regular-select"
+                            data-default="<?php echo esc_attr($default_settings[$button_key][$sub_key]); ?>">
                             <?php foreach ($font_family_options as $font): ?>
                                 <option value="<?php echo esc_attr($font); ?>" <?php selected($settings[$button_key][$sub_key], $font); ?>>
                                     <?php echo esc_html($font); ?>
@@ -138,74 +157,82 @@ foreach ($default_settings as $key => $values) {
                     <?php endif; ?>
                 </div>
             <?php endforeach; ?>
+            <!-- Reset Button -->
+            <button type="button" class="button-secondary kw-reset-button">
+                <?php esc_html_e('Reset to Default', 'wp-quiz-plugin'); ?>
+            </button>
         </div>
     <?php endforeach; ?>
 
     <!-- Additional Settings -->
     <div class="kw-settings-section">
-    <h3><?php esc_html_e('Cell and Clue Settings', 'wp-quiz-plugin'); ?></h3>
-    
-    <!-- Existing Cell Background Colors -->
-    <?php foreach (['filled_cell', 'corrected_cell', 'wrong_cell'] as $cell_key): ?>
+        <h3><?php esc_html_e('Cell and Clue Settings', 'wp-quiz-plugin'); ?></h3>
+        
+        <!-- Existing Cell Background Colors -->
+        <?php foreach (['filled_cell', 'corrected_cell', 'wrong_cell'] as $cell_key): ?>
+            <div class="kw-settings-field">
+                <label for="kw_fe_<?php echo esc_attr($cell_key . '_bg_color'); ?>">
+                    <?php esc_html_e(ucwords(str_replace('_', ' ', $cell_key)) . ' Background Color', 'wp-quiz-plugin'); ?>
+                </label>
+                <input type="text" id="kw_fe_<?php echo esc_attr($cell_key . '_bg_color'); ?>" 
+                    name="kw_fe_<?php echo esc_attr($cell_key . '_bg_color'); ?>" 
+                    class="kw-color-picker wp-color-picker"
+                    value="<?php echo esc_attr($settings[$cell_key]['bg_color']); ?>"
+                    data-default="<?php echo esc_attr($default_settings[$cell_key]['bg_color']); ?>">
+            </div>
+        <?php endforeach; ?>
+
+        <!-- Highlight Cell Background Color -->
         <div class="kw-settings-field">
-            <label for="kw_fe_<?php echo esc_attr($cell_key . '_bg_color'); ?>">
-                <?php esc_html_e(ucwords(str_replace('_', ' ', $cell_key)) . ' Background Color', 'wp-quiz-plugin'); ?>
+            <label for="kw_crossword_highlight_cell_color">
+                <?php esc_html_e('Highlight Cell Background Color', 'wp-quiz-plugin'); ?>
             </label>
-            <input type="text" id="kw_fe_<?php echo esc_attr($cell_key . '_bg_color'); ?>" 
-                name="kw_fe_<?php echo esc_attr($cell_key . '_bg_color'); ?>" 
+            <input type="text" id="kw_crossword_highlight_cell_color" 
+                name="kw_crossword_highlight_cell_color" 
                 class="kw-color-picker wp-color-picker"
-                value="<?php echo esc_attr($settings[$cell_key]['bg_color']); ?>"
-                data-default="<?php echo esc_attr($default_settings[$cell_key]['bg_color']); ?>">
+                value="<?php echo esc_attr($additional_settings['highlight_cell_color']); ?>"
+                data-default="<?php echo esc_attr($default_settings['additional_settings']['highlight_cell_color']); ?>">
         </div>
-    <?php endforeach; ?>
 
-    <!-- Highlight Cell Background Color -->
-    <div class="kw-settings-field">
-        <label for="kw_crossword_highlight_cell_color">
-            <?php esc_html_e('Highlight Cell Background Color', 'wp-quiz-plugin'); ?>
-        </label>
-        <input type="text" id="kw_crossword_highlight_cell_color" 
-            name="kw_crossword_highlight_cell_color" 
-            class="kw-color-picker wp-color-picker"
-            value="<?php echo esc_attr(get_option('kw_crossword_highlight_cell_color', 'yellow')); ?>"
-            data-default="yellow">
+        <!-- Cell Font Color -->
+        <div class="kw-settings-field">
+            <label for="kw_crossword_cell_font_color">
+                <?php esc_html_e('Cell Font Color', 'wp-quiz-plugin'); ?>
+            </label>
+            <input type="text" id="kw_crossword_cell_font_color" 
+                name="kw_crossword_cell_font_color" 
+                class="kw-color-picker wp-color-picker"
+                value="<?php echo esc_attr($additional_settings['cell_font_color']); ?>"
+                data-default="<?php echo esc_attr($default_settings['additional_settings']['cell_font_color']); ?>">
+        </div>
+
+        <!-- Clue Font Color -->
+        <div class="kw-settings-field">
+            <label for="kw_crossword_cell_clue_font_color">
+                <?php esc_html_e('Clue Font Color', 'wp-quiz-plugin'); ?>
+            </label>
+            <input type="text" id="kw_crossword_cell_clue_font_color" 
+                name="kw_crossword_cell_clue_font_color" 
+                class="kw-color-picker wp-color-picker"
+                value="<?php echo esc_attr($additional_settings['cell_clue_font_color']); ?>"
+                data-default="<?php echo esc_attr($default_settings['additional_settings']['cell_clue_font_color']); ?>">
+        </div>
+
+        <!-- Cell Border Color -->
+        <div class="kw-settings-field">
+            <label for="kw_crossword_cell_border_color">
+                <?php esc_html_e('Cell Border Color', 'wp-quiz-plugin'); ?>
+            </label>
+            <input type="text" id="kw_crossword_cell_border_color" 
+                name="kw_crossword_cell_border_color" 
+                class="kw-color-picker wp-color-picker"
+                value="<?php echo esc_attr($additional_settings['cell_border_color']); ?>"
+                data-default="<?php echo esc_attr($default_settings['additional_settings']['cell_border_color']); ?>">
+        </div>
+
+        <!-- Reset Button -->
+        <button type="button" class="button-secondary kw-reset-button">
+            <?php esc_html_e('Reset to Default', 'wp-quiz-plugin'); ?>
+        </button>
     </div>
-
-    <!-- Cell Font Color -->
-    <div class="kw-settings-field">
-        <label for="kw_crossword_cell_font_color">
-            <?php esc_html_e('Cell Font Color', 'wp-quiz-plugin'); ?>
-        </label>
-        <input type="text" id="kw_crossword_cell_font_color" 
-            name="kw_crossword_cell_font_color" 
-            class="kw-color-picker wp-color-picker"
-            value="<?php echo esc_attr(get_option('kw_crossword_cell_font_color', 'black')); ?>"
-            data-default="black">
-    </div>
-
-    <!-- Clue Font Color -->
-    <div class="kw-settings-field">
-        <label for="kw_crossword_cell_clue_font_color">
-            <?php esc_html_e('Clue Font Color', 'wp-quiz-plugin'); ?>
-        </label>
-        <input type="text" id="kw_crossword_cell_clue_font_color" 
-            name="kw_crossword_cell_clue_font_color" 
-            class="kw-color-picker wp-color-picker"
-            value="<?php echo esc_attr(get_option('kw_crossword_cell_clue_font_color', 'black')); ?>"
-            data-default="black">
-    </div>
-
-    <!-- Cell Border Color -->
-    <div class="kw-settings-field">
-        <label for="kw_crossword_cell_border_color">
-            <?php esc_html_e('Cell Border Color', 'wp-quiz-plugin'); ?>
-        </label>
-        <input type="text" id="kw_crossword_cell_border_color" 
-            name="kw_crossword_cell_border_color" 
-            class="kw-color-picker wp-color-picker"
-            value="<?php echo esc_attr(get_option('kw_crossword_cell_border_color', 'lightgrey')); ?>"
-            data-default="lightgrey">
-    </div>
-</div>
-
 </div>

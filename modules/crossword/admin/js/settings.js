@@ -65,7 +65,6 @@ jQuery(document).ready(function($) {
         document.getElementById(tabId).style.display = 'block';
         event.currentTarget.classList.add('nav-tab-active');
     }
-
     
     // Copy to clipboard function for Quiz Shortcode
     $('#quiz-copy-button').on('click', function() {

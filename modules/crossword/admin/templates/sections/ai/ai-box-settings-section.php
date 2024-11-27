@@ -30,9 +30,6 @@ $max_limit = get_option('kw_genreate_with_ai_max_limit', $default_max_limit);
         <p class="description">
             <?php esc_html_e('Set the title displayed on the AI box.', 'wp-quiz-plugin'); ?>
         </p>
-        <button type="button" class="button-secondary kw-reset-button" data-default="<?php echo esc_js($default_box_title); ?>">
-            <?php esc_html_e('Reset to Default', 'wp-quiz-plugin'); ?>
-        </button>
     </div>
 
     <!-- AI Button Label -->
@@ -44,9 +41,6 @@ $max_limit = get_option('kw_genreate_with_ai_max_limit', $default_max_limit);
         <p class="description">
             <?php esc_html_e('Set the label text for the "Generate with AI" button.', 'wp-quiz-plugin'); ?>
         </p>
-        <button type="button" class="button-secondary kw-reset-button" data-default="<?php echo esc_js($default_button_label); ?>">
-            <?php esc_html_e('Reset to Default', 'wp-quiz-plugin'); ?>
-        </button>
     </div>
 
     <!-- AI Button Color -->
@@ -58,9 +52,6 @@ $max_limit = get_option('kw_genreate_with_ai_max_limit', $default_max_limit);
     <p class="description">
         <?php esc_html_e('Select the color of the "Generate with AI" button using the color picker.', 'wp-quiz-plugin'); ?>
     </p>
-    <button type="button" class="button-secondary kw-reset-button" data-default="<?php echo esc_js($default_button_color); ?>">
-        <?php esc_html_e('Reset to Default', 'wp-quiz-plugin'); ?>
-    </button>
 </div>
 
     <!-- AI Max Limit -->
