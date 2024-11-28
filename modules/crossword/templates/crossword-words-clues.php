@@ -55,10 +55,10 @@ $clear_list_text_color = get_option('kw_crossword_admin_clear_list_button_text_c
         <!-- Add Word and Clear List buttons -->
         <div class="crossword-add-button-container">
             <button type="button" id="add-word-button" style=" border:none; background-color: <?php echo esc_attr($add_word_bg_color); ?>; color: <?php echo esc_attr($add_word_text_color); ?>;">
-                <?php echo esc_html($add_word_label); ?>
+                <?php echo esc_html__($add_word_label,'wp-quiz-plugin'); ?>
             </button>
             <button type="button" id="clear-list-button"   style=" border:none;background-color: <?php echo esc_attr($clear_list_bg_color); ?>; color: <?php echo esc_attr($clear_list_text_color); ?>;">
-                <?php echo esc_html($clear_list_label); ?>
+                <?php echo esc_html__($clear_list_label,'wp-quiz-plugin'); ?>
             </button>
         </div>
     </div>

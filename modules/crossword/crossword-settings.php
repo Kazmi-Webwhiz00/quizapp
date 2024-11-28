@@ -2,12 +2,11 @@
 // Add meta box for crosswords
 function crossword_add_meta_boxes() {
     // Retrieve the meta value for the container label, or fall back to the default
-    $default_label = __('Words and Clues', 'wp-quiz-plugin');
-    $meta_label = get_option('kw_crossword_admin_words_clue_container_label', $default_label);
+    $meta_label = get_option('kw_crossword_admin_words_clue_container_label',  __('Words and Clues', 'wp-quiz-plugin'));
 
     add_meta_box(
         'crossword_words_clues',
-        esc_html($meta_label), // Use the retrieved label
+        esc_html__( $meta_label, 'wp-quiz-plugin' ), // Use the retrieved label
         'crossword_words_clues_meta_box_callback',
         'crossword', // Ensure the post type matches the registered singular value
         'normal',
@@ -24,7 +23,7 @@ function crossword_preview_meta_box() {
 
     add_meta_box(
         'crossword_preview_meta_box_id', // Unique ID for the meta box
-        esc_html($meta_label), // Use the retrieved label as the meta box title
+        esc_html__( $meta_label, 'wp-quiz-plugin' ), // Use the retrieved label as the meta box title
         'crossword_preview_meta_box_callback', // Callback function
         'crossword', // Post type where it should appear
         'normal', // Context ('normal', 'side', 'advanced')
@@ -39,7 +38,7 @@ function crossword_register_create_with_ai_meta_box() {
     $ai_box_title = get_option('kw_genreate_with_ai_box_title', __('Generate with AI', 'wp-quiz-plugin'));
     add_meta_box(
         'crossword_ai_meta_box',         // Meta box ID
-        esc_html($ai_box_title),              // Title
+        esc_html__($ai_box_title, 'wp-quiz-plugin'),              // Title
         'crossword_render_ai_meta_box',  // Callback function
         'Crossword',                          // Post type
         'normal',

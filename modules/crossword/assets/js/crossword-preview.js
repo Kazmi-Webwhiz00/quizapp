@@ -23,7 +23,7 @@ jQuery(document).ready(function ($) {
         });
 
         if (wordsData.length === 0) {
-            $(container).empty().append('<p>Please add some words to generate the crossword.</p>');
+            $(container).empty().append(`<p>${crosswordLabels.emptyCrosswordMessage}</p>`);
             $('#clues-container').empty();
             return;
         }

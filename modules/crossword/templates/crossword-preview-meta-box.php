@@ -38,23 +38,23 @@ foreach ($default_settings as $key => $values) {
 <div class="be-crossword-preview-action-container">
     <!-- Shuffle Button -->
     <span id="shuffle-button" class="cross-word-primary-button" style="background-color: <?php echo esc_attr($settings['shuffle']['bg_color']); ?>; color: <?php echo esc_attr($settings['shuffle']['text_color']); ?>;">
-        <?php echo esc_html($settings['shuffle']['label']); ?>
+        <?php echo esc_html__($settings['shuffle']['label'], 'wp-quiz-plugin'); ?>
     </span>
 
     <!-- Download as PDF Button -->
     <span id="download-pdf-button" class="cross-word-primary-button" data-crossword-id="<?php echo esc_attr($post->ID); ?>" style="background-color: <?php echo esc_attr($settings['download_pdf']['bg_color']); ?>; color: <?php echo esc_attr($settings['download_pdf']['text_color']); ?>;">
-        <?php echo esc_html($settings['download_pdf']['label']); ?>
+        <?php echo esc_html__($settings['download_pdf']['label'],'wp-quiz-plugin'); ?>
     </span>
 
     <!-- Download Key Button -->
     <span id="crossword-download-key" class="cross-word-primary-button" data-crossword-id="<?php echo esc_attr($post->ID); ?>" style="background-color: <?php echo esc_attr($settings['download_key']['bg_color']); ?>; color: <?php echo esc_attr($settings['download_key']['text_color']); ?>;">
-        <?php echo esc_html($settings['download_key']['label']); ?>
+        <?php echo esc_html__($settings['download_key']['label'],'wp-quiz-plugin'); ?>
     </span>
 
     <!-- Show Answers Checkbox -->
     <label>
         <input type="checkbox" id="toggle-answers">
-        <?php  echo esc_attr(get_option('kw_crossword_admin_show_answers_checkbox_label', __('Show Answers', 'wp-quiz-plugin'))); ?>
+        <?php  echo esc_attr__(get_option('kw_crossword_admin_show_answers_checkbox_label','Show Answers'),'wp-quiz-plugin'); ?>
     </label>
 </div>
 

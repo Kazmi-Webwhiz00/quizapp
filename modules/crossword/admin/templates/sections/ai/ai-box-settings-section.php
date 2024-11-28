@@ -6,8 +6,8 @@ if (!defined('ABSPATH')) {
 
 // Default values for the AI Box settings
 $default_button_color = '#6c9bd1'; // Default to blue
-$default_button_label = 'Generate with AI';
-$default_box_title = 'Generate with AI';
+$default_button_label = __('Generate with AI', 'wp-quiz-plugin');
+$default_box_title = __('Generate with AI', 'wp-quiz-plugin');
 $default_max_limit = 10;
 
 // Get saved values or use defaults

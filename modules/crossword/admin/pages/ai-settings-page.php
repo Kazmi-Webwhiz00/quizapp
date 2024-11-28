@@ -39,10 +39,10 @@ function crossword_register_ai_settings() {
         'default' => 'red',
     ]);
     register_setting('kw_crossword_ai_settings', 'kw_genreate_with_ai_button_label', [
-        'default' => 'Generate with AI',
+        'default' => __('Generate with AI', 'wp-quiz-plugin'),
     ]);
     register_setting('kw_crossword_ai_settings', 'kw_genreate_with_ai_box_title', [
-        'default' => 'Generate with AI',
+        'default' => __('Generate with AI', 'wp-quiz-plugin'),
     ]);
     register_setting('kw_crossword_ai_settings', 'kw_genreate_with_ai_max_limit', [
         'default' => 10,

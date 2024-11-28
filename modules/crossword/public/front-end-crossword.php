@@ -81,8 +81,8 @@ $error_message_color = esc_attr(get_option('kw_fe_error_message_color', '#ff0000
                 </span>
                 <div>
                     <div class="fe-download-button-wrapper">
-                        <button class="kw-validate-crossword-button" id="validate-crossword" style="background-color: <?php echo $check_button_bg_color; ?>; color: <?php echo $check_button_text_color; ?>; font-size: <?php echo $check_button_font_size; ?>; font-family: <?php echo $check_button_font_family; ?>;"><?php echo $check_button_label; ?></button>
-                        <span id="download-pdf-button" data-crossword-id="<?php echo esc_attr($post->ID); ?>" style="background-color: <?php echo $download_button_bg_color; ?>; color: <?php echo $download_button_text_color; ?>; font-size: <?php echo $download_button_font_size; ?>; font-family: <?php echo $download_button_font_family; ?>;"><?php echo $download_button_label; ?></span>
+                        <button class="kw-validate-crossword-button" id="validate-crossword" style="background-color: <?php echo $check_button_bg_color; ?>; color: <?php echo $check_button_text_color; ?>; font-size: <?php echo $check_button_font_size; ?>; font-family: <?php echo $check_button_font_family; ?>;"><?php echo __($check_button_label,'wp-quiz-plugin'); ?></button>
+                        <span id="download-pdf-button" data-crossword-id="<?php echo esc_attr($post->ID); ?>" style="background-color: <?php echo $download_button_bg_color; ?>; color: <?php echo $download_button_text_color; ?>; font-size: <?php echo $download_button_font_size; ?>; font-family: <?php echo $download_button_font_family; ?>;"><?php echo __($download_button_label,'wp-quiz-plugin'); ?></span>
                     </div>
                     <div class="kw-crossword-fe-replay-container">
                         <div class="checkbox-wrapper-16">
@@ -90,7 +90,7 @@ $error_message_color = esc_attr(get_option('kw_fe_error_message_color', '#ff0000
                                 <input type="checkbox" class="checkbox-input" id="check-words" />
                                 <span class="checkbox-tile" style="background-color: <?php echo $check_live_bg_color; ?>;">
                                     <span class="checkbox-icon"></span>
-                                    <span class="checkbox-label" style="color: <?php echo $live_word_check_font_color; ?>; font-size: <?php echo $live_word_check_font_size; ?>; font-family: <?php echo $live_word_check_font_family; ?>;"><?php echo $live_word_check_label; ?></span>
+                                    <span class="checkbox-label" style="color: <?php echo $live_word_check_font_color; ?>; font-size: <?php echo $live_word_check_font_size; ?>; font-family: <?php echo $live_word_check_font_family; ?>;"><?php echo __($live_word_check_label,'wp-quiz-plugin'); ?></span>
                                 </span>
                             </label>
                         </div>
@@ -102,11 +102,11 @@ $error_message_color = esc_attr(get_option('kw_fe_error_message_color', '#ff0000
             <!-- Clues Container -->
             <div id="clues-container-fe">
                 <div class="kw-across-clue-wrapper">
-                    <h3 style="color: <?php echo $clue_title_font_color; ?>; font-size: <?php echo $clue_title_font_size; ?>; font-family: <?php echo $clue_title_font_family; ?>; font-weight: bold;"><?php echo $clue_across_text; ?></h3>
+                    <h3 style="color: <?php echo $clue_title_font_color; ?>; font-size: <?php echo $clue_title_font_size; ?>; font-family: <?php echo $clue_title_font_family; ?>; font-weight: bold;"><?php echo __($clue_across_text,'wp-quiz-plugin'); ?></h3>
                     <ul id="across-clues"></ul>
                 </div>
                 <div class="kw-down-clue-wrapper">
-                    <h3 style="color: <?php echo $clue_title_font_color; ?>; font-size: <?php echo $clue_title_font_size; ?>; font-family: <?php echo $clue_title_font_family; ?>; font-weight: bold;"><?php echo $clue_down_text; ?></h3>
+                    <h3 style="color: <?php echo $clue_title_font_color; ?>; font-size: <?php echo $clue_title_font_size; ?>; font-family: <?php echo $clue_title_font_family; ?>; font-weight: bold;"><?php echo __($clue_down_text,'wp-quiz-plugin'); ?></h3>
                     <ul id="down-clues"></ul>
                 </div>
             </div>

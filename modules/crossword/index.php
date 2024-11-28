@@ -58,7 +58,7 @@ function load_crossword_assets($hook) {
 
             // UI text settings
             'generatingText' => __('Generating...', 'wp-quiz-plugin'),
-            'generateWithAiText' => esc_html($ai_button_label),
+            'generateWithAiText' => esc_html__($ai_button_label,'wp-quiz-plugin'),
 
             // Localized prompt settings
             'defaultContextPrompt' => get_option('kw_crossword_context_prompt', 'Avoid using the following words:[existing_words]'),
@@ -100,6 +100,7 @@ function crossword_enqueue_preview_assets($hook) {
                     'acrossLabel' => esc_html(get_option('kw_crossword_admin_across_label', __('Across', 'wp-quiz-plugin'))),
                     'downLabel'   => esc_html(get_option('kw_crossword_admin_down_label', __('Down', 'wp-quiz-plugin'))),
                     'filledCellColor' => esc_html(get_option('kw_crossword_admin_filled_cell_color', '#e1f5fe')),
+                    'emptyCrosswordMessage' => esc_html__('Please add some words to generate the crossword.', 'wp-quiz-plugin'),
                 )
             );
             

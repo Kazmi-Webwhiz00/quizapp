@@ -47,8 +47,8 @@ function load_crossword_assets_fe() {
 
         // Failure Popup Settings
         'failurePopup' => array(
-            'title' => get_option('kw_crossword_failure_popup_title', __('Oops!', 'wp-quiz-plugin')),
-            'bodyText' => get_option('kw_crossword_failure_popup_body_text', __('Some answers are incorrect. Keep trying!', 'wp-quiz-plugin')),
+            'title' => get_option('kw_crossword_failure_popup_title', __('Are you Sure ?', 'wp-quiz-plugin')),
+            'bodyText' => get_option('kw_crossword_failure_popup_body_text', __('Not all words are typed !', 'wp-quiz-plugin')),
             'buttonText' => get_option('kw_crossword_failure_popup_button_text', __('Try Again', 'wp-quiz-plugin')),
             'iconColor' => '#d66868',
             'buttonColor' => '#d66868',

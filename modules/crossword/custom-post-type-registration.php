@@ -33,17 +33,17 @@ add_action( 'init', 'register_crossword_post_type' );
 
 function register_crossword_taxonomy() {
     $labels = array(
-        'name'              => _x('Crossword Categories', 'taxonomy general name', 'textdomain'),
-        'singular_name'     => _x('Crossword Category', 'taxonomy singular name', 'textdomain'),
-        'search_items'      => __('Search Crossword Categories', 'textdomain'),
-        'all_items'         => __('All Crossword Categories', 'textdomain'),
-        'parent_item'       => __('Parent Crossword Category', 'textdomain'),
-        'parent_item_colon' => __('Parent Crossword Category:', 'textdomain'),
-        'edit_item'         => __('Edit Crossword Category', 'textdomain'),
-        'update_item'       => __('Update Crossword Category', 'textdomain'),
-        'add_new_item'      => __('Add New Crossword Category', 'textdomain'),
-        'new_item_name'     => __('New Crossword Category Name', 'textdomain'),
-        'menu_name'         => __('Crossword Categories', 'textdomain'),
+        'name'              => _x('Crossword Categories', 'taxonomy general name', 'wp-quiz-plugin'),
+        'singular_name'     => _x('Crossword Category', 'taxonomy singular name', 'wp-quiz-plugin'),
+        'search_items'      => __('Search Crossword Categories', 'wp-quiz-plugin'),
+        'all_items'         => __('All Crossword Categories', 'wp-quiz-plugin'),
+        'parent_item'       => __('Parent Crossword Category', 'wp-quiz-plugin'),
+        'parent_item_colon' => __('Parent Crossword Category:', 'wp-quiz-plugin'),
+        'edit_item'         => __('Edit Crossword Category', 'wp-quiz-plugin'),
+        'update_item'       => __('Update Crossword Category', 'wp-quiz-plugin'),
+        'add_new_item'      => __('Add New Crossword Category', 'wp-quiz-plugin'),
+        'new_item_name'     => __('New Crossword Category Name', 'wp-quiz-plugin'),
+        'menu_name'         => __('Crossword Categories', 'wp-quiz-plugin'),
     );
 
     $args = array(
