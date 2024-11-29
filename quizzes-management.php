@@ -1,8 +1,8 @@
 <?php
 /*
-Plugin Name: WP Quiz Plugin
+Plugin Name: OmniS
 Description: A WordPress plugin to create and manage quizzes with questions and user submissions.
-Version: 2.3.1
+Version: 2.3.2
 Author: Kazmi Webwhiz
 Author URI: https://kazmiwebwhiz.com
 Text Domain: wp-quiz-plugin
