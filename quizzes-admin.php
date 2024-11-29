@@ -1537,6 +1537,7 @@ function wp_quiz_plugin_prompt_settings_init() {
     register_setting('wp_quiz_plugin_general_settings', 'wp_quiz_plugin_mcq_prompt_template');
     register_setting('wp_quiz_plugin_general_settings', 'wp_quiz_plugin_tf_prompt_template');
     register_setting('wp_quiz_plugin_general_settings', 'wp_quiz_plugin_text_prompt_template');
+    register_setting('wp_quiz_plugin_general_settings', 'wp_quiz_plugin_learners_age_prompt_template');
 
     // Add settings section for prompt templates
     add_settings_section(
@@ -1572,22 +1573,37 @@ function wp_quiz_plugin_prompt_settings_init() {
         'wp_quiz_plugin_general',
         'wp_quiz_plugin_prompt_settings_section'
     );
+
+    // Learners' Age Prompt Template
+    add_settings_field(
+        'wp_quiz_plugin_learners_age_prompt_template',
+        __('Learners\' Age Prompt Template','wp-quiz-plugin'),
+        'wp_quiz_plugin_learners_age_prompt_template_callback',
+        'wp_quiz_plugin_general',
+        'wp_quiz_plugin_prompt_settings_section'
+    );
 }
 add_action('admin_init', 'wp_quiz_plugin_prompt_settings_init');
 
 // Callback function for MCQ prompt template
 function wp_quiz_plugin_mcq_prompt_template_callback() {
-    // Define the default prompt with newline characters
     $default_prompt = "Generate a quiz question in the same language as the provided prompt. For example, if the prompt is in Polish, generate the question in Polish, and if the prompt is in English, generate the question in English. Use the following format:\nQuestion: [Your question text]\nAnswer Options: A) [Option A], B) [Option B], C) [Option C], D) [Option D]\nCorrect Answer: [A) Option A/B) Option B/C) Option C/D) Option D]";
-    
-    // Retrieve the existing value or use the default prompt
     $mcq_prompt = get_option('wp_quiz_plugin_mcq_prompt_template', $default_prompt);
-    
-    // Output the textarea with proper escaping
     ?>
     <textarea id="wp_quiz_plugin_mcq_prompt_template" name="wp_quiz_plugin_mcq_prompt_template" class="large-text" rows="10"><?php echo esc_textarea(str_replace('\n', "\n", $mcq_prompt)); ?></textarea>
     <button type="button" onclick="document.getElementById('wp_quiz_plugin_mcq_prompt_template').value='<?php echo esc_js(str_replace('\n', "\\n", $default_prompt)); ?>';" class="button-secondary"><?php _e('Use Default','wp-quiz-plugin'); ?></button>
     <p class="description"><?php _e('Customize the prompt template for MCQ questions. Use variables like [Your question text], [Option A], [Correct Answer].','wp-quiz-plugin'); ?></p>
+    <?php
+}
+
+// Callback function for Learners' Age prompt template
+function wp_quiz_plugin_learners_age_prompt_template_callback() {
+    $default_prompt = "The learners' age is [age]";
+    $age_prompt = get_option('wp_quiz_plugin_learners_age_prompt_template', $default_prompt);
+    ?>
+    <textarea id="wp_quiz_plugin_learners_age_prompt_template" name="wp_quiz_plugin_learners_age_prompt_template" class="large-text" rows="2"><?php echo esc_textarea($age_prompt); ?></textarea>
+    <button type="button" onclick="document.getElementById('wp_quiz_plugin_learners_age_prompt_template').value='<?php echo esc_js($default_prompt); ?>';" class="button-secondary"><?php _e('Use Default','wp-quiz-plugin'); ?></button>
+    <p class="description"><?php _e('Customize the template for the learners\' age prompt. Use [age] as a placeholder, which will be replaced with the actual learners\' age. This template will automatically get appended.','wp-quiz-plugin'); ?></p>
     <?php
 }
 

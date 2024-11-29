@@ -222,6 +222,9 @@ function display_questions_meta_box($post) {
     $mcqPromptTemplate = get_option('wp_quiz_plugin_mcq_prompt_template', $defaultMcqPrompt);
     $tfPromptTemplate = get_option('wp_quiz_plugin_tf_prompt_template', $defaultTfPrompt);
     $textPromptTemplate = get_option('wp_quiz_plugin_text_prompt_template', $defaultTextPrompt);
+    $defaultAgePrompt = 'The learners\' age is [age]';
+    $learnersAgePromptTemplate = get_option('wp_quiz_plugin_learners_age_prompt_template', $defaultAgePrompt);
+
 
     ?>
 
@@ -777,8 +780,11 @@ function display_questions_meta_box($post) {
                     categoriesContext = ` The quiz categories are: ${selectedCategories.join(' > ')}. Use this information to tailor the question to the relevant topic(s).`;
                 }
 
+
                 // Add learners' age context to the prompt
-                let ageContext = learnerAge ? ` The learners' age is ${learnerAge}. ` : '';
+                var agePromptTemplate = <?php echo json_encode($learnersAgePromptTemplate); ?>;
+                var ageContext = learnerAge ? agePromptTemplate.replace('[age]', learnerAge) : '';
+
 
                 var mcqPromptTemplate = <?php echo json_encode($mcqPromptTemplate); ?>;
                 var tfPromptTemplate = <?php echo json_encode($tfPromptTemplate); ?>;
