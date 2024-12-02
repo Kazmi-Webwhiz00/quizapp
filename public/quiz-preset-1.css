@@ -202,18 +202,18 @@
 }
 
 .pf_progress-bar {
-    width: 100% !important;
-    background-color: #f1f1f1 !important;
-    height: 8px !important;
-    border-radius: 4px !important;
-    overflow: hidden !important;
-    margin: 10px 0 !important;
+    width: 100% ;
+    background-color: #f1f1f1 ;
+    height: 8px ;
+    border-radius: 4px;
+    overflow: hidden ;
+    margin: 10px 0 ;
 }
 
 .pf_progress {
-    height: 100% !important;
-    background-color: #4CAF50 !important;
-    width: 0% !important;
+    height: 100% ;
+    background-color: #4CAF50 ;
+    width: 0% ;
     transition: width 0.4s ease !important;
 }
 

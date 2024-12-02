@@ -25,17 +25,17 @@ function wp_quiz_render_ui($quiz_id, $questions, $background_color, $button_back
     $answer_image_height = get_post_meta($quiz_id, 'answer_image_height', true);
 
     ob_start();?>
-        <div id="pf_quiz-container" data-quiz-id="<?php echo $quiz_id; ?>" data-total-questions="<?php echo count($questions); ?>" style="background-color: <?php echo $background_color; ?>;">
+        <div id="pf_quiz-container" data-quiz-id="<?php echo $quiz_id; ?>" data-total-questions="<?php echo count($questions); ?>" style="background-color: <?php echo $background_color; ?> !important;">
             <div class="pf_quiz-header">
                 <p><strong><?php echo '' ?></strong></p>
-                <div class="pf_progress-bar" style="width: 100%; background-color: <?php echo $progress_bar_background_color; ?>; height: 4px; margin-bottom: 15px; display: none;">
-                    <div class="pf_progress" style="width: 0%; height: 4px; background-color: <?php echo $progress_bar_color; ?>;"></div>
+                <div class="pf_progress-bar" style="width: 100%; background-color: <?php echo $progress_bar_background_color; ?> !important; height: 4px !important; margin-bottom: 15px !important; display: none !important;">
+                    <div class="pf_progress" style="width: 0%; height: 4px; background-color: <?php echo $progress_bar_color; ?> ;"></div>
                 </div>
             </div>
             <div id="pf_question-container" class="pf_question-card"></div>
             <div class="pf_quiz-footer">
-                <button id="pf_back-question-btn" class="pf_button pf_button-secondary" style="display: none; width: 50%; background-color: <?php echo $button_background_color; ?>; color: <?php echo $button_text_color; ?>;"><?php echo __('Back', 'wp-quiz-plugin'); ?></button>
-                <button id="pf_next-question-btn" class="pf_button pf_button-primary" style="width: 50%; background-color: <?php echo $button_background_color; ?>; color: <?php echo $button_text_color; ?>;">Next</button>
+                <button id="pf_back-question-btn" class="pf_button pf_button-secondary" style="display: none !important; width: 50%  !important  ; background-color: <?php echo $button_background_color; ?> !important ; color: <?php echo $button_text_color; ?>  !important ;"><?php echo __('Back', 'wp-quiz-plugin'); ?></button>
+                <button id="pf_next-question-btn" class="pf_button pf_button-primary" style="width: 50%  !important ; background-color: <?php echo $button_background_color; ?>  !important ; color: <?php echo $button_text_color; ?> !important ;">Next</button>
             </div>
         </div>
 
@@ -70,10 +70,10 @@ function wp_quiz_render_ui($quiz_id, $questions, $background_color, $button_back
 
                 function showUserNamePrompt() {
                     const userNameHTML = `
-                        <div class="pf_user-name-prompt" style="background-color: ${styles.backgroundColor}; padding: 10px; border-radius: 5px;">
+                        <div class="pf_user-name-prompt" style="background-color: ${styles.backgroundColor}  !important ; padding: 10px  !important ; border-radius: 5px  !important ;">
                             <label for="pf_user-name-input"><?php echo esc_attr__('Please enter your name:', 'wp-quiz-plugin'); ?></label>
-                            <input type="text" id="pf_user-name-input" name="user-name" placeholder="<?php echo esc_attr__('Your name here', 'wp-quiz-plugin'); ?>" style="margin: 10px 0;">
-                            <button id="pf_submit-name-btn" class="pf_button pf_button-primary" style="background-color: ${styles.buttonBackgroundColor}; color: ${styles.buttonTextColor};"><?php echo esc_attr__('Submit', 'wp-quiz-plugin'); ?></button>
+                            <input type="text" id="pf_user-name-input" name="user-name" placeholder="<?php echo esc_attr__('Your name here', 'wp-quiz-plugin'); ?>" style="margin: 10px 0  !important ;">
+                            <button id="pf_submit-name-btn" class="pf_button pf_button-primary" style="background-color: ${styles.buttonBackgroundColor}  !important ; color: ${styles.buttonTextColor}  !important ;"><?php echo esc_attr__('Submit', 'wp-quiz-plugin'); ?></button>
                         </div>
                     `;
                     $('#pf_question-container').html(userNameHTML);
@@ -117,9 +117,9 @@ function wp_quiz_render_ui($quiz_id, $questions, $background_color, $button_back
                     if (questionType === 'MCQ' || questionType === 'T/F') {
                         answers.forEach((answer, index) => {
                             answerHTML += `
-                                <div class="pf_answer-option" data-correct="${answer.correct}" style="flex: 1 0 45%; max-width: 48%; margin: 1%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; border: 1px solid #ccc; padding: 15px; box-sizing: border-box;">
+                                <div class="pf_answer-option" data-correct="${answer.correct}" style="flex: 1 0 45%  !important ; max-width: 48%  !important ; margin: 1%  !important ; display: flex  !important ; flex-direction: column  !important ; align-items: center  !important ; justify-content: center  !important ; text-align: center  !important ; border: 1px solid #ccc  !important ; padding: 15px  !important ; box-sizing: border-box  !important ;">
                                     ${answer.image ? `<img src="${answer.image}" class="pf_answer-image" alt="Answer Image" style="<?php echo get_image_style($quiz_id, "answer")?>" >` : ''}
-                                    <label for="pf_answer-${index}" style="display: block; font-family: ${styles.ansfontFamily}; color: ${styles.ansfontColor}; font-size: ${styles.ansfontSize}">${answer.text}</label>
+                                    <label for="pf_answer-${index}" style="display: block  !important ; font-family: ${styles.ansfontFamily}  !important ; color: ${styles.ansfontColor}  !important ; font-size: ${styles.ansfontSize}  !important ">${answer.text}</label>
                                 </div>
                             `;
                         });
@@ -129,7 +129,7 @@ function wp_quiz_render_ui($quiz_id, $questions, $background_color, $button_back
 
                     // Return the flex container with correct width and wrapping behavior
                     return `
-                        <div class="pf_answers-container" style="display: flex; flex-wrap: wrap; justify-content: space-between; width: 100%; flex-direction: row;">
+                        <div class="pf_answers-container" style="display: flex  !important ; flex-wrap: wrap  !important ; justify-content: space-between  !important ; width: 100%  !important ; flex-direction: row  !important ;">
                             ${answerHTML}
                         </div>
                     `;
@@ -226,7 +226,7 @@ function wp_quiz_render_ui($quiz_id, $questions, $background_color, $button_back
 
                 function showAnswerMessage(message, textColor, bgColor) {
                     $('.pf_correct-answer-message').remove();
-                    $('.pf_answer-textarea').after(`<p class="pf_correct-answer-message" style="color: ${textColor}; background-color: ${bgColor}; padding: 10px; border-radius: 5px; margin-top: 10px;">${message}</p>`);
+                    $('.pf_answer-textarea').after(`<p class="pf_correct-answer-message" style="color: ${textColor}  !important ; background-color: ${bgColor}  !important ; padding: 10px  !important ; border-radius: 5px  !important ; margin-top: 10px  !important ;">${message}</p>`);
                 }
 
                 function storeAnswer(questionIndex, answerIndex, answerValue, state) {
@@ -283,7 +283,7 @@ function wp_quiz_render_ui($quiz_id, $questions, $background_color, $button_back
                         $('.pf_answer-textarea').css('border-color', '#4CAF50');
                     } else if (storedData.state === 'incorrect') {
                         $('.pf_answer-textarea').css('border-color', '#f44336');
-                        $('.pf_answer-textarea').after(`<p class="pf_correct-answer-message" style="color: #f44336; background-color: #ffebee; padding: 10px; border-radius: 5px; margin-top: 10px;">Incorrect answer. The correct answer is: "<strong>${JSON.parse(questions[questionIndex].Answer)[0].text}</strong>"</p>`);
+                        $('.pf_answer-textarea').after(`<p class="pf_correct-answer-message" style="color: #f44336  !important ; background-color: #ffebee  !important ; padding: 10px  !important ; border-radius: 5px  !important ; margin-top: 10px  !important ;">Incorrect answer. The correct answer is: "<strong>${JSON.parse(questions[questionIndex].Answer)[0].text}</strong>"</p>`);
                     }
                     $('#pf_next-question-btn').prop('disabled', false).text(questionIndex < totalQuestions - 1 ? '<?php echo __('Next Question', 'wp-quiz-plugin'); ?>' : '<?php echo __('Submit Quiz', 'wp-quiz-plugin'); ?>');
                     answerSubmitted = true;
@@ -338,7 +338,7 @@ function wp_quiz_render_ui($quiz_id, $questions, $background_color, $button_back
                             <p><?php echo __('Correct Answers:', 'wp-quiz-plugin'); ?> <strong>${correctCount}</strong></p>
                             <p><?php echo __('Incorrect Answers:', 'wp-quiz-plugin'); ?> <strong>${incorrectCount}</strong></p>
                             <p><?php echo __('Your Score:', 'wp-quiz-plugin'); ?> <strong>${scorePercentage}%</strong></p>
-                            <div class="pf_score-bar"><div class="pf_score-fill" style="width: ${scorePercentage}%"></div></div>
+                            <div class="pf_score-bar"><div class="pf_score-fill" style="width: ${scorePercentage}%  !important "></div></div>
                             <button id="pf_retake-quiz-btn" class="pf_button pf_button-primary"><?php echo __('Retake Quiz', 'wp-quiz-plugin'); ?></button>
                             <button id="pf_download-result-pdf-btn" class="pf_button pf_button-secondary"><?php echo __('Download Result as PDF', 'wp-quiz-plugin'); ?></button>
                         </div>
@@ -376,7 +376,7 @@ function wp_quiz_render_ui($quiz_id, $questions, $background_color, $button_back
             });
         </script>
     <?php
-
+return ob_get_clean();
 }
 
 ?>
