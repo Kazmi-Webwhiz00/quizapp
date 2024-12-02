@@ -2,7 +2,7 @@
 /*
 Plugin Name: OmniS
 Description: A WordPress plugin to create and manage quizzes with questions and user submissions.
-Version: 2.3.5
+Version: 2.3.6
 Author: Kazmi Webwhiz
 Author URI: https://kazmiwebwhiz.com
 Text Domain: wp-quiz-plugin
@@ -263,7 +263,7 @@ function display_questions_meta_box($post) {
 </div>
     <!-- Question Image Size Settings -->
     <label for="question_image_width"><?php _e($set_question_image_size_text, 'wp-quiz-plugin'); ?>
-        <span class="tooltip" data-tooltip="<?php echo __("Specify the size of the question image in pixels. The maximum allowed size is 350px, and the default size is 200px.", 'wp-quiz-plugin'); ?>">ℹ️</span>
+        <span class="kw-quiz-tooltip" data-tooltip="<?php echo __("Specify the size of the question image in pixels. The maximum allowed size is 350px, and the default size is 200px.", 'wp-quiz-plugin'); ?>">ℹ️</span>
     </label>
     <div class="image-size-inputs">
         <div>
@@ -283,7 +283,7 @@ function display_questions_meta_box($post) {
 
     <!-- Answer Image Size Settings -->
     <label for="answer_image_width"><?php _e($set_answer_image_size_text, 'wp-quiz-plugin'); ?>
-        <span class="tooltip" data-tooltip="<?php echo esc_attr(__("Specify the size of the question image in pixels. The maximum allowed size is 250px, and the default size is 200px.", 'wp-quiz-plugin'));?>">ℹ️</span>
+        <span class="kw-quiz-tooltip" data-tooltip="<?php echo esc_attr(__("Specify the size of the question image in pixels. The maximum allowed size is 250px, and the default size is 200px.", 'wp-quiz-plugin'));?>">ℹ️</span>
     </label>
 
     <div class="image-size-inputs">
@@ -817,7 +817,7 @@ function display_questions_meta_box($post) {
                         var correctAnswerMatch = generatedContent.match(/Correct Answer:\s*([A-D])\)\s*(.+)|Correct Answer:\s*\[(.+)\]/i);
 
                         if (!questionMatch || !answersMatch || !correctAnswerMatch) {
-                            throw new Error('Could not find the question or correct answer. Please check the AI response format.');
+                            throw new Error(<?php __('Could not find the question or correct answer. Please check the AI response format.','wp-quiz-plugin') ?>);
                         }
 
                         var questionText = questionMatch[1].trim();
@@ -843,7 +843,7 @@ function display_questions_meta_box($post) {
                         var correctAnswerMatch = generatedContent.match(/(?:Correct Answer:\s*)?(True|False)/i);
 
                         if (!questionMatch || !correctAnswerMatch) {
-                            throw new Error('Could not find the question or correct answer. Please check the AI response format.');
+                            throw new Error(<?php __('Could not find the question or correct answer. Please check the AI response format.','wp-quiz-plugin') ?>);
                         }
 
                         var questionText = questionMatch[1].trim();
@@ -867,7 +867,7 @@ function display_questions_meta_box($post) {
                         var correctAnswerText = generatedContent.match(/Correct Answer:\s*(.+)$/i)[1].trim();
 
                         if (!questionMatch || !correctAnswerText) {
-                            throw new Error('Could not find the question or correct answer. Please check the AI response format.');
+                            throw new Error(<?php __('Could not find the question or correct answer. Please check the AI response format.','wp-quiz-plugin') ?>);
                         }
 
                         var questionText = questionMatch[1].trim();
