@@ -58,7 +58,7 @@ function wp_quiz_display_shortcode($atts) {
     // Call the reusable UI function
     return wp_quiz_render_ui($quiz_id, $questions , $background_color, $button_background_color, $button_text_color, $progress_bar_color, $progress_bar_background_color, $question_font_family, $question_font_color, $question_font_size, $answer_font_family, $answer_font_color, $answer_font_size);
 
-    return ob_get_clean();
+  // return ob_get_clean();
 }
 add_shortcode('wp_quiz', 'wp_quiz_display_shortcode');
 function custom_quiz_footer_styles() {

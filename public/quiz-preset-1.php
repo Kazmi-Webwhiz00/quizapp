@@ -27,8 +27,8 @@ function wp_quiz_render_ui($quiz_id, $questions, $background_color, $button_back
             </div>
             <div id="pf_question-container" class="pf_question-card"></div>
             <div class="pf_quiz-footer">
-                <button id="pf_back-question-btn" class="pf_button pf_button-secondary" style="display: none; width: 50%; background-color: <?php echo $button_background_color; ?>; color: <?php echo $button_text_color; ?>;"><?php echo __('Back', 'wp-quiz-plugin'); ?></button>
-                <button id="pf_next-question-btn" class="pf_button pf_button-primary" style="width: 50%; background-color: <?php echo $button_background_color; ?>; color: <?php echo $button_text_color; ?>;">Next</button>
+                <button id="pf_back-question-btn" class="pf_button pf_button-secondary" style="display: none; width: 50%; background-color: <?php echo $button_background_color; ?> !important; color: <?php echo $button_text_color; ?> !important;"><?php echo __('Back', 'wp-quiz-plugin'); ?></button>
+                <button id="pf_next-question-btn" class="pf_button pf_button-primary" style="width: 50%; background-color: <?php echo $button_background_color; ?> !important; color: <?php echo $button_text_color; ?> !important;">Next</button>
             </div>
         </div>
 
@@ -66,7 +66,7 @@ function wp_quiz_render_ui($quiz_id, $questions, $background_color, $button_back
                         <div class="pf_user-name-prompt" style="background-color: ${styles.backgroundColor}; padding: 10px; border-radius: 5px;">
                             <label for="pf_user-name-input"><?php echo esc_attr__('Please enter your name:', 'wp-quiz-plugin'); ?></label>
                             <input type="text" id="pf_user-name-input" name="user-name" placeholder="<?php echo esc_attr__('Your name here', 'wp-quiz-plugin'); ?>" style="margin: 10px 0;">
-                            <button id="pf_submit-name-btn" class="pf_button pf_button-primary" style="background-color: ${styles.buttonBackgroundColor}; color: ${styles.buttonTextColor};"><?php echo esc_attr__('Submit', 'wp-quiz-plugin'); ?></button>
+                            <button id="pf_submit-name-btn" class="pf_button pf_button-primary" style="background-color: ${styles.buttonBackgroundColor} !important; color: ${styles.buttonTextColor} !important;"><?php echo esc_attr__('Submit', 'wp-quiz-plugin'); ?></button>
                         </div>
                     `;
                     $('#pf_question-container').html(userNameHTML);
@@ -88,7 +88,7 @@ function wp_quiz_render_ui($quiz_id, $questions, $background_color, $button_back
                     const question = questions[questionIndex];
                     let questionHTML = `
                         <div class="pf_question-header">
-                            <h3 style="font-family: ${styles.questionfontFamily}; color: ${styles.questionfontColor}; font-size: ${styles.questionfontSize}">${question.Title}</h3>
+                            <h3 style="font-family: ${styles.questionfontFamily} !important; color: ${styles.questionfontColor} !important; font-size: ${styles.questionfontSize} !important">${question.Title}</h3>
                             ${question.TitleImage ? `<img src="${question.TitleImage}" class="pf_question-image" style="<?php echo get_image_style($quiz_id)?>" alt="Question Image">` : ''}
                         </div>
                         <div class="pf_answers-container">
@@ -360,6 +360,7 @@ function wp_quiz_render_ui($quiz_id, $questions, $background_color, $button_back
             });
         </script>
     <?php
+    return ob_get_clean();
 }
 
 ?>
