@@ -2,7 +2,7 @@
 /*
 Plugin Name: OmniS
 Description: A WordPress plugin to create and manage quizzes with questions and user submissions.
-Version: 2.3.6
+Version: 2.3.7
 Author: Kazmi Webwhiz
 Author URI: https://kazmiwebwhiz.com
 Text Domain: wp-quiz-plugin
@@ -931,7 +931,7 @@ function display_questions_meta_box($post) {
                     $('#kw_generate-question-btn').text('<?php echo esc_js(__('Generate with ChatGPT', 'wp-quiz-plugin')); ?>').prop('disabled', false);
                 } catch (error) {
                     console.error('Error generating content:', error.message);
-                    Swal.fire('Error', error.message, 'error');
+                    Swal.fire('Error', <?php  __('Could not find the question or correct answer. Please check the AI response format.','wp-quiz-plugin') ?>, 'error');
                     $('#kw_generate-question-btn').text('<?php echo esc_js(__('Generate with ChatGPT', 'wp-quiz-plugin')); ?>').prop('disabled', false);
                 }
             }

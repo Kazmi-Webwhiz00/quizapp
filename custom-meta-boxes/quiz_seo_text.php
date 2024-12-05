@@ -6,7 +6,7 @@ function add_seo_text_meta_box() {
     $meta_box_title = get_option('wp_quiz_plugin_meta_box_title', __('SEO Text (Admin Only)', 'wp-quiz-plugin'));
 
     add_meta_box(
-        'quiz_seo_text2', // ID of the meta box
+        'quiz_seo_text_meta_box', // ID of the meta box
         __(esc_html($meta_box_title),'wp-quiz-plugin'), // Title of the meta box dynamically set
         'render_seo_text_meta_box', // Callback function to display the input field
         'quizzes', // Post type (quizzes)
@@ -15,7 +15,7 @@ function add_seo_text_meta_box() {
     );
 
     add_meta_box(
-        'quiz_seo_text2', // ID of the meta box
+        'crossword_seo_text_meta_box', // ID of the meta box
         __(esc_html($meta_box_title),'wp-quiz-plugin'), // Title of the meta box dynamically set
         'render_seo_text_meta_box', // Callback function to display the input field
         'crossword', // Post type (quizzes)
