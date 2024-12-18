@@ -2,7 +2,7 @@
 /*
 Plugin Name: OmniS
 Description: A WordPress plugin to create and manage quizzes with questions and user submissions.
-Version: 2.3.7
+Version: 5.0.0
 Author: Kazmi Webwhiz
 Author URI: https://kazmiwebwhiz.com
 Text Domain: wp-quiz-plugin
@@ -17,10 +17,9 @@ include_once plugin_dir_path(__FILE__) . 'public/public-functions.php';  // Incl
 include_once plugin_dir_path(__FILE__) . 'quizzes-admin.php';  // Include public functions
 include_once plugin_dir_path(__FILE__) . 'quizzes-submissions.php';  // Include Submissions page file
 include_once plugin_dir_path(__FILE__) . 'quiz-template-download.php';  // Include Submissions page file
-include_once plugin_dir_path(__FILE__) . './custom-meta-boxes/quiz_seo_text.php';  // Include Submissions page file
-// include_once plugin_dir_path(__FILE__) . 'quiz-notificaions.php';  // Include Submissions page file
 include_once plugin_dir_path(__FILE__) . 'kw-quiz-post-and-taxonomies.php';  // Include Submissions page file
 include_once plugin_dir_path(__FILE__) . 'kw-questions-metabox-header.php';  // Include Submissions page file
+include_once plugin_dir_path(__FILE__) . 'custom-meta-boxes/quiz_seo_text.php';
 include_once plugin_dir_path(__FILE__) . 'utils/short-code-helpers.php'; 
 include_once plugin_dir_path(__FILE__) . 'utils/constants.php'; 
 include_once plugin_dir_path(__FILE__) . 'kw-quiz-features-buttons.php';
@@ -931,7 +930,7 @@ function display_questions_meta_box($post) {
                     $('#kw_generate-question-btn').text('<?php echo esc_js(__('Generate with ChatGPT', 'wp-quiz-plugin')); ?>').prop('disabled', false);
                 } catch (error) {
                     console.error('Error generating content:', error.message);
-                    Swal.fire('Error', <?php  __('Could not find the question or correct answer. Please check the AI response format.','wp-quiz-plugin') ?>, 'error');
+                    Swal.fire('Error', '<?php echo esc_js(__('Could not find the question or correct answer. Please check the AI response format.', 'wp-quiz-plugin')); ?>', 'error');
                     $('#kw_generate-question-btn').text('<?php echo esc_js(__('Generate with ChatGPT', 'wp-quiz-plugin')); ?>').prop('disabled', false);
                 }
             }

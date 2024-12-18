@@ -457,6 +457,61 @@ function save_quiz_description_meta_box($post_id) {
 }
 add_action('save_post', 'save_quiz_description_meta_box');
 
+// Register shortcode to display quiz description
+function quiz_description_shortcode($atts) {
+    // Attributes for shortcode (e.g., ID)
+    $atts = shortcode_atts(
+        array(
+            'id' => get_the_ID(), // Default to current post ID
+        ),
+        $atts
+    );
+
+    $quiz_id = intval($atts['id']);
+
+    // Fetch the description
+    $description = get_post_meta($quiz_id, '_quiz_description', true);
+
+    // Return the description or a default message if not set
+    return !empty($description) ? esc_html($description) : __('No description available.', 'wp-quiz-plugin');
+}
+add_shortcode('quiz_description', 'quiz_description_shortcode');
+
+
+// Add meta box for 2nd SEO Box
+function add_2nd_seo_meta_box() {
+    add_meta_box(
+        'second_seo_meta_box', // Meta box ID
+        __('2nd SEO Box', 'wp-quiz-plugin'), // Title of the meta box
+        'display_2nd_seo_meta_box', // Callback function to display the meta box
+        'quizzes', // Post type
+        'side', // Context (side, normal, advanced)
+        'default' // Priority
+    );
+}
+add_action('add_meta_boxes', 'add_2nd_seo_meta_box');
+
+// Display the 2nd SEO Box meta box
+function display_2nd_seo_meta_box($post) {
+    // Retrieve the saved value, if any
+    $seo_data = get_post_meta($post->ID, '_2nd_quiz_seo_text_help', true);
+    ?>
+    <textarea name="second_seo_data" style="width:100%; height:100px;"><?php echo esc_textarea($seo_data); ?></textarea>
+    <?php
+}
+
+// Save the 2nd SEO Box data
+function save_2nd_seo_meta_box($post_id) {
+    if (array_key_exists('second_seo_data', $_POST)) {
+        update_post_meta(
+            $post_id,
+            '_2nd_quiz_seo_text_help',
+            sanitize_text_field($_POST['second_seo_data'])
+        );
+    }
+}
+add_action('save_post', 'save_2nd_seo_meta_box');
+
 
 
 // Hook to modify post data before saving

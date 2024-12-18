@@ -66,23 +66,28 @@ jQuery(document).ready(function($) {
         event.currentTarget.classList.add('nav-tab-active');
     }
     
-    // Copy to clipboard function for Quiz Shortcode
-    $('#quiz-copy-button').on('click', function() {
-        var $input = $('#quiz-copy-input');
-        $input.focus().select();
-        if (document.execCommand('copy')) {
-            showCopyMessage('#quiz-copy-message');
-        }
-    });
+// Copy to clipboard function for Quiz Shortcode
+$(document).on('click', '#quiz-copy-button', function() {
+    // Find the sibling input field with ID 'quiz-copy-input' within the same '.shortcode-box'
+    var $input = $(this).closest('.shortcode-box').find('#quiz-copy-input');
+    $input.focus().select();
+    if (document.execCommand('copy')) {
+        // Show the copy message within the same '.shortcode-box'
+        $(this).closest('.shortcode-box').find('#quiz-copy-message').fadeIn(200).delay(1000).fadeOut(200);
+    }
+});
 
-    // Copy to clipboard function for Crossword Shortcode
-    $('#crossword-copy-button').on('click', function() {
-        var $input = $('#crossword-copy-input');
-        $input.focus().select();
-        if (document.execCommand('copy')) {
-            showCopyMessage('#crossword-copy-message');
-        }
-    });
+// Copy to clipboard function for Crossword Shortcode
+$(document).on('click', '#crossword-copy-button', function() {
+    // Find the sibling input field with ID 'crossword-copy-input' within the same container
+    var $input = $(this).closest('.shortcode-box').find('#crossword-copy-input');
+    $input.focus().select();
+    if (document.execCommand('copy')) {
+        // Show the copy message within the same '.shortcode-box'
+        $(this).closest('.shortcode-box').find('#crossword-copy-message').fadeIn(200).delay(1000).fadeOut(200);
+    }
+});
+
 
     // Function to show "Copied to clipboard" message
     function showCopyMessage(messageId) {
