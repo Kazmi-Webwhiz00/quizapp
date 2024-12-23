@@ -344,7 +344,7 @@ function kw_download_answer_key_pdf_callback() {
     }
 
     // Output Answer Key PDF securely
-    $pdf->Output('quiz_odpowiedzi_' . $quiz_id . '.pdf', 'D'); // D for download, I for inline
+    $pdf->Output(__('quiz_odpowiedzi', 'wp-quiz-plugin') . '_' . $quiz_id . '.pdf', 'D'); // 'D' for download
 
     wp_die(); // Stop the execution after generating PDF
 }

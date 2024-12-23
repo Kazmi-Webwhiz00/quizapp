@@ -65,7 +65,7 @@ function wp_quiz_render_ui($quiz_id, $questions, $background_color, $button_back
                     const userNameHTML = `
                         <div class="pf_user-name-prompt" style="background-color: ${styles.backgroundColor}; padding: 10px; border-radius: 5px;">
                             <label for="pf_user-name-input"><?php echo esc_attr__('Please enter your name:', 'wp-quiz-plugin'); ?></label>
-                            <input type="text" id="pf_user-name-input" name="user-name" placeholder="<?php echo esc_attr__('Your name here', 'wp-quiz-plugin'); ?>" style="margin: 10px 0;">
+                            <input type="text" id="pf_user-name-input" name="user-name" placeholder="<?php echo esc_attr__('Your name here', 'wp-quiz-plugin'); ?>" style="margin: 10px 0;" autocomplete="off">
                             <button id="pf_submit-name-btn" class="pf_button pf_button-primary" style="background-color: ${styles.buttonBackgroundColor} !important; color: ${styles.buttonTextColor} !important;"><?php echo esc_attr__('Submit', 'wp-quiz-plugin'); ?></button>
                         </div>
                     `;

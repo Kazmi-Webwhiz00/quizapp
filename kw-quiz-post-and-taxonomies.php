@@ -473,7 +473,7 @@ function quiz_description_shortcode($atts) {
     $description = get_post_meta($quiz_id, '_quiz_description', true);
 
     // Return the description or a default message if not set
-    return !empty($description) ? esc_html($description) : __('No description available.', 'wp-quiz-plugin');
+    return !empty($description) ? esc_html($description) : '';
 }
 add_shortcode('quiz_description', 'quiz_description_shortcode');
 
