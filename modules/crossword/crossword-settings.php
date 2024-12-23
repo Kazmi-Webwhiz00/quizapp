@@ -191,4 +191,33 @@ function save_crossword_description_meta_box($post_id) {
 }
 add_action('save_post', 'save_crossword_description_meta_box');
 
+
+// Shortcode to display crossword description
+function crossword_description_shortcode($atts) {
+    // Extract shortcode attributes (optional if you plan to expand functionality later)
+    $atts = shortcode_atts(
+        array(
+            'id' => null, // Post ID
+        ),
+        $atts,
+        'crossword_description'
+    );
+
+    // Get the current post ID if no ID is passed in the shortcode
+    $post_id = $atts['id'] ? intval($atts['id']) : get_the_ID();
+
+    // Check if the post ID exists and is of type 'crossword'
+    if ($post_id && get_post_type($post_id) === 'crossword') {
+        // Fetch the description
+        $description = get_post_meta($post_id, '_crossword_description', true);
+
+        // Return the description or a default message
+        return !empty($description) ? esc_html($description) : '';
+    }
+
+    return __('Invalid crossword ID.', 'wp-quiz-plugin');
+}
+add_shortcode('crossword_description', 'crossword_description_shortcode');
+
+
 ?>

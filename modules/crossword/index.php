@@ -8,6 +8,7 @@ include_once plugin_dir_path(__FILE__) . '/custom-post-type-registration.php';
 include_once plugin_dir_path(__FILE__) . '/crossword-download.php';
 include_once plugin_dir_path(__FILE__) . '/public/crossword-fe-index.php';
 include_once plugin_dir_path(__FILE__) . '/custom-metaboxes/kw-crossword-features-buttons.php';
+include_once plugin_dir_path(__FILE__) . '/custom-metaboxes/crossword_seo_text.php';
 include_once plugin_dir_path(__FILE__) . '/admin/admin-settings.php';
 
 function load_crossword_assets($hook) {

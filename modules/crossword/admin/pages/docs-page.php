@@ -25,6 +25,14 @@ function crossword_render_docs_page() {
         <span id="quiz-copy-message" class="copy-message">Copied to clipboard!</span>
     </div>
 
+    <div class="shortcode-box">
+        <!-- Hidden input for Crossword Shortcode -->
+        <input id="crossword-copy-input" type="text" value="[quiz_seo_text]" readonly class="hidden-input">
+        <code>[quiz_seo_text]</code>
+        <button id="crossword-copy-button" class="copy-button">Copy</button>
+        <span id="crossword-copy-message" class="copy-message">Copied to clipboard!</span>
+    </div>
+
     <h4><?php esc_html_e('Crossword Module Shortcode', 'wp-quiz-plugin'); ?></h4>
     <div class="shortcode-box">
         <!-- Hidden input for Crossword Shortcode -->
@@ -36,8 +44,16 @@ function crossword_render_docs_page() {
 
     <div class="shortcode-box">
         <!-- Hidden input for Crossword Shortcode -->
-        <input id="crossword-copy-input" type="text" value="[quiz_seo_text]" readonly class="hidden-input">
-        <code>[quiz_seo_text]</code>
+        <input id="crossword-copy-input" type="text" value="[crossword_description]" readonly class="hidden-input">
+        <code>[crossword_description]</code>
+        <button id="crossword-copy-button" class="copy-button">Copy</button>
+        <span id="crossword-copy-message" class="copy-message">Copied to clipboard!</span>
+    </div>
+
+    <div class="shortcode-box">
+        <!-- Hidden input for Crossword Shortcode -->
+        <input id="crossword-copy-input" type="text" value="[crossword_seo_text]" readonly class="hidden-input">
+        <code>[crossword_seo_text]</code>
         <button id="crossword-copy-button" class="copy-button">Copy</button>
         <span id="crossword-copy-message" class="copy-message">Copied to clipboard!</span>
     </div>

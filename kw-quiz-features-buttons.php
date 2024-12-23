@@ -70,7 +70,7 @@ function quizzes_meta_box_callback($post) {
         </button>
 
         <!-- Div to show copy confirmation message -->
-        <div id="quizzes_copy_message" style="display:none; color:green; margin-top:10px;">Copied to clipboard!</div>
+        <div id="quizzes_copy_message" style="display:none; color:green; margin-top:10px;"> <?php _e('Copied to clipboard!','wp-quiz-plugin') ?> </div>
     </div>
 
     <!-- jQuery script to handle clipboard copy and email functions -->
