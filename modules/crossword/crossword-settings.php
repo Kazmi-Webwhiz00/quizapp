@@ -220,4 +220,32 @@ function crossword_description_shortcode($atts) {
 add_shortcode('crossword_description', 'crossword_description_shortcode');
 
 
+
+
+function exclude_private_crosswords($clauses, $query) {
+    global $wpdb;
+
+    // Ensure this is a front-end query and affects only crosswords
+    if (!is_admin() && isset($query->query_vars['post_type']) && $query->query_vars['post_type'] === 'crossword') {
+        // Add a condition to exclude crosswords with the meta key set to 'private'
+        $meta_table = $wpdb->postmeta;
+
+        $clauses['where'] .= $wpdb->prepare(
+            " AND NOT EXISTS (
+                SELECT 1 FROM {$meta_table}
+                WHERE {$meta_table}.post_id = {$wpdb->posts}.ID
+                AND {$meta_table}.meta_key = %s
+                AND {$meta_table}.meta_value = %s
+            )",
+            'crossword_listing_visibility_status',
+            'private'
+        );
+    }
+
+    return $clauses;
+}
+add_filter('posts_clauses', 'exclude_private_crosswords', 10, 2);
+
+
+
 ?>

@@ -296,6 +296,8 @@ h3 {
 
   /* Reset / Replay Button Styling */
 .kw-crossword-reset-button {
+    height: 50px !important;
+    width: 50px !important;
     background-color: #00796b;
     color: white;
     border: none;
