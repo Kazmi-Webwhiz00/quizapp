@@ -1,3 +1,4 @@
+.crossword-category-dropdowns,
 .quiz-category-dropdowns {
     display: flex;
     align-items: center;
@@ -5,11 +6,13 @@
     gap: 15px; /* Space between dropdowns */
 }
 
+.crossword-category-dropdowns label,
 .quiz-category-dropdowns label {
     margin-right: 5px; /* Space between label and dropdown */
     font-weight: bold; /* Make the label text bold */
 }
 
+.crossword-category-dropdowns select,
 .quiz-category-dropdowns select {
     padding: 8px 12px; /* Padding for the dropdown */
     border: 1px solid #ccc; /* Border styling */
@@ -21,6 +24,7 @@
     min-width: 150px; /* Set a minimum width to avoid too small dropdowns */
 }
 
+.crossword-category-dropdown select:focus,
 .quiz-category-dropdowns select:focus {
     border-color: #0073aa; /* Change border color on focus */
     outline: none; /* Remove outline */
