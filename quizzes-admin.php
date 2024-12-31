@@ -1310,6 +1310,71 @@ function wp_quiz_plugin_frontend_styles_settings_init() {
 }
 add_action('admin_init', 'wp_quiz_plugin_frontend_styles_settings_init');
 
+
+function wp_quiz_plugin_button_styles_settings_init() {
+    // Define button labels and unique keys
+    $buttons = [
+        'download_pdf' => __('Download PDF', 'wp-quiz-plugin'),
+        'download_answer_key' => __('Download Answer Key', 'wp-quiz-plugin'),
+        'generate_with_ai' => __('Generate with AI', 'wp-quiz-plugin'),
+        'add_question' => __('Add Question', 'wp-quiz-plugin'),
+    ];
+
+    foreach ($buttons as $key => $label) {
+        // Register settings for each button (use the correct group name)
+        register_setting('wp_quiz_plugin_quizzes_settings', "quiz_{$key}_text_color");
+        register_setting('wp_quiz_plugin_quizzes_settings', "quiz_{$key}_bg_color");
+        register_setting('wp_quiz_plugin_quizzes_settings', "quiz_{$key}_font_size");
+
+        // Add a settings section for each button
+        add_settings_section(
+            "wp_quiz_plugin_{$key}_style_section",            // Section ID
+            sprintf(__('Styles for %s Button', 'wp-quiz-plugin'), $label), // Section title
+            null,                                             // Description callback (none)
+            'wp_quiz_plugin'                                  // Page slug
+        );
+
+        // Add text color setting field
+        add_settings_field(
+            "quiz_{$key}_text_color",
+            __('Text Color', 'wp-quiz-plugin'),
+            function () use ($key) {
+                $color = esc_attr(get_option("quiz_{$key}_text_color", '#000000'));
+                echo '<input type="text" id="quiz_' . $key . '_text_color" name="quiz_' . $key . '_text_color" value="' . $color . '" class="wp-color-picker-field" data-default-color="#000000">';
+            },
+            'wp_quiz_plugin',                                 // Page slug
+            "wp_quiz_plugin_{$key}_style_section"             // Section ID
+        );
+
+        // Add background color setting field
+        add_settings_field(
+            "quiz_{$key}_bg_color",
+            __('Background Color', 'wp-quiz-plugin'),
+            function () use ($key) {
+                $color = esc_attr(get_option("quiz_{$key}_bg_color", '#ffffff'));
+                echo '<input type="text" id="quiz_' . $key . '_bg_color" name="quiz_' . $key . '_bg_color" value="' . $color . '" class="wp-color-picker-field" data-default-color="#ffffff">';
+            },
+            'wp_quiz_plugin',                                 // Page slug
+            "wp_quiz_plugin_{$key}_style_section"             // Section ID
+        );
+
+        // Add font size setting field
+        add_settings_field(
+            "quiz_{$key}_font_size",
+            __('Font Size (px)', 'wp-quiz-plugin'),
+            function () use ($key) {
+                $size = esc_attr(get_option("quiz_{$key}_font_size", '14'));
+                echo '<input type="number" id="quiz_' . $key . '_font_size" name="quiz_' . $key . '_font_size" value="' . $size . '" min="8" max="50">';
+            },
+            'wp_quiz_plugin',                                 // Page slug
+            "wp_quiz_plugin_{$key}_style_section"             // Section ID
+        );
+    }
+}
+
+add_action('admin_init', 'wp_quiz_plugin_button_styles_settings_init');
+
+
 // Callback functions for each field
 // function wp_quiz_plugin_font_family_callback() {
 //     $font_family = get_option('wp_quiz_plugin_font_family', 'Arial');

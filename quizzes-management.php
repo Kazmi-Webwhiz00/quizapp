@@ -2,7 +2,7 @@
 /*
 Plugin Name: OmniS
 Description: A WordPress plugin to create and manage quizzes with questions and user submissions.
-Version: 5.0.1
+Version: 5.0.2
 Author: Kazmi Webwhiz
 Author URI: https://kazmiwebwhiz.com
 Text Domain: wp-quiz-plugin
@@ -179,11 +179,17 @@ function display_questions_meta_box($post) {
     $add_question_btn_font_color = get_option('wp_quiz_plugin_add_question_btn_font_color', '#ffffff');
     $add_question_btn_font_size = get_option('wp_quiz_plugin_add_question_btn_font_size', '16px');  // New font size
     
-    // Retrieve settings for "Add New Question With AI" button
-    $generate_question_btn_font = get_option('wp_quiz_plugin_generate_question_btn_font', 'Arial');
-    $generate_question_btn_color = get_option('wp_quiz_plugin_generate_question_btn_color', '#007bff');
-    $generate_question_btn_font_color = get_option('wp_quiz_plugin_generate_question_btn_font_color', '#ffffff');
-    $generate_question_btn_font_size = get_option('wp_quiz_plugin_generate_question_btn_font_size', '16px');  // New font size
+
+    // Fetch settings for the "Generate with AI" button
+    $generate_with_ai_text_color = esc_attr(get_option('quiz_generate_with_ai_text_color', '#ffffff'));
+    $generate_with_ai_bg_color = esc_attr(get_option('quiz_generate_with_ai_bg_color', '#007BFF
+'));
+    $generate_with_ai_font_size = esc_attr(get_option('quiz_generate_with_ai_font_size', '14'));
+
+    // Fetch settings for the "Add Question" button
+    $add_question_text_color = esc_attr(get_option('quiz_add_question_text_color', '#000000'));
+    $add_question_bg_color = esc_attr(get_option('quiz_add_question_bg_color', '#ffffff'));
+    $add_question_font_size = esc_attr(get_option('quiz_add_question_font_size', '14'));
 
     $add_question_text = get_option('wp_quiz_plugin_add_question_text', __('Add New Question', 'wp-quiz-plugin'));
     $add_ai_question_text = get_option('wp_quiz_plugin_add_ai_question_text', __('Add New Question With AI', 'wp-quiz-plugin'));
@@ -231,12 +237,25 @@ function display_questions_meta_box($post) {
 
     <!-- Buttons with dynamically applied styles -->
     <div class="kw_left kw_quiz-content">
-        <div class="kw_btn kw_btn-outline kw_add-question-btn" id="kw_generate-question-btn" style="font-family: <?php echo esc_attr($generate_question_btn_font); ?>; background-color: <?php echo esc_attr($generate_question_btn_color); ?>; color: <?php echo esc_attr($generate_question_btn_font_color); ?>;font-size: <?php echo esc_attr($generate_question_btn_font_size);?>;">
-            <span class="kw_ai-icon">🖌️</span> <?php echo __($add_ai_question_text, 'wp-quiz-plugin'); ?>
-        </div>
-        <div class="kw_btn kw_btn-primary kw_add-question-btn" id="kw_add-question-btn" style="font-family: <?php echo esc_attr($add_question_btn_font); ?>; background-color: <?php echo esc_attr($add_question_btn_color); ?>; color: <?php echo esc_attr($add_question_btn_font_color); ?>;font-size: <?php echo esc_attr($add_question_btn_font_size);?>;">
-            <span class="kw_plus-icon">+</span> <?php echo __($add_question_text, 'wp-quiz-plugin'); ?>
-        </div>
+    <div class="kw_btn kw_btn-outline kw_add-question-btn" id="kw_generate-question-btn" 
+            style="
+                background-color: <?php echo $generate_with_ai_bg_color; ?>; 
+                color: <?php echo $generate_with_ai_text_color; ?>; 
+                font-size: <?php echo $generate_with_ai_font_size; ?>px;
+            ">
+            <span class="kw_ai-icon">🖌️</span> 
+            <?php echo esc_html(__('Add Question with AI', 'wp-quiz-plugin')); ?>
+    </div>
+
+    <div class="kw_btn kw_btn-primary kw_add-question-btn" id="kw_add-question-btn" 
+        style="
+            background-color: <?php echo $add_question_bg_color; ?>; 
+            color: <?php echo $add_question_text_color; ?>; 
+            font-size: <?php echo $add_question_font_size; ?>px;
+        ">
+        <span class="kw_plus-icon">+</span> 
+        <?php echo esc_html(__('Add Question', 'wp-quiz-plugin')); ?>
+    </div>
 
 
         <!-- Image size Settings -->
@@ -1341,4 +1360,46 @@ function upload_mcq_answer_image_callback() {
 add_action('wp_ajax_upload_mcq_answer_image', 'upload_mcq_answer_image_callback');
 
 
+add_action('wp_trash_post', function ($post_id) {
+    // Get the post object
+    $post = get_post($post_id);
 
+    if (!$post) {
+        return;
+    }
+
+    // Check if the post type is 'quizzes' or 'crossword'
+    if (in_array($post->post_type, ['quizzes', 'crossword'])) {
+        // Get the current user's role
+        $current_user = wp_get_current_user();
+
+        // Check if the user is not an admin
+        if (!in_array('administrator', $current_user->roles)) {
+            // Reassign the post to the admin user
+            $admin_user = get_users(['role' => 'administrator', 'number' => 1]);
+
+            if (!empty($admin_user)) {
+                $admin_user_id = $admin_user[0]->ID;
+
+                // Update the post author to admin
+                wp_update_post([
+                    'ID'          => $post_id,
+                    'post_author' => $admin_user_id,
+                ]);
+
+                // Prevent the post from being trashed by resetting its status
+                wp_update_post([
+                    'ID'          => $post_id,
+                    'post_status' => 'publish', // Or any other status you want to set
+                ]);
+
+                // Redirect back to the same page
+                $referer = wp_get_referer();
+                if ($referer) {
+                    wp_safe_redirect($referer);
+                    exit;
+                }
+            }
+        }
+    }
+});
