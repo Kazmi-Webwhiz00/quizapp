@@ -1404,13 +1404,12 @@ add_action('wp_trash_post', function ($post_id) {
     }
 });
 
-
 function exclude_private_quizzes($clauses, $query) {
     global $wpdb;
 
-    // Ensure this is a front-end query and affects only quizzes
-    if (!is_admin() && isset($query->query_vars['post_type']) && $query->query_vars['post_type'] === 'quizzes') {
-        // Add a condition to exclude quizzes with the meta key set to 'private'
+    // Ensure this is a front-end query and affects only crosswords
+    if (!is_admin() && isset($query->query_vars['post_type']) && $query->query_vars['post_type'] === 'quizzes' && !$query->is_single()) {
+        // Add a condition to exclude crosswords with the meta key set to 'private'
         $meta_table = $wpdb->postmeta;
 
         $clauses['where'] .= $wpdb->prepare(
