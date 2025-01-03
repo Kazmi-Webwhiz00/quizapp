@@ -77,7 +77,7 @@ function render_quiz_category_meta_box($post) {
     ?>
     <div class="quiz-category-dropdowns">
         <label for="selected_school"><?php _e($select_category_school_text, 'wp-quiz-plugin'); ?></label>
-        <select name="selected_school" id="selected_school">
+        <select name="selected_school" id="selected_school_quiz">
             <option value=""><?php _e('----------', 'wp-quiz-plugin'); ?></option>
             <?php foreach ($schools as $school) { ?>
                 <option value="<?php echo esc_attr($school->term_id); ?>" <?php selected($selected_school, $school->term_id); ?>>
@@ -87,7 +87,7 @@ function render_quiz_category_meta_box($post) {
         </select>
 
         <div id="class_select_container" <?php if (empty($classes)) echo 'style="display:none;"'; ?>>
-            <select name="selected_class" id="selected_class">
+            <select name="selected_class" id="selected_class_quiz">
                 <option value=""><?php _e('----------', 'wp-quiz-plugin');  ?></option>
                 <?php foreach ($classes as $class) { ?>
                     <option value="<?php echo esc_attr($class->term_id); ?>" <?php selected($selected_class, $class->term_id); ?>>
@@ -97,7 +97,7 @@ function render_quiz_category_meta_box($post) {
             </select>
         </div>
 
-        <div id="subject_select_container" <?php if (empty($subjects)) echo 'style="display:none;"'; ?>>
+        <div id="subject_select_container_quiz" <?php if (empty($subjects)) echo 'style="display:none;"'; ?>>
             <select name="selected_subject" id="selected_subject">
                 <option value=""><?php _e('----------', 'wp-quiz-plugin'); ?></option>
                 <?php foreach ($subjects as $subject) { ?>
@@ -122,10 +122,10 @@ function quiz_category_cascade_script() {
         jQuery(document).ready(function($) {
 
             // On change of school dropdown, fetch and populate classes
-            $('#selected_school').on('change', function() {
+            $('#selected_school_quiz').on('change', function() {
                 var selectedSchool = $(this).val();
                 $('#class_select_container').hide(); // Hide class and subject containers
-                $('#subject_select_container').hide(); // Hide subject container
+                $('#subject_select_container_quiz').hide(); // Hide subject container
 
                 if (selectedSchool) {
                     $.ajax({
@@ -136,8 +136,8 @@ function quiz_category_cascade_script() {
                             parent_id: selectedSchool
                         },
                         success: function(response) {
-                            $('#selected_class').html(response);
-                            if ($('#selected_class option').length > 1) {
+                            $('#selected_class_quiz').html(response);
+                            if ($('#selected_class_quiz option').length > 1) {
                                 $('#class_select_container').show(); // Show class container if options exist
                             }
                             $('#selected_subject').html('<option value=""><?php _e('----------', 'wp-quiz-plugin'); ?></option>');
@@ -147,9 +147,9 @@ function quiz_category_cascade_script() {
             });
 
             // On change of class dropdown, fetch and populate subjects
-            $('#selected_class').on('change', function() {
+            $('#selected_class_quiz').on('change', function() {
                 var selectedClass = $(this).val();
-                $('#subject_select_container').hide(); // Hide subject container
+                $('#subject_select_container_quiz').hide(); // Hide subject container
 
                 if (selectedClass) {
                     $.ajax({
@@ -162,7 +162,7 @@ function quiz_category_cascade_script() {
                         success: function(response) {
                             $('#selected_subject').html(response);
                             if ($('#selected_subject option').length > 1) {
-                                $('#subject_select_container').show(); // Show subject container if options exist
+                                $('#subject_select_container_quiz').show(); // Show subject container if options exist
                             }
                         }
                     });

@@ -224,7 +224,7 @@ function render_crossword_category_meta_box($post) {
     ?>
     <div class="crossword-category-dropdowns">
         <label for="selected_school"><?php _e($select_category_school_text, 'wp-crossword-plugin'); ?></label>
-        <select name="selected_school" id="selected_school">
+        <select name="selected_school" id="selected_school_crossword">
             <option value=""><?php _e('----------', 'wp-crossword-plugin'); ?></option>
             <?php foreach ($schools as $school) { ?>
                 <option value="<?php echo esc_attr($school->term_id); ?>" <?php selected($selected_school, $school->term_id); ?>>
@@ -234,7 +234,7 @@ function render_crossword_category_meta_box($post) {
         </select>
 
         <div id="class_select_container" <?php if (empty($classes)) echo 'style="display:none;"'; ?>>
-            <select name="selected_class" id="selected_class">
+            <select name="selected_class" id="selected_class_crossowrd">
                 <option value=""><?php _e('----------', 'wp-crossword-plugin'); ?></option>
                 <?php foreach ($classes as $class) { ?>
                     <option value="<?php echo esc_attr($class->term_id); ?>" <?php selected($selected_class, $class->term_id); ?>>
@@ -244,8 +244,8 @@ function render_crossword_category_meta_box($post) {
             </select>
         </div>
 
-        <div id="subject_select_container" <?php if (empty($subjects)) echo 'style="display:none;"'; ?>>
-            <select name="selected_subject" id="selected_subject">
+        <div id="subject_select_container_crossword" <?php if (empty($subjects)) echo 'style="display:none;"'; ?>>
+            <select name="selected_subject" id="selected_subject_crossword">
                 <option value=""><?php _e('----------', 'wp-crossword-plugin'); ?></option>
                 <?php foreach ($subjects as $subject) { ?>
                     <option value="<?php echo esc_attr($subject->term_id); ?>" <?php selected($selected_subject, $subject->term_id); ?>>
@@ -329,9 +329,9 @@ function crossword_category_cascade_script() {
     ?>
     <script type="text/javascript">
         jQuery(document).ready(function($) {
-            $('#selected_school').on('change', function() {
+            $('#selected_school_crossword').on('change', function() {
                 var selectedSchool = $(this).val();
-                $('#class_select_container, #subject_select_container').hide();
+                $('#class_select_container, #subject_select_container_crossword').hide();
 
                 if (selectedSchool) {
                     $.ajax({
@@ -342,19 +342,19 @@ function crossword_category_cascade_script() {
                             parent_id: selectedSchool
                         },
                         success: function(response) {
-                            $('#selected_class').html(response);
-                            if ($('#selected_class option').length > 1) {
+                            $('#selected_class_crossowrd').html(response);
+                            if ($('#selected_class_crossowrd option').length > 1) {
                                 $('#class_select_container').show();
                             }
-                            $('#selected_subject').html('<option value=""><?php _e('----------', 'wp-crossword-plugin'); ?></option>');
+                            $('#selected_subject_crossword').html('<option value=""><?php _e('----------', 'wp-crossword-plugin'); ?></option>');
                         }
                     });
                 }
             });
 
-            $('#selected_class').on('change', function() {
+            $('#selected_class_crossowrd').on('change', function() {
                 var selectedClass = $(this).val();
-                $('#subject_select_container').hide();
+                $('#subject_select_container_crossword').hide();
 
                 if (selectedClass) {
                     $.ajax({
@@ -365,9 +365,9 @@ function crossword_category_cascade_script() {
                             parent_id: selectedClass
                         },
                         success: function(response) {
-                            $('#selected_subject').html(response);
-                            if ($('#selected_subject option').length > 1) {
-                                $('#subject_select_container').show();
+                            $('#selected_subject_crossword').html(response);
+                            if ($('#selected_subject_crossword option').length > 1) {
+                                $('#subject_select_container_crossword').show();
                             }
                         }
                     });

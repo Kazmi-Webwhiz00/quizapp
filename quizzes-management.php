@@ -2,7 +2,7 @@
 /*
 Plugin Name: OmniS
 Description: A WordPress plugin to create and manage quizzes with questions and user submissions.
-Version: 5.0.2
+Version: 5.0.3
 Author: Kazmi Webwhiz
 Author URI: https://kazmiwebwhiz.com
 Text Domain: wp-quiz-plugin
@@ -773,9 +773,9 @@ function display_questions_meta_box($post) {
                 let selectedCategories = [];
 
                 // Assume jQuery selectors for the categories dropdowns
-                let selectedParentCategory = $('#selected_school').find(':selected').text().trim();
-                let selectedChildCategory1 = $('#selected_class').find(':selected').text().trim();
-                let selectedChildCategory2 = $('#selected_subject').find(':selected').text().trim();
+                let selectedParentCategory = $('#selected_school_quiz').find(':selected').text().trim();
+                let selectedChildCategory1 = $('#selected_class_quiz').find(':selected').text().trim();
+                let selectedChildCategory2 = $('#selected_subject_quiz').find(':selected').text().trim();
 
                 // Function to check if the category is valid
                 const isValidCategory = (category) => {
