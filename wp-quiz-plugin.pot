@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP Quiz Plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-12-23 07:37+0000\n"
+"POT-Creation-Date: 2025-01-06 05:25+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -53,6 +53,7 @@ msgid "[topic]:"
 msgstr ""
 
 #: kw-quiz-post-and-taxonomies.php:360
+#: modules/crossword/custom-post-type-registration.php:163
 msgid "__"
 msgstr ""
 
@@ -91,6 +92,7 @@ msgid "Add New"
 msgstr ""
 
 #: kw-quiz-post-and-taxonomies.php:264
+#: modules/crossword/custom-post-type-registration.php:74
 msgid "Add New Category"
 msgstr ""
 
@@ -102,20 +104,28 @@ msgstr ""
 msgid "Add New Crossword Category"
 msgstr ""
 
-#: quizzes-admin.php:199 quizzes-management.php:191
+#: quizzes-admin.php:199 quizzes-management.php:197
 msgid "Add New Option"
 msgstr ""
 
-#: quizzes-admin.php:187 quizzes-management.php:188
+#: quizzes-admin.php:187 quizzes-management.php:194
 msgid "Add New Question"
 msgstr ""
 
-#: quizzes-admin.php:191 quizzes-management.php:189
+#: quizzes-admin.php:191 quizzes-management.php:195
 msgid "Add New Question With AI"
 msgstr ""
 
 #: kw-quiz-post-and-taxonomies.php:385
 msgid "Add New Quiz"
+msgstr ""
+
+#: quizzes-admin.php:1320 quizzes-management.php:257
+msgid "Add Question"
+msgstr ""
+
+#: quizzes-management.php:247
+msgid "Add Question with AI"
 msgstr ""
 
 #: modules/crossword/admin/templates/sections/admin-view-strings-section.php:56
@@ -175,6 +185,7 @@ msgid "AI Settings"
 msgstr ""
 
 #: modules/crossword/custom-post-type-registration.php:39
+#: modules/crossword/custom-post-type-registration.php:69
 msgid "All Crossword Categories"
 msgstr ""
 
@@ -228,6 +239,10 @@ msgstr ""
 msgid "Are you Sure ?"
 msgstr ""
 
+#: quizzes-management.php:1031
+msgid "Are you sure you want to delete the question?"
+msgstr ""
+
 #: wp_quiz_plugin_action_buttons_settings.php:135
 msgid "Are you sure you want to reset to default settings?"
 msgstr ""
@@ -240,6 +255,7 @@ msgstr ""
 msgid "Back"
 msgstr ""
 
+#: quizzes-admin.php:1352
 #: modules/crossword/admin/templates/sections/fe/fe-main-ui-settings-section.php:91
 msgid "Background Color"
 msgstr ""
@@ -277,12 +293,15 @@ msgstr ""
 msgid "Button Text Color"
 msgstr ""
 
-#: quizzes-management.php:608 quizzes-management.php:630
-#: quizzes-management.php:649 quizzes-management.php:666
+#: quizzes-management.php:627 quizzes-management.php:649
+#: quizzes-management.php:668 quizzes-management.php:685
 msgid "Cancel"
 msgstr ""
 
 #: kw-quiz-post-and-taxonomies.php:288 kw-quiz-post-and-taxonomies.php:307
+#: modules/crossword/custom-post-type-registration.php:97
+#: modules/crossword/custom-post-type-registration.php:116
+#: modules/crossword/custom-post-type-registration.php:143
 msgid "Category Type"
 msgstr ""
 
@@ -311,11 +330,11 @@ msgstr ""
 msgid "Check Crossword"
 msgstr ""
 
-#: quizzes-management.php:627
+#: quizzes-management.php:646
 msgid "Choose a number of questions..."
 msgstr ""
 
-#: quizzes-management.php:605
+#: quizzes-management.php:624
 msgid "Choose a question type..."
 msgstr ""
 
@@ -329,6 +348,9 @@ msgstr ""
 
 #: kw-quiz-post-and-taxonomies.php:293 kw-quiz-post-and-taxonomies.php:314
 #: kw-quiz-post-and-taxonomies.php:357
+#: modules/crossword/custom-post-type-registration.php:102
+#: modules/crossword/custom-post-type-registration.php:123
+#: modules/crossword/custom-post-type-registration.php:160
 msgid "Class"
 msgstr ""
 
@@ -338,7 +360,7 @@ msgstr ""
 msgid "Clear List"
 msgstr ""
 
-#: quizzes-admin.php:207 quizzes-management.php:193
+#: quizzes-admin.php:207 quizzes-management.php:199
 msgid "Click to Add Answer"
 msgstr ""
 
@@ -395,10 +417,16 @@ msgstr ""
 msgid "Correct Answers:"
 msgstr ""
 
-#: quizzes-management.php:819 quizzes-management.php:845
-#: quizzes-management.php:869 quizzes-management.php:933
+#: quizzes-management.php:846 quizzes-management.php:872
+#: quizzes-management.php:896 quizzes-management.php:962
 msgid ""
 "Could not find the question or correct answer. Please check the AI response "
+"format."
+msgstr ""
+
+#: quizzes-management.php:737
+msgid ""
+"Could not parse the response. Ensure the AI response follows the expected "
 "format."
 msgstr ""
 
@@ -412,6 +440,7 @@ msgid "Crossword Actions"
 msgstr ""
 
 #: modules/crossword/custom-post-type-registration.php:46
+#: modules/crossword/custom-post-type-registration.php:76
 msgid "Crossword Categories"
 msgstr ""
 
@@ -492,21 +521,21 @@ msgstr ""
 msgid "Customize PDF Style Settings"
 msgstr ""
 
-#: quizzes-admin.php:1595
+#: quizzes-admin.php:1660
 msgid ""
 "Customize the prompt template for MCQ questions. Use variables like [Your "
 "question text], [Option A], [Correct Answer]."
 msgstr ""
 
-#: quizzes-admin.php:1640
+#: quizzes-admin.php:1705
 msgid "Customize the prompt template for Text answer questions."
 msgstr ""
 
-#: quizzes-admin.php:1623
+#: quizzes-admin.php:1688
 msgid "Customize the prompt template for True/False questions."
 msgstr ""
 
-#: quizzes-admin.php:1606
+#: quizzes-admin.php:1671
 msgid ""
 "Customize the template for the learners' age prompt. Use [age] as a "
 "placeholder, which will be replaced with the actual learners' age. This "
@@ -543,7 +572,8 @@ msgstr ""
 msgid "Download"
 msgstr ""
 
-#: kw-questions-metabox-header.php:23 quizzes-admin.php:183
+#: kw-questions-metabox-header.php:34 kw-questions-metabox-header.php:56
+#: quizzes-admin.php:183 quizzes-admin.php:1318
 msgid "Download Answer Key"
 msgstr ""
 
@@ -561,7 +591,12 @@ msgstr ""
 msgid "Download Key"
 msgstr ""
 
-#: kw-questions-metabox-header.php:22 quizzes-admin.php:179
+#: quizzes-admin.php:1317
+msgid "Download PDF"
+msgstr ""
+
+#: kw-questions-metabox-header.php:33 kw-questions-metabox-header.php:45
+#: quizzes-admin.php:179
 msgid "Download Quiz"
 msgstr ""
 
@@ -575,6 +610,7 @@ msgid "Downloading..."
 msgstr ""
 
 #: kw-quiz-post-and-taxonomies.php:262
+#: modules/crossword/custom-post-type-registration.php:72
 msgid "Edit Category"
 msgstr ""
 
@@ -601,7 +637,7 @@ msgid ""
 "effectively."
 msgstr ""
 
-#: quizzes-management.php:644
+#: quizzes-management.php:663
 msgid "Enter Learners Age"
 msgstr ""
 
@@ -615,8 +651,21 @@ msgstr ""
 msgid "Enter your OpenAI API key."
 msgstr ""
 
-#: quizzes-management.php:661
+#: quizzes-management.php:680
 msgid "Enter your prompt for ChatGPT:"
+msgstr ""
+
+#: quizzes-management.php:736 quizzes-management.php:752
+#: quizzes-management.php:961
+msgid "Error"
+msgstr ""
+
+#: quizzes-management.php:750
+msgid "Error: "
+msgstr ""
+
+#: quizzes-management.php:749
+msgid "Failed to generate question."
 msgstr ""
 
 #: modules/crossword/admin/pages/frontend-styles-page.php:99
@@ -624,8 +673,8 @@ msgstr ""
 msgid "Failure Popup Settings"
 msgstr ""
 
-#: quizzes-management.php:423 quizzes-management.php:861
-#: quizzes-management.php:1074 quizzes-management.php:1233
+#: quizzes-management.php:442 quizzes-management.php:888
+#: quizzes-management.php:1105 quizzes-management.php:1264
 msgid "False"
 msgstr ""
 
@@ -658,6 +707,7 @@ msgstr ""
 msgid "Font Size"
 msgstr ""
 
+#: quizzes-admin.php:1364
 #: modules/crossword/admin/templates/sections/fe/fe-main-ui-settings-section.php:103
 #: modules/crossword/admin/templates/sections/fe/fe-clue-settings-section.php:27
 #: modules/crossword/admin/templates/sections/fe/fe-clue-settings-section.php:59
@@ -670,6 +720,11 @@ msgstr ""
 
 #: quizzes-admin.php:874
 msgid "Font Size for Questions:"
+msgstr ""
+
+#: public/public-functions.php:92
+msgctxt "For PDF generation"
+msgid "Quiz Report Card"
 msgstr ""
 
 #: quizzes-admin.php:51
@@ -699,7 +754,7 @@ msgstr ""
 msgid "General Settings"
 msgstr ""
 
-#: quizzes-management.php:665
+#: quizzes-management.php:684
 msgid "Generate"
 msgstr ""
 
@@ -707,7 +762,8 @@ msgstr ""
 msgid "Generate Prompt"
 msgstr ""
 
-#: modules/crossword/index.php:46 modules/crossword/crossword-settings.php:38
+#: quizzes-admin.php:1319 modules/crossword/index.php:46
+#: modules/crossword/crossword-settings.php:38
 #: modules/crossword/templates/generate-with-ai.php:8
 #: modules/crossword/admin/pages/ai-settings-page.php:42
 #: modules/crossword/admin/pages/ai-settings-page.php:45
@@ -716,8 +772,8 @@ msgstr ""
 msgid "Generate with AI"
 msgstr ""
 
-#: quizzes-management.php:717 quizzes-management.php:729
-#: quizzes-management.php:930 quizzes-management.php:934
+#: quizzes-management.php:740 quizzes-management.php:756
+#: quizzes-management.php:957 quizzes-management.php:965
 msgid "Generate with ChatGPT"
 msgstr ""
 
@@ -729,7 +785,7 @@ msgstr ""
 msgid "Generated by WP Quiz Plugin"
 msgstr ""
 
-#: quizzes-management.php:704 modules/crossword/index.php:61
+#: quizzes-management.php:723 modules/crossword/index.php:61
 msgid "Generating..."
 msgstr ""
 
@@ -793,7 +849,7 @@ msgstr ""
 msgid "Image Height (px)"
 msgstr ""
 
-#: quizzes-admin.php:267 quizzes-management.php:194
+#: quizzes-admin.php:267 quizzes-management.php:200
 msgid "Image Height Setting Notification Text"
 msgstr ""
 
@@ -833,11 +889,11 @@ msgstr ""
 msgid "Learner Name"
 msgstr ""
 
-#: quizzes-management.php:652
+#: quizzes-management.php:671
 msgid "Learners age is required!"
 msgstr ""
 
-#: quizzes-admin.php:1580
+#: quizzes-admin.php:1645
 msgid "Learners' Age Prompt Template"
 msgstr ""
 
@@ -850,7 +906,7 @@ msgstr ""
 msgid "Max Tokens"
 msgstr ""
 
-#: quizzes-admin.php:1553
+#: quizzes-admin.php:1618
 msgid "MCQ Prompt Template"
 msgstr ""
 
@@ -858,12 +914,13 @@ msgstr ""
 msgid "Meta Box Title"
 msgstr ""
 
-#: quizzes-management.php:339 quizzes-management.php:601
-#: quizzes-management.php:907 quizzes-management.php:969
+#: quizzes-management.php:358 quizzes-management.php:620
+#: quizzes-management.php:934 quizzes-management.php:1000
 msgid "Multiple Choice"
 msgstr ""
 
 #: kw-quiz-post-and-taxonomies.php:265
+#: modules/crossword/custom-post-type-registration.php:75
 msgid "New Category Name"
 msgstr ""
 
@@ -875,7 +932,7 @@ msgstr ""
 msgid "New Crossword Category Name"
 msgstr ""
 
-#: quizzes-management.php:956
+#: quizzes-management.php:987
 msgid "New Question"
 msgstr ""
 
@@ -893,8 +950,8 @@ msgstr ""
 msgid "New Quiz Available"
 msgstr ""
 
-#: quizzes-management.php:607 quizzes-management.php:629
-#: quizzes-management.php:648
+#: quizzes-management.php:626 quizzes-management.php:648
+#: quizzes-management.php:667
 msgid "Next"
 msgstr ""
 
@@ -977,7 +1034,7 @@ msgstr ""
 msgid "Open in New Tab"
 msgstr ""
 
-#: quizzes-management.php:603 quizzes-management.php:971
+#: quizzes-management.php:622 quizzes-management.php:1002
 msgid "Open Text"
 msgstr ""
 
@@ -996,10 +1053,12 @@ msgid "OpenAI Model"
 msgstr ""
 
 #: kw-quiz-post-and-taxonomies.php:260
+#: modules/crossword/custom-post-type-registration.php:70
 msgid "Parent Category"
 msgstr ""
 
 #: kw-quiz-post-and-taxonomies.php:261
+#: modules/crossword/custom-post-type-registration.php:71
 msgid "Parent Category:"
 msgstr ""
 
@@ -1040,7 +1099,7 @@ msgstr ""
 msgid "Please select a Class."
 msgstr ""
 
-#: quizzes-management.php:611
+#: quizzes-management.php:630
 msgid "Please select a question type!"
 msgstr ""
 
@@ -1052,7 +1111,7 @@ msgstr ""
 msgid "Please select a Subject."
 msgstr ""
 
-#: quizzes-management.php:633
+#: quizzes-management.php:652
 msgid "Please select the number of questions!"
 msgstr ""
 
@@ -1087,12 +1146,12 @@ msgstr ""
 msgid "Private"
 msgstr ""
 
-#: quizzes-admin.php:1545
+#: quizzes-admin.php:1610
 #: modules/crossword/admin/templates/sections/ai/prompt-customization-section.php:18
 msgid "Prompt Customization"
 msgstr ""
 
-#: quizzes-management.php:672
+#: quizzes-management.php:691
 msgid "Prompt is required!"
 msgstr ""
 
@@ -1100,7 +1159,7 @@ msgstr ""
 msgid "Public"
 msgstr ""
 
-#: quizzes-management.php:322 quizzes-management.php:956
+#: quizzes-management.php:341 quizzes-management.php:987
 msgid "Q."
 msgstr ""
 
@@ -1136,15 +1195,15 @@ msgstr ""
 msgid "Question Text Color:"
 msgstr ""
 
-#: quizzes-management.php:916
+#: quizzes-management.php:943
 msgid "Question Title:"
 msgstr ""
 
-#: quizzes-management.php:336 quizzes-management.php:968
+#: quizzes-management.php:355 quizzes-management.php:999
 msgid "Question Type"
 msgstr ""
 
-#: quizzes-management.php:904
+#: quizzes-management.php:931
 msgid "Question Type:"
 msgstr ""
 
@@ -1265,7 +1324,7 @@ msgstr ""
 
 #: wp_quiz_plugin_action_buttons_settings.php:68
 #: wp_quiz_plugin_action_buttons_settings.php:130 quizzes-admin.php:1188
-#: quizzes-admin.php:1233 quizzes-admin.php:1374 quizzes-admin.php:1426
+#: quizzes-admin.php:1233 quizzes-admin.php:1439 quizzes-admin.php:1491
 #: modules/crossword/admin/templates/sections/admin-view-strings-section.php:73
 #: modules/crossword/admin/templates/sections/admin-view-strings-section.php:98
 #: modules/crossword/admin/templates/sections/ai/ai-box-settings-section.php:67
@@ -1300,6 +1359,9 @@ msgstr ""
 
 #: kw-quiz-post-and-taxonomies.php:291 kw-quiz-post-and-taxonomies.php:312
 #: kw-quiz-post-and-taxonomies.php:351
+#: modules/crossword/custom-post-type-registration.php:100
+#: modules/crossword/custom-post-type-registration.php:121
+#: modules/crossword/custom-post-type-registration.php:154
 msgid "School"
 msgstr ""
 
@@ -1308,6 +1370,7 @@ msgid "Score"
 msgstr ""
 
 #: modules/crossword/custom-post-type-registration.php:38
+#: modules/crossword/custom-post-type-registration.php:68
 msgid "Search Crossword Categories"
 msgstr ""
 
@@ -1328,6 +1391,8 @@ msgid "Select Answer Font:"
 msgstr ""
 
 #: kw-quiz-post-and-taxonomies.php:290 kw-quiz-post-and-taxonomies.php:311
+#: modules/crossword/custom-post-type-registration.php:99
+#: modules/crossword/custom-post-type-registration.php:120
 msgid "Select Category Type"
 msgstr ""
 
@@ -1335,7 +1400,7 @@ msgstr ""
 msgid "Select Class"
 msgstr ""
 
-#: quizzes-management.php:624
+#: quizzes-management.php:643
 msgid "Select Number of Questions"
 msgstr ""
 
@@ -1347,7 +1412,7 @@ msgstr ""
 msgid "Select Question Font:"
 msgstr ""
 
-#: quizzes-management.php:598
+#: quizzes-management.php:617
 msgid "Select Question Type"
 msgstr ""
 
@@ -1364,6 +1429,8 @@ msgid "Select the background color for the \"Add Word\" button."
 msgstr ""
 
 #: kw-quiz-post-and-taxonomies.php:295 kw-quiz-post-and-taxonomies.php:316
+#: modules/crossword/custom-post-type-registration.php:104
+#: modules/crossword/custom-post-type-registration.php:125
 msgid "Select the category type (School, Subject, or Class)."
 msgstr ""
 
@@ -1561,13 +1628,13 @@ msgstr ""
 msgid "Shuffle"
 msgstr ""
 
-#: quizzes-management.php:285
+#: quizzes-management.php:304
 msgid ""
 "Specify the size of the question image in pixels. The maximum allowed size "
 "is 250px, and the default size is 200px."
 msgstr ""
 
-#: quizzes-management.php:265
+#: quizzes-management.php:284
 msgid ""
 "Specify the size of the question image in pixels. The maximum allowed size "
 "is 350px, and the default size is 200px."
@@ -1597,8 +1664,16 @@ msgstr ""
 msgid "Student Name:"
 msgstr ""
 
+#: quizzes-admin.php:1332
+#, php-format
+msgid "Styles for %s Button"
+msgstr ""
+
 #: kw-quiz-post-and-taxonomies.php:292 kw-quiz-post-and-taxonomies.php:313
 #: kw-quiz-post-and-taxonomies.php:354
+#: modules/crossword/custom-post-type-registration.php:101
+#: modules/crossword/custom-post-type-registration.php:122
+#: modules/crossword/custom-post-type-registration.php:157
 msgid "Subject"
 msgstr ""
 
@@ -1632,6 +1707,7 @@ msgid "Success!"
 msgstr ""
 
 #: modules/crossword/custom-post-type-registration.php:36
+#: modules/crossword/custom-post-type-registration.php:66
 msgctxt "taxonomy general name"
 msgid "Crossword Categories"
 msgstr ""
@@ -1642,6 +1718,7 @@ msgid "Quiz Categories"
 msgstr ""
 
 #: modules/crossword/custom-post-type-registration.php:37
+#: modules/crossword/custom-post-type-registration.php:67
 msgctxt "taxonomy singular name"
 msgid "Crossword Category"
 msgstr ""
@@ -1656,14 +1733,15 @@ msgstr ""
 msgid "Temperature"
 msgstr ""
 
-#: quizzes-management.php:345 quizzes-management.php:913
+#: quizzes-management.php:364 quizzes-management.php:940
 msgid "Text"
 msgstr ""
 
-#: quizzes-admin.php:1571
+#: quizzes-admin.php:1636
 msgid "Text Answer Prompt Template"
 msgstr ""
 
+#: quizzes-admin.php:1340
 #: modules/crossword/admin/templates/sections/fe/fe-main-ui-settings-section.php:97
 msgid "Text Color"
 msgstr ""
@@ -1736,17 +1814,17 @@ msgstr ""
 msgid "Total Questions:"
 msgstr ""
 
-#: quizzes-management.php:414 quizzes-management.php:857
-#: quizzes-management.php:1070 quizzes-management.php:1229
+#: quizzes-management.php:433 quizzes-management.php:884
+#: quizzes-management.php:1101 quizzes-management.php:1260
 msgid "True"
 msgstr ""
 
-#: quizzes-management.php:342 quizzes-management.php:602
-#: quizzes-management.php:910 quizzes-management.php:970
+#: quizzes-management.php:361 quizzes-management.php:621
+#: quizzes-management.php:937 quizzes-management.php:1001
 msgid "True/False"
 msgstr ""
 
-#: quizzes-admin.php:1562
+#: quizzes-admin.php:1627
 msgid "True/False Prompt Template"
 msgstr ""
 
@@ -1754,11 +1832,11 @@ msgstr ""
 msgid "Try Again"
 msgstr ""
 
-#: quizzes-management.php:646
+#: quizzes-management.php:665
 msgid "Type learners age here..."
 msgstr ""
 
-#: quizzes-admin.php:203 quizzes-management.php:192
+#: quizzes-admin.php:203 quizzes-management.php:198
 msgid "Type Question Here"
 msgstr ""
 
@@ -1766,11 +1844,12 @@ msgstr ""
 msgid "Type your answer here..."
 msgstr ""
 
-#: quizzes-management.php:663
+#: quizzes-management.php:682
 msgid "Type your prompt here..."
 msgstr ""
 
 #: kw-quiz-post-and-taxonomies.php:263
+#: modules/crossword/custom-post-type-registration.php:73
 msgid "Update Category"
 msgstr ""
 
@@ -1782,7 +1861,7 @@ msgstr ""
 msgid "Update Quiz"
 msgstr ""
 
-#: quizzes-admin.php:195 quizzes-management.php:190
+#: quizzes-admin.php:195 quizzes-management.php:196
 msgid "Upload Question Image"
 msgstr ""
 
@@ -1798,8 +1877,8 @@ msgstr ""
 msgid "Use as featured image"
 msgstr ""
 
-#: quizzes-admin.php:1594 quizzes-admin.php:1605 quizzes-admin.php:1622
-#: quizzes-admin.php:1639
+#: quizzes-admin.php:1659 quizzes-admin.php:1670 quizzes-admin.php:1687
+#: quizzes-admin.php:1704
 msgid "Use Default"
 msgstr ""
 
