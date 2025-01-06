@@ -185,8 +185,8 @@ function kw_download_quiz_pdf_callback() {
                 }
             }
         } elseif ($question['QuestionType'] === 'T/F') {
-            $pdf->MultiCell(0, 10, '( ) True', 0, 'L', 1);  // True option on the first line
-            $pdf->MultiCell(0, 10, '( ) False', 0, 'L', 1); // False option on the second line
+            $pdf->MultiCell(0, 10, '( ) Prawda', 0, 'L', 1);  // True option on the first line
+            $pdf->MultiCell(0, 10, '( ) Fałsz', 0, 'L', 1); // False option on the second line
         } elseif ($question['QuestionType'] === 'Text') {
             $pdf->SetFont($answer_font_family, 'I', $answer_font_size);
             $pdf->MultiCell(0, 10, __('Answer:', 'wp-quiz-plugin'), 0, 'L');
@@ -295,7 +295,7 @@ function kw_download_answer_key_pdf_callback() {
     // Header for Answer Key
     $pdf->SetFont($title_font_family, 'B', $title_font_size);
     $pdf->SetTextColorArray(hex2rgb($title_font_color));
-    $pdf->Cell(0, 10, __($pdf_answer_key_title, 'wp-quiz-plugin') . ' for Quiz: ' . __($quiz_title, 'wp-quiz-plugin'), 0, 1, 'C');
+    $pdf->Cell(0, 10, __($pdf_answer_key_title, 'wp-quiz-plugin') . ': ' . __($quiz_title, 'wp-quiz-plugin'), 0, 1, 'C');
     $pdf->Ln(5);
 
     // Array to store answer key for the table
