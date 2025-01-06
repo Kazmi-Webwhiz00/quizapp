@@ -131,8 +131,7 @@ function kw_download_quiz_pdf_callback() {
         // Check if the image file exists
         if (file_exists($image_path)) {
             // Position the image more like a logo in the header
-            $pdf->Image($image_path, 150, 10, 40, 15, '', '', '', false, 300, '', false, false, 1, false, false, false);
-
+            $pdf->Image($image_path, 150, 10, 40, 15, '', '', '', false, 300, '', false, false, 0, false, false, false);
             // Add bottom padding by moving the cursor down after the image
             $pdf->SetY($pdf->GetY() + 5); // Adjusted from 15 to 20 to add 10px extra padding
         } else {
