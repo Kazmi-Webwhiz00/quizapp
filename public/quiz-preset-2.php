@@ -47,6 +47,9 @@ function wp_quiz_render_ui($quiz_id, $questions, $background_color, $button_back
                 const questions = <?php echo json_encode($questions); ?>;
                 let questionIndex = 0;
                 let selectedAnswer = null, answerSubmitted = false;
+                const quiz_ajax_obj = {
+                ajax_url: '<?php echo esc_url(admin_url('admin-ajax.php')); ?>'
+                };
                 
                 const styles = {
                     backgroundColor: '<?php echo $background_color; ?>',

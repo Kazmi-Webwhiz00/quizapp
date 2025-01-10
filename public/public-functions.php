@@ -18,13 +18,13 @@ function my_plugin_enqueue_assets() {
     );
 
     // Enqueue the JavaScript file
-    wp_enqueue_script(
-        'my-plugin-quiz-script',
-        $plugin_url . 'quiz-script.js', 
-        array('jquery'), 
-        '1.0.0', 
-        true
-    );
+    // wp_enqueue_script(
+    //     'my-plugin-quiz-script',
+    //     $plugin_url . 'quiz-script.js', 
+    //     array('jquery'), 
+    //     '1.0.0', 
+    //     true
+    // );
 
     // Localize script to pass data to JavaScript
     wp_localize_script(

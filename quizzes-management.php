@@ -2,7 +2,7 @@
 /*
 Plugin Name: OmniS
 Description: A WordPress plugin to create and manage quizzes with questions and user submissions.
-Version: 5.0.4
+Version: 5.0.8
 Author: Kazmi Webwhiz
 Author URI: https://kazmiwebwhiz.com
 Text Domain: wp-quiz-plugin
@@ -19,7 +19,7 @@ include_once plugin_dir_path(__FILE__) . 'quizzes-submissions.php';  // Include 
 include_once plugin_dir_path(__FILE__) . 'quiz-template-download.php';  // Include Submissions page file
 include_once plugin_dir_path(__FILE__) . 'kw-quiz-post-and-taxonomies.php';  // Include Submissions page file
 include_once plugin_dir_path(__FILE__) . 'kw-questions-metabox-header.php';  // Include Submissions page file
-include_once plugin_dir_path(__FILE__) . 'custom-meta-boxes/quiz_seo_text.php';
+include_once plugin_dir_path(__FILE__) . './custom-meta-boxes/quiz_seo_text.php';
 include_once plugin_dir_path(__FILE__) . 'utils/short-code-helpers.php'; 
 include_once plugin_dir_path(__FILE__) . 'utils/constants.php'; 
 include_once plugin_dir_path(__FILE__) . 'kw-quiz-features-buttons.php';
@@ -696,6 +696,7 @@ function display_questions_meta_box($post) {
                                     if (promptResult.isConfirmed) {
                                         var userPrompt = promptResult.value;
                                         var apiKey = '<?php echo esc_js(get_option('wp_quiz_plugin_openai_api_key')); ?>';
+                                        const isAdmin = <?php echo current_user_can('manage_options') ? 'true' : 'false'; ?>;
             
                                         function sendRequest(retryCount, count) {
                                             if (count <= 0) return;
@@ -720,6 +721,9 @@ function display_questions_meta_box($post) {
                                                 data: JSON.stringify(data),
                                                 beforeSend: function () {
                                                     console.log('Sending request to OpenAI...', data);
+                                                    if (isAdmin) {
+                                                        showAdminPrompt(data.messages[0].content)
+                                                        }
                                                     $('#kw_generate-question-btn').text('<?php echo esc_js(__('Generating...', 'wp-quiz-plugin')); ?>').prop('disabled', true);
                                                 },
                                                 success: function (response) {
@@ -773,7 +777,53 @@ function display_questions_meta_box($post) {
 
 
 
-            function generatePromptForType(type, userPrompt, generatedQuestionsList, learnerAge) {
+                /**
+                 * Show a styled dismissible notification for admins (specific to the quiz plugin).
+                 *
+                 * @param {string} message - The message content to display.
+                 * @param {string} color - The notification color (e.g., 'yellow' for warnings, 'green' for success).
+                 */
+                function showAdminPrompt(message, color) {
+                    // Default to yellow if no color is provided
+                    color = color || 'yellow';
+
+                    // Check if the notification already exists to avoid duplicates
+                    if ($('.kz-quiz-notice').length > 0) {
+                        console.log("Notification already exists. Skipping creation.");
+                        return;
+                    }
+
+                    // Background and text color based on the chosen type
+                    const backgroundColor = color === 'yellow' ? '#fff3cd' : (color === 'green' ? '#d4edda' : '#ffffff');
+                    const borderColor = color === 'yellow' ? '#ffeeba' : (color === 'green' ? '#c3e6cb' : '#dddddd');
+                    const textColor = color === 'yellow' ? '#856404' : (color === 'green' ? '#155724' : '#333333');
+
+                    // Create the notification HTML
+                    const adminPrompt = `
+                        <div class="kz-quiz-notice" style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 600px; background-color: ${backgroundColor}; color: ${textColor}; padding: 15px; border: 1px solid ${borderColor}; border-radius: 5px; z-index: 9999; text-align: left; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                            <h4 style="margin: 0 0 10px 0; font-size: 18px; font-weight: bold; color: ${textColor};">Final Prompt Is:</h4>
+                            <p style="margin: 0; font-size: 16px;">${message}</p>
+                            <button class="kz-quiz-notice-dismiss" style="position: absolute; top: 10px; right: 10px; background: none; border: none; font-size: 18px; color: ${textColor}; font-weight: bold; cursor: pointer;">&times;</button>
+                        </div>
+                    `;
+
+                    // Append the notification to the body
+                    $('body').prepend(adminPrompt);
+
+                    // Add dismiss functionality
+                    $('.kz-quiz-notice-dismiss').on('click', function () {
+                        $(this).closest('.kz-quiz-notice').remove();
+                    });
+
+                    // Automatically remove the notification after 1 minute
+                    setTimeout(() => {
+                        $('.kz-quiz-notice').fadeOut(300, function () {
+                            $(this).remove();
+                        });
+                    }, 60000); // 1 minute in milliseconds
+                }
+
+                function generatePromptForType(type, userPrompt, generatedQuestionsList, learnerAge) {
                 let previousQuestionsContext = generatedQuestionsList.length ? `Avoid generating questions similar to these: ${generatedQuestionsList.join("; ")}. ` : '';
 
                 // Get categories from the page using JavaScript/jQuery
@@ -902,7 +952,7 @@ function display_questions_meta_box($post) {
                         <?php $open_ended_question_lable = get_option('wp_quiz_plugin_open_text_area_label_text', 'Actual Answer'); ?>
                         answersHtml = `
                         <div class="kw_answer-item" style="width: 100%;">
-                            <label style="color: #646970" for="quiz_questions_<?php echo $question_index; ?>_answers_0_text"><?php _e($open_ended_question_lable, 'wp-quiz-plugin'); ?></label>
+                            <label style="color: #646970" for="quiz_questions_<?php echo isset($question_index) ? $question_index : 0; ?>_answers_0_text"><?php _e($open_ended_question_lable, 'wp-quiz-plugin'); ?></label>
                             <textarea class="kw_text-answer-editor" name="quiz_questions[${index}][answers][0][text]" rows="4" style="width: 100%; font-family: <?php echo esc_attr($answer_text_font); ?>; color: <?php echo esc_attr($answer_text_color); ?>;font-size: <?php echo esc_attr($answer_text_font_size);?>;">${correctAnswerText}</textarea>
                         </div>`;
                     }
@@ -1416,26 +1466,24 @@ add_action('wp_trash_post', function ($post_id) {
     }
 });
 
-function exclude_private_quizzes($clauses, $query) {
-    global $wpdb;
+function exclude_private_quizzes_in_divi($query) {
+    // Check if this is a frontend query and not in the admin area
+    if (!is_admin() && $query->is_main_query() && isset($query->query_vars['quiz_category'])) {
+        // Exclude quizzes with 'quiz_listing_visibility_status' set to 'private'
+        $meta_query = [
+            'relation' => 'OR',
+            [
+                'key' => 'quiz_listing_visibility_status',
+                'compare' => 'NOT EXISTS', // Include quizzes without the meta key
+            ],
+            [
+                'key' => 'quiz_listing_visibility_status',
+                'value' => 'private',
+                'compare' => '!=', // Exclude quizzes with the meta value 'private'
+            ]
+        ];
 
-    // Ensure this is a front-end query and affects only crosswords
-    if (!is_admin() && isset($query->query_vars['post_type']) && $query->query_vars['post_type'] === 'quizzes' && !$query->is_single()) {
-        // Add a condition to exclude crosswords with the meta key set to 'private'
-        $meta_table = $wpdb->postmeta;
-
-        $clauses['where'] .= $wpdb->prepare(
-            " AND NOT EXISTS (
-                SELECT 1 FROM {$meta_table}
-                WHERE {$meta_table}.post_id = {$wpdb->posts}.ID
-                AND {$meta_table}.meta_key = %s
-                AND {$meta_table}.meta_value = %s
-            )",
-            'quiz_listing_visibility_status',
-            'private'
-        );
+        $query->set('meta_query', $meta_query);
     }
-
-    return $clauses;
 }
-add_filter('posts_clauses', 'exclude_private_quizzes', 10, 2);
+add_action('pre_get_posts', 'exclude_private_quizzes_in_divi');

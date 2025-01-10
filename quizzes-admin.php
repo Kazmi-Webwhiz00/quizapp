@@ -991,7 +991,7 @@ function wp_quiz_plugin_enqueue_admin_styles() {
     wp_enqueue_style('wp-color-picker');
     wp_enqueue_script('wp-color-picker');
     wp_add_inline_script('wp-color-picker', "jQuery(document).ready(function($) { $('.wp-color-picker-field').wpColorPicker(); });");
-    wp_enqueue_style('wp_quiz_plugin_admin_styles', plugins_url('admin-style.css', __FILE__));
+   // wp_enqueue_style('wp_quiz_plugin_admin_styles', plugins_url('admin-style.css', __FILE__));
 }
 add_action('admin_enqueue_scripts', 'wp_quiz_plugin_enqueue_admin_styles');
 

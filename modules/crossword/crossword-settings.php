@@ -220,28 +220,27 @@ function crossword_description_shortcode($atts) {
 add_shortcode('crossword_description', 'crossword_description_shortcode');
 
 
-function exclude_private_crosswords($clauses, $query) {
-    global $wpdb;
-
+function exclude_private_crosswords($query) {
     // Ensure this is a front-end query and affects only crosswords
-    if (!is_admin() && isset($query->query_vars['post_type']) && $query->query_vars['post_type'] === 'crossword' && !$query->is_single()) {
-        // Add a condition to exclude crosswords with the meta key set to 'private'
-        $meta_table = $wpdb->postmeta;
+    if (!is_admin() && $query->is_main_query() && isset($query->query_vars['post_type']) && $query->query_vars['post_type'] === 'crossword') {
+        // Exclude crosswords with 'crossword_listing_visibility_status' set to 'private'
+        $meta_query = [
+            'relation' => 'OR',
+            [
+                'key' => 'crossword_listing_visibility_status',
+                'compare' => 'NOT EXISTS', // Include crosswords without the meta key
+            ],
+            [
+                'key' => 'crossword_listing_visibility_status',
+                'value' => 'private',
+                'compare' => '!=', // Exclude crosswords with the meta value 'private'
+            ]
+        ];
 
-        $clauses['where'] .= $wpdb->prepare(
-            " AND NOT EXISTS (
-                SELECT 1 FROM {$meta_table}
-                WHERE {$meta_table}.post_id = {$wpdb->posts}.ID
-                AND {$meta_table}.meta_key = %s
-                AND {$meta_table}.meta_value = %s
-            )",
-            'crossword_listing_visibility_status', // Adjust the meta key for crosswords
-            'private'
-        );
+        $query->set('meta_query', $meta_query);
     }
-
-    return $clauses;
 }
-add_filter('posts_clauses', 'exclude_private_crosswords', 10, 2);
+add_action('pre_get_posts', 'exclude_private_crosswords');
+
 
 ?>
