@@ -89,28 +89,29 @@ function my_plugin_generate_pdf() {
     $pdf->SetFont('dejavusans', '', 12);
 
     // Add Title
-    $pdf->Cell(0, 10, _x('Quiz Report Card', 'For PDF generation', 'wp-quiz-plugin'), 0, 1, 'C');
+    $pdf->Cell(0, 10, _x('Quiz Report Card', 'For Report Card PDF', 'wp-quiz-plugin'), 0, 1, 'C');
 
     // Student Details
     $pdf->Ln(10);
+    $pdf->Cell(0, 10, _x('Student Name: ', 'For Report Card PDF', 'wp-quiz-plugin') . $quiz_data['userName'], 0, 1);
+    $pdf->Cell(0, 10, _x('Total Questions: ', 'For Report Card PDF', 'wp-quiz-plugin') . $quiz_data['totalQuestions'], 0, 1);
+    $pdf->Cell(0, 10, _x('Correct Answers: ', 'For Report Card PDF', 'wp-quiz-plugin') . $quiz_data['correctCount'], 0, 1);
+    $pdf->Cell(0, 10, _x('Incorrect Answers: ', 'For Report Card PDF', 'wp-quiz-plugin') . $quiz_data['incorrectCount'], 0, 1);
+    $pdf->Cell(0, 10, _x('Score: ', 'For Report Card PDF', 'wp-quiz-plugin') . $quiz_data['scorePercentage'] . '%', 0, 1);
 
-    $pdf->Cell(0, 10, _x('Student Name: ', 'For PDF generation', 'wp-quiz-plugin') . $quiz_data['userName'], 0, 1);
-    $pdf->Cell(0, 10, _x('Total Questions: ', 'For PDF generation', 'wp-quiz-plugin') . $quiz_data['totalQuestions'], 0, 1);
-    $pdf->Cell(0, 10, _x('Correct Answers: ', 'For PDF generation', 'wp-quiz-plugin') . $quiz_data['correctCount'], 0, 1);
-    $pdf->Cell(0, 10, _x('Incorrect Answers: ', 'For PDF generation', 'wp-quiz-plugin') . $quiz_data['incorrectCount'], 0, 1);
-    $pdf->Cell(0, 10, _x('Score: ', 'For PDF generation', 'wp-quiz-plugin') . $quiz_data['scorePercentage'] . '%', 0, 1);
 
     // Add Question and Answers
     $pdf->Ln(10);
-    $pdf->Cell(0, 10, _x('Details:', 'For PDF generation', 'wp-quiz-plugin'), 0, 1);
+    $pdf->Cell(0, 10, _x('Details:', 'For Report Card PDF', 'wp-quiz-plugin'), 0, 1);
 
     foreach ($quiz_data['answersData'] as $answer) {
         $pdf->SetFont('dejavusans', 'B', 12);
-        $pdf->Cell(0, 10, 'Question: ' . $answer['question'], 0, 1);
+        $pdf->Cell(0, 10, _x('Question: ', 'For Report Card PDF', 'wp-quiz-plugin') . $answer['question'], 0, 1);
 
         $pdf->SetFont('dejavusans', '', 12);
-        $pdf->Cell(95, 10, 'Correct Answer:', 0, 0);
-        $pdf->Cell(95, 10, 'Your Answer:', 0, 1);
+        $pdf->Cell(95, 10, _x('Correct Answer:', 'For Report Card PDF', 'wp-quiz-plugin'), 0, 0);
+        $pdf->Cell(95, 10, _x('Your Answer:', 'For Report Card PDF', 'wp-quiz-plugin'), 0, 1);
+
 
         // Fetch correct answer and user's answer text
         $pdf->SetFont('dejavusans', '', 10);

@@ -188,14 +188,27 @@ function wp_quiz_render_ui($quiz_id, $questions, $background_color, $button_back
                 function markCorrectTextAnswer(userAnswer) {
                     isAnswerCorrect = true;
                     storeAnswer(questionIndex, null, userAnswer, 'correct');
-                    showAnswerMessage('Correct answer!', '#4CAF50', '#e8f5e9');
+                    showAnswerMessage(
+                                        "<?php echo esc_js(__('Correct answer!', 'wp-quiz-plugin')); ?>",
+                                        '#4CAF50',
+                                        '#e8f5e9'
+                                    );
+
                     $('.pf_answer-textarea').css('border-color', '#4CAF50');
                 }
 
                 function markIncorrectTextAnswer(userAnswer, correctTextAnswer) {
                     isAnswerCorrect = false;
                     storeAnswer(questionIndex, null, userAnswer, 'incorrect');
-                    showAnswerMessage(`Incorrect answer. The correct answer is: "<strong>${correctTextAnswer}</strong>"`, '#f44336', '#ffebee');
+                    const message = "<?php echo esc_js(__('Incorrect answer. The correct answer is:', 'wp-quiz-plugin')); ?>";
+                                            showAnswerMessage(
+                                                message + 
+                                                ` "<strong>${correctTextAnswer}</strong>"`, 
+                                                '#f44336', 
+                                                '#ffebee'
+                                            );
+
+
                     $('.pf_answer-textarea').css('border-color', '#f44336');
                 }
 
@@ -271,7 +284,10 @@ function wp_quiz_render_ui($quiz_id, $questions, $background_color, $button_back
                         $('.pf_answer-textarea').css('border-color', '#4CAF50');
                     } else if (storedData.state === 'incorrect') {
                         $('.pf_answer-textarea').css('border-color', '#f44336');
-                        $('.pf_answer-textarea').after(`<p class="pf_correct-answer-message" style="color: #f44336; background-color: #ffebee; padding: 10px; border-radius: 5px; margin-top: 10px;">Incorrect answer. The correct answer is: "<strong>${JSON.parse(questions[questionIndex].Answer)[0].text}</strong>"</p>`);
+                        $('.pf_answer-textarea').after(`<p class="pf_correct-answer-message" style="color: #f44336; background-color: #ffebee; padding: 10px; border-radius: 5px; margin-top: 10px;">
+                                    <?php echo esc_js(__('Incorrect answer. The correct answer is:', 'wp-quiz-plugin')); ?> 
+                                    "<strong>${JSON.parse(questions[questionIndex].Answer)[0].text}</strong>"
+                                </p>`);
                     }
                     $('#pf_next-question-btn').prop('disabled', false).text(questionIndex < totalQuestions - 1 ? '<?php echo __('Next Question', 'wp-quiz-plugin'); ?>' : '<?php echo __('Submit Quiz', 'wp-quiz-plugin'); ?>');
                     answerSubmitted = true;
