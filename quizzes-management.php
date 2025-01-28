@@ -728,12 +728,11 @@ function display_questions_meta_box($post) {
                                                 'model': "<?php echo esc_js(get_option('wp_quiz_plugin_openai_model', 'gpt-4o-mini')); ?>",
                                                 'messages': [{
                                                     'role': 'user',
-                                                    'content': generatePromptForType(selectedType, userPrompt, generatedQuestionsList, learnerAge)
+                                                    'content': generatePromptForType(selectedType, userPrompt, generatedQuestionsList, learnerAge, selectedCheckboxes)
                                                 }],
                                                 'max_tokens': <?php echo esc_js(get_option('wp_quiz_plugin_openai_max_tokens', 50)); ?>,
                                                 'temperature': <?php echo esc_js(get_option('wp_quiz_plugin_openai_temperature', 0.5)); ?>
                                             };
-            
                                             $.ajax({
                                                 url: 'https://api.openai.com/v1/chat/completions',
                                                 method: 'POST',
@@ -849,62 +848,83 @@ function display_questions_meta_box($post) {
                     }, 60000); // 1 minute in milliseconds
                 }
 
-                function generatePromptForType(type, userPrompt, generatedQuestionsList, learnerAge) {
-                let previousQuestionsContext = generatedQuestionsList.length ? `Avoid generating questions similar to these: ${generatedQuestionsList.join("; ")}. ` : '';
+                function generatePromptForType(type, userPrompt, generatedQuestionsList, learnerAge, selectedCheckboxes) {
+                    // Fetch the custom prompt template from the options table
+                    let customPromptTemplate = '<?php echo esc_js(get_option("wp_quiz_plugin_custom_prompt_template", "")); ?>';
 
-                // Get categories from the page using JavaScript/jQuery
-                let categoriesContext = '';
-                let selectedCategories = [];
+                    // Generate the previous questions context
+                    let previousQuestionsContext = generatedQuestionsList.length 
+                        ? `Avoid generating questions similar to these: ${generatedQuestionsList.join("; ")}.` 
+                        : '';
 
-                // Assume jQuery selectors for the categories dropdowns
-                let selectedParentCategory = $('#selected_school_quiz').find(':selected').text().trim();
-                let selectedChildCategory1 = $('#selected_class_quiz').find(':selected').text().trim();
-                let selectedChildCategory2 = $('#selected_subject_quiz').find(':selected').text().trim();
+                    // Get categories from the page using JavaScript/jQuery
+                    let selectedCategories = [];
+                    let selectedParentCategory = $('#selected_school_quiz').find(':selected').text().trim();
+                    let selectedChildCategory1 = $('#selected_class_quiz').find(':selected').text().trim();
+                    let selectedChildCategory2 = $('#selected_subject_quiz').find(':selected').text().trim();
 
-                // Function to check if the category is valid
-                const isValidCategory = (category) => {
-                    return category.length > 0 && !(category.match(/^-{3,}$/)); // Not empty and not only hyphens (3 or more)
-                };
+                    // Function to check if the category is valid
+                    const isValidCategory = (category) => {
+                        return category.length > 0 && !(category.match(/^-{3,}$/)); // Not empty and not only hyphens
+                    };
 
-                // Collect selected categories if they are valid
-                if (isValidCategory(selectedParentCategory)) {
-                    selectedCategories.push(selectedParentCategory);
+                    // Collect valid selected categories
+                    if (isValidCategory(selectedParentCategory)) selectedCategories.push(selectedParentCategory);
+                    if (isValidCategory(selectedChildCategory1)) selectedCategories.push(selectedChildCategory1);
+                    if (isValidCategory(selectedChildCategory2)) selectedCategories.push(selectedChildCategory2);
+
+                    // Format categories for replacement
+                    let categoriesContext = selectedCategories.length > 0 
+                        ? selectedCategories.join(' > ') 
+                        : '';
+
+                    // Add learners' age context
+                    let learnersAgeContext = learnerAge ? learnerAge : '';
+
+                    // Add checkbox context
+                    let checkboxContext = selectedCheckboxes.length > 0 
+                        ? selectedCheckboxes.join(', ') 
+                        : '';
+
+                    // Generate the specific question type template
+                    let questionTemplate = '';
+                    switch (type) {
+                        case 'MCQ':
+                            questionTemplate = '<?php echo esc_js($mcqPromptTemplate); ?>';
+                            break;
+                        case 'T/F':
+                            questionTemplate = '<?php echo esc_js($tfPromptTemplate); ?>';
+                            break;
+                        case 'Text':
+                            questionTemplate = '<?php echo esc_js($textPromptTemplate); ?>';
+                            break;
+                        default:
+                            questionTemplate = '';
+                    }
+
+                    // Append {previousQuestionsContext} and {questionTemplate} to the custom template if missing
+                    if (!customPromptTemplate.includes('{previousQuestionsContext}')) {
+                        customPromptTemplate += ` {previousQuestionsContext}`;
+                    }
+                    if (!customPromptTemplate.includes('{questionTemplate}')) {
+                        customPromptTemplate += ` {questionTemplate}`;
+                    }
+
+                    // Replace variables in the custom prompt template
+                    let finalPrompt = customPromptTemplate
+                        .replace(/{learnerAge}/g, learnersAgeContext)
+                        .replace(/{selectedCategories}/g, categoriesContext)
+                        .replace(/{userPrompt}/g, userPrompt)
+                        .replace(/{selectedCheckboxes}/g, checkboxContext)
+                        .replace(/{questionTemplate}/g, questionTemplate)
+                        .replace(/{previousQuestionsContext}/g, previousQuestionsContext);
+
+                    // Log the final prompt for debugging
+                    console.log("Final Prompt:", finalPrompt);
+
+                    // Return the final prompt
+                    return finalPrompt;
                 }
-                if (isValidCategory(selectedChildCategory1)) {
-                    selectedCategories.push(selectedChildCategory1);
-                }
-                if (isValidCategory(selectedChildCategory2)) {
-                    selectedCategories.push(selectedChildCategory2);
-                }
-
-                // If categories are selected, add them to the context
-                if (selectedCategories.length > 0) {
-                    categoriesContext = ` The quiz categories are: ${selectedCategories.join(' > ')}. Use this information to tailor the question to the relevant topic(s).`;
-                }
-
-
-                // Add learners' age context to the prompt
-                var agePromptTemplate = <?php echo json_encode($learnersAgePromptTemplate); ?>;
-                var ageContext = learnerAge ? agePromptTemplate.replace('[age]', learnerAge) : '';
-
-
-                var mcqPromptTemplate = <?php echo json_encode($mcqPromptTemplate); ?>;
-                var tfPromptTemplate = <?php echo json_encode($tfPromptTemplate); ?>;
-                var textPromptTemplate = <?php echo json_encode($textPromptTemplate); ?>;
-
-                // Generate the final prompt based on the question type
-                switch (type) {
-                    case 'MCQ':
-                        return `${previousQuestionsContext}${userPrompt}.${ageContext}${categoriesContext} ${mcqPromptTemplate}`;
-                    case 'T/F':
-                        return `${previousQuestionsContext}${userPrompt}.${ageContext}${categoriesContext} ${tfPromptTemplate}`;
-                    case 'Text':
-                        return `${previousQuestionsContext}${userPrompt}.${ageContext}${categoriesContext} ${textPromptTemplate}`;
-                    default:
-                        return userPrompt;
-                }
-            }
-
 
 
             // Function to handle dynamic content generation for questions and answers

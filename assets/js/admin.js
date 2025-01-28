@@ -22,4 +22,21 @@ jQuery(document).ready(function ($) {
             }
         });
     });
+
+    const defaultPrompt = `
+    Generate a list of quiz questions and answers based on the following prompt: {userPrompt}. The questions should be designed for learners aged {learnerAge}, so adjust the level of difficulty accordingly. 
+    
+    The quiz will be published in the following categories: {selectedCategories}. Use this information to align the questions and answers with the target audience and subject matter.
+    
+    Focus on the following areas: {selectedCheckboxes}. Ensure that the questions encourage critical thinking, are engaging, and are relevant to the specified topics.
+    
+    {previousQuestionsContext}
+    
+    Use the following structure for the questions and answers: {questionTemplate}.
+        `.trim();
+    
+        // Reset to default functionality
+        $('#kw-reset-default-prompt').on('click', function () {
+            $('#wp_quiz_plugin_custom_prompt_template').val(defaultPrompt);
+        });
 });

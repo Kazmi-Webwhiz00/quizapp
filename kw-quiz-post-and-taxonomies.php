@@ -720,8 +720,8 @@ function quiz_visibility_meta_box() {
         __('Quiz Visibility', 'wp-quiz-plugin'),  // Meta box title
         'render_quiz_visibility_meta_box', // Callback function to display the meta box
         'quizzes',                        // Custom post type 'quizzes'
-        'normal',                         // Context (position at the top of the editor)
-        'high'                            // Priority (higher to place it closer to the top)
+        'side',                         // Context (position at the top of the editor)
+        'default'                            // Priority (higher to place it closer to the top)
     );
 }
 

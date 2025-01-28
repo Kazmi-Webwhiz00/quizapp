@@ -69,34 +69,89 @@ function wp_quiz_plugin_render_quizzes_settings_page() { ?>
             </form>
         </div>
 
-        <!-- Prompt Customizatio -->
         <div id="kw-prompt-customization-settings" class="tab-content" style="display: none;">
-            <h2><?php esc_html_e('Prompt Customization', 'wp-quiz-plugin'); ?></h2>
-            <form method="post" action="options.php">
-                <?php 
-                // Register setting
-                settings_fields('wp_quiz_plugin_prompt_customization_settings'); 
-                do_settings_sections('wp_quiz_plugin_prompt_customization'); 
+            <h2><?php esc_html_e('Prompt Customization Settings', 'wp-quiz-plugin'); ?></h2>
 
-                // Retrieve saved values
-                $checkbox_values = get_option('wp_quiz_plugin_prompt_checkboxes', []);
-                ?>
+            <!-- Prompt Customization Card 1: Checkbox Settings -->
+            <div class="kw-prompt-card">
+                <h3><?php esc_html_e('Checkbox Settings', 'wp-quiz-plugin'); ?></h3>
+                <form method="post" action="options.php">
+                    <?php 
+                    // Register setting
+                    settings_fields('wp_quiz_plugin_prompt_customization_settings'); 
+                    do_settings_sections('wp_quiz_plugin_prompt_customization'); 
+
+                    // Retrieve saved values
+                    $checkbox_values = get_option('wp_quiz_plugin_prompt_checkboxes', []);
+                    ?>
+                    
+                    <div id="kw-checkbox-container">
+                        <?php if (!empty($checkbox_values)) : ?>
+                            <?php foreach ($checkbox_values as $value) : ?>
+                                <div class="kw-checkbox-item">
+                                    <input type="text" name="wp_quiz_plugin_prompt_checkboxes[]" value="<?php echo esc_attr($value); ?>" placeholder="<?php esc_attr_e('Enter checkbox value', 'wp-quiz-plugin'); ?>">
+                                    <button type="button" class="kw-remove-checkbox"><?php esc_html_e('Remove', 'wp-quiz-plugin'); ?></button>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </div>
+                    
+                    <button type="button" id="kw-add-checkbox" class="button"><?php esc_html_e('Add Checkbox', 'wp-quiz-plugin'); ?></button>
+                    <?php submit_button(); ?>
+                </form>
+            </div>
+
+            <!-- Prompt Customization Card 2: AI Prompt Template -->
+            <div class="kw-prompt-card">
+                <h3><?php esc_html_e('AI Prompt Template Settings', 'wp-quiz-plugin'); ?></h3>
                 
-                <div id="kw-checkbox-container">
-                    <?php if (!empty($checkbox_values)) : ?>
-                        <?php foreach ($checkbox_values as $value) : ?>
-                            <div class="kw-checkbox-item">
-                                <input type="text" name="wp_quiz_plugin_prompt_checkboxes[]" value="<?php echo esc_attr($value); ?>" placeholder="<?php esc_attr_e('Enter checkbox value', 'wp-quiz-plugin'); ?>">
-                                <button type="button" class="kw-remove-checkbox"><?php esc_html_e('Remove', 'wp-quiz-plugin'); ?></button>
-                            </div>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
+                <!-- Instructions for Admin -->
+                <div class="kw-notice notice-info">
+                    <p><strong><?php esc_html_e('How to Use Variables in Your Prompt Template:', 'wp-quiz-plugin'); ?></strong></p>
+                    <ul>
+                        <li><strong>{learnerAge}</strong> - <?php esc_html_e('This will be replaced with the learner\'s age (e.g., 12).', 'wp-quiz-plugin'); ?></li>
+                        <li><strong>{selectedCategories}</strong> - <?php esc_html_e('This will be replaced with the selected categories in the format: Parent Category > Child Category.', 'wp-quiz-plugin'); ?></li>
+                        <li><strong>{userPrompt}</strong> - <?php esc_html_e('This will be replaced with the exact user-provided prompt.', 'wp-quiz-plugin'); ?></li>
+                        <li><strong>{selectedCheckboxes}</strong> - <?php esc_html_e('This will be replaced with the selected checkbox values, separated by commas (e.g., focus1, focus2).', 'wp-quiz-plugin'); ?></li>
+                        <li><strong>{questionTemplate}</strong> - <?php esc_html_e('This will be replaced with the template for the selected question type (e.g., MCQ, T/F, or Text).', 'wp-quiz-plugin'); ?></li>
+                        <li><strong>{previousQuestionsContext}</strong> - <?php esc_html_e('This will include context to avoid generating questions similar to previously generated ones.', 'wp-quiz-plugin'); ?></li>
+                    </ul>
+                    <p><?php esc_html_e('You can use these variables to create a customized AI prompt template.', 'wp-quiz-plugin'); ?></p>
+                    <button type="button" id="kw-reset-default-prompt" class="button-secondary"><?php esc_html_e('Reset to Default', 'wp-quiz-plugin'); ?></button>
                 </div>
-                
-                <button type="button" id="kw-add-checkbox" class="button"><?php esc_html_e('Add Checkbox', 'wp-quiz-plugin'); ?></button>
-                <?php submit_button(); ?>
-            </form>
+
+                <form method="post" action="options.php">
+                    <?php 
+                    // Register setting
+                    settings_fields('wp_quiz_plugin_ai_prompt_settings'); 
+                    do_settings_sections('wp_quiz_plugin_ai_prompt_customization'); 
+
+                    // Retrieve saved template
+                    $customPromptTemplate = get_option('wp_quiz_plugin_custom_prompt_template', '');
+                    ?>
+                    
+                    <!-- Custom Prompt Template -->
+                    <div class="kw-form-field">
+                        <label for="wp_quiz_plugin_custom_prompt_template">
+                            <strong><?php esc_html_e('Custom AI Prompt Template', 'wp-quiz-plugin'); ?></strong>
+                        </label>
+                        <textarea 
+                            id="wp_quiz_plugin_custom_prompt_template" 
+                            name="wp_quiz_plugin_custom_prompt_template" 
+                            class="large-text" 
+                            rows="10" 
+                            placeholder="<?php esc_attr_e('Define your custom prompt here...', 'wp-quiz-plugin'); ?>"
+                        ><?php echo esc_textarea($customPromptTemplate); ?></textarea>
+                        <p class="description">
+                            <?php esc_html_e('Use the provided variables to customize the AI prompt template. If {questionTemplate} or {previousQuestionsContext} is not included, they will automatically be added at the end of the prompt.', 'wp-quiz-plugin'); ?>
+                        </p>
+                    </div>
+
+                    <?php submit_button(); ?>
+                </form>
+            </div>
         </div>
+
 
 
 
@@ -381,8 +436,14 @@ add_action('admin_init', 'wp_quiz_plugin_pdf_strings_text_settings_init');
 
 
 function wp_quiz_plugin_register_prompt_customization_settings() {
+    // Register checkbox values
     register_setting('wp_quiz_plugin_prompt_customization_settings', 'wp_quiz_plugin_prompt_checkboxes', [
         'sanitize_callback' => 'wp_quiz_plugin_sanitize_checkbox_values'
+    ]);
+
+    // Register custom AI prompt template
+    register_setting('wp_quiz_plugin_ai_prompt_settings', 'wp_quiz_plugin_custom_prompt_template', [
+        'sanitize_callback' => 'wp_kses_post' // Allow HTML tags for admin flexibility
     ]);
 }
 add_action('admin_init', 'wp_quiz_plugin_register_prompt_customization_settings');

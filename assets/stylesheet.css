@@ -477,24 +477,7 @@ body {
 /* Promot admin settings */
 
 /* Styling for the Prompt Customization Section */
-#kw-prompt-customization-settings {
-    margin-top: 20px;
-    padding: 20px;
-    background: #f9f9f9;
-    border: 1px solid #e1e1e1;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    max-width: 800px;
-}
 
-/* Styling the Section Title */
-#kw-prompt-customization-settings h2 {
-    font-size: 1.5rem;
-    color: #333;
-    border-bottom: 2px solid #007cba;
-    padding-bottom: 8px;
-    margin-bottom: 16px;
-}
 
 /* Styling the Input Container */
 #kw-checkbox-container {
@@ -628,6 +611,78 @@ form .button-primary:hover {
 .kw-checkbox-wrapper-promot label,
 .kw-checkbox-wrapper-promot label::before {
     transition: 0.25s all ease;
+}
+
+
+/* Style the overall container */
+#kw-prompt-customization-settings {
+    margin-top: 20px;
+    padding: 20px;
+    background: #f9f9f9;
+    border: 1px solid #e1e1e1;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Style each prompt card */
+.kw-prompt-card {
+    background: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Heading for each card */
+.kw-prompt-card h3 {
+    font-size: 1.2rem;
+    color: #333;
+    margin-bottom: 12px;
+    border-bottom: 2px solid #007cba;
+    padding-bottom: 4px;
+}
+
+/* Notice styling */
+.kw-notice {
+    margin-bottom: 15px;
+    padding: 10px 15px;
+    border-left: 4px solid #007cba;
+    background-color: #f1f8ff;
+    color: #333;
+}
+
+.kw-notice ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: disc;
+    padding-left: 20px;
+}
+
+.kw-notice ul li {
+    margin-bottom: 8px;
+}
+
+/* Form fields */
+.kw-form-field {
+    margin-top: 15px;
+}
+
+.kw-form-field label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 8px;
+}
+
+textarea.large-text {
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.5;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px;
+    width: 100%;
+    resize: vertical;
 }
 
 
