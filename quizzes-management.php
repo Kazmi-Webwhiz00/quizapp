@@ -643,6 +643,8 @@ function display_questions_meta_box($post) {
             
                         var inputOptions = {};
                         numberOfQuestionsOptions.forEach(option => inputOptions[option.trim()] = option.trim());
+
+                        var checkboxOptions = <?php echo json_encode(get_option('wp_quiz_plugin_prompt_checkboxes', [])); ?>;
             
                         createSwalPopup({
                             title: '<?php echo esc_js(__('Select Number of Questions', 'wp-quiz-plugin')); ?>',
@@ -682,27 +684,43 @@ function display_questions_meta_box($post) {
                                         var learnerAge = ageResult.value;
 
                                         createSwalPopup({
-                                    title: '<?php echo esc_js(__('Enter your prompt for ChatGPT:', 'wp-quiz-plugin')); ?>',
-                                    input: 'text',
-                                    inputPlaceholder: '<?php echo esc_attr(__('Type your prompt here...', 'wp-quiz-plugin')); ?>',
-                                    showCancelButton: true,
-                                    confirmButtonText: '<?php echo esc_js(__('Generate', 'wp-quiz-plugin')); ?>',
-                                    cancelButtonText: '<?php echo __('Cancel', 'wp-quiz-plugin'); ?>',
-                                    customClass: {
-                                        popup: 'kw-custom-swal-popup'  // Add a custom class
-                                    },
-                                    preConfirm: (userPrompt) => {
-                                        if (!userPrompt) {
-                                            Swal.showValidationMessage('<?php echo __('Prompt is required!', 'wp-quiz-plugin'); ?>');
-                                        }
-                                        return userPrompt;
-                                    }
+                                            title: '<?php echo esc_js(__('Enter your prompt for ChatGPT:', 'wp-quiz-plugin')); ?>',
+                                            html: `
+                                                <label style="display:block; font-weight:bold; margin-bottom:8px;"><?php echo esc_html(__('Enter your prompt below:', 'wp-quiz-plugin')); ?></label>
+                                                <input type="text" id="kw_user_prompt" class="swal2-input" placeholder="<?php echo esc_attr(__('Type your prompt here...', 'wp-quiz-plugin')); ?>">
+                                                <div id="kw-checkbox-container-promot" style="margin-top:16px;">
+                                                    ${checkboxOptions.map((option, index) => `
+                                                        <div class="kw-checkbox-wrapper-promot">
+                                                            <input type="checkbox" id="cb-promot-${index}" value="${option}">
+                                                            <label for="cb-promot-${index}">${option}</label>
+                                                        </div>
+                                                    `).join('')}
+                                                </div>
+                                            `,
+                                            showCancelButton: true,
+                                            confirmButtonText: '<?php echo esc_js(__('Generate', 'wp-quiz-plugin')); ?>',
+                                            cancelButtonText: '<?php echo esc_js(__('Cancel', 'wp-quiz-plugin')); ?>',
+                                            preConfirm: () => {
+                                                const userPrompt = document.getElementById('kw_user_prompt').value.trim();
+                                                const selectedCheckboxes = Array.from(document.querySelectorAll('#kw-checkbox-container-promot input[type="checkbox"]:checked'))
+                                                    .map(checkbox => checkbox.value);
+
+                                                if (!userPrompt) {
+                                                    Swal.showValidationMessage('<?php echo esc_js(__('Prompt is required!', 'wp-quiz-plugin')); ?>');
+                                                    return false;
+                                                }
+
+                                                return { userPrompt, selectedCheckboxes };
+                                            }
                                 }, swalStyles).then((promptResult) => {
                                     if (promptResult.isConfirmed) {
-                                        var userPrompt = promptResult.value;
+                                        const { userPrompt, selectedCheckboxes } = promptResult.value;
                                         var apiKey = '<?php echo esc_js(get_option('wp_quiz_plugin_openai_api_key')); ?>';
                                         const isAdmin = <?php echo current_user_can('manage_options') ? 'true' : 'false'; ?>;
             
+                                        console.log('User Prompt:', userPrompt);
+                                        console.log('Selected Checkboxes:', selectedCheckboxes);
+
                                         function sendRequest(retryCount, count) {
                                             if (count <= 0) return;
             
