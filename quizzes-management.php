@@ -2,7 +2,7 @@
 /*
 Plugin Name: OmniS
 Description: A WordPress plugin to create and manage quizzes with questions and user submissions.
-Version: 5.0.9
+Version: 5.0.10
 Author: Kazmi Webwhiz
 Author URI: https://kazmiwebwhiz.com
 Text Domain: wp-quiz-plugin
@@ -43,6 +43,9 @@ function wp_quiz_plugin_enqueue_styles() {
 
         wp_enqueue_style('wp-quiz-plugin-' . sanitize_title($stylesheet));
     }
+    wp_enqueue_style('main-style', plugins_url('main-style.css', __FILE__));
+
+    wp_enqueue_script('wp-quiz-plugin-admin-js', plugin_dir_url(__FILE__) . 'assets/js/admin.js', ['jquery'], null, true);
 }
 add_action('admin_enqueue_scripts', 'wp_quiz_plugin_enqueue_styles'); // Change to admin_enqueue_scripts for admin area
 
@@ -232,6 +235,8 @@ function display_questions_meta_box($post) {
 
 
     ?>
+
+    <div class="kw-loading" style="display:none">Loading&#8230;</div>
 
     <div id="kw_quiz-questions-container" style="font-family: <?php echo esc_attr($text_font); ?>; color: <?php echo esc_attr($text_color); ?>; font-size: <?php echo esc_attr($font_size); ?>">
 
@@ -720,6 +725,7 @@ function display_questions_meta_box($post) {
                                                 },
                                                 data: JSON.stringify(data),
                                                 beforeSend: function () {
+                                                    $('.kw-loading').show();
                                                     console.log('Sending request to OpenAI...', data);
                                                     if (isAdmin) {
                                                         showAdminPrompt(data.messages[0].content)
@@ -741,6 +747,7 @@ function display_questions_meta_box($post) {
                                                                 '<?php echo esc_js(__('Could not parse the response. Ensure the AI response follows the expected format.', 'wp-quiz-plugin')); ?>',
                                                                 'error'
                                                             );
+                                                            $('.kw-loading').hide();
                                                         $('#kw_generate-question-btn').text('<?php echo esc_js(__('Generate with ChatGPT', 'wp-quiz-plugin')); ?>').prop('disabled', false);
                                                     }
                                                 },
@@ -757,6 +764,7 @@ function display_questions_meta_box($post) {
                                                                         errorMsg,
                                                                         'error'
                                                                     );
+                                                        $('.kw-loading').hide();
                                                         $('#kw_generate-question-btn').text('<?php echo esc_js(__('Generate with ChatGPT', 'wp-quiz-plugin')); ?>').prop('disabled', false);
                                                     }
                                                 }
@@ -1004,6 +1012,7 @@ function display_questions_meta_box($post) {
                             </div>
                         </div>`);
 
+                        $('.kw-loading').hide();
                     $('#kw_generate-question-btn').text('<?php echo esc_js(__('Generate with ChatGPT', 'wp-quiz-plugin')); ?>').prop('disabled', false);
                 } catch (error) {
                     console.error('Error generating content:', error.message);
@@ -1012,6 +1021,7 @@ function display_questions_meta_box($post) {
                                 '<?php echo esc_js(__('Could not find the question or correct answer. Please check the AI response format.', 'wp-quiz-plugin')); ?>',
                                 'error'
                             );
+                    $('.kw-loading').hide();
                     $('#kw_generate-question-btn').text('<?php echo esc_js(__('Generate with ChatGPT', 'wp-quiz-plugin')); ?>').prop('disabled', false);
                 }
             }

@@ -47,6 +47,7 @@ function wp_quiz_plugin_render_quizzes_settings_page() { ?>
         <!-- Tab Navigation -->
         <h2 class="nav-tab-wrapper">
             <a href="#general-settings" class="nav-tab nav-tab-active"><?php esc_html_e('General Settings','wp-quiz-plugin'); ?></a>
+            <a href="#kw-prompt-customization-settings" class="nav-tab"><?php esc_html_e('Prompt Customization', 'wp-quiz-plugin'); ?></a>
             <a href="#style-settings" class="nav-tab"><?php esc_html_e('Admin Style Settings','wp-quiz-plugin'); ?></a>
             <a href="#frontend-style-settings" class="nav-tab"><?php esc_html_e('Frontend Style Settings','wp-quiz-plugin'); ?></a>
             <a href="#strings-text-settings" class="nav-tab"><?php esc_html_e('Admin Strings Text','wp-quiz-plugin'); ?></a> 
@@ -67,6 +68,37 @@ function wp_quiz_plugin_render_quizzes_settings_page() { ?>
                 ?>
             </form>
         </div>
+
+        <!-- Prompt Customizatio -->
+        <div id="kw-prompt-customization-settings" class="tab-content" style="display: none;">
+            <h2><?php esc_html_e('Prompt Customization', 'wp-quiz-plugin'); ?></h2>
+            <form method="post" action="options.php">
+                <?php 
+                // Register setting
+                settings_fields('wp_quiz_plugin_prompt_customization_settings'); 
+                do_settings_sections('wp_quiz_plugin_prompt_customization'); 
+
+                // Retrieve saved values
+                $checkbox_values = get_option('wp_quiz_plugin_prompt_checkboxes', []);
+                ?>
+                
+                <div id="kw-checkbox-container">
+                    <?php if (!empty($checkbox_values)) : ?>
+                        <?php foreach ($checkbox_values as $value) : ?>
+                            <div class="kw-checkbox-item">
+                                <input type="text" name="wp_quiz_plugin_prompt_checkboxes[]" value="<?php echo esc_attr($value); ?>" placeholder="<?php esc_attr_e('Enter checkbox value', 'wp-quiz-plugin'); ?>">
+                                <button type="button" class="kw-remove-checkbox"><?php esc_html_e('Remove', 'wp-quiz-plugin'); ?></button>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </div>
+                
+                <button type="button" id="kw-add-checkbox" class="button"><?php esc_html_e('Add Checkbox', 'wp-quiz-plugin'); ?></button>
+                <?php submit_button(); ?>
+            </form>
+        </div>
+
+
 
         <!-- Style Settings Tab Content -->
         <div id="style-settings" class="tab-content" style="display: none;">
@@ -346,6 +378,22 @@ function wp_quiz_plugin_pdf_strings_text_settings_init() {
 
 }
 add_action('admin_init', 'wp_quiz_plugin_pdf_strings_text_settings_init');
+
+
+function wp_quiz_plugin_register_prompt_customization_settings() {
+    register_setting('wp_quiz_plugin_prompt_customization_settings', 'wp_quiz_plugin_prompt_checkboxes', [
+        'sanitize_callback' => 'wp_quiz_plugin_sanitize_checkbox_values'
+    ]);
+}
+add_action('admin_init', 'wp_quiz_plugin_register_prompt_customization_settings');
+
+function wp_quiz_plugin_sanitize_checkbox_values($values) {
+    if (is_array($values)) {
+        return array_map('sanitize_text_field', $values);
+    }
+    return [];
+}
+
 
 // Callback function for Quiz PDF Title
 function wp_quiz_plugin_pdf_download_quiz_title_callback() {
