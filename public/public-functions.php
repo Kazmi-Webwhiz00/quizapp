@@ -106,7 +106,7 @@ function my_plugin_generate_pdf() {
 
     foreach ($quiz_data['answersData'] as $answer) {
         $pdf->SetFont('dejavusans', 'B', 12);
-        $pdf->Cell(0, 10, _x('Question: ', 'For Report Card PDF', 'wp-quiz-plugin') . $answer['question'], 0, 1);
+        $pdf->MultiCell(0, 10, _x('Question: ', 'For Report Card PDF', 'wp-quiz-plugin') . $answer['question'], 0, 1);
 
         $pdf->SetFont('dejavusans', '', 12);
         $pdf->Cell(95, 10, _x('Correct Answer:', 'For Report Card PDF', 'wp-quiz-plugin'), 0, 0);
