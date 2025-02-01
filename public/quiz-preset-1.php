@@ -370,7 +370,7 @@ function wp_quiz_render_ui($quiz_id, $questions, $background_color, $button_back
                                 const blob = new Blob([response], { type: 'application/pdf' });
                                 const link = document.createElement('a');
                                 link.href = window.URL.createObjectURL(blob);
-                                link.download = 'quiz_report_card.pdf';
+                                link.download = 'podsumowanie_quizu.pdf';
                                 link.click();
                             }
                         });

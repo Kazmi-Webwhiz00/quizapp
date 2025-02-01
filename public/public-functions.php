@@ -123,7 +123,7 @@ function my_plugin_generate_pdf() {
     }
 
     // Output PDF as download
-    $pdf->Output('quiz_report_card.pdf', 'D');
+    $pdf->Output('podsumowanie_quizu.pdf', 'D');
     wp_die();
 }
 
