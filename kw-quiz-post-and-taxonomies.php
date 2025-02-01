@@ -432,8 +432,8 @@ function add_quiz_description_meta_box() {
         __('Quiz Description', 'wp-quiz-plugin'),
         'display_quiz_description_meta_box',
         'quizzes',
-        'side',
-        'default'
+        'normal',
+        'high'
     );
 }
 add_action('add_meta_boxes', 'add_quiz_description_meta_box');

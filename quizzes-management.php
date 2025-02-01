@@ -24,6 +24,8 @@ include_once plugin_dir_path(__FILE__) . 'utils/short-code-helpers.php';
 include_once plugin_dir_path(__FILE__) . 'utils/constants.php'; 
 include_once plugin_dir_path(__FILE__) . 'kw-quiz-features-buttons.php';
 include_once plugin_dir_path(__FILE__) . 'admin-docs.php';
+include_once plugin_dir_path(__FILE__) . 'kw-author-name-admin-view.php';
+
 
 // Enqueue Plugin Styles for Admin
 function wp_quiz_plugin_enqueue_styles() {
