@@ -25,6 +25,7 @@ include_once plugin_dir_path(__FILE__) . 'utils/constants.php';
 include_once plugin_dir_path(__FILE__) . 'kw-quiz-features-buttons.php';
 include_once plugin_dir_path(__FILE__) . 'admin-docs.php';
 include_once plugin_dir_path(__FILE__) . 'kw-author-name-admin-view.php';
+include_once plugin_dir_path(__FILE__) .  'kw-save-quiz-aut.php';
 
 
 // Enqueue Plugin Styles for Admin
@@ -933,6 +934,7 @@ function display_questions_meta_box($post) {
             function handleGeneratedContent(type, generatedContent) {
                 var index = $('.kw_question-item').length;
                 var answersHtml = '';
+                var questionData = {}; // Store extracted data for saving
 
                 try {
                     if (type === 'MCQ') {
@@ -1005,6 +1007,43 @@ function display_questions_meta_box($post) {
                         </div>`;
                     }
 
+                   
+                // Format answers based on the question type
+                let formattedAnswers = [];
+
+                if (type === 'MCQ') {
+                    formattedAnswers = answers.map((answer, i) => ({
+                        text: answer, 
+                        correct: correctAnswerLetter === String.fromCharCode(65 + i) ? 1 : 0,
+                        image: ""
+                    }));
+                } else if (type === 'T/F') {
+                    let correctIndex = correctAnswer.toLowerCase() === 'true' ? 0 : 1;
+
+                    formattedAnswers = [
+                        { text: 'True', correct: correctIndex === 0 ? 1 : 0 },
+                        { text: 'False', correct: correctIndex === 1 ? 1 : 0 }
+                    ];
+                } else if (type === 'Text') {
+                    formattedAnswers = [
+                        { text: correctAnswerText, correct: 1 }
+                    ];
+                }
+
+                questionData = {
+                    title: questionText,
+                    question_type: type,
+                    answers: formattedAnswers
+                };
+
+
+
+
+                    console.log("Formatted Question Data:", questionData); // Debugging before sending to PHP
+
+                    saveGeneratedQuestion(questionData);
+
+
                     $('#kw_questions-list').append(`
                         <div class="kw_question-item" data-index="${index}">
                             <div class="kw_question-header kw_close-expand kw_toggle-question-btn">
@@ -1065,6 +1104,34 @@ function display_questions_meta_box($post) {
                     $('#kw_generate-question-btn').text('<?php echo esc_js(__('Generate with ChatGPT', 'wp-quiz-plugin')); ?>').prop('disabled', false);
                 }
             }
+
+            function saveGeneratedQuestion(questionData) {
+                let quizAutoSaveNonce = '<?php echo esc_js(wp_create_nonce('auto-save-quiz-noce')); ?>';
+                let ajaxurl = '<?php echo admin_url('admin-ajax.php'); ?>'; // Correct way to assign admin-ajax.php
+                let postId = '<?php echo get_the_ID(); ?>';
+
+                $.ajax({
+                    url: ajaxurl, // WordPress AJAX URL
+                    type: 'POST',
+                    data: {
+                        action: 'save_generated_quiz_question',
+                        security: quizAutoSaveNonce, // Use the nonce for validation
+                        question_data: JSON.stringify(questionData),
+                        post_id: postId,
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            console.log('Question saved with ID:', response.question_id);
+                        } else {
+                            console.error('Error saving question:', response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('AJAX Error:', error);
+                    }
+                });
+            }
+
 
             // Event delegation for various actions (adding/removing questions, toggling visibility, etc.)
             $(document).on('click', '.kw_toggle-question-btn', function () {
@@ -1347,6 +1414,7 @@ function save_quiz_questions_meta($post_id) {
             $answers = isset($question['answers']) ? $question['answers'] : [];
             $question_order = isset($question['order']) ? intval($question['order']) : 0;  // Get the order
             error_log('question_order: ' . print_r($question_order));
+            error_log(":::::::::qeusionts ansers" .  print_r($answers,true));
 
             // Prepare the answers as JSON to store in the custom table
             $prepared_answers = [];
@@ -1366,6 +1434,7 @@ function save_quiz_questions_meta($post_id) {
                 ];
             } else {
                 foreach ($answers as $answer) {
+                    error_log(":::::::::only asnwer" .  print_r($answer['text'],true));
                     $prepared_answers[] = [
                         'text' => ($question_type === 'Text') ? wp_kses_post($answer['text']) : sanitize_text_field($answer['text']),
                         'correct' => ($question_type === 'Text') ? 1 : (isset($answer['correct']) ? 1 : 0),  // Set 'correct' to 1 (true) by default for 'Text' type
