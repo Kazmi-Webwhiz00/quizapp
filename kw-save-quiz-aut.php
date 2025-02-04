@@ -116,3 +116,37 @@ function ajax_save_generated_quiz_question() {
     }
 }
 add_action('wp_ajax_save_generated_quiz_question', 'ajax_save_generated_quiz_question');
+
+
+
+
+add_action('wp_ajax_update_autodraft_post', 'update_autodraft_post_callback');
+function update_autodraft_post_callback() {
+    
+    // Get post ID and title from AJAX request
+    $post_id = isset($_POST['post_id']) ? intval($_POST['post_id']) : 0;
+    $post_title = isset($_POST['post_title']) ? sanitize_text_field($_POST['post_title']) : '';
+    $post_status = isset($_POST['post_status']) ? sanitize_text_field($_POST['post_status']) : 'auto-draft';
+    
+
+    if ($post_id && !empty($post_title)) {
+        $post = get_post($post_id);
+       
+        if ($post && $post_status === 'auto-draft') {
+            // Update post status to 'draft' and set new title
+            wp_update_post([
+                'ID'          => $post_id,
+                'post_status' => 'draft',
+                'post_title'  => $post_title
+            ]);
+
+            wp_send_json_success(['message' => 'Post updated successfully.']);
+        } else {
+            wp_send_json_error(['message' => 'Post is not in auto-draft status.']);
+        }
+    } else {
+        wp_send_json_error(['message' => 'Invalid post data.']);
+    }
+
+
+}

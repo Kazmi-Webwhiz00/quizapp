@@ -723,6 +723,10 @@ function display_questions_meta_box($post) {
             
                                         console.log('User Prompt:', userPrompt);
                                         console.log('Selected Checkboxes:', selectedCheckboxes);
+                                        let postId = '<?php echo get_the_ID(); ?>';
+                                        let postStatus= '<?php echo get_post_status(get_the_ID());?>'
+
+                                        updatePostAsDraft(postId, postStatus);
 
                                         function sendRequest(retryCount, count) {
                                             if (count <= 0) return;
@@ -1106,6 +1110,7 @@ function display_questions_meta_box($post) {
             }
 
             function saveGeneratedQuestion(questionData) {
+                
                 let quizAutoSaveNonce = '<?php echo esc_js(wp_create_nonce('auto-save-quiz-noce')); ?>';
                 let ajaxurl = '<?php echo admin_url('admin-ajax.php'); ?>'; // Correct way to assign admin-ajax.php
                 let postId = '<?php echo get_the_ID(); ?>';
@@ -1131,6 +1136,41 @@ function display_questions_meta_box($post) {
                     }
                 });
             }
+
+
+            function updatePostAsDraft(postID, postStatus) {
+                let psotTitle = $('input[name="post_title"]').val();
+
+                if(postStatus !== 'auto-draft'){
+                    return;
+                }
+
+                $.ajax({
+                    url: ajaxurl, // WordPress AJAX URL
+                    type: 'POST',
+                    data: {
+                        action: 'update_autodraft_post',                       
+                        post_title: psotTitle,
+                        post_id: postID,
+                        post_status: postStatus,
+                    },
+                    success: function(response) {
+                        console.log("ajax darft call", response);
+                        // ✅ Remove unsaved changes alert
+                        jQuery(window).off('beforeunload');
+                        window.onbeforeunload = null;
+
+                        if (postID) {
+                            let newUrl = window.location.origin + '/wp-admin/post.php?post=' + postID + '&action=edit';
+                            window.history.replaceState(null, '', newUrl);
+                        }
+
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('AJAX Error:', error);
+                    }
+        });
+    }
 
 
             // Event delegation for various actions (adding/removing questions, toggling visibility, etc.)
