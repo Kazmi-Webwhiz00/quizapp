@@ -770,3 +770,62 @@ textarea.large-text {
     width: 100%;
     margin: 0px;
 }
+
+
+/* Highlight effect on the Publish button */
+.publish-highlight {
+    position: relative;
+    border: 3px solid #ff4500 !important;
+    box-shadow: 0px 0px 20px rgba(255, 69, 0, 1);
+    animation: pulseEffect 1.2s infinite alternate;
+    border-radius: 6px;
+}
+
+/* Notice warning box */
+.publish-warning {
+    background: #ff4500;
+    color: white;
+    padding: 14px 18px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: bold;
+    text-align: center;
+    margin: 12px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    transition: opacity 0.6s ease-in-out;
+    cursor: default;
+    position: relative;
+}
+
+/* Animated warning icon */
+.warning-icon {
+    margin-right: 10px;
+    font-size: 32px; /* Increased size */
+    animation: shakeWarning 1s infinite ease-in-out;
+}
+
+/* Close button */
+.close-notice {
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+    margin-left: 10px;
+    transition: transform 0.2s ease, opacity 0.3s;
+}
+
+/* Keyframe animations */
+@keyframes pulseEffect {
+    0% { box-shadow: 0px 0px 12px rgba(255, 69, 0, 0.7); }
+    100% { box-shadow: 0px 0px 22px rgba(255, 69, 0, 1); }
+}
+
+@keyframes shakeWarning {
+    0%, 100% { transform: rotate(0); }
+    25% { transform: rotate(-10deg); }
+    50% { transform: rotate(10deg); }
+    75% { transform: rotate(-5deg); }
+}

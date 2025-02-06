@@ -39,4 +39,60 @@ jQuery(document).ready(function ($) {
         $('#kw-reset-default-prompt').on('click', function () {
             $('#wp_quiz_plugin_custom_prompt_template').val(defaultPrompt);
         });
+    
 });
+
+
+(function ($) {
+    $.fn.highlightPublishButton = function () {
+        let publishButton = $("#publish");
+        let submitDiv = $("#submitdiv"); // Publish box container
+    
+        if (publishButton.length && submitDiv.length) {
+            // Avoid adding duplicate highlight class
+            if (!publishButton.hasClass("publish-highlight")) {
+                publishButton.addClass("publish-highlight");
+            }
+    
+            // Avoid adding duplicate warning notice
+            if ($(".publish-warning").length === 0) {
+                let warningMessage = quizAdminData.message || "Warning: Please save!";
+    
+                // Create notice div with animated warning icon & close button
+                let notice = $(`
+                    <div class="publish-warning">
+                        <span class="warning-icon">⚠️</span>
+                        <span class="warning-text"><strong>${warningMessage}</strong></span>
+                        <span class="close-notice">✖</span>
+                    </div>
+                `);
+    
+                // Append notice above #submitdiv
+                submitDiv.before(notice);
+    
+                // Show the tooltip with a fade-in effect
+                setTimeout(() => {
+                    notice.css("opacity", "1");
+                }, 800);
+    
+                // Remove notice when close button is clicked with a fade-out effect
+                notice.find(".close-notice").on("click", function () {
+                    notice.css("transform", "scale(0.9)").css("opacity", "0");
+                    setTimeout(() => notice.remove(), 300);
+                });
+    
+                // Remove only glow (keep border) when clicked
+                publishButton.on("click", function () {
+                    publishButton.removeClass("publish-highlight");
+                    notice.fadeOut(300, function () {
+                        $(this).remove();
+                    });
+                });
+            }
+        }
+    };
+    
+
+    // Expose function globally
+    window.highlightPublishButton = $.fn.highlightPublishButton;
+})(jQuery);

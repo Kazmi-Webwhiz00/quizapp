@@ -2,7 +2,7 @@
 /*
 Plugin Name: OmniS
 Description: A WordPress plugin to create and manage quizzes with questions and user submissions.
-Version: 5.0.13
+Version: 5.0.14
 Author: Kazmi Webwhiz
 Author URI: https://kazmiwebwhiz.com
 Text Domain: wp-quiz-plugin
@@ -50,6 +50,10 @@ function wp_quiz_plugin_enqueue_styles() {
     wp_enqueue_style('main-style', plugins_url('main-style.css', __FILE__));
 
     wp_enqueue_script('wp-quiz-plugin-admin-js', plugin_dir_url(__FILE__) . 'assets/js/admin.js', ['jquery'], null, true);
+
+    wp_localize_script('wp-quiz-plugin-admin-js', 'quizAdminData', [
+        'message' => _x("Don't forget to save! Your changes may be lost.", "publish alert", "wp-quiz-plugin")
+    ]);
 }
 add_action('admin_enqueue_scripts', 'wp_quiz_plugin_enqueue_styles'); // Change to admin_enqueue_scripts for admin area
 
@@ -786,6 +790,7 @@ function display_questions_meta_box($post) {
                                                                 'error'
                                                             );
                                                             $('.kw-loading').hide();
+                                                            $.fn.highlightPublishButton();
                                                         $('#kw_generate-question-btn').text('<?php echo esc_js(__('Generate with ChatGPT', 'wp-quiz-plugin')); ?>').prop('disabled', false);
                                                     }
                                                 },
@@ -803,6 +808,7 @@ function display_questions_meta_box($post) {
                                                                         'error'
                                                                     );
                                                         $('.kw-loading').hide();
+                                                        $.fn.highlightPublishButton();
                                                         $('#kw_generate-question-btn').text('<?php echo esc_js(__('Generate with ChatGPT', 'wp-quiz-plugin')); ?>').prop('disabled', false);
                                                     }
                                                 }
@@ -1110,6 +1116,7 @@ function display_questions_meta_box($post) {
                         </div>`);
 
                         $('.kw-loading').hide();
+                        $.fn.highlightPublishButton();
                     $('#kw_generate-question-btn').text('<?php echo esc_js(__('Generate with ChatGPT', 'wp-quiz-plugin')); ?>').prop('disabled', false);
                 } catch (error) {
                     console.error('Error generating content:', error.message);
@@ -1119,6 +1126,7 @@ function display_questions_meta_box($post) {
                                 'error'
                             );
                     $('.kw-loading').hide();
+                    $.fn.highlightPublishButton();
                     $('#kw_generate-question-btn').text('<?php echo esc_js(__('Generate with ChatGPT', 'wp-quiz-plugin')); ?>').prop('disabled', false);
                 }
             }
