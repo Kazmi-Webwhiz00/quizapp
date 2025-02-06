@@ -1,9 +1,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: WP Quiz Plugin\n"
+"Project-Id-Version: OmniS\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-01-14 15:44+0000\n"
+"POT-Creation-Date: 2025-02-05 15:15+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -13,7 +13,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Loco https://localise.biz/\n"
-"X-Loco-Version: 2.6.11; wp-6.6.2\n"
+"X-Loco-Version: 2.6.11; wp-6.7.1\n"
 "X-Domain: wp-quiz-plugin"
 
 #: modules/crossword/admin/templates/sections/fe/fe-main-ui-settings-section.php:175
@@ -28,7 +28,7 @@ msgstr ""
 msgid " Settings"
 msgstr ""
 
-#: quizzes-admin.php:243 kw-quiz-post-and-taxonomies.php:81
+#: quizzes-admin.php:330 kw-quiz-post-and-taxonomies.php:81
 #: kw-quiz-post-and-taxonomies.php:91 kw-quiz-post-and-taxonomies.php:102
 #: kw-quiz-post-and-taxonomies.php:143 kw-quiz-post-and-taxonomies.php:190
 #: kw-quiz-post-and-taxonomies.php:195 kw-quiz-post-and-taxonomies.php:213
@@ -72,11 +72,11 @@ msgstr ""
 msgid "Across Label"
 msgstr ""
 
-#: quizzes-admin.php:56
+#: quizzes-admin.php:57
 msgid "Action Buttons Settings"
 msgstr ""
 
-#: quizzes-admin.php:275
+#: quizzes-admin.php:362
 msgid "Actual Answer"
 msgstr ""
 
@@ -86,7 +86,11 @@ msgstr ""
 msgid "Add a Word"
 msgstr ""
 
-#: quizzes-admin.php:219 kw-quiz-post-and-taxonomies.php:373
+#: quizzes-admin.php:99
+msgid "Add Checkbox"
+msgstr ""
+
+#: quizzes-admin.php:306 kw-quiz-post-and-taxonomies.php:373
 #: modules/crossword/custom-post-type-registration.php:10
 msgid "Add New"
 msgstr ""
@@ -104,15 +108,15 @@ msgstr ""
 msgid "Add New Crossword Category"
 msgstr ""
 
-#: quizzes-admin.php:199 quizzes-management.php:197
+#: quizzes-admin.php:286 quizzes-management.php:204
 msgid "Add New Option"
 msgstr ""
 
-#: quizzes-admin.php:187 quizzes-management.php:194
+#: quizzes-admin.php:274 quizzes-management.php:201
 msgid "Add New Question"
 msgstr ""
 
-#: quizzes-admin.php:191 quizzes-management.php:195
+#: quizzes-admin.php:278 quizzes-management.php:202
 msgid "Add New Question With AI"
 msgstr ""
 
@@ -120,11 +124,11 @@ msgstr ""
 msgid "Add New Quiz"
 msgstr ""
 
-#: quizzes-admin.php:1320 quizzes-management.php:257
+#: quizzes-admin.php:1429 quizzes-management.php:266
 msgid "Add Question"
 msgstr ""
 
-#: quizzes-management.php:247
+#: quizzes-management.php:256
 msgid "Add Question with AI"
 msgstr ""
 
@@ -132,7 +136,7 @@ msgstr ""
 msgid "Add Word Button Label"
 msgstr ""
 
-#: quizzes-admin.php:987
+#: quizzes-admin.php:1096
 msgid "Adjust the settings to customize the appearance of the button."
 msgstr ""
 
@@ -144,7 +148,7 @@ msgstr ""
 msgid "Admin Strings Settings"
 msgstr ""
 
-#: quizzes-admin.php:52 modules/crossword/admin/admin-settings.php:38
+#: quizzes-admin.php:53 modules/crossword/admin/admin-settings.php:38
 msgid "Admin Strings Text"
 msgstr ""
 
@@ -152,7 +156,7 @@ msgstr ""
 msgid "Admin Strings, Button Colors, and Text Colors"
 msgstr ""
 
-#: quizzes-admin.php:50
+#: quizzes-admin.php:51
 msgid "Admin Style Settings"
 msgstr ""
 
@@ -179,6 +183,10 @@ msgstr ""
 msgid "AI Button Label"
 msgstr ""
 
+#: quizzes-admin.php:106
+msgid "AI Prompt Template Settings"
+msgstr ""
+
 #: modules/crossword/admin/admin-settings.php:37
 #: modules/crossword/admin/pages/ai-settings-page.php:67
 msgid "AI Settings"
@@ -193,23 +201,23 @@ msgstr ""
 msgid "All Quiz Categories"
 msgstr ""
 
-#: quizzes-admin.php:215 kw-quiz-post-and-taxonomies.php:372
+#: quizzes-admin.php:302 kw-quiz-post-and-taxonomies.php:372
 msgid "All Quizzes"
 msgstr ""
 
-#: quizzes-admin.php:455
+#: quizzes-admin.php:564
 msgid "Answer Background Color"
 msgstr ""
 
-#: quizzes-admin.php:453
+#: quizzes-admin.php:562
 msgid "Answer Font Color"
 msgstr ""
 
-#: quizzes-admin.php:454
+#: quizzes-admin.php:563
 msgid "Answer Font Family"
 msgstr ""
 
-#: quizzes-admin.php:452
+#: quizzes-admin.php:561
 msgid "Answer Font Size"
 msgstr ""
 
@@ -217,11 +225,11 @@ msgstr ""
 msgid "Answer Key"
 msgstr ""
 
-#: quizzes-admin.php:339
+#: quizzes-admin.php:426
 msgid "Answer Key PDF Title"
 msgstr ""
 
-#: quizzes-admin.php:907
+#: quizzes-admin.php:1016
 msgid "Answer Text Color:"
 msgstr ""
 
@@ -229,7 +237,7 @@ msgstr ""
 msgid "Answer:"
 msgstr ""
 
-#: quizzes-admin.php:1198
+#: quizzes-admin.php:1307
 msgid "Answers Style Settings"
 msgstr ""
 
@@ -239,12 +247,16 @@ msgstr ""
 msgid "Are you Sure ?"
 msgstr ""
 
-#: quizzes-management.php:1081
+#: quizzes-management.php:1241
 msgid "Are you sure you want to delete the question?"
 msgstr ""
 
 #: wp_quiz_plugin_action_buttons_settings.php:135
 msgid "Are you sure you want to reset to default settings?"
+msgstr ""
+
+#: kw-author-name-admin-view.php:14
+msgid "Author Name"
 msgstr ""
 
 #: modules/crossword/public/crossword-fe-index.php:43
@@ -255,7 +267,7 @@ msgstr ""
 msgid "Back"
 msgstr ""
 
-#: quizzes-admin.php:1352
+#: quizzes-admin.php:1461
 #: modules/crossword/admin/templates/sections/fe/fe-main-ui-settings-section.php:91
 msgid "Background Color"
 msgstr ""
@@ -293,8 +305,8 @@ msgstr ""
 msgid "Button Text Color"
 msgstr ""
 
-#: quizzes-management.php:627 quizzes-management.php:649
-#: quizzes-management.php:668 quizzes-management.php:685
+#: quizzes-management.php:636 quizzes-management.php:660
+#: quizzes-management.php:679 quizzes-management.php:708
 msgid "Cancel"
 msgstr ""
 
@@ -317,7 +329,7 @@ msgstr ""
 msgid "Cell Font Color"
 msgstr ""
 
-#: quizzes-admin.php:732
+#: quizzes-admin.php:841
 msgid "Change Image"
 msgstr ""
 
@@ -330,19 +342,23 @@ msgstr ""
 msgid "Check Crossword"
 msgstr ""
 
-#: quizzes-management.php:646
+#: quizzes-admin.php:77
+msgid "Checkbox Settings"
+msgstr ""
+
+#: quizzes-management.php:657
 msgid "Choose a number of questions..."
 msgstr ""
 
-#: quizzes-management.php:624
+#: quizzes-management.php:633
 msgid "Choose a question type..."
 msgstr ""
 
-#: quizzes-admin.php:901
+#: quizzes-admin.php:1010
 msgid "Choose the font for quiz answers."
 msgstr ""
 
-#: quizzes-admin.php:859
+#: quizzes-admin.php:968
 msgid "Choose the font for quiz questions."
 msgstr ""
 
@@ -360,7 +376,7 @@ msgstr ""
 msgid "Clear List"
 msgstr ""
 
-#: quizzes-admin.php:207 quizzes-management.php:199
+#: quizzes-admin.php:294 quizzes-management.php:206
 msgid "Click to Add Answer"
 msgstr ""
 
@@ -385,7 +401,7 @@ msgstr ""
 msgid "Clues Settings"
 msgstr ""
 
-#: quizzes-admin.php:627
+#: quizzes-admin.php:736
 msgid "Comma-separated list of numbers for questions dropdown:"
 msgstr ""
 
@@ -409,7 +425,7 @@ msgstr ""
 msgid "Correct Answer"
 msgstr ""
 
-#: quizzes-admin.php:341
+#: quizzes-admin.php:428
 msgid "Correct Answer Header Text"
 msgstr ""
 
@@ -421,14 +437,14 @@ msgstr ""
 msgid "Correct Answers:"
 msgstr ""
 
-#: quizzes-management.php:896 quizzes-management.php:922
-#: quizzes-management.php:946 quizzes-management.php:1012
+#: quizzes-management.php:953 quizzes-management.php:979
+#: quizzes-management.php:1003 quizzes-management.php:1107
 msgid ""
 "Could not find the question or correct answer. Please check the AI response "
 "format."
 msgstr ""
 
-#: quizzes-management.php:741
+#: quizzes-management.php:774
 msgid ""
 "Could not parse the response. Ensure the AI response follows the expected "
 "format."
@@ -492,6 +508,10 @@ msgstr ""
 msgid "Custom  Slug Settings"
 msgstr ""
 
+#: quizzes-admin.php:136
+msgid "Custom AI Prompt Template"
+msgstr ""
+
 #: kw-quiz-post-and-taxonomies.php:408
 msgid "Custom Post Type for Quizzes"
 msgstr ""
@@ -505,11 +525,11 @@ msgstr ""
 msgid "Custom URL Slug"
 msgstr ""
 
-#: quizzes-admin.php:600
+#: quizzes-admin.php:709
 msgid "Custom URL Slug for Quizzes:"
 msgstr ""
 
-#: quizzes-admin.php:170
+#: quizzes-admin.php:257
 msgid "Customize Button and Placeholder Texts"
 msgstr ""
 
@@ -517,37 +537,41 @@ msgstr ""
 msgid "Customize Meta Box and Messages"
 msgstr ""
 
-#: quizzes-admin.php:327
+#: quizzes-admin.php:414
 msgid "Customize PDF Strings Texts"
 msgstr ""
 
-#: quizzes-admin.php:424
+#: quizzes-admin.php:533
 msgid "Customize PDF Style Settings"
 msgstr ""
 
-#: quizzes-admin.php:1660
+#: quizzes-admin.php:1769
 msgid ""
 "Customize the prompt template for MCQ questions. Use variables like [Your "
 "question text], [Option A], [Correct Answer]."
 msgstr ""
 
-#: quizzes-admin.php:1705
+#: quizzes-admin.php:1814
 msgid "Customize the prompt template for Text answer questions."
 msgstr ""
 
-#: quizzes-admin.php:1688
+#: quizzes-admin.php:1797
 msgid "Customize the prompt template for True/False questions."
 msgstr ""
 
-#: quizzes-admin.php:1671
+#: quizzes-admin.php:1780
 msgid ""
 "Customize the template for the learners' age prompt. Use [age] as a "
 "placeholder, which will be replaced with the actual learners' age. This "
 "template will automatically get appended."
 msgstr ""
 
-#: quizzes-admin.php:337
+#: quizzes-admin.php:424
 msgid "Date Field Text"
+msgstr ""
+
+#: quizzes-admin.php:143
+msgid "Define your custom prompt here..."
 msgstr ""
 
 #: custom-meta-boxes/quiz_seo_text_admin_settings.php:20
@@ -577,7 +601,7 @@ msgid "Download"
 msgstr ""
 
 #: kw-questions-metabox-header.php:34 kw-questions-metabox-header.php:56
-#: quizzes-admin.php:183 quizzes-admin.php:1318
+#: quizzes-admin.php:270 quizzes-admin.php:1427
 msgid "Download Answer Key"
 msgstr ""
 
@@ -595,12 +619,12 @@ msgstr ""
 msgid "Download Key"
 msgstr ""
 
-#: quizzes-admin.php:1317
+#: quizzes-admin.php:1426
 msgid "Download PDF"
 msgstr ""
 
 #: kw-questions-metabox-header.php:33 kw-questions-metabox-header.php:45
-#: quizzes-admin.php:179
+#: quizzes-admin.php:266
 msgid "Download Quiz"
 msgstr ""
 
@@ -641,11 +665,15 @@ msgid ""
 "effectively."
 msgstr ""
 
-#: quizzes-management.php:663
+#: quizzes-admin.php:92
+msgid "Enter checkbox value"
+msgstr ""
+
+#: quizzes-management.php:674
 msgid "Enter Learners Age"
 msgstr ""
 
-#: quizzes-admin.php:630
+#: quizzes-admin.php:739
 msgid ""
 "Enter numbers separated by commas (e.g., \"1, 5, 10\") to define the options "
 "for the number of questions users can select."
@@ -655,20 +683,24 @@ msgstr ""
 msgid "Enter your OpenAI API key."
 msgstr ""
 
-#: quizzes-management.php:680
+#: quizzes-management.php:690 quizzes-management.php:695
+msgid "Enter your prompt below:"
+msgstr ""
+
+#: quizzes-management.php:693
 msgid "Enter your prompt for ChatGPT:"
 msgstr ""
 
-#: quizzes-management.php:740 quizzes-management.php:756
-#: quizzes-management.php:1011
+#: quizzes-management.php:773 quizzes-management.php:790
+#: quizzes-management.php:1106
 msgid "Error"
 msgstr ""
 
-#: quizzes-management.php:754
+#: quizzes-management.php:788
 msgid "Error: "
 msgstr ""
 
-#: quizzes-management.php:753
+#: quizzes-management.php:787
 msgid "Failed to generate question."
 msgstr ""
 
@@ -677,8 +709,9 @@ msgstr ""
 msgid "Failure Popup Settings"
 msgstr ""
 
-#: quizzes-management.php:442 quizzes-management.php:938
-#: quizzes-management.php:1155 quizzes-management.php:1314
+#: kw-save-quiz-aut.php:35 quizzes-management.php:451
+#: quizzes-management.php:995 quizzes-management.php:1315
+#: quizzes-management.php:1475
 msgid "False"
 msgstr ""
 
@@ -694,74 +727,89 @@ msgstr ""
 msgid "Filter quizzes list"
 msgstr ""
 
-#: quizzes-admin.php:1179 quizzes-admin.php:1215
+#: quizzes-admin.php:1288 quizzes-admin.php:1324
 #: modules/crossword/admin/templates/sections/fe/fe-clue-settings-section.php:22
 #: modules/crossword/admin/templates/sections/fe/fe-clue-settings-section.php:54
 msgid "Font Color"
 msgstr ""
 
-#: quizzes-admin.php:1163 quizzes-admin.php:1206
+#: quizzes-admin.php:1272 quizzes-admin.php:1315
 #: modules/crossword/admin/templates/sections/fe/fe-main-ui-settings-section.php:109
 #: modules/crossword/admin/templates/sections/fe/fe-clue-settings-section.php:32
 #: modules/crossword/admin/templates/sections/fe/fe-clue-settings-section.php:64
 msgid "Font Family"
 msgstr ""
 
-#: quizzes-admin.php:1171 quizzes-admin.php:1224
+#: quizzes-admin.php:1280 quizzes-admin.php:1333
 msgid "Font Size"
 msgstr ""
 
-#: quizzes-admin.php:1364
+#: quizzes-admin.php:1473
 #: modules/crossword/admin/templates/sections/fe/fe-main-ui-settings-section.php:103
 #: modules/crossword/admin/templates/sections/fe/fe-clue-settings-section.php:27
 #: modules/crossword/admin/templates/sections/fe/fe-clue-settings-section.php:59
 msgid "Font Size (px)"
 msgstr ""
 
-#: quizzes-admin.php:915
+#: quizzes-admin.php:1024
 msgid "Font Size for Answers:"
 msgstr ""
 
-#: quizzes-admin.php:874
+#: quizzes-admin.php:983
 msgid "Font Size for Questions:"
 msgstr ""
 
-#: public/public-functions.php:99
-msgctxt "For PDF generation"
+#: public/public-functions.php:112
+msgctxt "For Report Card PDF"
+msgid "Correct Answer:"
+msgstr ""
+
+#: public/public-functions.php:98
+msgctxt "For Report Card PDF"
 msgid "Correct Answers: "
 msgstr ""
 
 #: public/public-functions.php:105
-msgctxt "For PDF generation"
+msgctxt "For Report Card PDF"
 msgid "Details:"
 msgstr ""
 
-#: public/public-functions.php:100
-msgctxt "For PDF generation"
+#: public/public-functions.php:99
+msgctxt "For Report Card PDF"
 msgid "Incorrect Answers: "
 msgstr ""
 
+#: public/public-functions.php:109
+msgctxt "For Report Card PDF"
+msgid "Question: "
+msgstr ""
+
 #: public/public-functions.php:92
-msgctxt "For PDF generation"
+msgctxt "For Report Card PDF"
 msgid "Quiz Report Card"
 msgstr ""
 
-#: public/public-functions.php:101
-msgctxt "For PDF generation"
+#: public/public-functions.php:100
+msgctxt "For Report Card PDF"
 msgid "Score: "
 msgstr ""
 
-#: public/public-functions.php:97
-msgctxt "For PDF generation"
+#: public/public-functions.php:96
+msgctxt "For Report Card PDF"
 msgid "Student Name: "
 msgstr ""
 
-#: public/public-functions.php:98
-msgctxt "For PDF generation"
+#: public/public-functions.php:97
+msgctxt "For Report Card PDF"
 msgid "Total Questions: "
 msgstr ""
 
-#: quizzes-admin.php:51
+#: public/public-functions.php:113
+msgctxt "For Report Card PDF"
+msgid "Your Answer:"
+msgstr ""
+
+#: quizzes-admin.php:52
 msgid "Frontend Style Settings"
 msgstr ""
 
@@ -788,7 +836,7 @@ msgstr ""
 msgid "General Settings"
 msgstr ""
 
-#: quizzes-management.php:684
+#: quizzes-management.php:707
 msgid "Generate"
 msgstr ""
 
@@ -796,7 +844,7 @@ msgstr ""
 msgid "Generate Prompt"
 msgstr ""
 
-#: quizzes-admin.php:1319 modules/crossword/index.php:46
+#: quizzes-admin.php:1428 modules/crossword/index.php:46
 #: modules/crossword/crossword-settings.php:38
 #: modules/crossword/templates/generate-with-ai.php:8
 #: modules/crossword/admin/pages/ai-settings-page.php:42
@@ -806,12 +854,12 @@ msgstr ""
 msgid "Generate with AI"
 msgstr ""
 
-#: quizzes-management.php:744 quizzes-management.php:760
-#: quizzes-management.php:1007 quizzes-management.php:1015
+#: quizzes-management.php:778 quizzes-management.php:795
+#: quizzes-management.php:1102 quizzes-management.php:1111
 msgid "Generate with ChatGPT"
 msgstr ""
 
-#: quizzes-admin.php:345
+#: quizzes-admin.php:432
 msgid "Generated By Text"
 msgstr ""
 
@@ -819,7 +867,7 @@ msgstr ""
 msgid "Generated by WP Quiz Plugin"
 msgstr ""
 
-#: quizzes-management.php:727 modules/crossword/index.php:61
+#: quizzes-management.php:760 modules/crossword/index.php:61
 msgid "Generating..."
 msgstr ""
 
@@ -839,19 +887,19 @@ msgstr ""
 msgid "GPT-4.0 Mini"
 msgstr ""
 
-#: quizzes-admin.php:443
+#: quizzes-admin.php:552
 msgid "Header Font Color"
 msgstr ""
 
-#: quizzes-admin.php:444
+#: quizzes-admin.php:553
 msgid "Header Font Family"
 msgstr ""
 
-#: quizzes-admin.php:442
+#: quizzes-admin.php:551
 msgid "Header Font Size"
 msgstr ""
 
-#: quizzes-admin.php:263
+#: quizzes-admin.php:350
 msgid "Height:"
 msgstr ""
 
@@ -875,6 +923,10 @@ msgstr ""
 msgid "Highlight Cell Background Color"
 msgstr ""
 
+#: quizzes-admin.php:110
+msgid "How to Use Variables in Your Prompt Template:"
+msgstr ""
+
 #. Author URI of the plugin
 msgid "https://kazmiwebwhiz.com"
 msgstr ""
@@ -883,7 +935,7 @@ msgstr ""
 msgid "Image Height (px)"
 msgstr ""
 
-#: quizzes-admin.php:267 quizzes-management.php:200
+#: quizzes-admin.php:354 quizzes-management.php:207
 msgid "Image Height Setting Notification Text"
 msgstr ""
 
@@ -928,11 +980,11 @@ msgstr ""
 msgid "Learner Name"
 msgstr ""
 
-#: quizzes-management.php:671
+#: quizzes-management.php:682
 msgid "Learners age is required!"
 msgstr ""
 
-#: quizzes-admin.php:1645
+#: quizzes-admin.php:1754
 msgid "Learners' Age Prompt Template"
 msgstr ""
 
@@ -940,12 +992,12 @@ msgstr ""
 msgid "Max Limit"
 msgstr ""
 
-#: quizzes-admin.php:787
+#: quizzes-admin.php:896
 #: modules/crossword/admin/templates/sections/ai/open-ai-settings-section.php:38
 msgid "Max Tokens"
 msgstr ""
 
-#: quizzes-admin.php:1618
+#: quizzes-admin.php:1727
 msgid "MCQ Prompt Template"
 msgstr ""
 
@@ -953,8 +1005,8 @@ msgstr ""
 msgid "Meta Box Title"
 msgstr ""
 
-#: quizzes-management.php:358 quizzes-management.php:620
-#: quizzes-management.php:984 quizzes-management.php:1050
+#: quizzes-management.php:367 quizzes-management.php:629
+#: quizzes-management.php:1078 quizzes-management.php:1210
 msgid "Multiple Choice"
 msgstr ""
 
@@ -971,7 +1023,7 @@ msgstr ""
 msgid "New Crossword Category Name"
 msgstr ""
 
-#: quizzes-management.php:1037
+#: quizzes-management.php:1197
 msgid "New Question"
 msgstr ""
 
@@ -989,8 +1041,8 @@ msgstr ""
 msgid "New Quiz Available"
 msgstr ""
 
-#: quizzes-management.php:626 quizzes-management.php:648
-#: quizzes-management.php:667
+#: quizzes-management.php:635 quizzes-management.php:659
+#: quizzes-management.php:678
 msgid "Next"
 msgstr ""
 
@@ -1038,7 +1090,7 @@ msgstr ""
 msgid "Note:"
 msgstr ""
 
-#: quizzes-admin.php:231 quiz-notificaions.php:37
+#: quizzes-admin.php:318 quiz-notificaions.php:37
 msgid "Notifications"
 msgstr ""
 
@@ -1073,7 +1125,7 @@ msgstr ""
 msgid "Open in New Tab"
 msgstr ""
 
-#: quizzes-management.php:622 quizzes-management.php:1052
+#: quizzes-management.php:631 quizzes-management.php:1212
 msgid "Open Text"
 msgstr ""
 
@@ -1081,12 +1133,12 @@ msgstr ""
 msgid "OpenAI API Key"
 msgstr ""
 
-#: quizzes-admin.php:770
+#: quizzes-admin.php:879
 #: modules/crossword/admin/templates/sections/ai/open-ai-settings-section.php:15
 msgid "OpenAI API Settings"
 msgstr ""
 
-#: quizzes-admin.php:778
+#: quizzes-admin.php:887
 #: modules/crossword/admin/templates/sections/ai/open-ai-settings-section.php:26
 msgid "OpenAI Model"
 msgstr ""
@@ -1113,11 +1165,11 @@ msgstr ""
 msgid "Parent Quiz:"
 msgstr ""
 
-#: quizzes-admin.php:53
+#: quizzes-admin.php:54
 msgid "PDF Strings Text"
 msgstr ""
 
-#: quizzes-admin.php:54
+#: quizzes-admin.php:55
 msgid "PDF Style Settings"
 msgstr ""
 
@@ -1138,7 +1190,7 @@ msgstr ""
 msgid "Please select a Class."
 msgstr ""
 
-#: quizzes-management.php:630
+#: quizzes-management.php:639
 msgid "Please select a question type!"
 msgstr ""
 
@@ -1150,7 +1202,7 @@ msgstr ""
 msgid "Please select a Subject."
 msgstr ""
 
-#: quizzes-management.php:652
+#: quizzes-management.php:663
 msgid "Please select the number of questions!"
 msgstr ""
 
@@ -1163,11 +1215,11 @@ msgstr ""
 msgid "Popup Body Text"
 msgstr ""
 
-#: quizzes-admin.php:1123
+#: quizzes-admin.php:1232
 msgid "Popup Button Font Size:"
 msgstr ""
 
-#: quizzes-admin.php:1115
+#: quizzes-admin.php:1224
 msgid "Popup Font Size:"
 msgstr ""
 
@@ -1185,12 +1237,16 @@ msgstr ""
 msgid "Private"
 msgstr ""
 
-#: quizzes-admin.php:1610
+#: quizzes-admin.php:50 quizzes-admin.php:1719
 #: modules/crossword/admin/templates/sections/ai/prompt-customization-section.php:18
 msgid "Prompt Customization"
 msgstr ""
 
-#: quizzes-management.php:691
+#: quizzes-admin.php:73
+msgid "Prompt Customization Settings"
+msgstr ""
+
+#: quizzes-management.php:715
 msgid "Prompt is required!"
 msgstr ""
 
@@ -1198,7 +1254,7 @@ msgstr ""
 msgid "Public"
 msgstr ""
 
-#: quizzes-management.php:341 quizzes-management.php:1037
+#: quizzes-management.php:350 quizzes-management.php:1197
 msgid "Q."
 msgstr ""
 
@@ -1206,43 +1262,43 @@ msgstr ""
 msgid "Question"
 msgstr ""
 
-#: quizzes-admin.php:433
+#: quizzes-admin.php:542
 msgid "Question Background Color"
 msgstr ""
 
-#: quizzes-admin.php:431
+#: quizzes-admin.php:540
 msgid "Question Font Color"
 msgstr ""
 
-#: quizzes-admin.php:432
+#: quizzes-admin.php:541
 msgid "Question Font Family"
 msgstr ""
 
-#: quizzes-admin.php:430
+#: quizzes-admin.php:539
 msgid "Question Font Size"
 msgstr ""
 
-#: quizzes-admin.php:343
+#: quizzes-admin.php:430
 msgid "Question Header Text"
 msgstr ""
 
-#: quizzes-admin.php:1155
+#: quizzes-admin.php:1264
 msgid "Question Style Settings"
 msgstr ""
 
-#: quizzes-admin.php:865
+#: quizzes-admin.php:974
 msgid "Question Text Color:"
 msgstr ""
 
-#: quizzes-management.php:993
+#: quizzes-management.php:1087
 msgid "Question Title:"
 msgstr ""
 
-#: quizzes-management.php:355 quizzes-management.php:1049
+#: quizzes-management.php:364 quizzes-management.php:1209
 msgid "Question Type"
 msgstr ""
 
-#: quizzes-management.php:981
+#: quizzes-management.php:1075
 msgid "Question Type:"
 msgstr ""
 
@@ -1271,7 +1327,7 @@ msgstr ""
 msgid "Quiz Categories"
 msgstr ""
 
-#: quizzes-admin.php:235
+#: quizzes-admin.php:322
 msgid "Quiz Category"
 msgstr ""
 
@@ -1295,12 +1351,12 @@ msgstr ""
 msgid "Quiz Module Shortcode"
 msgstr ""
 
-#: quizzes-admin.php:333
+#: quizzes-admin.php:420
 msgid "Quiz PDF Title"
 msgstr ""
 
 #. Meta box ID
-#: quizzes-management.php:143
+#: quizzes-management.php:150
 msgid "Quiz Questions"
 msgstr ""
 
@@ -1316,15 +1372,15 @@ msgstr ""
 msgid "Quiz Title"
 msgstr ""
 
-#: quizzes-admin.php:448
+#: quizzes-admin.php:557
 msgid "Quiz Title Font Color"
 msgstr ""
 
-#: quizzes-admin.php:449
+#: quizzes-admin.php:558
 msgid "Quiz Title Font Family"
 msgstr ""
 
-#: quizzes-admin.php:447
+#: quizzes-admin.php:556
 msgid "Quiz Title Font Size"
 msgstr ""
 
@@ -1341,7 +1397,7 @@ msgstr ""
 msgid "quiz_odpowiedzi"
 msgstr ""
 
-#: quizzes-admin.php:211 kw-quiz-post-and-taxonomies.php:371
+#: quizzes-admin.php:298 kw-quiz-post-and-taxonomies.php:371
 msgid "Quizzes"
 msgstr ""
 
@@ -1353,8 +1409,12 @@ msgstr ""
 msgid "Quizzes list navigation"
 msgstr ""
 
-#: quizzes-admin.php:27 quizzes-admin.php:45 quizzes-admin.php:223
+#: quizzes-admin.php:27 quizzes-admin.php:45 quizzes-admin.php:310
 msgid "Quizzes Settings"
+msgstr ""
+
+#: quizzes-admin.php:93
+msgid "Remove"
 msgstr ""
 
 #: kw-quiz-post-and-taxonomies.php:397
@@ -1362,8 +1422,9 @@ msgid "Remove featured image"
 msgstr ""
 
 #: wp_quiz_plugin_action_buttons_settings.php:68
-#: wp_quiz_plugin_action_buttons_settings.php:130 quizzes-admin.php:1188
-#: quizzes-admin.php:1233 quizzes-admin.php:1439 quizzes-admin.php:1491
+#: wp_quiz_plugin_action_buttons_settings.php:130 quizzes-admin.php:120
+#: quizzes-admin.php:1297 quizzes-admin.php:1342 quizzes-admin.php:1548
+#: quizzes-admin.php:1600
 #: modules/crossword/admin/templates/sections/admin-view-strings-section.php:73
 #: modules/crossword/admin/templates/sections/admin-view-strings-section.php:98
 #: modules/crossword/admin/templates/sections/ai/ai-box-settings-section.php:67
@@ -1425,7 +1486,7 @@ msgstr ""
 msgid "Search Quiz Categories"
 msgstr ""
 
-#: quizzes-admin.php:896
+#: quizzes-admin.php:1005
 msgid "Select Answer Font:"
 msgstr ""
 
@@ -1435,27 +1496,27 @@ msgstr ""
 msgid "Select Category Type"
 msgstr ""
 
-#: quizzes-admin.php:247
+#: quizzes-admin.php:334
 msgid "Select Class"
 msgstr ""
 
-#: quizzes-management.php:643
+#: quizzes-management.php:654
 msgid "Select Number of Questions"
 msgstr ""
 
-#: quizzes-admin.php:716
+#: quizzes-admin.php:825
 msgid "Select or Upload PDF Image"
 msgstr ""
 
-#: quizzes-admin.php:854
+#: quizzes-admin.php:963
 msgid "Select Question Font:"
 msgstr ""
 
-#: quizzes-management.php:617
+#: quizzes-management.php:626
 msgid "Select Question Type"
 msgstr ""
 
-#: quizzes-admin.php:239
+#: quizzes-admin.php:326
 msgid "Select School"
 msgstr ""
 
@@ -1478,7 +1539,7 @@ msgid ""
 "Select the color of the \"Generate with AI\" button using the color picker."
 msgstr ""
 
-#: quizzes-admin.php:814
+#: quizzes-admin.php:923
 #: modules/crossword/admin/templates/sections/ai/open-ai-settings-section.php:33
 msgid "Select the OpenAI model to use."
 msgstr ""
@@ -1501,7 +1562,7 @@ msgstr ""
 msgid "SEO Text (Admin Only)"
 msgstr ""
 
-#: quizzes-admin.php:603
+#: quizzes-admin.php:712
 msgid "Set a custom slug for your quizzes URL. Example: \"my-quizzes\"."
 msgstr ""
 
@@ -1509,7 +1570,7 @@ msgstr ""
 msgid "Set a custom URL slug for crosswords. Example: \"my-crosswords\"."
 msgstr ""
 
-#: quizzes-admin.php:255
+#: quizzes-admin.php:342
 msgid "Set Answer Image Size:"
 msgstr ""
 
@@ -1517,7 +1578,7 @@ msgstr ""
 msgid "Set featured image"
 msgstr ""
 
-#: quizzes-admin.php:251
+#: quizzes-admin.php:338
 msgid "Set Question Image Size:"
 msgstr ""
 
@@ -1529,11 +1590,11 @@ msgstr ""
 msgid "Set the body text for the success popup."
 msgstr ""
 
-#: quizzes-admin.php:909
+#: quizzes-admin.php:1018
 msgid "Set the color for the quiz answers text."
 msgstr ""
 
-#: quizzes-admin.php:867
+#: quizzes-admin.php:976
 msgid "Set the color for the quiz questions text."
 msgstr ""
 
@@ -1543,19 +1604,19 @@ msgid ""
 "words."
 msgstr ""
 
-#: quizzes-admin.php:917
+#: quizzes-admin.php:1026
 msgid "Set the font size for the quiz answers (e.g., \"16px\")."
 msgstr ""
 
-#: quizzes-admin.php:876
+#: quizzes-admin.php:985
 msgid "Set the font size for the quiz questions (e.g., \"16px\")."
 msgstr ""
 
-#: quizzes-admin.php:1117
+#: quizzes-admin.php:1226
 msgid "Set the font size for the SweetAlert popup (e.g., \"16px\")."
 msgstr ""
 
-#: quizzes-admin.php:1125
+#: quizzes-admin.php:1234
 msgid "Set the font size for the SweetAlert popup buttons (e.g., \"14px\")."
 msgstr ""
 
@@ -1595,7 +1656,7 @@ msgstr ""
 msgid "Set the maximum limit for AI-generated words in the crossword."
 msgstr ""
 
-#: quizzes-admin.php:823
+#: quizzes-admin.php:932
 #: modules/crossword/admin/templates/sections/ai/open-ai-settings-section.php:40
 msgid "Set the maximum number of tokens for the response (50 to 300)."
 msgstr ""
@@ -1604,7 +1665,7 @@ msgstr ""
 msgid "Set the return format prompt for the output of generated crosswords."
 msgstr ""
 
-#: quizzes-admin.php:832
+#: quizzes-admin.php:941
 #: modules/crossword/admin/templates/sections/ai/open-ai-settings-section.php:47
 msgid "Set the temperature for response randomness (0 to 1)."
 msgstr ""
@@ -1643,7 +1704,7 @@ msgstr ""
 msgid "Share via Email"
 msgstr ""
 
-#: quizzes-admin.php:55
+#: quizzes-admin.php:56
 msgid "Shortcode Settings"
 msgstr ""
 
@@ -1667,35 +1728,35 @@ msgstr ""
 msgid "Shuffle"
 msgstr ""
 
-#: quizzes-management.php:304
+#: quizzes-management.php:313
 msgid ""
 "Specify the size of the question image in pixels. The maximum allowed size "
 "is 250px, and the default size is 200px."
 msgstr ""
 
-#: quizzes-management.php:284
+#: quizzes-management.php:293
 msgid ""
 "Specify the size of the question image in pixels. The maximum allowed size "
 "is 350px, and the default size is 200px."
 msgstr ""
 
-#: quizzes-admin.php:439
+#: quizzes-admin.php:548
 msgid "Student Name & Date Background Color"
 msgstr ""
 
-#: quizzes-admin.php:437
+#: quizzes-admin.php:546
 msgid "Student Name & Date Font Color"
 msgstr ""
 
-#: quizzes-admin.php:438
+#: quizzes-admin.php:547
 msgid "Student Name & Date Font Family"
 msgstr ""
 
-#: quizzes-admin.php:436
+#: quizzes-admin.php:545
 msgid "Student Name & Date Font Size"
 msgstr ""
 
-#: quizzes-admin.php:335
+#: quizzes-admin.php:422
 msgid "Student Name Field Text"
 msgstr ""
 
@@ -1703,7 +1764,7 @@ msgstr ""
 msgid "Student Name:"
 msgstr ""
 
-#: quizzes-admin.php:1332
+#: quizzes-admin.php:1441
 #, php-format
 msgid "Styles for %s Button"
 msgstr ""
@@ -1720,7 +1781,7 @@ msgstr ""
 msgid "Submission Date"
 msgstr ""
 
-#: quizzes-admin.php:227 quizzes-submissions.php:10
+#: quizzes-admin.php:314 quizzes-submissions.php:10
 msgid "Submissions"
 msgstr ""
 
@@ -1767,20 +1828,20 @@ msgctxt "taxonomy singular name"
 msgid "Quiz Category"
 msgstr ""
 
-#: quizzes-admin.php:796
+#: quizzes-admin.php:905
 #: modules/crossword/admin/templates/sections/ai/open-ai-settings-section.php:45
 msgid "Temperature"
 msgstr ""
 
-#: quizzes-management.php:364 quizzes-management.php:990
+#: quizzes-management.php:373 quizzes-management.php:1084
 msgid "Text"
 msgstr ""
 
-#: quizzes-admin.php:1636
+#: quizzes-admin.php:1745
 msgid "Text Answer Prompt Template"
 msgstr ""
 
-#: quizzes-admin.php:1340
+#: quizzes-admin.php:1449
 #: modules/crossword/admin/templates/sections/fe/fe-main-ui-settings-section.php:97
 msgid "Text Color"
 msgstr ""
@@ -1838,6 +1899,38 @@ msgid ""
 "available shortcodes, usage, and settings."
 msgstr ""
 
+#: quizzes-admin.php:114
+msgid "This will be replaced with the exact user-provided prompt."
+msgstr ""
+
+#: quizzes-admin.php:112
+msgid "This will be replaced with the learner's age (e.g., 12)."
+msgstr ""
+
+#: quizzes-admin.php:113
+msgid ""
+"This will be replaced with the selected categories in the format: Parent "
+"Category > Child Category."
+msgstr ""
+
+#: quizzes-admin.php:115
+msgid ""
+"This will be replaced with the selected checkbox values, separated by commas "
+"(e.g., focus1, focus2)."
+msgstr ""
+
+#: quizzes-admin.php:116
+msgid ""
+"This will be replaced with the template for the selected question type (e.g.,"
+" MCQ, T/F, or Text)."
+msgstr ""
+
+#: quizzes-admin.php:117
+msgid ""
+"This will include context to avoid generating questions similar to "
+"previously generated ones."
+msgstr ""
+
 #: modules/crossword/admin/templates/sections/ai/prompt-customization-section.php:30
 msgid ""
 "To use a custom-defined prompt, make sure to include the placeholder "
@@ -1853,17 +1946,18 @@ msgstr ""
 msgid "Total Questions:"
 msgstr ""
 
-#: quizzes-management.php:433 quizzes-management.php:934
-#: quizzes-management.php:1151 quizzes-management.php:1310
+#: kw-save-quiz-aut.php:31 quizzes-management.php:442
+#: quizzes-management.php:991 quizzes-management.php:1311
+#: quizzes-management.php:1471
 msgid "True"
 msgstr ""
 
-#: quizzes-management.php:361 quizzes-management.php:621
-#: quizzes-management.php:987 quizzes-management.php:1051
+#: quizzes-management.php:370 quizzes-management.php:630
+#: quizzes-management.php:1081 quizzes-management.php:1211
 msgid "True/False"
 msgstr ""
 
-#: quizzes-admin.php:1627
+#: quizzes-admin.php:1736
 msgid "True/False Prompt Template"
 msgstr ""
 
@@ -1871,19 +1965,19 @@ msgstr ""
 msgid "Try Again"
 msgstr ""
 
-#: quizzes-management.php:665
+#: quizzes-management.php:676
 msgid "Type learners age here..."
 msgstr ""
 
-#: quizzes-admin.php:203 quizzes-management.php:198
+#: quizzes-admin.php:290 quizzes-management.php:205
 msgid "Type Question Here"
 msgstr ""
 
-#: quizzes-admin.php:271
+#: quizzes-admin.php:358
 msgid "Type your answer here..."
 msgstr ""
 
-#: quizzes-management.php:682
+#: quizzes-management.php:696
 msgid "Type your prompt here..."
 msgstr ""
 
@@ -1900,7 +1994,7 @@ msgstr ""
 msgid "Update Quiz"
 msgstr ""
 
-#: quizzes-admin.php:195 quizzes-management.php:196
+#: quizzes-admin.php:282 quizzes-management.php:203
 msgid "Upload Question Image"
 msgstr ""
 
@@ -1916,12 +2010,19 @@ msgstr ""
 msgid "Use as featured image"
 msgstr ""
 
-#: quizzes-admin.php:1659 quizzes-admin.php:1670 quizzes-admin.php:1687
-#: quizzes-admin.php:1704
+#: quizzes-admin.php:1768 quizzes-admin.php:1779 quizzes-admin.php:1796
+#: quizzes-admin.php:1813
 msgid "Use Default"
 msgstr ""
 
-#: quizzes-admin.php:717
+#: quizzes-admin.php:146
+msgid ""
+"Use the provided variables to customize the AI prompt template. If "
+"{questionTemplate} or {previousQuestionsContext} is not included, they will "
+"automatically be added at the end of the prompt."
+msgstr ""
+
+#: quizzes-admin.php:826
 msgid "Use this Image"
 msgstr ""
 
@@ -1937,7 +2038,7 @@ msgstr ""
 msgid "View Quizzes"
 msgstr ""
 
-#: quizzes-admin.php:259
+#: quizzes-admin.php:346
 msgid "Width:"
 msgstr ""
 
@@ -1950,6 +2051,10 @@ msgstr ""
 
 #: modules/crossword/admin/templates/sections/admin-view-strings-section.php:135
 msgid "Words and Clues Label"
+msgstr ""
+
+#: quizzes-admin.php:119
+msgid "You can use these variables to create a customized AI prompt template."
 msgstr ""
 
 #: quiz-template-download.php:14 quiz-template-download.php:213

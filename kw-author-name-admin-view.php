@@ -11,7 +11,7 @@ function wp_custom_add_author_column( $columns ) {
     foreach ( $columns as $key => $value ) {
         $new_columns[ $key ] = $value;
         if ( 'title' === $key ) {
-            $new_columns['author_name'] = __( 'Author Name', 'textdomain' );
+            $new_columns['author_name'] = __( 'Author Name', 'wp-quiz-plugin' );
         }
     }
     return $new_columns;

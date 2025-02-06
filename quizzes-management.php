@@ -2,7 +2,7 @@
 /*
 Plugin Name: OmniS
 Description: A WordPress plugin to create and manage quizzes with questions and user submissions.
-Version: 5.0.11
+Version: 5.0.13
 Author: Kazmi Webwhiz
 Author URI: https://kazmiwebwhiz.com
 Text Domain: wp-quiz-plugin
@@ -29,6 +29,7 @@ include_once plugin_dir_path(__FILE__) .  'kw-save-quiz-aut.php';
 
 
 // Enqueue Plugin Styles for Admin
+
 function wp_quiz_plugin_enqueue_styles() {
     $stylesheets = array(
         'stylesheet.css',
@@ -239,7 +240,11 @@ function display_questions_meta_box($post) {
 
     ?>
 
-    <div class="kw-loading" style="display:none">Loading&#8230;</div>
+
+    <div class="kw-loading" style="display:none">
+      <div class="kw-loading-text"><?php echo esc_html(__('Generating Quiz...', 'wp-quiz-plugin')); ?></div>
+    </div>
+
 
     <div id="kw_quiz-questions-container" style="font-family: <?php echo esc_attr($text_font); ?>; color: <?php echo esc_attr($text_color); ?>; font-size: <?php echo esc_attr($font_size); ?>">
 
@@ -406,7 +411,13 @@ function display_questions_meta_box($post) {
                                         $image_url = isset($answer['image']) ? esc_url($answer['image']) : ''; // Retrieve image URL if exists
                             ?>
                             <div class="kw_answer-item kw_column-item">
-                                <span class="kw_option-letter"><?php echo $option_letters[$ans_index]; ?>.</span>
+                            <?php if (!empty($answer['correct']) && $answer['correct'] == '1') : ?>
+                                <span class="answer-ribbon correct-ribbon"><?php echo _x('Correct Answer', 'MCQ Hover', 'wp-quiz-plugin'); ?></span>
+                            <?php else : ?>
+                                <span class="answer-ribbon incorrect-ribbon"><?php echo _x('Incorrect Answer', 'MCQ Hover', 'wp-quiz-plugin'); ?></span>
+                            <?php endif; ?>
+
+                            <span class="kw_option-letter"><?php echo $option_letters[$ans_index]; ?>.</span>
                                 
                                 <input type="text" class="kw_answerinputs" placeholder="<?php echo esc_attr(__($add_answer_text, 'wp-quiz-plugin')); ?>"
                                     name="quiz_questions[<?php echo $index; ?>][answers][<?php echo $ans_index; ?>][text]"
@@ -686,11 +697,14 @@ function display_questions_meta_box($post) {
                                     if (ageResult.isConfirmed) {
                                         var learnerAge = ageResult.value;
 
+                                        <?php $test = __('Enter your prompt below:', 'wp-quiz-plugin');?>
+
                                         createSwalPopup({
                                             title: '<?php echo esc_js(__('Enter your prompt for ChatGPT:', 'wp-quiz-plugin')); ?>',
                                             html: `
-                                                <label style="display:block; font-weight:bold; margin-bottom:8px;"><?php echo esc_html(__('Enter your prompt below:', 'wp-quiz-plugin')); ?></label>
+                                                <label style="display:block; font-weight:bold; margin-bottom:8px;"><?php echo wp_kses_post(__('Enter your prompt below:', 'wp-quiz-plugin')); ?></label>
                                                 <input type="text" id="kw_user_prompt" class="swal2-input" placeholder="<?php echo esc_attr(__('Type your prompt here...', 'wp-quiz-plugin')); ?>">
+                                                  <label style="display:block; font-weight:bold; margin-bottom:8px;margin-top:8px;padding-top: 30px;"><?php echo wp_kses_post(__('Selected Related Tags below:', 'wp-quiz-plugin')); ?></label>
                                                 <div id="kw-checkbox-container-promot" style="margin-top:16px;">
                                                     ${checkboxOptions.map((option, index) => `
                                                         <div class="kw-checkbox-wrapper-promot">
@@ -1161,9 +1175,25 @@ function display_questions_meta_box($post) {
                         window.onbeforeunload = null;
 
                         if (postID) {
-                            let newUrl = window.location.origin + '/wp-admin/post.php?post=' + postID + '&action=edit';
-                            window.history.replaceState(null, '', newUrl);
-                        }
+                            let url = new URL(window.location.href);
+                            let params = new URLSearchParams(url.search);
+
+                            // Check if we are on post-new.php and post_type=quizzes
+                            if (url.pathname.includes('post-new.php') && params.get('post_type') === 'quizzes') {
+                                // Modify the URL path to post.php
+                                url.pathname = url.pathname.replace('post-new.php', 'post.php');
+
+                                // Set required parameters
+                                params.set('post', postID);
+                                params.set('action', 'edit');
+                                params.delete('post_type'); // Remove post_type to clean up
+
+                                // Update the URL without reloading
+                                window.history.replaceState(null, '', url.pathname + '?' + params.toString());
+                            }
+
+
+                         }
 
                     },
                     error: function(xhr, status, error) {
