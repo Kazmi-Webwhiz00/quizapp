@@ -24,7 +24,7 @@ jQuery(document).ready(function ($) {
     });
 
     const defaultPrompt = `
-    Generate a list of quiz questions and answers based on the following prompt: {userPrompt}. The questions should be designed for learners aged {learnerAge}, so adjust the level of difficulty accordingly. 
+    Generate a quiz question and answers based on the following prompt: {userPrompt}. The questions should be designed for learners aged {learnerAge}, so adjust the level of difficulty accordingly. 
     
     The quiz will be published in the following categories: {selectedCategories}. Use this information to align the questions and answers with the target audience and subject matter.
     

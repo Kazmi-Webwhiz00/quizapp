@@ -232,7 +232,7 @@ function display_questions_meta_box($post) {
 
     // Fetch prompt templates from admin settings
     $defaultMcqPrompt = 'Generate a quiz question in the same language as the provided prompt. For example, if the prompt is in Polish, generate the question in Polish, and if the prompt is in English, generate the question in English. Use the following format:\nQuestion: [Your question text]\nAnswer Options: A) [Option A], B) [Option B], C) [Option C], D) [Option D]\nCorrect Answer: [A) Option A/B) Option B/C) Option C/D) Option D]';
-    $defaultTfPrompt = 'Generate a True or False quiz question in the same language as the provided prompt. For example, if the prompt is in Polish, generate the question in Polish, and if the prompt is in English, generate the question in English. Use the following format:\nQuestion: [Your question text]\nCorrect Answer: [True/False]';
+    $defaultTfPrompt = 'Generate a True or False quiz question in the same language as the provided prompt. For example, if the prompt is in Polish, generate the question in Polish, and if the prompt is in English, generate the question in English. Use the following format:\nQuestion: [Your question text]\nCorrect Answer: [1/0] (Use 1 for True and 0 for False)';
     $defaultTextPrompt = 'Generate a quiz question that requires a text answer in the same language as the provided prompt. For example, if the prompt is in Polish, generate the question in Polish, and if the prompt is in English, generate the question in English. Use the following format:\nQuestion: [Your question text]\nCorrect Answer: [Your text answer]';
 
     $mcqPromptTemplate = get_option('wp_quiz_plugin_mcq_prompt_template', $defaultMcqPrompt);
@@ -888,7 +888,7 @@ function display_questions_meta_box($post) {
                     let selectedCategories = [];
                     let selectedParentCategory = $('#selected_school_quiz').find(':selected').text().trim();
                     let selectedChildCategory1 = $('#selected_class_quiz').find(':selected').text().trim();
-                    let selectedChildCategory2 = $('#selected_subject_quiz').find(':selected').text().trim();
+                    let selectedChildCategory2 = $('#selected_subject').find(':selected').text().trim();
 
                     // Function to check if the category is valid
                     const isValidCategory = (category) => {
@@ -995,29 +995,39 @@ function display_questions_meta_box($post) {
                                 </div>`;
                         });
                     } else if (type === 'T/F') {
+                        console.log("Processing True/False Type...");
+
                         var questionMatch = generatedContent.match(/Question:\s*(.*?)(?=\s*Correct Answer|$)/i);
-                        var correctAnswerMatch = generatedContent.match(/(?:Correct Answer:\s*)?(True|False)/i);
+                        var correctAnswerMatch = generatedContent.match(/Correct Answer:\s*(0|1)/i);
+
+                        console.log("Question Match:", questionMatch);
+                        console.log("Correct Answer Match (0/1):", correctAnswerMatch);
 
                         if (!questionMatch || !correctAnswerMatch) {
-                            throw new Error(<?php __('Could not find the question or correct answer. Please check the AI response format.','wp-quiz-plugin') ?>);
+                            throw new Error("Could not find the question or correct answer. Please check the AI response format.");
                         }
 
                         var questionText = questionMatch[1].trim();
                         generatedQuestionsList.push(questionText);
-                        var correctAnswer = correctAnswerMatch[1].trim();
+                        var correctAnswer = parseInt(correctAnswerMatch[1], 10); // Convert "0" or "1" to an integer
 
-                        var trueAnswerChecked = (correctAnswer.toLowerCase() === 'true') ? 'checked' : '';
-                        var falseAnswerChecked = (correctAnswer.toLowerCase() === 'false') ? 'checked' : '';
+                        console.log("Parsed Question:", questionText);
+                        console.log("Parsed Correct Answer (0 for False, 1 for True):", correctAnswer);
+
+                        var trueAnswerChecked = correctAnswer === 1 ? 'checked' : '';
+                        var falseAnswerChecked = correctAnswer === 0 ? 'checked' : '';
 
                         answersHtml = `
                         <div class="kw_answer-item kw_column-item">
-                            <input type="text" class="kw_answerinputs" name="quiz_questions[${index}][answers][0][text]" value="<?php echo esc_attr(__('True', 'wp-quiz-plugin')); ?>" readonly style="font-family: <?php echo esc_attr($answer_text_font); ?>; color: <?php echo esc_attr($answer_text_color); ?>;font-size: <?php echo esc_attr($answer_text_font_size);?>;">
-                            <label><input type="radio" name="quiz_questions[${index}][correct]" value="0" ${trueAnswerChecked}></label>
+                            <input type="text" class="kw_answerinputs" name="quiz_questions[${index}][answers][0][text]" value="True" readonly>
+                            <label><input type="radio" name="quiz_questions[${index}][correct]" value="1" ${trueAnswerChecked}></label>
                         </div>
                         <div class="kw_answer-item kw_column-item">
-                            <input type="text" class="kw_answerinputs" name="quiz_questions[${index}][answers][1][text]" value="<?php echo esc_attr(__('False', 'wp-quiz-plugin')); ?>" readonly style="font-family: <?php echo esc_attr($answer_text_font); ?>; color: <?php echo esc_attr($answer_text_color); ?>;font-size: <?php echo esc_attr($answer_text_font_size);?>;">
-                            <label><input type="radio" name="quiz_questions[${index}][correct]" value="1" ${falseAnswerChecked}></label>
+                            <input type="text" class="kw_answerinputs" name="quiz_questions[${index}][answers][1][text]" value="False" readonly>
+                            <label><input type="radio" name="quiz_questions[${index}][correct]" value="0" ${falseAnswerChecked}></label>
                         </div>`;
+
+                        console.log("Generated Answers HTML:", answersHtml);
                     } else if (type === 'Text') {
                         var questionMatch = generatedContent.match(/Question:\s*(.*?)(?=\s*Correct Answer|$)/i);
                         var correctAnswerText = generatedContent.match(/Correct Answer:\s*(.+)$/i)[1].trim();
@@ -1048,7 +1058,7 @@ function display_questions_meta_box($post) {
                         image: ""
                     }));
                 } else if (type === 'T/F') {
-                    let correctIndex = correctAnswer.toLowerCase() === 'true' ? 0 : 1;
+                    let correctIndex = correctAnswer === 1 ? 0 : 1;
 
                     formattedAnswers = [
                         { text: 'True', correct: correctIndex === 0 ? 1 : 0 },

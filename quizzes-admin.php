@@ -1785,8 +1785,8 @@ function wp_quiz_plugin_learners_age_prompt_template_callback() {
 // Callback function for T/F prompt template
 function wp_quiz_plugin_tf_prompt_template_callback() {
     // Define the default prompt with newline characters
-    $default_prompt = "Generate a True or False quiz question in the same language as the provided prompt. For example, if the prompt is in Polish, generate the question in Polish, and if the prompt is in English, generate the question in English. Use the following format:\nQuestion: [Your question text]\nCorrect Answer: [True/False]";
-    
+    $default_prompt = 'Generate a True or False quiz question in the same language as the provided prompt. For example, if the prompt is in Polish, generate the question in Polish, and if the prompt is in English, generate the question in English. Use the following format:\nQuestion: [Your question text]\nCorrect Answer: [0/1] (Use 0 for True and 1 for False)';
+
     // Retrieve the existing value or use the default prompt
     $tf_prompt = get_option('wp_quiz_plugin_tf_prompt_template', $default_prompt);
     
