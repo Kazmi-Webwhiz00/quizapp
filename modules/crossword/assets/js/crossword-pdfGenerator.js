@@ -30,11 +30,11 @@ jQuery(document).ready(function($) {
                     link.download = "crossword.pdf";
                     link.click();
                 } else {
-                    alert('An error occurred while generating the PDF.');
+                    alert(crosswordPdfScriptVar.strings.errorMessage);
                 }
             },
             error: function(xhr, status, error) {
-                alert('An error occurred while generating the PDF.');
+                alert(crosswordPdfScriptVar.strings.errorMessage);
             },
             complete: function(){
                 $('#download-pdf-button').text(cross_ajax_obj.pdfButtonText).prop('disabled', true);
@@ -73,11 +73,11 @@ jQuery(document).ready(function($) {
                         link.download = "crossword.pdf";
                         link.click();
                     } else {
-                        alert('An error occurred while generating the PDF.');
+                        alert(crosswordPdfScriptVar.strings.errorMessage);
                     }
                 },
                 error: function(xhr, status, error) {
-                    alert('An error occurred while generating the PDF.');
+                    alert(crosswordPdfScriptVar.strings.errorMessage);
                 },
                 complete: function(){
                     $('#crossword-download-key').text(cross_ajax_obj.keyButtonText).prop('disabled', true);

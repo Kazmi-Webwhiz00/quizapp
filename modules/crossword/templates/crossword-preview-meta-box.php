@@ -41,16 +41,19 @@ foreach ($default_settings as $key => $values) {
         <?php echo esc_html__($settings['shuffle']['label'], 'wp-quiz-plugin'); ?>
     </span>
 
-    <!-- Download as PDF Button -->
-    <span id="download-pdf-button" class="cross-word-primary-button" data-crossword-id="<?php echo esc_attr($post->ID); ?>" style="background-color: <?php echo esc_attr($settings['download_pdf']['bg_color']); ?>; color: <?php echo esc_attr($settings['download_pdf']['text_color']); ?>;">
-        <?php echo esc_html__($settings['download_pdf']['label'],'wp-quiz-plugin'); ?>
-    </span>
+    <?php if(!empty($grid_data)):?>
+        
+        <!-- Download as PDF Button -->
+        <span id="download-pdf-button" class="cross-word-primary-button" data-crossword-id="<?php echo esc_attr($post->ID); ?>" style="background-color: <?php echo esc_attr($settings['download_pdf']['bg_color']); ?>; color: <?php echo esc_attr($settings['download_pdf']['text_color']); ?>;">
+            <?php echo esc_html__($settings['download_pdf']['label'],'wp-quiz-plugin'); ?>
+        </span>
 
-    <!-- Download Key Button -->
-    <span id="crossword-download-key" class="cross-word-primary-button" data-crossword-id="<?php echo esc_attr($post->ID); ?>" style="background-color: <?php echo esc_attr($settings['download_key']['bg_color']); ?>; color: <?php echo esc_attr($settings['download_key']['text_color']); ?>;">
-        <?php echo esc_html__($settings['download_key']['label'],'wp-quiz-plugin'); ?>
-    </span>
+        <!-- Download Key Button -->
+        <span id="crossword-download-key" class="cross-word-primary-button" data-crossword-id="<?php echo esc_attr($post->ID); ?>" style="background-color: <?php echo esc_attr($settings['download_key']['bg_color']); ?>; color: <?php echo esc_attr($settings['download_key']['text_color']); ?>;">
+            <?php echo esc_html__($settings['download_key']['label'],'wp-quiz-plugin'); ?>
+        </span>
 
+    <?php endif;?>
     <!-- Show Answers Checkbox -->
     <label>
         <input type="checkbox" id="toggle-answers">

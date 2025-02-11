@@ -1,12 +1,16 @@
 <?php
 // Add custom meta box for SEO Text
 function add_seo_text_meta_box_crossword() {
-    // Fetch dynamic meta box title
-    $meta_box_title = get_option('wp_quiz_plugin_meta_box_title', __('SEO Text (Admin Only)', 'wp-quiz-plugin'));
+
+        // Fetch dynamic meta box title
+        $meta_box_title = get_option('wp_quiz_plugin_meta_box_title', __('SEO Text (Admin Only)', 'wp-quiz-plugin'));
+        if (empty($meta_box_title)) {
+            $meta_box_title = __('SEO Text (Admin Only)', 'wp-quiz-plugin'); // Fallback in case the option is empty
+        }
 
     add_meta_box(
         'crossword_seo_text_meta_box', // ID of the meta box
-        __(esc_html($meta_box_title),'wp-quiz-plugin'), // Title of the meta box dynamically set
+         esc_html($meta_box_title), // Title of the meta box dynamically set
         'render_seo_text_meta_box_crossword', // Callback function to display the input field
         'crossword', // Post type (crosswords)
         'side', // Position

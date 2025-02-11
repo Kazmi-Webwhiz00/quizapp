@@ -5,6 +5,7 @@ function load_crossword_assets_fe() {
     wp_enqueue_style('fe-crossword-style', plugin_dir_url(__FILE__) . 'assets/css/fe-crossword-styles.css');
     
     wp_enqueue_script('fe-crossword-download-script', plugin_dir_url(__FILE__) . 'assets/js/crossword-pdfGeneratorFe.js', array('jquery'), null, true);
+
     
     // Fetch the filled cell background color with a default value
     $filled_cell_bg_color = get_option('kw_fe_filled_cell_bg_color', '#e1f5fe');
@@ -66,6 +67,10 @@ function load_crossword_assets_fe() {
             'ajax_url' => admin_url('admin-ajax.php'),
             'downloadingText' => __('Downloading...', 'wp-quiz-plugin'),
             'pdfButtonText' => "downlaod",
+            'strings' => array(
+                'errorMessage' => _x('An error occurred while generating the PDF.', 'FE-crossword_pdf_error', 'wp-quiz-plugin'),
+                'successMessage' => _x('PDF generated successfully.', 'FE-crossword_pdf_success', 'wp-quiz-plugin')
+            )
         )
     );
 

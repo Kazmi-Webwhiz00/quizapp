@@ -24,6 +24,14 @@ function load_crossword_assets($hook) {
         wp_enqueue_script('crossword-utils-js', plugin_dir_url(__FILE__) . 'assets/js/utils.js', array('jquery'), null, true);
         wp_enqueue_script('generate-pdf-script', plugin_dir_url(__FILE__) . 'assets/js/crossword-pdfGenerator.js', array('jquery'), null, true);
 
+        wp_localize_script('generate-pdf-script', 'crosswordPdfScriptVar', array(
+            'strings' => array(
+                'errorMessage' => _x('An error occurred while generating the PDF.', 'crossword_pdf_error', 'wp-quiz-plugin'),
+                'successMessage' => _x('PDF generated successfully.', 'crossword_pdf_success', 'wp-quiz-plugin')
+            )
+        ));
+        
+
         wp_enqueue_script('crossword-generate-with-ai', plugin_dir_url(__FILE__) . 'assets/js/crossword-generate-with-ai.js', array('jquery'), null, true);
         
 
