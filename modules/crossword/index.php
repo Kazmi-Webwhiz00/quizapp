@@ -79,8 +79,15 @@ function load_crossword_assets($hook) {
                 'kw_crossword_return_format_prompt',
                 "\nProvide the output in the following JSON array format, with no additional text:\n\n[\n{ \"word\": \"exampleWord1\", \"clue\": \"Example clue for word 1\" },\n{ \"word\": \"exampleWord2\", \"clue\": \"Example clue for word 2\" },\n...]\n"
             ),
-        ]);
 
+            'strings' => array(
+                'errorTitle' => _x('Error', 'crossword_ai', 'wp-quiz-plugin'),
+                'successTitle' => _x('Success', 'crossword_ai', 'wp-quiz-plugin'),
+                'errorMessage' => _x('Could not parse the response. Ensure the AI response follows the expected format.', 'crossword_ai_error', 'wp-quiz-plugin'),
+                'successMessage' => _x('Generated Content.', 'crossword_ai_success', 'wp-quiz-plugin'),
+                'numberError' => _x('The number must be between 1 and', 'crossword_ai_error', 'wp-quiz-plugin'),
+            )
+        ]);
 
         wp_enqueue_script('sweetalert2', 'https://cdn.jsdelivr.net/npm/sweetalert2@11', array(), null, true);
 }

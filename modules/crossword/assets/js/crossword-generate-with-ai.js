@@ -1,6 +1,4 @@
 jQuery(document).ready(function ($) {
-
-
 /**
  * Replaces placeholders in a string using an object of key-value pairs.
  *
@@ -95,7 +93,7 @@ function generatePrompt(number, topic, age, language) {
         const maxNumberOfWords = parseInt(wpQuizPlugin.maxNumberOfWords);
         // Check if the number is between 1 and 10
         if (number < 1 || number > maxNumberOfWords) {
-            Swal.fire('Error', `The number must be between 1 and ${wpQuizPlugin.maxNumberOfWords}.`, 'warning');
+            Swal.fire(wpQuizPlugin.strings.errorTitle, `${wpQuizPlugin.strings.numberError} ${wpQuizPlugin.maxNumberOfWords}` , 'warning');
             return;
         }
 
@@ -137,11 +135,11 @@ function generatePrompt(number, topic, age, language) {
                         $('#shuffle-button').click();
                         // Display or process the generated content as needed
                         // For now, we'll log it to the console
-                        Swal.fire('Generated Content', generatedContent, 'success');
+                        Swal.fire(wpQuizPlugin.strings.successTitle,wpQuizPlugin.strings.successMessage, 'success');
 
                     } catch (error) {
                         console.error('Error parsing response:', error);
-                        Swal.fire('Error', 'Could not parse the response. Ensure the AI response follows the expected format.', 'error');
+                        Swal.fire(wpQuizPlugin.strings.errorTitle, wpQuizPlugin.strings.errorMessage, 'error');
                     }
                     $(generateButtonId).text(wpQuizPlugin.generateWithAiText).prop('disabled', false);
                 },
@@ -153,7 +151,7 @@ function generatePrompt(number, topic, age, language) {
                     } else {
                         let errorMsg = 'Failed to generate question. ';
                         errorMsg += xhr.responseJSON?.error?.message || 'Error: ' + error;
-                        Swal.fire('Error', errorMsg, 'error');
+                        Swal.fire(wpQuizPlugin.strings.errorTitle, errorMsg, 'error');
                         $(generateButtonId).text(wpQuizPlugin.generateWithAiText).prop('disabled', false);
                     }
                 }

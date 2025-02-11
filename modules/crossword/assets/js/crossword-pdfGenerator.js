@@ -25,9 +25,21 @@ jQuery(document).ready(function($) {
             success: function(response, status, xhr) {
                 if (xhr.status === 200) {
                     var blob = new Blob([response], { type: 'application/pdf' });
+        
+                    // Extract filename from Content-Disposition header
+                    var contentDisposition = xhr.getResponseHeader('Content-Disposition');
+                    var filename = "Krzyzówkawka.pdf"; // Default filename fallback
+                    
+                    if (contentDisposition) {
+                        var matches = contentDisposition.match(/filename="(.+)"/);
+                        if (matches && matches.length > 1) {
+                            filename = matches[1];
+                        }
+                    }
+        
                     var link = document.createElement('a');
                     link.href = window.URL.createObjectURL(blob);
-                    link.download = "crossword.pdf";
+                    link.download = filename;
                     link.click();
                 } else {
                     alert(crosswordPdfScriptVar.strings.errorMessage);
@@ -40,6 +52,7 @@ jQuery(document).ready(function($) {
                 $('#download-pdf-button').text(cross_ajax_obj.pdfButtonText).prop('disabled', true);
             }
         });
+        
     });
 
 

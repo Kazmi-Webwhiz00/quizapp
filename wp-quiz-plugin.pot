@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OmniS\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-11 05:41+0000\n"
+"POT-Creation-Date: 2025-02-11 07:17+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -63,7 +63,7 @@ msgid ""
 "submissions."
 msgstr ""
 
-#: modules/crossword/index.php:42 modules/crossword/index.php:109
+#: modules/crossword/index.php:42 modules/crossword/index.php:116
 #: modules/crossword/admin/pages/admin-strings-setting-page.php:32
 msgid "Across"
 msgstr ""
@@ -495,6 +495,43 @@ msgstr ""
 msgid "Crossword Settings"
 msgstr ""
 
+#: modules/crossword/crossword-download.php:162
+msgctxt "crossword-pdf"
+msgid "game"
+msgstr ""
+
+#: modules/crossword/crossword-download.php:162
+msgctxt "crossword-pdf"
+msgid "keys"
+msgstr ""
+
+#: modules/crossword/index.php:84
+msgctxt "crossword_ai"
+msgid "Error"
+msgstr ""
+
+#: modules/crossword/index.php:85
+msgctxt "crossword_ai"
+msgid "Success"
+msgstr ""
+
+#: modules/crossword/index.php:86
+msgctxt "crossword_ai_error"
+msgid ""
+"Could not parse the response. Ensure the AI response follows the expected "
+"format."
+msgstr ""
+
+#: modules/crossword/index.php:88
+msgctxt "crossword_ai_error"
+msgid "The number must be between 1 and"
+msgstr ""
+
+#: modules/crossword/index.php:87
+msgctxt "crossword_ai_success"
+msgid "Generated Content."
+msgstr ""
+
 #: modules/crossword/index.php:29
 msgctxt "crossword_pdf_error"
 msgid "An error occurred while generating the PDF."
@@ -596,7 +633,7 @@ msgstr ""
 msgid "Documentation"
 msgstr ""
 
-#: modules/crossword/index.php:43 modules/crossword/index.php:110
+#: modules/crossword/index.php:43 modules/crossword/index.php:117
 #: modules/crossword/admin/pages/admin-strings-setting-page.php:35
 msgid "Down"
 msgstr ""
@@ -615,14 +652,14 @@ msgstr ""
 msgid "Download Answer Key"
 msgstr ""
 
-#: modules/crossword/index.php:127
+#: modules/crossword/index.php:134
 #: modules/crossword/templates/crossword-preview-meta-box.php:13
 #: modules/crossword/admin/pages/admin-strings-setting-page.php:23
 #: modules/crossword/admin/templates/sections/admin-view-strings-section.php:25
 msgid "Download as PDF"
 msgstr ""
 
-#: modules/crossword/index.php:128
+#: modules/crossword/index.php:135
 #: modules/crossword/templates/crossword-preview-meta-box.php:18
 #: modules/crossword/admin/pages/admin-strings-setting-page.php:26
 #: modules/crossword/admin/templates/sections/admin-view-strings-section.php:30
@@ -642,7 +679,7 @@ msgstr ""
 msgid "Download Result as PDF"
 msgstr ""
 
-#: modules/crossword/index.php:138
+#: modules/crossword/index.php:145
 #: modules/crossword/public/crossword-fe-index.php:68
 msgid "Downloading..."
 msgstr ""
@@ -1216,8 +1253,8 @@ msgstr ""
 msgid "PDF Style Settings"
 msgstr ""
 
-#: modules/crossword/index.php:112
-#: modules/crossword/templates/crossword-preview-meta-box.php:71
+#: modules/crossword/index.php:119
+#: modules/crossword/templates/crossword-preview-meta-box.php:74
 msgid "Please add some words to generate the crossword."
 msgstr ""
 

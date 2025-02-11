@@ -159,11 +159,11 @@ function generate_crossword_pdf_callback() {
     }
 
     // Define PDF filename based on showkeys
-    $file_suffix = $showkeys ? 'keys' : 'game';
-    $pdf_filename = 'crossword_' . $crossword_title . '_' . $file_suffix . '.pdf';
+    $file_suffix = $showkeys ? _x('keys','crossword-pdf','wp-quiz-plugin') : _x('game','crossword-pdf','wp-quiz-plugin');
+    $pdf_filename = $crossword_title . '_' . $file_suffix . '.pdf';
+    $pdf_content = $pdf->Output($pdf_filename, 'S');
 
     // Output PDF with dynamic filename
-    $pdf_content = $pdf->Output($pdf_filename, 'S');
     if (ob_get_length()) {
         ob_end_clean();
     }
