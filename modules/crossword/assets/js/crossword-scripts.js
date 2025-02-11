@@ -5,7 +5,9 @@ jQuery(document).ready(function ($) {
             e.preventDefault();
             const button = $(this);
             const item = button.closest(itemSelector);
-
+            const uniqueId = item.attr('data-unique-id'); // Get unique ID
+    
+            console.log("id is",uniqueId );
             const customUploader = wp.media({
                 title: 'Select Image',
                 button: { text: 'Use this image' },
@@ -13,7 +15,7 @@ jQuery(document).ready(function ($) {
             }).on('select', function () {
                 const attachment = customUploader.state().get('selection').first().toJSON();
                 const imageUrl = attachment.url;
-
+    
                 // Set the image URL in the hidden input field
                 const inputField = item.find(inputSelector);
                 if (inputField.length === 0) {
@@ -21,8 +23,8 @@ jQuery(document).ready(function ($) {
                 } else {
                     inputField.val(imageUrl);
                 }
-
-                // Display the uploaded image
+    
+                // Display the uploaded image in the word clue section
                 const preview = item.find(previewSelector);
                 const imageHtml = `<img src="${imageUrl}" style="max-width: 70px; max-height: 70px; border-radius: 5%; padding-left: 10px;" />`;
                 if (preview.length === 0) {
@@ -30,9 +32,19 @@ jQuery(document).ready(function ($) {
                 } else {
                     preview.html(imageHtml);
                 }
+    
+                // **Find the matching clue item and append the image there**
+                const clueItem = $(`li[data-unique-id="${uniqueId}"]`);
+                if (clueItem.length > 0) {
+                    // Remove existing image if already appended
+                    clueItem.find('.clue-image').remove();
+                    // Append new image
+                    clueItem.append(`<br><img src="${imageUrl}" alt="Clue image" class="clue-image">`);
+                }
             }).open();
         });
     }
+    
 
     // Apply the image upload function for crossword items
     handleImageUpload('.upload-crossword-image-btn', '.crossword-word-clue', '.crossword-image-url', '.crossword-image-preview');

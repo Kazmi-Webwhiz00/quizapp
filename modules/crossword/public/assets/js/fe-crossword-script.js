@@ -118,8 +118,23 @@ jQuery(document).ready(function ($) {
 
         // Attach validation logic
         $('#validate-crossword').on('click', function () {
-            validateCrossword();
+            Swal.fire({
+                title: cross_ajax_obj.strings.confirmRevealTitle,
+                text: cross_ajax_obj.strings.confirmRevealText,
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: cross_ajax_obj.strings.confirmRevealYes,
+                cancelButtonText: cross_ajax_obj.strings.confirmRevealNo,
+                confirmButtonColor: cross_ajax_obj.strings.failureButtonColor,
+                cancelButtonColor: cross_ajax_obj.strings.successButtonColor,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    validateCrossword();
+                }
+            });
         });
+        
+        
 
         $('#check-words').on('change', function () {
             if ($(this).is(':checked')) {
@@ -454,36 +469,15 @@ jQuery(document).ready(function ($) {
             const userAnswer = input.val().toUpperCase();
             const correctAnswer = gridData[y][x]?.letter?.toUpperCase() || '';
 
+            input.val(correctAnswer);
             if (userAnswer === correctAnswer) {
                 input.closest('td').addClass('correct-cell');
             } else {
                 input.closest('td').addClass('wrong-cell');
                 allCorrect = false;
             }
-        });
 
-        if (allCorrect) {
-            // SweetAlert2 for success
-            Swal.fire({
-                title: cross_ajax_obj.successPopup.title,
-                text: cross_ajax_obj.successPopup.bodyText,
-                icon: 'success',
-                iconColor: cross_ajax_obj.successPopup.iconColor,
-                confirmButtonText: cross_ajax_obj.successPopup.buttonText,
-                confirmButtonColor: cross_ajax_obj.successPopup.buttonColor,
-            });
-            $('#kw-reset-crossword').show();
-        } else {
-            // SweetAlert2 for errors
-            Swal.fire({
-                title: cross_ajax_obj.failurePopup.title,
-                text: cross_ajax_obj.failurePopup.bodyText,
-                icon: 'error',
-                iconColor: cross_ajax_obj.failurePopup.iconColor,
-                confirmButtonText: cross_ajax_obj.failurePopup.buttonText,
-                confirmButtonColor: cross_ajax_obj.failurePopup.buttonColor,
-            });
-        }
+        });
     }
 
     function validateCell(input) {

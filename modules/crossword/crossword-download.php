@@ -9,7 +9,7 @@ function generate_crossword_pdf_callback() {
 
     // Validate and sanitize the crossword_id parameter
     if (!isset($_GET['crossword_id']) || !is_numeric($_GET['crossword_id'])) {
-        wp_die(__('Invalid request.', 'wp-crossword-plugin'));
+        wp_die(__('Invalid request.', 'wp-quiz-plugin'));
     }
 
     // Sanitize and cast crossword_id to integer

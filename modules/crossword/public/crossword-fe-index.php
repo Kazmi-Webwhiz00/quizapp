@@ -58,6 +58,20 @@ function load_crossword_assets_fe() {
         'cellFontColor' => get_option('kw_crossword_cell_font_color', 'black'),
         'clueFontColor' => get_option('kw_crossword_cell_clue_font_color', 'black'),
         'cellBorderColor' => get_option('kw_crossword_cell_border_color', 'lightgrey'),
+
+        'strings' => array(
+        // Confirmation popup before revealing answers
+        'confirmRevealTitle' => _x('Reveal Crossword?', 'crossword-frontend', 'wp-quiz-plugin'),
+        'confirmRevealText' => _x('Are you sure you want to reveal the correct answers? This will show all solutions and disable further input.', 'crossword-frontend', 'wp-quiz-plugin'),
+        'confirmRevealYes' => _x('Yes, Reveal', 'crossword-frontend', 'wp-quiz-plugin'),
+        'confirmRevealNo' => _x('No, Keep Playing', 'crossword-frontend', 'wp-quiz-plugin'),
+
+        'successIconColor' => '#00796b',
+        'successButtonColor' => '#00796b',
+        'failureIconColor' => '#d66868',
+        'failureButtonColor' => '#d66868',
+        ),
+
     ));
 
     wp_localize_script(

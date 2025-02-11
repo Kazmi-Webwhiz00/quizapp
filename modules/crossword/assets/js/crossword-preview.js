@@ -8,12 +8,14 @@ jQuery(document).ready(function ($) {
         let wordsData = [];
         $('.crossword-word-clue').each(function () {
             const index = $(this).data('index');
+            const uniqueId = $(this).attr('data-unique-id') || '';
             const word = $(`input[name="crossword_words[${index}][word]"]`).val();
             const clue = $(`input[name="crossword_words[${index}][clue]"]`).val();
             const image = $(`input[name="crossword_words[${index}][image]"]`).val();
 
             if (word) {
                 wordsData.push({
+                    uniqueId: uniqueId,
                     word: word.toUpperCase(),
                     clue: clue || '',
                     image: image || '',
@@ -277,7 +279,7 @@ jQuery(document).ready(function ($) {
         const downClues = $('<ul></ul>');
         placedWords.forEach((wordObj) => {
             if(wordObj.clue) {
-                const clueItem = $('<li></li>');
+                const clueItem = $(`<li data-unique-id="${wordObj.uniqueId}" ></li>`);
                 clueItem.append(`<strong>${wordObj.clueNumber}.</strong> ${wordObj.clue}`);
                 if (wordObj.image) {
                     clueItem.append(`<br><img src="${wordObj.image}" alt="Clue image" class="clue-image">`);

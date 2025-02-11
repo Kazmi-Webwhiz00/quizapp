@@ -71,15 +71,39 @@ function generatePrompt(number, topic, age, language) {
     
         generatedContent.forEach((item, index) => {
             const newIndex = existingEntries + index;
-            const entryHtml = template
-                .replace(/{{index}}/g, newIndex)
-                .replace(/{{number}}/g, newIndex + 1)
-                .replace('value=""', `value="${item.word}"`)  // Set word
-                .replace('value=""', `value="${item.clue}"`); // Set clue
+            
+            // Preserve existing unique ID or generate a new one
+            const uniqueId = item.uniqueId ? item.uniqueId : `cw_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
     
-            $container.append(entryHtml);
+            console.log(`Generated Unique ID for word: ${item.word} -> ${uniqueId}`); // Debugging
+
+            let entryHtml = template
+                .replace(/{{index}}/g, newIndex)
+                .replace(/{{number}}/g, newIndex + 2)
+                .replace('value=""', `value="${item.word}"`)  // Sets word
+                .replace('value=""', `value="${item.clue}"`)  // Sets clue
+                .replace('value=""', `value="${uniqueId}"`); // Sets uniqueId
+
+
+            // Convert HTML string to a jQuery object
+            let $entry = $(entryHtml);
+            
+            // Add unique ID as a data attribute to identify this record
+            $entry.attr("data-unique-id", uniqueId);
+            $entry.find("input[name^='crossword_words']").each(function () {
+                let nameAttr = $(this).attr("name");
+                if (nameAttr.includes("[word]")) {
+                    $(this).attr("name", `crossword_words[${newIndex}][word]`).attr("data-unique-id", uniqueId);
+                } else if (nameAttr.includes("[clue]")) {
+                    $(this).attr("name", `crossword_words[${newIndex}][clue]`).attr("data-unique-id", uniqueId);
+                }
+            });
+    
+            // Append to container
+            $container.append($entry);
         });
     }
+    
 
     // Unique ID for the button
     const generateButtonId = '#generate-ai-button';

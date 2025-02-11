@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OmniS\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-11 07:17+0000\n"
+"POT-Creation-Date: 2025-02-11 08:47+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -33,6 +33,12 @@ msgstr ""
 #: kw-quiz-post-and-taxonomies.php:143 kw-quiz-post-and-taxonomies.php:190
 #: kw-quiz-post-and-taxonomies.php:195 kw-quiz-post-and-taxonomies.php:213
 #: kw-quiz-post-and-taxonomies.php:218
+#: modules/crossword/custom-post-type-registration.php:229
+#: modules/crossword/custom-post-type-registration.php:239
+#: modules/crossword/custom-post-type-registration.php:250
+#: modules/crossword/custom-post-type-registration.php:300
+#: modules/crossword/custom-post-type-registration.php:319
+#: modules/crossword/custom-post-type-registration.php:350
 msgid "----------"
 msgstr ""
 
@@ -454,6 +460,41 @@ msgstr ""
 msgid "Crossword"
 msgstr ""
 
+#: modules/crossword/custom-post-type-registration.php:174
+msgctxt "crossword"
+msgid "Crossword Category"
+msgstr ""
+
+#: modules/crossword/custom-post-type-registration.php:387
+msgctxt "crossword"
+msgid "Crossword Visibility"
+msgstr ""
+
+#: modules/crossword/custom-post-type-registration.php:419
+msgctxt "crossword"
+msgid "Private"
+msgstr ""
+
+#: modules/crossword/custom-post-type-registration.php:414
+msgctxt "crossword"
+msgid "Public"
+msgstr ""
+
+#: modules/crossword/custom-post-type-registration.php:194
+msgctxt "crossword"
+msgid "Select Class"
+msgstr ""
+
+#: modules/crossword/custom-post-type-registration.php:193
+msgctxt "crossword"
+msgid "Select School"
+msgstr ""
+
+#: modules/crossword/custom-post-type-registration.php:195
+msgctxt "crossword"
+msgid "Select Subject"
+msgstr ""
+
 #. Unique ID for the meta box
 #: modules/crossword/custom-metaboxes/kw-crossword-features-buttons.php:15
 msgid "Crossword Actions"
@@ -493,6 +534,28 @@ msgstr ""
 
 #: modules/crossword/admin/admin-settings.php:44
 msgid "Crossword Settings"
+msgstr ""
+
+#: modules/crossword/public/crossword-fe-index.php:65
+msgctxt "crossword-frontend"
+msgid ""
+"Are you sure you want to reveal the correct answers? This will show all "
+"solutions and disable further input."
+msgstr ""
+
+#: modules/crossword/public/crossword-fe-index.php:67
+msgctxt "crossword-frontend"
+msgid "No, Keep Playing"
+msgstr ""
+
+#: modules/crossword/public/crossword-fe-index.php:64
+msgctxt "crossword-frontend"
+msgid "Reveal Crossword?"
+msgstr ""
+
+#: modules/crossword/public/crossword-fe-index.php:66
+msgctxt "crossword-frontend"
+msgid "Yes, Reveal"
 msgstr ""
 
 #: modules/crossword/crossword-download.php:162
@@ -680,7 +743,7 @@ msgid "Download Result as PDF"
 msgstr ""
 
 #: modules/crossword/index.php:145
-#: modules/crossword/public/crossword-fe-index.php:68
+#: modules/crossword/public/crossword-fe-index.php:77
 msgid "Downloading..."
 msgstr ""
 
@@ -761,12 +824,12 @@ msgstr ""
 msgid "False"
 msgstr ""
 
-#: modules/crossword/public/crossword-fe-index.php:71
+#: modules/crossword/public/crossword-fe-index.php:80
 msgctxt "FE-crossword_pdf_error"
 msgid "An error occurred while generating the PDF."
 msgstr ""
 
-#: modules/crossword/public/crossword-fe-index.php:72
+#: modules/crossword/public/crossword-fe-index.php:81
 msgctxt "FE-crossword_pdf_success"
 msgid "PDF generated successfully."
 msgstr ""
@@ -1025,6 +1088,7 @@ msgid "Invalid crossword ID."
 msgstr ""
 
 #: quiz-template-download.php:19 quiz-template-download.php:217
+#: modules/crossword/crossword-download.php:12
 msgid "Invalid request."
 msgstr ""
 
@@ -1267,6 +1331,7 @@ msgid "Please enter your name:"
 msgstr ""
 
 #: kw-quiz-post-and-taxonomies.php:548
+#: modules/crossword/custom-post-type-registration.php:518
 msgid "Please select a Class."
 msgstr ""
 
@@ -1275,10 +1340,12 @@ msgid "Please select a question type!"
 msgstr ""
 
 #: kw-quiz-post-and-taxonomies.php:536
+#: modules/crossword/custom-post-type-registration.php:508
 msgid "Please select a School."
 msgstr ""
 
 #: kw-quiz-post-and-taxonomies.php:565
+#: modules/crossword/custom-post-type-registration.php:532
 msgid "Please select a Subject."
 msgstr ""
 
@@ -1634,6 +1701,7 @@ msgid "Select the text color for the \"Add Word\" button."
 msgstr ""
 
 #: kw-quiz-post-and-taxonomies.php:553
+#: modules/crossword/custom-post-type-registration.php:522
 msgid "Selected Class is invalid for the chosen School."
 msgstr ""
 
@@ -1642,6 +1710,7 @@ msgid "Selected Related Tags below:"
 msgstr ""
 
 #: kw-quiz-post-and-taxonomies.php:570
+#: modules/crossword/custom-post-type-registration.php:536
 msgid "Selected Subject is invalid for the chosen Class."
 msgstr ""
 

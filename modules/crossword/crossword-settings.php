@@ -75,14 +75,19 @@ function crossword_save_meta_box_data($post_id) {
 
     $words_clues = [];
 
+   
     if (isset($_POST['crossword_words']) && is_array($_POST['crossword_words'])) {
+        error_log(":::::whole" . print_r(($_POST['crossword_words']),true));
         foreach ($_POST['crossword_words'] as $index => $entry) {
             if (!empty(trim($entry['word']))) {
                 $word = sanitize_text_field($entry['word']);
                 $clue = !empty($entry['clue']) ? sanitize_text_field($entry['clue']) : '';
                 $image_url = !empty($entry['image']) ? esc_url($entry['image']) : '';
+                $unique_id = !empty($entry['uniqueId']) ? sanitize_text_field($entry['uniqueId']) : uniqid('cw_', true);
 
+                error_log(":::::befro saving clue id is" . $unique_id);
                 $words_clues[] = [
+                    'uniqueId' => $unique_id,
                     'word' => $word,
                     'clue' => $clue,
                     'image' => $image_url,
@@ -90,6 +95,7 @@ function crossword_save_meta_box_data($post_id) {
             }
         }
 
+       
         update_post_meta($post_id, '_crossword_words_clues', $words_clues);
     } else {
         delete_post_meta($post_id, '_crossword_words_clues');
@@ -130,7 +136,6 @@ function crossword_save_meta_box_data($post_id) {
                 delete_post_meta($post_id, '_crossword_grid_data');
             }
 
-            
         } else {
             // If JSON is invalid, delete the grid meta to avoid storing corrupted data
             delete_post_meta($post_id, '_crossword_grid_data');
@@ -139,7 +144,8 @@ function crossword_save_meta_box_data($post_id) {
         // If crossword_data is not set, delete any existing grid meta
         delete_post_meta($post_id, '_crossword_grid_data');
     }
-    error_log("save successfully ::");
+
+    error_log("Crossword data saved successfully.");
 }
 add_action('save_post', 'crossword_save_meta_box_data');
 
@@ -165,8 +171,8 @@ function add_crossword_description_meta_box() {
         __('crossword Description', 'wp-quiz-plugin'),
         'display_crossword_description_meta_box',
         'crossword',
-        'side',
-        'default'
+        'normal',
+        'high' 
     );
 }
 add_action('add_meta_boxes', 'add_crossword_description_meta_box');

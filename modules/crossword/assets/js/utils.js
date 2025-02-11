@@ -21,12 +21,14 @@ jQuery(document).ready(function ($) {
     crossword.getCluesData = function() {
         let acrossClues = [];
         $(`#clues-container h3:contains(${crosswordLabels.acrossLabel})`).next('ul').find('li').each(function () {
+            const clueUniqueId = $(this).attr('data-unique-id') || ''; // Retrieve unique ID
             const clueNumber = $(this).find('strong').text().replace('.', '').trim() || '';
             const clueText = $(this).contents().filter(function() {
                 return this.nodeType === 3; // Node.TEXT_NODE
             }).text().trim() || '';
             const clueImage = $(this).find('img').attr('src') || '';
             acrossClues.push({
+                clueUniqueId: clueUniqueId,
                 clueNumber: clueNumber,
                 clueText: clueText,
                 clueImage: clueImage
@@ -35,12 +37,14 @@ jQuery(document).ready(function ($) {
     
         let downClues = [];
         $(`#clues-container h3:contains(${crosswordLabels.downLabel})`).next('ul').find('li').each(function () {
+            const clueUniqueId = $(this).attr('data-unique-id') || ''; // Retrieve unique ID
             const clueNumber = $(this).find('strong').text().replace('.', '').trim() || '';
             const clueText = $(this).contents().filter(function() {
                 return this.nodeType === 3; // Node.TEXT_NODE
             }).text().trim() || '';
             const clueImage = $(this).find('img').attr('src') || '';
             downClues.push({
+                clueUniqueId: clueUniqueId,
                 clueNumber: clueNumber,
                 clueText: clueText,
                 clueImage: clueImage
@@ -59,7 +63,6 @@ jQuery(document).ready(function ($) {
             grid: crossword.getGridData() || '',
             clues: crossword.getCluesData() || { across: '', down: '' }
         };
-    
         // Check if crosswordData is empty
         const isEmptyCrosswordData = (
             (crosswordData.grid === '' || crosswordData.grid.length === 0) &&
@@ -126,8 +129,9 @@ jQuery(document).ready(function ($) {
         const downClues = $('<ul></ul>');
     
         cluesData.across.forEach((clueObj) => {
+            console.log("obje" ,JSON.stringify(clueObj) );
             if (clueObj.clueText && clueObj.clueNumber && clueObj.clueNumber != 'null') { // Check if clueText and clueNumber exist
-                const clueItem = $('<li></li>');
+                const clueItem = $(`<li data-unique-id="${clueObj.clueUniqueId}"></li>`);
                 clueItem.append(`<strong>${clueObj.clueNumber}.</strong> ${clueObj.clueText}`);
                 if (clueObj.clueImage) {
                     clueItem.append(`<br><img src="${clueObj.clueImage}" alt="Clue image" class="clue-image">`);
@@ -138,7 +142,7 @@ jQuery(document).ready(function ($) {
         
         cluesData.down.forEach((clueObj) => {
             if (clueObj.clueText && clueObj.clueNumber && clueObj.clueNumber != 'null') { // Check if clueText and clueNumber exist
-                const clueItem = $('<li></li>');
+                const clueItem = $(`<li data-unique-id="${clueObj.clueUniqueId}"></li>`);
                 clueItem.append(`<strong>${clueObj.clueNumber}.</strong> ${clueObj.clueText}`);
                 if (clueObj.clueImage) {
                     clueItem.append(`<br><img src="${clueObj.clueImage}" alt="Clue image" class="clue-image">`);

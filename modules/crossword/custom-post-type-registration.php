@@ -170,10 +170,11 @@ add_filter('manage_crossword_category_custom_column', 'manage_crossword_category
 
 // Add Crossword Category Meta Box
 function add_crossword_category_meta_box() {
-    $select_category_label_text = get_option('wp_crossword_plugin_category_label_text', 'Crossword Category');
+
+    $select_category_label_text = get_option('wp_crossword_plugin_category_label_text', _x('Crossword Category','crossword','wp-quiz-plugin' ));
     add_meta_box(
         'crossword_category_meta_box',
-        __($select_category_label_text, 'wp-crossword-plugin'),
+        $select_category_label_text,
         'render_crossword_category_meta_box',
         'crossword',
         'normal',
@@ -189,9 +190,9 @@ function remove_default_crossword_category_meta_box() {
 add_action('admin_menu', 'remove_default_crossword_category_meta_box', 999);
 
 function render_crossword_category_meta_box($post) {
-    $select_category_school_text = get_option('wp_crossword_plugin_category_select_school_text', 'Select School');
-    $select_category_class_text = get_option('wp_crossword_plugin_category_select_class_text', 'Select Class');
-    $select_category_subject_text = get_option('wp_crossword_plugin_category_select_subject_text', 'Select Subject');
+    $select_category_school_text = get_option('wp_crossword_plugin_category_select_school_text', _x('Select School','crossword','wp-quiz-plugin' ));
+    $select_category_class_text = get_option('wp_crossword_plugin_category_select_class_text', _x('Select Class','crossword','wp-quiz-plugin' ));
+    $select_category_subject_text = get_option('wp_crossword_plugin_category_select_subject_text', _x('Select Subject','crossword','wp-quiz-plugin' ));
 
     // Retrieve associated terms for the crossword post
     $selected_schools = wp_get_post_terms($post->ID, 'crossword_category', ['fields' => 'ids', 'parent' => 0]);
@@ -223,9 +224,9 @@ function render_crossword_category_meta_box($post) {
 
     ?>
     <div class="crossword-category-dropdowns">
-        <label for="selected_school"><?php _e($select_category_school_text, 'wp-crossword-plugin'); ?></label>
+        <label for="selected_school"><?php _e($select_category_school_text, 'wp-quiz-plugin'); ?></label>
         <select name="selected_school" id="selected_school_crossword">
-            <option value=""><?php _e('----------', 'wp-crossword-plugin'); ?></option>
+            <option value=""><?php _e('----------', 'wp-quiz-plugin'); ?></option>
             <?php foreach ($schools as $school) { ?>
                 <option value="<?php echo esc_attr($school->term_id); ?>" <?php selected($selected_school, $school->term_id); ?>>
                     <?php echo esc_html($school->name); ?>
@@ -235,7 +236,7 @@ function render_crossword_category_meta_box($post) {
 
         <div id="class_select_container" <?php if (empty($classes)) echo 'style="display:none;"'; ?>>
             <select name="selected_class" id="selected_class_crossowrd">
-                <option value=""><?php _e('----------', 'wp-crossword-plugin'); ?></option>
+                <option value=""><?php _e('----------', 'wp-quiz-plugin'); ?></option>
                 <?php foreach ($classes as $class) { ?>
                     <option value="<?php echo esc_attr($class->term_id); ?>" <?php selected($selected_class, $class->term_id); ?>>
                         <?php echo esc_html($class->name); ?>
@@ -246,7 +247,7 @@ function render_crossword_category_meta_box($post) {
 
         <div id="subject_select_container_crossword" <?php if (empty($subjects)) echo 'style="display:none;"'; ?>>
             <select name="selected_subject" id="selected_subject_crossword">
-                <option value=""><?php _e('----------', 'wp-crossword-plugin'); ?></option>
+                <option value=""><?php _e('----------', 'wp-quiz-plugin'); ?></option>
                 <?php foreach ($subjects as $subject) { ?>
                     <option value="<?php echo esc_attr($subject->term_id); ?>" <?php selected($selected_subject, $subject->term_id); ?>>
                         <?php echo esc_html($subject->name); ?>
@@ -296,7 +297,7 @@ function fetch_crossword_classes() {
             'hide_empty' => false,
         ]);
 
-        echo '<option value="">' . __('----------', 'wp-crossword-plugin') . '</option>';
+        echo '<option value="">' . __('----------', 'wp-quiz-plugin') . '</option>';
         foreach ($classes as $class) {
             echo '<option value="' . esc_attr($class->term_id) . '">' . esc_html($class->name) . '</option>';
         }
@@ -315,7 +316,7 @@ function fetch_crossword_subjects() {
             'hide_empty' => false,
         ]);
 
-        echo '<option value="">' . __('----------', 'wp-crossword-plugin') . '</option>';
+        echo '<option value="">' . __('----------', 'wp-quiz-plugin') . '</option>';
         foreach ($subjects as $subject) {
             echo '<option value="' . esc_attr($subject->term_id) . '">' . esc_html($subject->name) . '</option>';
         }
@@ -346,7 +347,7 @@ function crossword_category_cascade_script() {
                             if ($('#selected_class_crossowrd option').length > 1) {
                                 $('#class_select_container').show();
                             }
-                            $('#selected_subject_crossword').html('<option value=""><?php _e('----------', 'wp-crossword-plugin'); ?></option>');
+                            $('#selected_subject_crossword').html('<option value=""><?php _e('----------', 'wp-quiz-plugin'); ?></option>');
                         }
                     });
                 }
@@ -383,13 +384,15 @@ add_action('admin_footer', 'crossword_category_cascade_script');
 
 // Add the Crossword Visibility meta box
 function crossword_visibility_meta_box() {
+    $meta_label = _x('Crossword Visibility','crossword', 'wp-quiz-plugin');
+
     add_meta_box(
         'crossword_visibility_meta_box',      // Meta box ID
-        __('Crossword Visibility', 'wp-crossword-plugin'),  // Meta box title
+        $meta_label,  // Meta box title
         'render_crossword_visibility_meta_box', // Callback function to display the meta box
         'crossword',                           // Custom post type 'crossword'
-        'normal',                              // Context (position at the top of the editor)
-        'high'                                 // Priority (higher to place it closer to the top)
+        'side',
+        'default'                                // Priority (higher to place it closer to the top)
     );
 }
 add_action('add_meta_boxes', 'crossword_visibility_meta_box');
@@ -408,12 +411,12 @@ function render_crossword_visibility_meta_box($post) {
     <p class="crossword-visibility-options">
         <label>
             <input type="radio" name="crossword_visibility" value="public" <?php checked($listing_visibility_status, 'public'); ?>>
-            <?php _e('Public', 'wp-crossword-plugin'); ?>
+            <?php echo _x('Public', 'crossword','wp-quiz-plugin'); ?>
         </label>
 
         <label>
             <input type="radio" name="crossword_visibility" value="private" <?php checked($listing_visibility_status, 'private'); ?>>
-            <?php _e('Private', 'wp-crossword-plugin'); ?>
+            <?php echo _x('Private','crossword', 'wp-quiz-plugin'); ?>
         </label>
     </p>
     <?php
@@ -502,7 +505,7 @@ function wp_crossword_plugin_validate_taxonomies($data, $postarr) {
 
     // Begin Validation Logic
     if (empty($selected_school)) {
-        $error_messages[] = __('Please select a School.', 'wp-crossword-plugin');
+        $error_messages[] = __('Please select a School.', 'wp-quiz-plugin');
     } else {
         $class_terms = get_terms([
             'taxonomy'   => 'crossword_category',
@@ -512,11 +515,11 @@ function wp_crossword_plugin_validate_taxonomies($data, $postarr) {
 
         if (!is_wp_error($class_terms) && !empty($class_terms)) {
             if (empty($selected_class)) {
-                $error_messages[] = __('Please select a Class.', 'wp-crossword-plugin');
+                $error_messages[] = __('Please select a Class.', 'wp-quiz-plugin');
             } else {
                 $class_ids = wp_list_pluck($class_terms, 'term_id');
                 if (!in_array($selected_class, $class_ids, true)) {
-                    $error_messages[] = __('Selected Class is invalid for the chosen School.', 'wp-crossword-plugin');
+                    $error_messages[] = __('Selected Class is invalid for the chosen School.', 'wp-quiz-plugin');
                 } else {
                     $subject_terms = get_terms([
                         'taxonomy'   => 'crossword_category',
@@ -526,11 +529,11 @@ function wp_crossword_plugin_validate_taxonomies($data, $postarr) {
 
                     if (!is_wp_error($subject_terms) && !empty($subject_terms)) {
                         if (empty($selected_subject)) {
-                            $error_messages[] = __('Please select a Subject.', 'wp-crossword-plugin');
+                            $error_messages[] = __('Please select a Subject.', 'wp-quiz-plugin');
                         } else {
                             $subject_ids = wp_list_pluck($subject_terms, 'term_id');
                             if (!in_array($selected_subject, $subject_ids, true)) {
-                                $error_messages[] = __('Selected Subject is invalid for the chosen Class.', 'wp-crossword-plugin');
+                                $error_messages[] = __('Selected Subject is invalid for the chosen Class.', 'wp-quiz-plugin');
                             }
                         }
                     }

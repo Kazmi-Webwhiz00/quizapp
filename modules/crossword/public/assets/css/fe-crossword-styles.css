@@ -323,3 +323,7 @@ h3 {
     justify-content: center;
     align-items: center;
  }
+
+ .filled-cell.highlighted-cell input{
+background-color: transparent ;
+ }
