@@ -249,4 +249,78 @@ function exclude_private_crosswords($query) {
 add_action('pre_get_posts', 'exclude_private_crosswords');
 
 
+
+
+
+
+function crossword_save_ajax_meta_box_data_new() {
+    // 1. Security: Verify the AJAX nonce.
+    check_ajax_referer( 'crossword_ajax_nonce', 'security' );
+
+    // 2. Get and validate the post ID.
+    $post_id = isset( $_POST['post_id'] ) ? intval( $_POST['post_id'] ) : 0;
+    if ( ! $post_id ) {
+        wp_send_json_error( array( 'message' => 'Invalid post ID.' ) );
+    }
+    if ( ! current_user_can( 'edit_post', $post_id ) ) {
+        wp_send_json_error( array( 'message' => 'You do not have permission to edit this post.' ) );
+    }
+
+    // 3. Process and save the clue/word data.
+    if ( isset( $_POST['clue_word_data'] ) && is_array( $_POST['clue_word_data'] ) ) {
+        $words_clues = array();
+        foreach ( $_POST['clue_word_data'] as $entry ) {
+            if ( ! empty( trim( $entry['word'] ) ) ) {
+                $words_clues[] = array(
+                    'uniqueId' => sanitize_text_field( $entry['uniqueId'] ?? uniqid( 'cw_', true ) ),
+                    'word'     => sanitize_text_field( $entry['word'] ),
+                    'clue'     => sanitize_text_field( $entry['clue'] ?? '' ),
+                    'image'    => esc_url( $entry['image'] ?? '' ),
+                );
+            }
+        }
+        if ( ! empty( $words_clues ) ) {
+            update_post_meta( $post_id, '_crossword_words_clues', $words_clues );
+        } else {
+            delete_post_meta( $post_id, '_crossword_words_clues' );
+        }
+    } else {
+        delete_post_meta( $post_id, '_crossword_words_clues' );
+    }
+
+    // 4. Process and save the grid data.
+    if ( isset( $_POST['crossword_data'] ) ) {
+        $crossword_data_json = wp_unslash( $_POST['crossword_data'] ); // Remove extra slashes
+        $crossword_data_array = json_decode( $crossword_data_json, true );
+
+        if ( json_last_error() === JSON_ERROR_NONE && is_array( $crossword_data_array ) && isset( $crossword_data_array['grid'] ) ) {
+            $grid_data = $crossword_data_array['grid'];
+
+            // Sanitize grid data
+            foreach ( $grid_data as &$row ) {
+                foreach ( $row as &$cell ) {
+                    $cell['letter'] = isset( $cell['letter'] ) ? sanitize_text_field( $cell['letter'] ) : '';
+                    $cell['clueNumber'] = isset( $cell['clueNumber'] ) ? sanitize_text_field( $cell['clueNumber'] ) : '';
+                }
+            }
+            unset( $row, $cell );
+
+            // Save sanitized data (re-encode full array if needed)
+            update_post_meta( $post_id, '_crossword_grid_data', wp_json_encode( $crossword_data_array ) );
+        } else {
+            delete_post_meta( $post_id, '_crossword_grid_data' );
+        }
+    } else {
+        delete_post_meta( $post_id, '_crossword_grid_data' );
+    }
+
+    error_log( "Crossword data saved successfully via AJAX for post {$post_id}" );
+    wp_send_json_success( array( 'message' => 'Crossword saved successfully.' ) );
+}
+add_action( 'wp_ajax_save_crossword_ajax_new', 'crossword_save_ajax_meta_box_data_new' );
+
 ?>
+
+
+
+

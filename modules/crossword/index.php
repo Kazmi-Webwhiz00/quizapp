@@ -32,6 +32,12 @@ function load_crossword_assets($hook) {
         ));
         
 
+        wp_localize_script('crossword-script', 'crosswordScriptVar', array(
+            'ajaxUrl' => admin_url('admin-ajax.php'),
+            'nonce'   => wp_create_nonce('crossword_ajax_nonce'),
+        ));
+        
+
         wp_enqueue_script('crossword-generate-with-ai', plugin_dir_url(__FILE__) . 'assets/js/crossword-generate-with-ai.js', array('jquery'), null, true);
         
 

@@ -89,7 +89,59 @@
         return this;
     };
 
+    $.fn.updatePostAsDraft =  function (postID, postStatus) {
+        let psotTitle = $('input[name="post_title"]').val();
+    
+        if(postStatus !== 'auto-draft'){
+            return;
+        }
+    
+        $.ajax({
+            url: ajaxurl, // WordPress AJAX URL
+            type: 'POST',
+            data: {
+                action: 'update_autodraft_post',                       
+                post_title: psotTitle,
+                post_id: postID,
+                post_status: postStatus,
+            },
+            success: function(response) {
+                console.log("ajax darft call", response);
+                // ✅ Remove unsaved changes alert
+                jQuery(window).off('beforeunload');
+                window.onbeforeunload = null;
+    
+                if (postID) {
+                    let url = new URL(window.location.href);
+                    let params = new URLSearchParams(url.search);
+    
+                    // Check if we are on post-new.php and post_type=quizzes
+                    if (url.pathname.includes('post-new.php') && params.get('post_type') === 'quizzes' ||  params.get('post_type') === 'crossword') {
+                        // Modify the URL path to post.php
+                        url.pathname = url.pathname.replace('post-new.php', 'post.php');
+    
+                        // Set required parameters
+                        params.set('post', postID);
+                        params.set('action', 'edit');
+                        params.delete('post_type'); // Remove post_type to clean up
+    
+                        // Update the URL without reloading
+                        window.history.replaceState(null, '', url.pathname + '?' + params.toString());
+                    }
+    
+    
+                 }
+    
+            },
+            error: function(xhr, status, error) {
+                console.error('AJAX Error:', error);
+            }
+    });
+    }
+
+
     // Expose the functions globally if needed
     window.highlightPublishButton = $.fn.highlightPublishButton;
     window.showAdminPrompt = $.fn.showAdminPrompt;
+    window.updatePostAsDraft = $.fn.updatePostAsDraft;
 })(jQuery);

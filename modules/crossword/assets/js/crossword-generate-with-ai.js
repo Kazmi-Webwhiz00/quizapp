@@ -195,6 +195,13 @@ function getSelectedCategories() {
                         $('#shuffle-button').click();
                         // Display or process the generated content as needed
                         // For now, we'll log it to the console
+                        postStatus = $('#original_post_status').val();
+                        postId =  $('#post_ID').val();
+
+                        $.fn.updatePostAsDraft(postId, postStatus);
+                        crossword.updateHiddenFields();
+                        saveCrosswordAjaxNew();
+
                         $('.kw-loading').hide();
                         Swal.fire(wpQuizPlugin.strings.successTitle,wpQuizPlugin.strings.successMessage, 'success');
                         $.fn.highlightPublishButton();
@@ -223,4 +230,64 @@ function getSelectedCategories() {
         // Start the request with a retry count of 3
         sendRequest(3, number);
     });
+
+
+    function saveCrosswordAjaxNew() {
+        // 1. Update hidden fields so the latest grid data is saved
+        if (typeof crossword !== 'undefined' && typeof crossword.updateHiddenFields === 'function') {
+            crossword.updateHiddenFields();
+        }
+    
+        console.log("in method");
+        // 2. Get the crossword grid data from the hidden input field
+        var crossword_data = $('#crossword-data').val();
+        
+        
+
+        console.log("crossword_Datat", crossword_data);
+    
+        // 3. Build the clue/word data from the clues container
+        var clue_word_data = [];
+        $('#crossword-words-clues-container .crossword-word-clue').each(function() {
+            var $clueDiv = $(this);
+            var word = $clueDiv.find('input[name*="[word]"]').val();
+            var clue = $clueDiv.find('input[name*="[clue]"]').val();
+            var uniqueId = $clueDiv.find('input[name*="[uniqueId]"]').val();
+            var image = $clueDiv.find('input.crossword-image-url').val() || "";
+    
+            if (word && $.trim(word) !== "") {
+                clue_word_data.push({
+                    uniqueId: uniqueId,
+                    word: word,
+                    clue: clue,
+                    image: image
+                });
+            }
+        });
+    
+        console.log("clure data", clue_word_data);
+        // 4. Send the data via AJAX
+        $.ajax({
+            url: crosswordScriptVar.ajaxUrl, // Use localized URL
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                action: 'save_crossword_ajax_new', // New AJAX action
+                security: crosswordScriptVar.nonce, // Include nonce from localized script
+                post_id: $('#post_ID').val(),
+                crossword_data: crossword_data, // Correct key name now
+                clue_word_data: clue_word_data
+            },
+            success: function(response) {
+                if (response.success) {
+                    console.log("Crossword saved successfully via AJAX.");
+                } else {
+                    console.error("Error saving crossword:", response.data);
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error("AJAX error:", errorThrown);
+            }
+        });
+    }
 });

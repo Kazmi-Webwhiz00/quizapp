@@ -744,7 +744,7 @@ function display_questions_meta_box($post) {
                                         let postId = '<?php echo get_the_ID(); ?>';
                                         let postStatus= '<?php echo get_post_status(get_the_ID());?>'
 
-                                        updatePostAsDraft(postId, postStatus);
+                                        $.fn.updatePostAsDraft(postId, postStatus);
 
                                         function sendRequest(retryCount, count) {
                                             if (count <= 0) return;
@@ -1130,56 +1130,6 @@ function display_questions_meta_box($post) {
                 });
             }
 
-
-            function updatePostAsDraft(postID, postStatus) {
-                let psotTitle = $('input[name="post_title"]').val();
-
-                if(postStatus !== 'auto-draft'){
-                    return;
-                }
-
-                $.ajax({
-                    url: ajaxurl, // WordPress AJAX URL
-                    type: 'POST',
-                    data: {
-                        action: 'update_autodraft_post',                       
-                        post_title: psotTitle,
-                        post_id: postID,
-                        post_status: postStatus,
-                    },
-                    success: function(response) {
-                        console.log("ajax darft call", response);
-                        // ✅ Remove unsaved changes alert
-                        jQuery(window).off('beforeunload');
-                        window.onbeforeunload = null;
-
-                        if (postID) {
-                            let url = new URL(window.location.href);
-                            let params = new URLSearchParams(url.search);
-
-                            // Check if we are on post-new.php and post_type=quizzes
-                            if (url.pathname.includes('post-new.php') && params.get('post_type') === 'quizzes') {
-                                // Modify the URL path to post.php
-                                url.pathname = url.pathname.replace('post-new.php', 'post.php');
-
-                                // Set required parameters
-                                params.set('post', postID);
-                                params.set('action', 'edit');
-                                params.delete('post_type'); // Remove post_type to clean up
-
-                                // Update the URL without reloading
-                                window.history.replaceState(null, '', url.pathname + '?' + params.toString());
-                            }
-
-
-                         }
-
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('AJAX Error:', error);
-                    }
-        });
-    }
 
 
             // Event delegation for various actions (adding/removing questions, toggling visibility, etc.)
