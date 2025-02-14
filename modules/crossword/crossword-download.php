@@ -54,9 +54,9 @@ function generate_crossword_pdf_callback() {
     $pdf->SetTitle('Crossword Puzzle');
 
     // Set header and footer data
-    $pdf->SetHeaderData('', 0, $crossword_title, $crossword_author);
-    $pdf->setHeaderFont(['helvetica', '', 14]);
-    $pdf->setFooterFont(['helvetica', '', 10]);
+    $pdf->SetHeaderData('', 0, $crossword_title);
+    $pdf->setHeaderFont(['dejavusans', '', 14]);
+    $pdf->setFooterFont(['dejavusans', '', 10]);
     $pdf->SetMargins(15, 27, 15);
     $pdf->SetHeaderMargin(12);
     $pdf->SetFooterMargin(10);
@@ -68,13 +68,13 @@ function generate_crossword_pdf_callback() {
     if (!empty($pdf_image_url)) {
         $image_path = ABSPATH . str_replace(home_url('/'), '', $pdf_image_url);
         if (file_exists($image_path)) {
-            $pdf->Image($image_path, 150, 10, 40, 15, '', '', '', false, 300, '', false, false, 1, false, false, false);
+            $pdf->Image($image_path, 150, 10, 40, 15, '', '', '', false, 300, '', false, false, 0, false, false, false);
             $pdf->SetY($pdf->GetY() + 5);
         }
     }
 
     // Generate the crossword grid with padding and square cells
-    $pdf->SetFont('helvetica', '', 12);
+    $pdf->SetFont('dejavusans', '', 12);
     $html = '<div style="padding: 20px;">
                 <table cellpadding="0" cellspacing="0" style="border-collapse: separate; border-spacing: 0; border: 2px solid #ccc; border-radius: 10px; overflow: hidden;">';
 
@@ -113,9 +113,9 @@ function generate_crossword_pdf_callback() {
 
     // Function to render clues (both Across and Down)
     function render_clues($pdf, $clues, $title) {
-        $pdf->SetFont('helvetica', 'B', 14);
+        $pdf->SetFont('dejavusans', 'B', 14);
         $pdf->Cell(0, 10, $title, 0, 1, 'L');
-        $pdf->SetFont('helvetica', '', 12);
+        $pdf->SetFont('dejavusans', '', 12);
 
         foreach ($clues as $clueData) {
             $clueNumber = htmlspecialchars($clueData['clueNumber']);
@@ -147,7 +147,7 @@ function generate_crossword_pdf_callback() {
 
     // Render Across clues
     if (!empty($crossword_data_array['clues']['across'])) {
-        render_clues($pdf, $crossword_data_array['clues']['across'], 'Across');
+        render_clues($pdf, $crossword_data_array['clues']['across'], _x('Across', 'crossword-pdf', 'wp-quiz-plugin'));
     }
 
     // Add space between Across and Down clues
@@ -155,7 +155,7 @@ function generate_crossword_pdf_callback() {
 
     // Render Down clues
     if (!empty($crossword_data_array['clues']['down'])) {
-        render_clues($pdf, $crossword_data_array['clues']['down'], 'Down');
+        render_clues($pdf, $crossword_data_array['clues']['down'], _x('Down', 'crossword-pdf', 'wp-quiz-plugin'));
     }
 
     // Define PDF filename based on showkeys

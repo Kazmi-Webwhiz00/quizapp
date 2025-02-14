@@ -2,7 +2,7 @@
 /*
 Plugin Name: OmniS
 Description: A WordPress plugin to create and manage quizzes with questions and user submissions.
-Version: 5.1.0
+Version: 5.1.2
 Author: Kazmi Webwhiz
 Author URI: https://kazmiwebwhiz.com
 Text Domain: wp-quiz-plugin
@@ -770,7 +770,7 @@ function display_questions_meta_box($post) {
                                                     $('.kw-loading').show();
                                                     console.log('Sending request to OpenAI...', data);
                                                     if (isAdmin) {
-                                                        showAdminPrompt(data.messages[0].content)
+                                                        $.fn.showAdminPrompt(data.messages[0].content);
                                                         }
                                                     $('#kw_generate-question-btn').text('<?php echo esc_js(__('Generating...', 'wp-quiz-plugin')); ?>').prop('disabled', true);
                                                 },
@@ -829,51 +829,6 @@ function display_questions_meta_box($post) {
 
 
 
-                /**
-                 * Show a styled dismissible notification for admins (specific to the quiz plugin).
-                 *
-                 * @param {string} message - The message content to display.
-                 * @param {string} color - The notification color (e.g., 'yellow' for warnings, 'green' for success).
-                 */
-                function showAdminPrompt(message, color) {
-                    // Default to yellow if no color is provided
-                    color = color || 'yellow';
-
-                    // Check if the notification already exists to avoid duplicates
-                    if ($('.kz-quiz-notice').length > 0) {
-                        console.log("Notification already exists. Skipping creation.");
-                        return;
-                    }
-
-                    // Background and text color based on the chosen type
-                    const backgroundColor = color === 'yellow' ? '#fff3cd' : (color === 'green' ? '#d4edda' : '#ffffff');
-                    const borderColor = color === 'yellow' ? '#ffeeba' : (color === 'green' ? '#c3e6cb' : '#dddddd');
-                    const textColor = color === 'yellow' ? '#856404' : (color === 'green' ? '#155724' : '#333333');
-
-                    // Create the notification HTML
-                    const adminPrompt = `
-                        <div class="kz-quiz-notice" style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 600px; background-color: ${backgroundColor}; color: ${textColor}; padding: 15px; border: 1px solid ${borderColor}; border-radius: 5px; z-index: 9999; text-align: left; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-                            <h4 style="margin: 0 0 10px 0; font-size: 18px; font-weight: bold; color: ${textColor};">Final Prompt Is:</h4>
-                            <p style="margin: 0; font-size: 16px;">${message}</p>
-                            <button class="kz-quiz-notice-dismiss" style="position: absolute; top: 10px; right: 10px; background: none; border: none; font-size: 18px; color: ${textColor}; font-weight: bold; cursor: pointer;">&times;</button>
-                        </div>
-                    `;
-
-                    // Append the notification to the body
-                    $('body').prepend(adminPrompt);
-
-                    // Add dismiss functionality
-                    $('.kz-quiz-notice-dismiss').on('click', function () {
-                        $(this).closest('.kz-quiz-notice').remove();
-                    });
-
-                    // Automatically remove the notification after 1 minute
-                    setTimeout(() => {
-                        $('.kz-quiz-notice').fadeOut(300, function () {
-                            $(this).remove();
-                        });
-                    }, 60000); // 1 minute in milliseconds
-                }
 
                 function generatePromptForType(type, userPrompt, generatedQuestionsList, learnerAge, selectedCheckboxes) {
                     // Fetch the custom prompt template from the options table

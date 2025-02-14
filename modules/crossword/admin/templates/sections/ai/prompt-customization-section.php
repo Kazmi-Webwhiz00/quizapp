@@ -6,7 +6,7 @@ if (!defined('ABSPATH')) {
 
 // Default values for prompts
 $default_context_prompt = 'Avoid using the following words:[existing_words]';
-$default_generation_prompt = 'Generate a crossword with [number] words on the topic [topic] suitable for users aged [age]. The crossword should be created in the [language] language.';
+$default_generation_prompt = 'Generate a crossword with [number] words on the topic [topic] suitable for users aged [age] and from the following categories: [categories]. The crossword should be created in the [language] language.';
 $default_return_format_prompt = "\nProvide the output in the following JSON array format, with no additional text:\n\n[\n{ \"word\": \"exampleWord1\", \"clue\": \"Example clue for word 1\" },\n{ \"word\": \"exampleWord2\", \"clue\": \"Example clue for word 2\" },\n...]\n";
 
 // Get saved values or use defaults
@@ -54,6 +54,7 @@ $return_format_prompt_value = get_option('kw_crossword_return_format_prompt', $d
                     <li><strong><?php esc_html_e('[topic]:', 'wp-quiz-plugin'); ?></strong> <?php esc_html_e('The topic on which the crossword will be based.', 'wp-quiz-plugin'); ?></li>
                     <li><strong><?php esc_html_e('[age]:', 'wp-quiz-plugin'); ?></strong> <?php esc_html_e('The age group for which the crossword should be created.', 'wp-quiz-plugin'); ?></li>
                     <li><strong><?php esc_html_e('[language]:', 'wp-quiz-plugin'); ?></strong> <?php esc_html_e('The language in which the crossword should be created.', 'wp-quiz-plugin'); ?></li>
+                    <li><strong><?php esc_html_e('[categories]:', 'wp-quiz-plugin'); ?></strong> <?php esc_html_e('The selected categories (e.g. school > class > subject) to further contextualize the crossword.', 'wp-quiz-plugin'); ?></li>
                 </ul>
                 <?php esc_html_e('Ensure the placeholders are used correctly to guide the generation process effectively.', 'wp-quiz-plugin'); ?>
             </div>

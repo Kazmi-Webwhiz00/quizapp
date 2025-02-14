@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OmniS\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-11 08:47+0000\n"
+"POT-Creation-Date: 2025-02-12 14:31+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -505,7 +505,7 @@ msgstr ""
 msgid "Crossword Categories"
 msgstr ""
 
-#: modules/crossword/crossword-settings.php:165
+#: modules/crossword/crossword-settings.php:171
 msgid "crossword Description"
 msgstr ""
 
@@ -556,6 +556,16 @@ msgstr ""
 #: modules/crossword/public/crossword-fe-index.php:66
 msgctxt "crossword-frontend"
 msgid "Yes, Reveal"
+msgstr ""
+
+#: modules/crossword/crossword-download.php:150
+msgctxt "crossword-pdf"
+msgid "Across"
+msgstr ""
+
+#: modules/crossword/crossword-download.php:158
+msgctxt "crossword-pdf"
+msgid "Down"
 msgstr ""
 
 #: modules/crossword/crossword-download.php:162
@@ -743,7 +753,7 @@ msgid "Download Result as PDF"
 msgstr ""
 
 #: modules/crossword/index.php:145
-#: modules/crossword/public/crossword-fe-index.php:77
+#: modules/crossword/public/crossword-fe-index.php:82
 msgid "Downloading..."
 msgstr ""
 
@@ -824,12 +834,12 @@ msgstr ""
 msgid "False"
 msgstr ""
 
-#: modules/crossword/public/crossword-fe-index.php:80
+#: modules/crossword/public/crossword-fe-index.php:85
 msgctxt "FE-crossword_pdf_error"
 msgid "An error occurred while generating the PDF."
 msgstr ""
 
-#: modules/crossword/public/crossword-fe-index.php:81
+#: modules/crossword/public/crossword-fe-index.php:86
 msgctxt "FE-crossword_pdf_success"
 msgid "PDF generated successfully."
 msgstr ""
@@ -1083,7 +1093,7 @@ msgstr ""
 msgid "Invalid answer format."
 msgstr ""
 
-#: modules/crossword/crossword-settings.php:218
+#: modules/crossword/crossword-settings.php:224
 msgid "Invalid crossword ID."
 msgstr ""
 

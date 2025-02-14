@@ -81,7 +81,7 @@ $error_message_color = esc_attr(get_option('kw_fe_error_message_color', '#ff0000
                 </span>
                 <div>
                     <div class="fe-download-button-wrapper">
-                        <button class="kw-validate-crossword-button" id="validate-crossword" style="background-color: <?php echo $check_button_bg_color; ?>; color: <?php echo $check_button_text_color; ?>; font-size: <?php echo $check_button_font_size; ?>; font-family: <?php echo $check_button_font_family; ?>;"><?php echo __($check_button_label,'wp-quiz-plugin'); ?></button>
+                        <button class="kw-validate-crossword-button" id="validate-crossword" style="background-color: <?php echo $check_button_bg_color; ?>; color: <?php echo $check_button_text_color; ?>; font-size: <?php echo $check_button_font_size; ?>px; font-family: <?php echo $check_button_font_family; ?>;"><?php echo __($check_button_label,'wp-quiz-plugin'); ?></button>
                         <span id="download-pdf-button-fe" data-crossword-id="<?php echo esc_attr($post->ID); ?>" style="background-color: <?php echo $download_button_bg_color; ?>; color: <?php echo $download_button_text_color; ?>; font-size: <?php echo $download_button_font_size; ?>; font-family: <?php echo $download_button_font_family; ?>;"><?php echo __($download_button_label,'wp-quiz-plugin'); ?></span>
                     </div>
                     <div class="kw-crossword-fe-replay-container">

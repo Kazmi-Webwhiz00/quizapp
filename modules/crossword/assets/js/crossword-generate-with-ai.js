@@ -1,4 +1,6 @@
 jQuery(document).ready(function ($) {
+
+
 /**
  * Replaces placeholders in a string using an object of key-value pairs.
  *
@@ -8,8 +10,8 @@ jQuery(document).ready(function ($) {
  */
 function replacePlaceholders(template, variables) {
     Object.keys(variables).forEach((key) => {
-        const placeholder = `[${key}]`; // Match the placeholder format [key]
-        template = template.replace(placeholder, variables[key]);
+        const regex = new RegExp('\\[' + key + '\\]', 'g'); // Global replacement for all instances of [key]
+        template = template.replace(regex, variables[key]);
     });
     return template;
 }
@@ -26,83 +28,115 @@ function replacePlaceholders(template, variables) {
  */
 function generatePrompt(number, topic, age, language) {
     // Retrieve localized default prompts
-    const contextPromptTemplate = wpQuizPlugin.defaultContextPrompt;
-    const generationPromptTemplate = wpQuizPlugin.defaultGenerationPrompt;
-    const returnFormatPrompt = wpQuizPlugin.defaultReturnFormatPrompt;
+    const contextPromptTemplate     = wpQuizPlugin.defaultContextPrompt;
+    const generationPromptTemplate  = wpQuizPlugin.defaultGenerationPrompt;
+    const returnFormatPrompt        = wpQuizPlugin.defaultReturnFormatPrompt;
 
-    // Replace [existing_words] in context prompt
+    // 1) Get selected categories using the updated selectors
+    const selectedCategories = getSelectedCategories();
+
+    // 2) Replace [existing_words] in context prompt
     const existingWords = getCrosswordWordsList();
     const contextPrompt = replacePlaceholders(contextPromptTemplate, {
         existing_words: existingWords.join(', '),
     });
 
-    // Replace [number], [topic], [age], and [language] in generation prompt
+    // 3) Replace placeholders in generation prompt, including the new [categories]
     const generationPrompt = replacePlaceholders(generationPromptTemplate, {
         number: number,
         topic: topic,
         age: age,
         language: language,
+        categories: selectedCategories,
     });
 
-    // Combine prompts into the final prompt
+    // 4) Combine prompts into the final prompt
     return `${generationPrompt} ${contextPrompt} ${returnFormatPrompt}`;
 }
+
     
-    function getCrosswordWordsList() {
-        let wordsList = [];
+function getCrosswordWordsList() {
+    let wordsList = [];
+
+    $('.crossword-word-clue').each(function () {
+        const index = $(this).data('index');
+        const word = $(`input[name="crossword_words[${index}][word]"]`).val();
+
+        if (word) {
+            wordsList.push(word.toUpperCase());
+        }
+    });
+
+    return wordsList;
+}
     
-        $('.crossword-word-clue').each(function () {
-            const index = $(this).data('index');
-            const word = $(`input[name="crossword_words[${index}][word]"]`).val();
     
-            if (word) {
-                wordsList.push(word.toUpperCase());
+function appendGeneratedContent(generatedContent) {
+    const $container = $("#crossword-words-clues-container");
+    const template = $("#crossword-word-clue-template").html();
+    const existingEntries = $container.find(".crossword-word-clue").length;
+
+    generatedContent.forEach((item, index) => {
+        const newIndex = existingEntries + index;
+        
+        // Preserve existing unique ID or generate a new one
+        const uniqueId = item.uniqueId ? item.uniqueId : `cw_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
+
+        console.log(`Generated Unique ID for word: ${item.word} -> ${uniqueId}`); // Debugging
+
+        let entryHtml = template
+            .replace(/{{index}}/g, newIndex)
+            .replace(/{{number}}/g, newIndex + 2)
+            .replace('value=""', `value="${item.word}"`)  // Sets word
+            .replace('value=""', `value="${item.clue}"`)  // Sets clue
+            .replace('value=""', `value="${uniqueId}"`); // Sets uniqueId
+
+
+        // Convert HTML string to a jQuery object
+        let $entry = $(entryHtml);
+        
+        // Add unique ID as a data attribute to identify this record
+        $entry.attr("data-unique-id", uniqueId);
+        $entry.find("input[name^='crossword_words']").each(function () {
+            let nameAttr = $(this).attr("name");
+            if (nameAttr.includes("[word]")) {
+                $(this).attr("name", `crossword_words[${newIndex}][word]`).attr("data-unique-id", uniqueId);
+            } else if (nameAttr.includes("[clue]")) {
+                $(this).attr("name", `crossword_words[${newIndex}][clue]`).attr("data-unique-id", uniqueId);
             }
         });
-    
-        return wordsList;
-    }
-    
-    
-    function appendGeneratedContent(generatedContent) {
-        const $container = $("#crossword-words-clues-container");
-        const template = $("#crossword-word-clue-template").html();
-        const existingEntries = $container.find(".crossword-word-clue").length;
-    
-        generatedContent.forEach((item, index) => {
-            const newIndex = existingEntries + index;
-            
-            // Preserve existing unique ID or generate a new one
-            const uniqueId = item.uniqueId ? item.uniqueId : `cw_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
-    
-            console.log(`Generated Unique ID for word: ${item.word} -> ${uniqueId}`); // Debugging
 
-            let entryHtml = template
-                .replace(/{{index}}/g, newIndex)
-                .replace(/{{number}}/g, newIndex + 2)
-                .replace('value=""', `value="${item.word}"`)  // Sets word
-                .replace('value=""', `value="${item.clue}"`)  // Sets clue
-                .replace('value=""', `value="${uniqueId}"`); // Sets uniqueId
+        // Append to container
+        $container.append($entry);
+    });
+}
 
+/**
+ * Returns a string of selected categories joined by " > ".
+ *
+ * This function grabs the text of the selected options from the new dropdowns.
+ */
+function getSelectedCategories() {
+    let selectedCategories = [];
 
-            // Convert HTML string to a jQuery object
-            let $entry = $(entryHtml);
-            
-            // Add unique ID as a data attribute to identify this record
-            $entry.attr("data-unique-id", uniqueId);
-            $entry.find("input[name^='crossword_words']").each(function () {
-                let nameAttr = $(this).attr("name");
-                if (nameAttr.includes("[word]")) {
-                    $(this).attr("name", `crossword_words[${newIndex}][word]`).attr("data-unique-id", uniqueId);
-                } else if (nameAttr.includes("[clue]")) {
-                    $(this).attr("name", `crossword_words[${newIndex}][clue]`).attr("data-unique-id", uniqueId);
-                }
-            });
-    
-            // Append to container
-            $container.append($entry);
-        });
-    }
+    // Grab the selected text from each dropdown using the updated IDs.
+    let selectedSchool   = $('#selected_school_crossword').find(':selected').text().trim();
+    let selectedClass    = $('#selected_class_crossowrd').find(':selected').text().trim();
+    let selectedSubject  = $('#selected_subject_crossword').find(':selected').text().trim();
+
+    // Validation: category must not be empty or only hyphens.
+    const isValidCategory = (category) => {
+        return category.length > 0 && !category.match(/^-{3,}$/);
+    };
+
+    if (isValidCategory(selectedSchool)) selectedCategories.push(selectedSchool);
+    if (isValidCategory(selectedClass)) selectedCategories.push(selectedClass);
+    if (isValidCategory(selectedSubject)) selectedCategories.push(selectedSubject);
+
+    // Return categories joined with a separator.
+    return selectedCategories.join(' > ');
+}
+
     
 
     // Unique ID for the button
@@ -146,7 +180,9 @@ function generatePrompt(number, topic, age, language) {
                 },
                 data: JSON.stringify(data),
                 beforeSend: function () {
+                    $('.kw-loading').show();
                     console.log('Sending request to OpenAI...', data);
+                    showAdminPrompt(data.messages[0].content)
                     $(generateButtonId).text(wpQuizPlugin.generatingText).prop('disabled', true);
                 },
                 success: function (response) {
@@ -159,7 +195,9 @@ function generatePrompt(number, topic, age, language) {
                         $('#shuffle-button').click();
                         // Display or process the generated content as needed
                         // For now, we'll log it to the console
+                        $('.kw-loading').hide();
                         Swal.fire(wpQuizPlugin.strings.successTitle,wpQuizPlugin.strings.successMessage, 'success');
+                        $.fn.highlightPublishButton();
 
                     } catch (error) {
                         console.error('Error parsing response:', error);
