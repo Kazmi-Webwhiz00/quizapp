@@ -76,10 +76,11 @@ function generate_crossword_pdf_callback() {
     // Generate the crossword grid with padding and square cells
     $pdf->SetFont('dejavusans', '', 12);
     $html = '<div style="padding: 20px;">
-                <table cellpadding="0" cellspacing="0" style="border-collapse: separate; border-spacing: 0; border: 2px solid #ccc; border-radius: 10px; overflow: hidden;">';
+                <table cellpadding="0" cellspacing="0" style="border-collapse: separate; border-spacing: 0; border: none; border-radius: 10px; overflow: hidden;">';
 
     // Set a consistent size for width and height for square cells
-    $cellSize = 20;
+    
+    $cellSize = calculate_cell_size($crossword_data_array);
 
     foreach ($crossword_data_array['grid'] as $row) {
         $html .= '<tr>';
@@ -121,9 +122,10 @@ function generate_crossword_pdf_callback() {
             $clueNumber = htmlspecialchars($clueData['clueNumber']);
             $clueText = htmlspecialchars($clueData['clueText']);
             $clueImage = $clueData['clueImage'];
-            $html = '<table cellpadding="4" cellspacing="0" style="width: 100%; margin-bottom: 10px;">';
+            $rowWidth = !empty($clueImage) ? 70 : 100;
+            $html = '<table cellpadding="1" cellspacing="0" style="width: 100%; margin-bottom: 10px;">';
             $html .= '<tr>';
-            $html .= '<td style="width: 60%; background-color: #E8E8E8; padding: 8px;"><strong>' . $clueNumber . '.</strong> ' . $clueText . '</td>';
+            $html .= '<td style="width:'. $rowWidth .'%; background-color: #E8E8E8; padding: 8px;"><strong>' . $clueNumber . '.</strong> ' . $clueText . '</td>';
 
             if (!empty($clueImage)) {
                 $imagePath = $clueImage;
@@ -133,11 +135,11 @@ function generate_crossword_pdf_callback() {
                     $imagePath = ABSPATH . ltrim($clueImage, '/');
                 }
 
-                $html .= '<td style="width: 40%; text-align: center; padding: 8px; background-color: #E8E8E8;">';
+                $html .= '<td style="width: 30%; text-align: center; padding: 8px; background-color: #E8E8E8;">';
                 $html .= '<img src="' . htmlspecialchars($imagePath) . '" style="width: 50px; height: 50px;" />';
                 $html .= '</td>';
             } else {
-                $html .= '<td style="width: 40%;"></td>';
+                $html .= '<td style="width: 30%;"></td>';
             }
 
             $html .= '</tr></table>';
@@ -174,4 +176,36 @@ function generate_crossword_pdf_callback() {
     echo $pdf_content;
 
     wp_die();
+}
+
+
+function calculate_cell_size($crossword_data_array) {
+    // Ensure the grid data exists and is valid
+    if (empty($crossword_data_array['grid']) || !is_array($crossword_data_array['grid'])) {
+        return 20; // Default to min size if grid is invalid
+    }
+
+    // Determine grid size
+    $rows = count($crossword_data_array['grid']);
+    $cols = count($crossword_data_array['grid'][0]);
+
+    // PDF Page Size (Consider Margins)
+    $pdfPageWidth = 180; // TCPDF default page width minus margins
+    $pdfPageHeight = 240; // TCPDF default page height minus margins
+
+    // Define min, max, and reference values
+    $minCellSize = 20;
+    $maxCellSize = 45;
+    $referenceSize = 15; // Reference grid size
+    $referenceCellSize = 32; // Reference cell size for 15x15
+
+    // Compute base cell size based on page constraints
+    $computedCellSize = min($pdfPageWidth / $cols, $pdfPageHeight / $rows);
+
+    // Scale based on the 15x15 reference
+    $scaleFactor = $referenceCellSize / min($pdfPageWidth / $referenceSize, $pdfPageHeight / $referenceSize);
+    $adjustedCellSize = $computedCellSize * $scaleFactor;
+
+    // Ensure the cell size remains within the defined min-max range
+    return min($maxCellSize, max($minCellSize, $adjustedCellSize));
 }

@@ -61,19 +61,19 @@ jQuery(document).ready(function($) {
             e.preventDefault();
             $('#crossword-download-key').text(cross_ajax_obj.downloadingText).prop('disabled', true);
             var crossword_id = $(this).data('crossword-id'); // Get crossword ID from the button
-    
+        
             if (!crossword_id) {
                 alert('Crossword ID is missing.');
                 return;
             }
-    
+        
             $.ajax({
                 url: cross_ajax_obj.ajax_url, // WordPress AJAX URL
                 type: 'GET',
                 data: {
                     action: 'generate_crossword_pdf',
                     crossword_id: crossword_id,
-                    show_keys: 1 // No answers included
+                    show_keys: 1 // Include answer keys
                 },
                 xhrFields: {
                     responseType: 'blob'
@@ -81,9 +81,21 @@ jQuery(document).ready(function($) {
                 success: function(response, status, xhr) {
                     if (xhr.status === 200) {
                         var blob = new Blob([response], { type: 'application/pdf' });
+        
+                        // Extract filename from Content-Disposition header
+                        var contentDisposition = xhr.getResponseHeader('Content-Disposition');
+                        var filename = "crossword.pdf"; // Default filename fallback
+                        
+                        if (contentDisposition) {
+                            var matches = contentDisposition.match(/filename="(.+)"/);
+                            if (matches && matches.length > 1) {
+                                filename = matches[1];
+                            }
+                        }
+        
                         var link = document.createElement('a');
                         link.href = window.URL.createObjectURL(blob);
-                        link.download = "crossword.pdf";
+                        link.download = filename;
                         link.click();
                     } else {
                         alert(crosswordPdfScriptVar.strings.errorMessage);
@@ -93,8 +105,9 @@ jQuery(document).ready(function($) {
                     alert(crosswordPdfScriptVar.strings.errorMessage);
                 },
                 complete: function(){
-                    $('#crossword-download-key').text(cross_ajax_obj.keyButtonText).prop('disabled', true);
+                    $('#crossword-download-key').text(cross_ajax_obj.keyButtonText).prop('disabled', false);
                 }
             });
         });
+        
 });

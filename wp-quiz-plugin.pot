@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OmniS\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-12 14:31+0000\n"
+"POT-Creation-Date: 2025-02-19 08:36+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -46,6 +46,10 @@ msgstr ""
 msgid "[age]:"
 msgstr ""
 
+#: modules/crossword/admin/templates/sections/ai/prompt-customization-section.php:57
+msgid "[categories]:"
+msgstr ""
+
 #: modules/crossword/admin/templates/sections/ai/prompt-customization-section.php:56
 msgid "[language]:"
 msgstr ""
@@ -69,7 +73,7 @@ msgid ""
 "submissions."
 msgstr ""
 
-#: modules/crossword/index.php:42 modules/crossword/index.php:116
+#: modules/crossword/index.php:48 modules/crossword/index.php:122
 #: modules/crossword/admin/pages/admin-strings-setting-page.php:32
 msgid "Across"
 msgstr ""
@@ -173,7 +177,7 @@ msgid ""
 "Settings > Permalinks</a></strong> and click \"Save Changes\" to update."
 msgstr ""
 
-#: modules/crossword/templates/generate-with-ai.php:15
+#: modules/crossword/templates/generate-with-ai.php:18
 msgid "Age"
 msgstr ""
 
@@ -253,7 +257,7 @@ msgstr ""
 msgid "Are you Sure ?"
 msgstr ""
 
-#: quizzes-management.php:1292
+#: quizzes-management.php:1197
 msgid "Are you sure you want to delete the question?"
 msgstr ""
 
@@ -443,8 +447,8 @@ msgstr ""
 msgid "Correct Answers:"
 msgstr ""
 
-#: quizzes-management.php:970 quizzes-management.php:1036
-#: quizzes-management.php:1141
+#: quizzes-management.php:925 quizzes-management.php:991
+#: quizzes-management.php:1096
 msgid ""
 "Could not find the question or correct answer. Please check the AI response "
 "format."
@@ -468,6 +472,11 @@ msgstr ""
 #: modules/crossword/custom-post-type-registration.php:387
 msgctxt "crossword"
 msgid "Crossword Visibility"
+msgstr ""
+
+#: modules/crossword/templates/generate-with-ai.php:14
+msgctxt "crossword"
+msgid "Generating Crosswords..."
 msgstr ""
 
 #: modules/crossword/custom-post-type-registration.php:419
@@ -578,29 +587,29 @@ msgctxt "crossword-pdf"
 msgid "keys"
 msgstr ""
 
-#: modules/crossword/index.php:84
+#: modules/crossword/index.php:90
 msgctxt "crossword_ai"
 msgid "Error"
 msgstr ""
 
-#: modules/crossword/index.php:85
+#: modules/crossword/index.php:91
 msgctxt "crossword_ai"
 msgid "Success"
 msgstr ""
 
-#: modules/crossword/index.php:86
+#: modules/crossword/index.php:92
 msgctxt "crossword_ai_error"
 msgid ""
 "Could not parse the response. Ensure the AI response follows the expected "
 "format."
 msgstr ""
 
-#: modules/crossword/index.php:88
+#: modules/crossword/index.php:94
 msgctxt "crossword_ai_error"
 msgid "The number must be between 1 and"
 msgstr ""
 
-#: modules/crossword/index.php:87
+#: modules/crossword/index.php:93
 msgctxt "crossword_ai_success"
 msgid "Generated Content."
 msgstr ""
@@ -706,7 +715,7 @@ msgstr ""
 msgid "Documentation"
 msgstr ""
 
-#: modules/crossword/index.php:43 modules/crossword/index.php:117
+#: modules/crossword/index.php:49 modules/crossword/index.php:123
 #: modules/crossword/admin/pages/admin-strings-setting-page.php:35
 msgid "Down"
 msgstr ""
@@ -725,14 +734,14 @@ msgstr ""
 msgid "Download Answer Key"
 msgstr ""
 
-#: modules/crossword/index.php:134
+#: modules/crossword/index.php:140
 #: modules/crossword/templates/crossword-preview-meta-box.php:13
 #: modules/crossword/admin/pages/admin-strings-setting-page.php:23
 #: modules/crossword/admin/templates/sections/admin-view-strings-section.php:25
 msgid "Download as PDF"
 msgstr ""
 
-#: modules/crossword/index.php:135
+#: modules/crossword/index.php:141
 #: modules/crossword/templates/crossword-preview-meta-box.php:18
 #: modules/crossword/admin/pages/admin-strings-setting-page.php:26
 #: modules/crossword/admin/templates/sections/admin-view-strings-section.php:30
@@ -752,7 +761,7 @@ msgstr ""
 msgid "Download Result as PDF"
 msgstr ""
 
-#: modules/crossword/index.php:145
+#: modules/crossword/index.php:151
 #: modules/crossword/public/crossword-fe-index.php:82
 msgid "Downloading..."
 msgstr ""
@@ -779,7 +788,7 @@ msgstr ""
 msgid "Enable Live Word Check"
 msgstr ""
 
-#: modules/crossword/admin/templates/sections/ai/prompt-customization-section.php:58
+#: modules/crossword/admin/templates/sections/ai/prompt-customization-section.php:59
 msgid ""
 "Ensure the placeholders are used correctly to guide the generation process "
 "effectively."
@@ -812,7 +821,7 @@ msgid "Enter your prompt for ChatGPT:"
 msgstr ""
 
 #: quizzes-management.php:788 quizzes-management.php:806
-#: quizzes-management.php:1140
+#: quizzes-management.php:1095
 msgid "Error"
 msgstr ""
 
@@ -830,7 +839,7 @@ msgid "Failure Popup Settings"
 msgstr ""
 
 #: kw-save-quiz-aut.php:35 quizzes-management.php:465
-#: quizzes-management.php:1366 quizzes-management.php:1526
+#: quizzes-management.php:1271 quizzes-management.php:1431
 msgid "False"
 msgstr ""
 
@@ -969,11 +978,11 @@ msgstr ""
 msgid "Generate"
 msgstr ""
 
-#: modules/crossword/admin/templates/sections/ai/prompt-customization-section.php:62
+#: modules/crossword/admin/templates/sections/ai/prompt-customization-section.php:63
 msgid "Generate Prompt"
 msgstr ""
 
-#: quizzes-admin.php:1428 modules/crossword/index.php:54
+#: quizzes-admin.php:1428 modules/crossword/index.php:60
 #: modules/crossword/crossword-settings.php:38
 #: modules/crossword/templates/generate-with-ai.php:8
 #: modules/crossword/admin/pages/ai-settings-page.php:42
@@ -984,7 +993,7 @@ msgid "Generate with AI"
 msgstr ""
 
 #: quizzes-management.php:794 quizzes-management.php:812
-#: quizzes-management.php:1136 quizzes-management.php:1146
+#: quizzes-management.php:1091 quizzes-management.php:1101
 msgid "Generate with ChatGPT"
 msgstr ""
 
@@ -1000,7 +1009,7 @@ msgstr ""
 msgid "Generating Quiz..."
 msgstr ""
 
-#: quizzes-management.php:775 modules/crossword/index.php:69
+#: quizzes-management.php:775 modules/crossword/index.php:75
 msgid "Generating..."
 msgstr ""
 
@@ -1102,12 +1111,12 @@ msgstr ""
 msgid "Invalid request."
 msgstr ""
 
-#: quizzes-management.php:992
+#: quizzes-management.php:947
 msgctxt "JS MCQ Hover"
 msgid "Correct Answer"
 msgstr ""
 
-#: quizzes-management.php:992
+#: quizzes-management.php:947
 msgctxt "JS MCQ Hover"
 msgid "Incorrect Answer"
 msgstr ""
@@ -1116,7 +1125,7 @@ msgstr ""
 msgid "Kazmi Webwhiz"
 msgstr ""
 
-#: modules/crossword/templates/generate-with-ai.php:16
+#: modules/crossword/templates/generate-with-ai.php:19
 msgid "Language"
 msgstr ""
 
@@ -1160,7 +1169,7 @@ msgid "Meta Box Title"
 msgstr ""
 
 #: quizzes-management.php:375 quizzes-management.php:643
-#: quizzes-management.php:1111 quizzes-management.php:1261
+#: quizzes-management.php:1066 quizzes-management.php:1166
 msgid "Multiple Choice"
 msgstr ""
 
@@ -1177,7 +1186,7 @@ msgstr ""
 msgid "New Crossword Category Name"
 msgstr ""
 
-#: quizzes-management.php:1248
+#: quizzes-management.php:1153
 msgid "New Question"
 msgstr ""
 
@@ -1240,7 +1249,7 @@ msgstr ""
 #: modules/crossword/admin/templates/sections/slugurl-section.php:9
 #: modules/crossword/admin/templates/sections/ai/prompt-customization-section.php:26
 #: modules/crossword/admin/templates/sections/ai/prompt-customization-section.php:50
-#: modules/crossword/admin/templates/sections/ai/prompt-customization-section.php:78
+#: modules/crossword/admin/templates/sections/ai/prompt-customization-section.php:79
 msgid "Note:"
 msgstr ""
 
@@ -1248,7 +1257,7 @@ msgstr ""
 msgid "Notifications"
 msgstr ""
 
-#: modules/crossword/templates/generate-with-ai.php:17
+#: modules/crossword/templates/generate-with-ai.php:20
 msgid "Number"
 msgstr ""
 
@@ -1279,7 +1288,7 @@ msgstr ""
 msgid "Open in New Tab"
 msgstr ""
 
-#: quizzes-management.php:645 quizzes-management.php:1263
+#: quizzes-management.php:645 quizzes-management.php:1168
 msgid "Open Text"
 msgstr ""
 
@@ -1327,7 +1336,7 @@ msgstr ""
 msgid "PDF Style Settings"
 msgstr ""
 
-#: modules/crossword/index.php:119
+#: modules/crossword/index.php:125
 #: modules/crossword/templates/crossword-preview-meta-box.php:74
 msgid "Please add some words to generate the crossword."
 msgstr ""
@@ -1416,7 +1425,7 @@ msgctxt "publish alert"
 msgid "Don't forget to save! Your changes may be lost."
 msgstr ""
 
-#: quizzes-management.php:358 quizzes-management.php:1248
+#: quizzes-management.php:358 quizzes-management.php:1153
 msgid "Q."
 msgstr ""
 
@@ -1452,15 +1461,15 @@ msgstr ""
 msgid "Question Text Color:"
 msgstr ""
 
-#: quizzes-management.php:1120
+#: quizzes-management.php:1075
 msgid "Question Title:"
 msgstr ""
 
-#: quizzes-management.php:372 quizzes-management.php:1260
+#: quizzes-management.php:372 quizzes-management.php:1165
 msgid "Question Type"
 msgstr ""
 
-#: quizzes-management.php:1108
+#: quizzes-management.php:1063
 msgid "Question Type:"
 msgstr ""
 
@@ -1591,8 +1600,8 @@ msgstr ""
 #: modules/crossword/admin/templates/sections/admin-view-strings-section.php:98
 #: modules/crossword/admin/templates/sections/ai/ai-box-settings-section.php:67
 #: modules/crossword/admin/templates/sections/ai/prompt-customization-section.php:41
-#: modules/crossword/admin/templates/sections/ai/prompt-customization-section.php:69
-#: modules/crossword/admin/templates/sections/ai/prompt-customization-section.php:93
+#: modules/crossword/admin/templates/sections/ai/prompt-customization-section.php:70
+#: modules/crossword/admin/templates/sections/ai/prompt-customization-section.php:94
 #: modules/crossword/admin/templates/sections/fe/success-popup-settings-section.php:75
 #: modules/crossword/admin/templates/sections/fe/failure-popup-settings-section.php:75
 #: modules/crossword/admin/templates/sections/fe/fe-main-ui-settings-section.php:121
@@ -1615,7 +1624,7 @@ msgstr ""
 msgid "Retry"
 msgstr ""
 
-#: modules/crossword/admin/templates/sections/ai/prompt-customization-section.php:86
+#: modules/crossword/admin/templates/sections/ai/prompt-customization-section.php:87
 msgid "Return Format Prompt"
 msgstr ""
 
@@ -1789,7 +1798,7 @@ msgstr ""
 msgid "Set the font size for the SweetAlert popup buttons (e.g., \"14px\")."
 msgstr ""
 
-#: modules/crossword/admin/templates/sections/ai/prompt-customization-section.php:66
+#: modules/crossword/admin/templates/sections/ai/prompt-customization-section.php:67
 msgid "Set the generation prompt for creating crosswords."
 msgstr ""
 
@@ -1830,7 +1839,7 @@ msgstr ""
 msgid "Set the maximum number of tokens for the response (50 to 300)."
 msgstr ""
 
-#: modules/crossword/admin/templates/sections/ai/prompt-customization-section.php:90
+#: modules/crossword/admin/templates/sections/ai/prompt-customization-section.php:91
 msgid "Set the return format prompt for the output of generated crosswords."
 msgstr ""
 
@@ -2002,7 +2011,7 @@ msgstr ""
 msgid "Temperature"
 msgstr ""
 
-#: quizzes-management.php:381 quizzes-management.php:1117
+#: quizzes-management.php:381 quizzes-management.php:1072
 msgid "Text"
 msgstr ""
 
@@ -2025,6 +2034,12 @@ msgstr ""
 
 #: modules/crossword/admin/templates/sections/ai/prompt-customization-section.php:53
 msgid "The number of words to include in the crossword."
+msgstr ""
+
+#: modules/crossword/admin/templates/sections/ai/prompt-customization-section.php:57
+msgid ""
+"The selected categories (e.g. school > class > subject) to further "
+"contextualize the crossword."
 msgstr ""
 
 #: modules/crossword/admin/templates/sections/ai/prompt-customization-section.php:54
@@ -2050,7 +2065,7 @@ msgid ""
 "prevent duplicates in generated words."
 msgstr ""
 
-#: modules/crossword/admin/templates/sections/ai/prompt-customization-section.php:79
+#: modules/crossword/admin/templates/sections/ai/prompt-customization-section.php:80
 msgid ""
 "This prompt specifies the format of the generated crossword output. No "
 "additional placeholders are needed for this section."
@@ -2107,7 +2122,7 @@ msgid ""
 "from the current crossword."
 msgstr ""
 
-#: modules/crossword/templates/generate-with-ai.php:14
+#: modules/crossword/templates/generate-with-ai.php:17
 msgid "Topic"
 msgstr ""
 
@@ -2116,12 +2131,12 @@ msgid "Total Questions:"
 msgstr ""
 
 #: kw-save-quiz-aut.php:31 quizzes-management.php:456
-#: quizzes-management.php:1362 quizzes-management.php:1522
+#: quizzes-management.php:1267 quizzes-management.php:1427
 msgid "True"
 msgstr ""
 
 #: quizzes-management.php:378 quizzes-management.php:644
-#: quizzes-management.php:1114 quizzes-management.php:1262
+#: quizzes-management.php:1069 quizzes-management.php:1167
 msgid "True/False"
 msgstr ""
 
@@ -2243,7 +2258,7 @@ msgstr ""
 msgid "Your Score:"
 msgstr ""
 
-#: modules/crossword/admin/templates/sections/ai/prompt-customization-section.php:82
+#: modules/crossword/admin/templates/sections/ai/prompt-customization-section.php:83
 msgid ""
 "⚠️ It is highly recommended not to change this prompt, as it is critical for "
 "the AI crossword generation process. Incorrect changes may result in errors "

@@ -11,7 +11,7 @@ $ai_button_color = get_option('kw_genreate_with_ai_button_color', '#6c9bd1'); //
 
 <!-- New left side section -->
 <div class="kw-loading" style="display:none;">
-      <div class="kw-loading-text"><?php echo esc_html(_x('Generating Crosswords...', 'crossword','wp-quiz-plugin')); ?></div>
+      <div class="kw-loading-text"><?php echo _x('Generating Crosswords...', 'crossword','wp-quiz-plugin'); ?></div>
     </div>
 <div id="generate-ai-container">
     <input type="text" id="ai-topic" placeholder="<?php esc_attr_e('Topic', 'wp-quiz-plugin'); ?>" />
