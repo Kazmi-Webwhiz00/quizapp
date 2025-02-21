@@ -1,0 +1,65 @@
+.add-word-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 8px;
+  position: relative;
+}
+
+.word-number {
+  margin-right: 10px;
+  font-weight: bold;
+}
+
+.kw-wordsearch-words-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex: 1;
+}
+
+.word-input {
+  max-width: 200px;
+  flex: 1;
+  padding: 5px;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.upload-word-image-btn,
+.remove-word {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+.wordsearch-add-button-container {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  gap: 20px;
+}
+
+#add-wordsearch-button,
+#clear-wordsearch-list-button {
+  border: none;
+  background-color: #0073aa;
+  padding: 10px;
+  border-radius: 3px;
+  color: #fff;
+  cursor: pointer;
+}
+
+.image-preview {
+  width: 60px;
+  height: 60px;
+}
