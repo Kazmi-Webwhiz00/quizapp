@@ -318,9 +318,3 @@ function crossword_save_ajax_meta_box_data_new() {
     wp_send_json_success( array( 'message' => 'Crossword saved successfully.' ) );
 }
 add_action( 'wp_ajax_save_crossword_ajax_new', 'crossword_save_ajax_meta_box_data_new' );
-
-?>
-
-
-
-
