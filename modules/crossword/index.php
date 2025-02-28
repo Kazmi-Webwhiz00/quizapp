@@ -62,6 +62,7 @@ function load_crossword_assets($hook) {
         // Localize variables for use in JavaScript
         wp_localize_script('crossword-generate-with-ai', 'wpQuizPlugin', [
             // Crossword GPT API settings
+            'isAdmin' => current_user_can('manage_options') ? true : false,
             'apiKey' => get_option('kw_crossword_openai_api_key'),
             'model' => get_option('kw_crossword_openai_model', 'gpt-4o-mini'),
             'maxTokens' => (int) get_option('kw_crossword_openai_max_tokens', 50),  // Cast to integer

@@ -2,7 +2,7 @@
 /*
 Plugin Name: OmniS
 Description: A WordPress plugin to create and manage quizzes with questions and user submissions.
-Version: 5.1.4
+Version: 5.1.5
 Author: Kazmi Webwhiz
 Author URI: https://kazmiwebwhiz.com
 Text Domain: wp-quiz-plugin
@@ -181,7 +181,7 @@ function display_questions_meta_box($post) {
     $font_size = get_option('wp_quiz_plugin_text_font_size', '16px');  // Get text font size setting
     $text_color = get_option('wp_quiz_plugin_text_color', '#000000');  // Get text color setting
     $answer_text_font = get_option('wp_quiz_plugin_answer_text_font', 'Arial');  // Get answer text font setting
-    $answer_text_color = get_option('wp_quiz_plugin_answer_text_color', '#000000');  // Get answer text color setting
+    $answer_text_color = get_option('wp_quiz_plugin_answer_text_color', '#2c3338');  // Get answer text color setting
     $answer_text_font_size = get_option('wp_quiz_plugin_answer_text_font_size', '16px'); // Get answer text font setting
     
     // Retrieve settings for "Add New Question" button
@@ -385,8 +385,16 @@ function display_questions_meta_box($post) {
                         <input type="hidden" name="quiz_questions[<?php echo $index; ?>][id]"
                             value="<?php echo esc_attr($question['QuesID']); ?>">
                         
-                        <input type="text" class="kw_styled-box" style="font-family: <?php echo esc_attr($answer_text_font); ?>; color: <?php echo esc_attr($answer_text_color); ?>;font-size: <?php echo esc_attr($answer_text_font_size); ?>;" placeholder="<?php echo esc_attr($type_question_text); ?>" name="quiz_questions[<?php echo $index; ?>][title]" value="<?php echo esc_attr($question['Title']); ?> " required>
-                        
+                            <textarea class="kw_styled-box" 
+                                style="
+                                    font-family: <?php echo esc_attr($answer_text_font); ?>; 
+                                    color: <?php echo esc_attr($answer_text_color); ?>; 
+                                    font-size: <?php echo esc_attr($answer_text_font_size); ?>;" 
+                                placeholder="<?php echo esc_attr($type_question_text); ?>" 
+                                name="quiz_questions[<?php echo $index; ?>][title]" 
+                                required><?php echo esc_textarea($question['Title']); ?></textarea>
+
+                                                    
                         <div class="kw_btn-add-img kw_upload-question-image-btn">
                             <span class="kw_plus-icon">+</span> <?php echo esc_html(__($upload_question_image_text, 'wp-quiz-plugin')); ?>
                             <span class="kw_upload-image-btn-q-svg">
@@ -1073,8 +1081,12 @@ function display_questions_meta_box($post) {
                                     </option>
                                 </select>
                                 <label><?php echo __('Question Title:', 'wp-quiz-plugin'); ?> </label>
-                                <input type="text" class="kw_styled-box" name="quiz_questions[${index}][title]" value="${questionText}" required>
-                                <div class="kw_btn-add-img kw_upload-question-image-btn">
+                               <textarea 
+                                    class="kw_styled-box" 
+                                    name="quiz_questions[${index}][title]" 
+                                    required>${questionText}</textarea>
+
+                                    <div class="kw_btn-add-img kw_upload-question-image-btn">
                                     <span class="kw_plus-icon">+</span> <?php echo esc_html(__($upload_question_image_text, 'wp-quiz-plugin')); ?>
                                     <span class="kw_upload-image-btn-q-svg">
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
@@ -1168,27 +1180,29 @@ function display_questions_meta_box($post) {
                                 <option value="Text"><?php echo __('Open Text', 'wp-quiz-plugin'); ?></option>
                             </select>
                             
-                            <input type="text" 
-                            class="kw_styled-box" 
-                            placeholder="<?php echo esc_attr(__($type_question_text, 'wp-quiz-plugin')); ?>" 
-                            name="quiz_questions[${index}][title]" 
-                            required 
-                            style="font-family: <?php echo esc_attr($answer_text_font); ?>; 
+                            <textarea 
+                                class="kw_styled-box" 
+                                placeholder="<?php echo esc_attr(__($type_question_text, 'wp-quiz-plugin')); ?>" 
+                                name="quiz_questions[${index}][title]" 
+                                required 
+                                style=" 
+                                    font-family: <?php echo esc_attr($answer_text_font); ?>; 
                                     color: <?php echo esc_attr($answer_text_color); ?>; 
-                                    font-size: <?php echo esc_attr($answer_text_font_size); ?>;">
+                                    font-size: <?php echo esc_attr($answer_text_font_size); ?>;"></textarea>
 
-                            <div class="kw_btn-add-img kw_upload-question-image-btn">
-                                <span class="kw_plus-icon">+</span> <?php echo esc_html(__($upload_question_image_text, 'wp-quiz-plugin')); ?>
-                                <span class="kw_upload-image-btn-q-svg">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M160 80l352 0c8.8 0 16 7.2 16 16l0 224c0 8.8-7.2 16-16 16l-21.2 0L388.1 178.9c-4.4-6.8-12-10.9-20.1-10.9s-15.7 4.1-20.1 10.9l-52.2 79.8-12.4-16.9c-4.5-6.2-11.7-9.8-19.4-9.8s-14.8 3.6-19.4 9.8L175.6 336 160 336c-8.8 0-16-7.2-16-16l0-224c0-8.8 7.2-16 16-16zM96 96l0 224c0 35.3 28.7 64 64 64l352 0c35.3 0 64-28.7 64-64l0-224c0-35.3-28.7-64-64-64L160 32c-35.3 0-64 28.7-64 64zM48 120c0-13.3-10.7-24-24-24S0 106.7 0 120L0 344c0 75.1 60.9 136 136 136l320 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-320 0c-48.6 0-88-39.4-88-88l0-224zm208 24a32 32 0 1 0 -64 0 32 32 0 1 0 64 0z"/></svg>
-                            </span> 
-                            </div>
-                            
-                            <div class="kw_answers-container kw_four-column-container"></div>
-                        </div>
-                    </div>
-                `);
-            });
+
+                                                        <div class="kw_btn-add-img kw_upload-question-image-btn">
+                                                            <span class="kw_plus-icon">+</span> <?php echo esc_html(__($upload_question_image_text, 'wp-quiz-plugin')); ?>
+                                                            <span class="kw_upload-image-btn-q-svg">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M160 80l352 0c8.8 0 16 7.2 16 16l0 224c0 8.8-7.2 16-16 16l-21.2 0L388.1 178.9c-4.4-6.8-12-10.9-20.1-10.9s-15.7 4.1-20.1 10.9l-52.2 79.8-12.4-16.9c-4.5-6.2-11.7-9.8-19.4-9.8s-14.8 3.6-19.4 9.8L175.6 336 160 336c-8.8 0-16-7.2-16-16l0-224c0-8.8 7.2-16 16-16zM96 96l0 224c0 35.3 28.7 64 64 64l352 0c35.3 0 64-28.7 64-64l0-224c0-35.3-28.7-64-64-64L160 32c-35.3 0-64 28.7-64 64zM48 120c0-13.3-10.7-24-24-24S0 106.7 0 120L0 344c0 75.1 60.9 136 136 136l320 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-320 0c-48.6 0-88-39.4-88-88l0-224zm208 24a32 32 0 1 0 -64 0 32 32 0 1 0 64 0z"/></svg>
+                                                        </span> 
+                                                        </div>
+                                                        
+                                                        <div class="kw_answers-container kw_four-column-container"></div>
+                                                    </div>
+                                                </div>
+                                            `);
+                                        });
 
             $(document).on('click', '.kw_remove-question-btn', function () {
                 var questionItem = $(this).closest('.kw_question-item');

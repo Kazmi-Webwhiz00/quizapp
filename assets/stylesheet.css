@@ -417,8 +417,8 @@ body {
     justify-content: center;
     text-align: center;
     font-size: 24px;
-    color: #2d364285;
     font-weight: 600;
+    padding-top: 20px;
 }
 
 .wp-editor-container textarea.wp-editor-area {

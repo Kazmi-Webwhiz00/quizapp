@@ -1,6 +1,6 @@
 jQuery(document).ready(function ($) {
 
-
+console.log("is adimi is ",wpQuizPlugin.isAdmin );
 /**
  * Replaces placeholders in a string using an object of key-value pairs.
  *
@@ -182,13 +182,16 @@ function getSelectedCategories() {
                 beforeSend: function () {
                     $('.kw-loading').show();
                     console.log('Sending request to OpenAI...', data);
+                 if(wpQuizPlugin.isAdmin){
                     showAdminPrompt(data.messages[0].content)
+                 }
                     $(generateButtonId).text(wpQuizPlugin.generatingText).prop('disabled', true);
                 },
                 success: function (response) {
                     console.log('Received response:', response);
                     try {
                         const generatedContentString = response.choices[0].message.content.trim();
+                        console.log("generated content String", generatedContentString);
                         const generatedContent = JSON.parse(generatedContentString);
                         console.log('Generated content:', generatedContent);
                         appendGeneratedContent(generatedContent);
