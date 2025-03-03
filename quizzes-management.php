@@ -927,15 +927,20 @@ function display_questions_meta_box($post) {
                     if (type === 'MCQ') {
                         var questionMatch = generatedContent.match(/Question:\s*(.+?)(?=\s*Answer Options:)/is);
                         var answersMatch = generatedContent.match(/[A]\)\s*(.+?)\s*[B]\)\s*(.+?)\s*[C]\)\s*(.+?)\s*[D]\)\s*(.+?)(?=\s*Correct Answer:|\s*$)/is);
-                        var correctAnswerMatch = generatedContent.match(/Correct Answer:\s*([A-D])\)\s*(.+)|Correct Answer:\s*\[(.+)\]/i);
+                        var correctAnswerMatch = generatedContent.match(/Correct Answer:\s*([A-D])\)/i);
 
                         if (!questionMatch || !answersMatch || !correctAnswerMatch) {
-                            throw new Error(<?php __('Could not find the question or correct answer. Please check the AI response format.','wp-quiz-plugin') ?>);
+                            throw new Error("Could not find the question or correct answer. Please check the AI response format.");
                         }
 
                         var questionText = questionMatch[1].trim();
                         generatedQuestionsList.push(questionText);
-                        var answers = [answersMatch[1].trim(), answersMatch[2].trim(), answersMatch[3].trim(), answersMatch[4].trim()];
+                        var answers = [
+                            answersMatch[1].trim(),
+                            answersMatch[2].trim(),
+                            answersMatch[3].trim(),
+                            answersMatch[4].trim()
+                        ];
                         answers = answers.map(answer => answer.replace(/,$/, ''));
                         var correctAnswerLetter = correctAnswerMatch[1].trim();
 
@@ -944,203 +949,161 @@ function display_questions_meta_box($post) {
                             answersHtml += `
                                 <div class="kw_answer-item kw_column-item">
                                     <span class="kw_option-letter">${String.fromCharCode(65 + i)}.</span>
-                                    <input type="text" class="kw_answerinputs" placeholder="Answer" name="quiz_questions[${index}][answers][${i}][text]" value="${answer}" required style="font-family: <?php echo esc_attr($answer_text_font); ?>; color: <?php echo esc_attr($answer_text_color); ?>;font-size: <?php echo esc_attr($answer_text_font_size);?>;">
-                                   <span class="kw_upload-image-btn">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M160 80l352 0c8.8 0 16 7.2 16 16l0 224c0 8.8-7.2 16-16 16l-21.2 0L388.1 178.9c-4.4-6.8-12-10.9-20.1-10.9s-15.7 4.1-20.1 10.9l-52.2 79.8-12.4-16.9c-4.5-6.2-11.7-9.8-19.4-9.8s-14.8 3.6-19.4 9.8L175.6 336 160 336c-8.8 0-16-7.2-16-16l0-224c0-8.8 7.2-16 16-16zM96 96l0 224c0 35.3 28.7 64 64 64l352 0c35.3 0 64-28.7 64-64l0-224c0-35.3-28.7-64-64-64L160 32c-35.3 0-64 28.7-64 64zM48 120c0-13.3-10.7-24-24-24S0 106.7 0 120L0 344c0 75.1 60.9 136 136 136l320 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-320 0c-48.6 0-88-39.4-88-88l0-224zm208 24a32 32 0 1 0 -64 0 32 32 0 1 0 64 0z"/></svg>
-                                </span>
-                                    <label><input type="checkbox" name="quiz_questions[${index}][answers][${i}][correct]" ${isCorrect ? 'checked' : ''}></label>
-                                    
-                                    <!-- Correct/Incorrect Label -->
-                                    <span class="answer-ribbon ${isCorrect ? 'correct-ribbon' : 'incorrect-ribbon'}">
-                                        ${isCorrect ? "<?php echo esc_js(_x('Correct Answer', 'JS MCQ Hover', 'wp-quiz-plugin'));?>" : "<?php echo esc_js(_x('Incorrect Answer', 'JS MCQ Hover', 'wp-quiz-plugin'));?>"}
+                                    <input type="text" class="kw_answerinputs" placeholder="Answer" name="quiz_questions[${index}][answers][${i}][text]" value="${answer}" required style="font-family: <?php echo esc_attr($answer_text_font); ?>; color: <?php echo esc_attr($answer_text_color); ?>; font-size: <?php echo esc_attr($answer_text_font_size); ?>;">
+                                    <span class="kw_upload-image-btn">
+                                        <!-- SVG icon here -->
                                     </span>
-                                
+                                    <label><input type="checkbox" name="quiz_questions[${index}][answers][${i}][correct]" ${isCorrect ? 'checked' : ''}></label>
+                                    <span class="answer-ribbon ${isCorrect ? 'correct-ribbon' : 'incorrect-ribbon'}">
+                                        ${isCorrect ? "Correct Answer" : "Incorrect Answer"}
+                                    </span>
                                 </div>`;
                         });
                     } else if (type === 'T/F') {
-                        console.log("Processing True/False Type...");
-
+                        // Similar processing for T/F type...
                         var questionMatch = generatedContent.match(/Question:\s*(.*?)(?=\s*Correct Answer|$)/i);
                         var correctAnswerMatch = generatedContent.match(/Correct Answer:\s*(0|1)/i);
-
-                        console.log("Question Match:", questionMatch);
-                        console.log("Correct Answer Match (0/1):", correctAnswerMatch);
-
                         if (!questionMatch || !correctAnswerMatch) {
                             throw new Error("Could not find the question or correct answer. Please check the AI response format.");
                         }
-
                         var questionText = questionMatch[1].trim();
                         generatedQuestionsList.push(questionText);
-                        var correctAnswer = parseInt(correctAnswerMatch[1], 10); // Convert "0" or "1" to an integer
-
-                        console.log("Parsed Question:", questionText);
-                        console.log("Parsed Correct Answer (0 for False, 1 for True):", correctAnswer);
-
+                        var correctAnswer = parseInt(correctAnswerMatch[1], 10);
                         var trueAnswerChecked = correctAnswer === 1 ? 'checked' : '';
                         var falseAnswerChecked = correctAnswer === 0 ? 'checked' : '';
 
                         answersHtml = `
-                        <div class="kw_answer-item kw_column-item">
-                            <input type="text" class="kw_answerinputs" name="quiz_questions[${index}][answers][0][text]" value="True" readonly>
-                            <label><input type="radio" name="quiz_questions[${index}][correct]" value="1" ${trueAnswerChecked}></label>
-                        </div>
-                        <div class="kw_answer-item kw_column-item">
-                            <input type="text" class="kw_answerinputs" name="quiz_questions[${index}][answers][1][text]" value="False" readonly>
-                            <label><input type="radio" name="quiz_questions[${index}][correct]" value="0" ${falseAnswerChecked}></label>
-                        </div>`;
-
-                        console.log("Generated Answers HTML:", answersHtml);
+                            <div class="kw_answer-item kw_column-item">
+                                <input type="text" class="kw_answerinputs" name="quiz_questions[${index}][answers][0][text]" value="True" readonly>
+                                <label><input type="radio" name="quiz_questions[${index}][correct]" value="1" ${trueAnswerChecked}></label>
+                            </div>
+                            <div class="kw_answer-item kw_column-item">
+                                <input type="text" class="kw_answerinputs" name="quiz_questions[${index}][answers][1][text]" value="False" readonly>
+                                <label><input type="radio" name="quiz_questions[${index}][correct]" value="0" ${falseAnswerChecked}></label>
+                            </div>`;
                     } else if (type === 'Text') {
                         var questionMatch = generatedContent.match(/Question:\s*(.*?)(?=\s*Correct Answer|$)/i);
-                        var correctAnswerText = generatedContent.match(/Correct Answer:\s*(.+)$/i)[1].trim();
-
-                        if (!questionMatch || !correctAnswerText) {
-                            throw new Error(<?php __('Could not find the question or correct answer. Please check the AI response format.','wp-quiz-plugin') ?>);
+                        var correctAnswerTextMatch = generatedContent.match(/Correct Answer:\s*(.+)$/i);
+                        if (!questionMatch || !correctAnswerTextMatch) {
+                            throw new Error("Could not find the question or correct answer. Please check the AI response format.");
                         }
-
                         var questionText = questionMatch[1].trim();
                         generatedQuestionsList.push(questionText);
-
-                        <?php $open_ended_question_lable = get_option('wp_quiz_plugin_open_text_area_label_text', 'Actual Answer'); ?>
+                        var correctAnswerText = correctAnswerTextMatch[1].trim();
                         answersHtml = `
-                        <div class="kw_answer-item" style="width: 100%;">
-                            <label style="color: #646970" for="quiz_questions_<?php echo isset($question_index) ? $question_index : 0; ?>_answers_0_text"><?php _e($open_ended_question_lable, 'wp-quiz-plugin'); ?></label>
-                            <textarea class="kw_text-answer-editor" name="quiz_questions[${index}][answers][0][text]" rows="4" style="width: 100%; font-family: <?php echo esc_attr($answer_text_font); ?>; color: <?php echo esc_attr($answer_text_color); ?>;font-size: <?php echo esc_attr($answer_text_font_size);?>;">${correctAnswerText}</textarea>
-                        </div>`;
+                            <div class="kw_answer-item" style="width: 100%;">
+                                <label>Actual Answer</label>
+                                <textarea class="kw_text-answer-editor" name="quiz_questions[${index}][answers][0][text]" rows="4" style="width: 100%; font-family: <?php echo esc_attr($answer_text_font); ?>; color: <?php echo esc_attr($answer_text_color); ?>; font-size: <?php echo esc_attr($answer_text_font_size); ?>;">${correctAnswerText}</textarea>
+                            </div>`;
                     }
 
-                   
-                // Format answers based on the question type
-                let formattedAnswers = [];
+                    // Format answers for saving
+                    let formattedAnswers = [];
+                    if (type === 'MCQ') {
+                        formattedAnswers = answers.map((answer, i) => ({
+                            text: answer,
+                            correct: correctAnswerLetter === String.fromCharCode(65 + i) ? 1 : 0,
+                            image: ""
+                        }));
+                    } else if (type === 'T/F') {
+                        let correctIndex = correctAnswer === 1 ? 0 : 1;
+                        formattedAnswers = [
+                            { text: 'True', correct: correctIndex === 0 ? 1 : 0 },
+                            { text: 'False', correct: correctIndex === 1 ? 1 : 0 }
+                        ];
+                    } else if (type === 'Text') {
+                        formattedAnswers = [{ text: correctAnswerText, correct: 1 }];
+                    }
 
-                if (type === 'MCQ') {
-                    formattedAnswers = answers.map((answer, i) => ({
-                        text: answer, 
-                        correct: correctAnswerLetter === String.fromCharCode(65 + i) ? 1 : 0,
-                        image: ""
-                    }));
-                } else if (type === 'T/F') {
-                    let correctIndex = correctAnswer === 1 ? 0 : 1;
+                    questionData = {
+                        title: questionText,
+                        question_type: type,
+                        answers: formattedAnswers
+                    };
 
-                    formattedAnswers = [
-                        { text: 'True', correct: correctIndex === 0 ? 1 : 0 },
-                        { text: 'False', correct: correctIndex === 1 ? 1 : 0 }
-                    ];
-                } else if (type === 'Text') {
-                    formattedAnswers = [
-                        { text: correctAnswerText, correct: 1 }
-                    ];
-                }
+                    console.log("Formatted Question Data:", questionData);
 
-                questionData = {
-                    title: questionText,
-                    question_type: type,
-                    answers: formattedAnswers
-                };
-
-
-
-
-                    console.log("Formatted Question Data:", questionData); // Debugging before sending to PHP
-
-                    saveGeneratedQuestion(questionData);
-
-
-                    $('#kw_questions-list').append(`
-                        <div class="kw_question-item" data-index="${index}">
-                            <div class="kw_question-header kw_close-expand kw_toggle-question-btn">
-                                <div class="kw-handle-container">
-                                    <span class="kw_handle-icon" style="cursor: move; display: inline-block; margin-right: 10px;">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="16" height="16">
-                                            <rect y="4" width="20" height="2" rx="1"></rect>
-                                            <rect y="9" width="20" height="2" rx="1"></rect>
-                                            <rect y="14" width="20" height="2" rx="1"></rect>
-                                        </svg>
-                                    </span>
-                                    <strong>Q.${index + 1}: &nbsp;</strong> ${questionText}
-                                </div>
-
-                                <span class="kw_remove-question-btn kw_ml-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                                        <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM175 175c9.4-9.4 24.6-9.4 33.9 0l47 47 47-47c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-47 47 47 47c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-47-47-47 47c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l47-47-47-47c-9.4-9.4-9.4-24.6 0-33.9z"/>
-                                    </svg>
-                                </span>
-                            </div>
-                            <div class="kw_question-body">
-                                <label><?php echo __('Question Type:', 'wp-quiz-plugin'); ?></label>
-                                <select name="quiz_questions[${index}][type]" class="kw_question-type-select">
-                                    <option value="MCQ" ${type === 'MCQ' ? 'selected' : ''}>
-                                        <?php echo esc_js(__('Multiple Choice', 'wp-quiz-plugin')); ?>
-                                    </option>
-                                    <option value="T/F" ${type === 'T/F' ? 'selected' : ''}>
-                                        <?php echo esc_js(__('True/False', 'wp-quiz-plugin')); ?>
-                                    </option>
-                                    <option value="Text" ${type === 'Text' ? 'selected' : ''}>
-                                        <?php echo esc_js(__('Text', 'wp-quiz-plugin')); ?>
-                                    </option>
-                                </select>
-                                <label><?php echo __('Question Title:', 'wp-quiz-plugin'); ?> </label>
-                               <textarea 
-                                    class="kw_styled-box" 
-                                    name="quiz_questions[${index}][title]" 
-                                    required>${questionText}</textarea>
-
-                                    <div class="kw_btn-add-img kw_upload-question-image-btn">
-                                    <span class="kw_plus-icon">+</span> <?php echo esc_html(__($upload_question_image_text, 'wp-quiz-plugin')); ?>
-                                    <span class="kw_upload-image-btn-q-svg">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
-                                            <path d="M160 80l352 0c8.8 0 16 7.2 16 16l0 224c0 8.8-7.2 16-16 16l-21.2 0L388.1 178.9c-4.4-6.8-12-10.9-20.1-10.9s-15.7 4.1-20.1 10.9l-52.2 79.8-12.4-16.9c-4.5-6.2-11.7-9.8-19.4-9.8s-14.8 3.6-19.4 9.8L175.6 336 160 336c-8.8 0-16-7.2-16-16l0-224c0-8.8-7.2-16 16-16zM96 96l0 224c0 35.3 28.7 64 64 64l352 0c35.3 0 64-28.7 64-64l0-224c0-35.3-28.7-64-64-64L160 32c-35.3 0-64 28.7-64 64zM48 120c0-13.3-10.7-24-24-24S0 106.7 0 120L0 344c0 75.1 60.9 136 136 136l320 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-320 0c-48.6 0-88-39.4-88-88l0-224zm208 24a32 32 0 1 0 -64 0 32 32 0 1 0 64 0z"/>
-                                        </svg>
-                                    </span>
-                                </div>
-                                <div class="kw_answers-container kw_four-column-container">${answersHtml}</div>
-                            </div>
-                        </div>`);
-
+                    // Save the question via AJAX and then update the DOM
+                    saveGeneratedQuestion(questionData).done(function(response) {
+                        if (response.success) {
+                            console.log('Question saved with ID:', response.data.question_id);
+                            // Append the question element with the returned ID as a hidden input
+                            $('#kw_questions-list').append(`
+                                <div class="kw_question-item" data-index="${index}">
+                                    <div class="kw_question-header kw_close-expand kw_toggle-question-btn">
+                                        <div class="kw-handle-container">
+                                            <span class="kw_handle-icon" style="cursor: move; display: inline-block; margin-right: 10px;">
+                                                <!-- SVG icon here -->
+                                            </span>
+                                            <strong>Q.${index + 1}: &nbsp;</strong> ${questionText}
+                                        </div>
+                                        <span class="kw_remove-question-btn kw_ml-2">
+                                            <!-- SVG icon for remove -->
+                                        </span>
+                                        <input type="hidden" name="quiz_questions[${index}][order]" value="${index}">
+                                    </div>
+                                    <div class="kw_question-body">
+                                        <select name="quiz_questions[${index}][type]" class="kw_question-type-select">
+                                            <option value="MCQ" ${type === 'MCQ' ? 'selected' : ''}>Multiple Choice</option>
+                                            <option value="T/F" ${type === 'T/F' ? 'selected' : ''}>True/False</option>
+                                            <option value="Text" ${type === 'Text' ? 'selected' : ''}>Open Text</option>
+                                        </select>
+                                        <!-- Hidden input to store the question ID returned from the auto-save -->
+                                        <input type="hidden" name="quiz_questions[${index}][id]" value="${response.data.question_id}">
+                                        <textarea class="kw_styled-box" name="quiz_questions[${index}][title]" required>${questionText}</textarea>
+                                        <div class="kw_btn-add-img kw_upload-question-image-btn">
+                                            <span class="kw_plus-icon">+</span> Upload Question Image
+                                            <span class="kw_upload-image-btn-q-svg">
+                                                <!-- SVG icon -->
+                                            </span>
+                                        </div>
+                                        <div class="kw_answers-container kw_four-column-container">${answersHtml}</div>
+                                    </div>
+                                </div>`);
+                            $('.kw-loading').hide();
+                            $.fn.highlightPublishButton();
+                            $('#kw_generate-question-btn').text('Generate with ChatGPT').prop('disabled', false);
+                        } else {
+                            console.error('Error saving generated question:', response.message);
+                            $('.kw-loading').hide();
+                            $.fn.highlightPublishButton();
+                            $('#kw_generate-question-btn').text('Generate with ChatGPT').prop('disabled', false);
+                        }
+                    }).fail(function(xhr, status, error) {
+                        console.error('AJAX error saving generated question:', error);
                         $('.kw-loading').hide();
                         $.fn.highlightPublishButton();
-                    $('#kw_generate-question-btn').text('<?php echo esc_js(__('Generate with ChatGPT', 'wp-quiz-plugin')); ?>').prop('disabled', false);
+                        $('#kw_generate-question-btn').text('Generate with ChatGPT').prop('disabled', false);
+                    });
+
                 } catch (error) {
                     console.error('Error generating content:', error.message);
-                    Swal.fire(
-                                '<?php echo esc_js(__('Error', 'wp-quiz-plugin')); ?>',
-                                '<?php echo esc_js(__('Could not find the question or correct answer. Please check the AI response format.', 'wp-quiz-plugin')); ?>',
-                                'error'
-                            );
+                    Swal.fire("Error", "Could not find the question or correct answer. Please check the AI response format.", "error");
                     $('.kw-loading').hide();
                     $.fn.highlightPublishButton();
-                    $('#kw_generate-question-btn').text('<?php echo esc_js(__('Generate with ChatGPT', 'wp-quiz-plugin')); ?>').prop('disabled', false);
+                    $('#kw_generate-question-btn').text('Generate with ChatGPT').prop('disabled', false);
                 }
             }
 
+
             function saveGeneratedQuestion(questionData) {
-                
                 let quizAutoSaveNonce = '<?php echo esc_js(wp_create_nonce('auto-save-quiz-noce')); ?>';
-                let ajaxurl = '<?php echo admin_url('admin-ajax.php'); ?>'; // Correct way to assign admin-ajax.php
+                let ajaxurl = '<?php echo admin_url('admin-ajax.php'); ?>';
                 let postId = '<?php echo get_the_ID(); ?>';
 
-                $.ajax({
-                    url: ajaxurl, // WordPress AJAX URL
+                return $.ajax({
+                    url: ajaxurl,
                     type: 'POST',
+                    dataType: 'json',
                     data: {
                         action: 'save_generated_quiz_question',
-                        security: quizAutoSaveNonce, // Use the nonce for validation
+                        security: quizAutoSaveNonce,
                         question_data: JSON.stringify(questionData),
                         post_id: postId,
-                    },
-                    success: function (response) {
-                        if (response.success) {
-                            console.log('Question saved with ID:', response.question_id);
-                        } else {
-                            console.error('Error saving question:', response.message);
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        console.error('AJAX Error:', error);
                     }
                 });
             }
+
 
 
 

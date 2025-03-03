@@ -1,6 +1,5 @@
 <?php
 
-
 function save_generated_quiz_question_backend($quiz_id, $question_data) {
     global $wpdb;
     $table_name = $wpdb->prefix . 'quiz_questions';
@@ -9,115 +8,89 @@ function save_generated_quiz_question_backend($quiz_id, $question_data) {
     $title = sanitize_text_field($question_data['title'] ?? '');
     $title_image = esc_url($question_data['title_image'] ?? '');
     $question_type = sanitize_text_field($question_data['question_type'] ?? '');
-    
     $answers = $question_data['answers'] ?? [];
 
     // Prepare answers according to the question type
     $prepared_answers = [];
-
     if ($question_type === 'T/F') {
-        // Determine which option is marked as correct inside the answers array
-        $correct_index = -1; // Default to no correct answer
-    
+        $correct_index = -1;
         foreach ($answers as $index => $answer) {
             if (!empty($answer['correct']) && intval($answer['correct']) === 1) {
-                $correct_index = $index; // Store correct answer index
+                $correct_index = $index;
                 break;
             }
         }
-    
-        // Ensure True and False answers are formatted correctly
         $prepared_answers[] = [
-            'text' => __('True', 'wp-quiz-plugin'),
-            'correct' => ($correct_index === 0) ? 1 : 0, // Mark correct answer
+            'text'    => __('True', 'wp-quiz-plugin'),
+            'correct' => ($correct_index === 0) ? 1 : 0,
         ];
         $prepared_answers[] = [
-            'text' => __('False', 'wp-quiz-plugin'),
-            'correct' => ($correct_index === 1) ? 1 : 0, // Mark correct answer
+            'text'    => __('False', 'wp-quiz-plugin'),
+            'correct' => ($correct_index === 1) ? 1 : 0,
         ];
-    }else {
-        // Process answers for other question types
+    } else {
         foreach ($answers as $answer) {
             $prepared_answers[] = [
-                'text' => ($question_type === 'Text') ? wp_kses_post($answer['text']) : sanitize_text_field($answer['text']),
+                'text'    => ($question_type === 'Text') ? wp_kses_post($answer['text']) : sanitize_text_field($answer['text']),
                 'correct' => ($question_type === 'Text') ? 1 : (isset($answer['correct']) && $answer['correct'] == 1 ? 1 : 0),
-                'image' => isset($answer['image']) ? esc_url_raw($answer['image']) : '' // Add image URL if available
+                'image'   => isset($answer['image']) ? esc_url($answer['image']) : '',
             ];
         }
     }
 
-    // Convert to JSON format
     $answers_json = wp_json_encode($prepared_answers);
+    error_log("Inserting Data - QuizID: $quiz_id, Title: $title, Image: $title_image, Type: $question_type, Answers: $answers_json");
 
-    // Debugging: Log sanitized values before inserting
-    error_log("✅:::::::::::Inserting Data - QuizID: $quiz_id, Title: $title, Image: $title_image, Type: $question_type, Answers: $answers_json");
-
-    // Insert the data into the database
     $result = $wpdb->insert(
         $table_name,
         [
             'QuizID'       => $quiz_id,
             'Title'        => $title,
             'TitleImage'   => $title_image,
-            'Answer'       => $answers_json,  // Store formatted answers
+            'Answer'       => $answers_json,
             'QuestionType' => $question_type,
-            'Order'        => 0
+            'Order'        => 0,
         ],
         ['%d', '%s', '%s', '%s', '%s', '%d']
     );
 
-    // Debugging: Log SQL query and error
     if ($wpdb->last_error) {
-        error_log("❌ Database Insert Error: " . $wpdb->last_error);
-        error_log("❌ SQL Query: " . $wpdb->last_query);
+        error_log("Database Insert Error: " . $wpdb->last_error);
         return ['success' => false, 'message' => 'Error saving question: ' . $wpdb->last_error];
     }
-
     return ['success' => true, 'question_id' => $wpdb->insert_id];
 }
 
-
-
 function ajax_save_generated_quiz_question() {
-    error_log("postata:::::::::::");
-    error_log(print_r($_POST,true));
-    if (!isset($_POST['question_data']) || !isset($_POST['security']) || !isset($_POST['post_id'])) {
-        error_log("❌ AJAX Error: Missing data in request.");
+    error_log("ajax_save_generated_quiz_question called with POST data: " . print_r($_POST, true));
+    if (!isset($_POST['question_data'], $_POST['security'], $_POST['post_id'])) {
+        error_log("AJAX Error: Missing data in request.");
         wp_send_json_error(['message' => 'Invalid request - Missing data']);
     }
-
     if (!wp_verify_nonce($_POST['security'], 'auto-save-quiz-noce')) {
-        error_log("❌ AJAX Error: Nonce verification failed.");
+        error_log("AJAX Error: Nonce verification failed.");
         wp_send_json_error(['message' => 'Security check failed']);
     }
-
     $quiz_id = intval($_POST['post_id']);
     if (!$quiz_id) {
-        error_log("❌ AJAX Error: Invalid quiz ID.");
+        error_log("AJAX Error: Invalid quiz ID.");
         wp_send_json_error(['message' => 'Invalid quiz ID']);
     }
-
     $question_data = json_decode(stripslashes($_POST['question_data']), true);
-    
-    // Debugging: Log received question data
-    error_log("✅ ::::::::Received Question Data: " . print_r($question_data, true));
-
+    error_log("Received Question Data: " . print_r($question_data, true));
     if (!$question_data) {
-        error_log("❌ AJAX Error: Failed to decode question data.");
+        error_log("AJAX Error: Failed to decode question data.");
         wp_send_json_error(['message' => 'Invalid question data format']);
     }
-
     $result = save_generated_quiz_question_backend($quiz_id, $question_data);
     if ($result['success']) {
         wp_send_json_success(['question_id' => $result['question_id']]);
     } else {
-        error_log("❌ Final Insert Error: " . $result['message']);
+        error_log("Final Insert Error: " . $result['message']);
         wp_send_json_error(['message' => $result['message']]);
     }
 }
 add_action('wp_ajax_save_generated_quiz_question', 'ajax_save_generated_quiz_question');
-
-
 
 
 add_action('wp_ajax_update_autodraft_post', 'update_autodraft_post_callback');
