@@ -12,7 +12,7 @@ function quizzes_custom_meta_box() {
     if ($post && $post->post_type === 'quizzes' && $post->post_status === 'publish') {
         add_meta_box(
             'quizzes_action_buttons_meta_box', // Updated ID for uniqueness
-            'Quiz Actions',                    // Title
+            __('Quiz Actions','wp-quiz-plugin'),                    // Title
             'quizzes_meta_box_callback',       // Callback function
             'quizzes',                         // Post type
             'normal',                          // Context
@@ -70,7 +70,7 @@ function quizzes_meta_box_callback($post) {
         </button>
 
         <!-- Div to show copy confirmation message -->
-        <div id="quizzes_copy_message" style="display:none; color:green; margin-top:10px;">Copied to clipboard!</div>
+        <div id="quizzes_copy_message" style="display:none; color:green; margin-top:10px;"> <?php _e('Copied to clipboard!','wp-quiz-plugin') ?> </div>
     </div>
 
     <!-- jQuery script to handle clipboard copy and email functions -->

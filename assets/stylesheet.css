@@ -34,6 +34,10 @@
     padding-left: 40px;
     flex: 0 0 70%;
     box-sizing: border-box;
+    max-height: 700px;
+    padding-top: 10px;
+    padding-bottom: 200px;
+    overflow: scroll;
 }
 
 .kw_question-item {
@@ -116,9 +120,65 @@
 
 }
 
-.kw_answer-item label {
-
+.kw_answer-item {
+position: relative;
 }
+
+.kw_answer-item:hover .answer-ribbon{
+    display: block;
+}
+
+.answer-ribbon {
+    display: none;
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 4px 10px;
+    text-transform: uppercase;
+    transform: rotate(-0deg);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+}
+
+/* Correct Answer Ribbon */
+.correct-ribbon {
+    background: #4CAF50; /* Green */
+    color: white;
+}
+
+.correct-ribbon::before {
+    content: "";
+    position: absolute;
+    bottom: -6px;
+    left: 0;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 6px solid #4CAF50;
+}
+
+/* Incorrect Answer Ribbon */
+.incorrect-ribbon {
+    background: #D9534F; /* Red */
+    color: white;
+}
+
+.incorrect-ribbon::before {
+    content: "";
+    position: absolute;
+    bottom: -6px;
+    left: 0;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 6px solid #D9534F;
+}
+
+
 
 .kw_button {
     background-color: #007cba;
@@ -357,8 +417,8 @@ body {
     justify-content: center;
     text-align: center;
     font-size: 24px;
-    color: #2d364285;
     font-weight: 600;
+    padding-top: 20px;
 }
 
 .wp-editor-container textarea.wp-editor-area {
@@ -471,3 +531,301 @@ body {
 }
 
 /* Notification */
+
+
+
+/* Promot admin settings */
+
+/* Styling for the Prompt Customization Section */
+
+
+/* Styling the Input Container */
+#kw-checkbox-container {
+    margin-top: 20px;
+}
+
+/* Styling Each Checkbox Input Row */
+.kw-checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    max-width: 300px;
+}
+
+/* Input Field for Checkbox Values */
+.kw-checkbox-item input[type="text"] {
+    flex: 1;
+    padding: 8px 10px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #fff;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Remove Checkbox Button */
+.kw-checkbox-item .kw-remove-checkbox {
+    background-color: #dc3545;
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    font-size: 13px;
+    border-radius: 4px;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.2s ease;
+}
+
+.kw-checkbox-item .kw-remove-checkbox:hover {
+    background-color: #c82333;
+}
+
+/* Add Checkbox Button */
+#kw-add-checkbox {
+    margin-top: 16px;
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    padding: 10px 16px;
+    font-size: 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.2s ease;
+}
+
+#kw-add-checkbox:hover {
+    background-color: #218838;
+}
+
+/* Save Button Alignment */
+form .button-primary {
+    margin-top: 20px;
+    background-color: #007cba;
+    border-color: #007cba;
+    color: #fff;
+    padding: 10px 20px;
+    font-size: 14px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.2s ease;
+}
+
+form .button-primary:hover {
+    background-color: #0064a0;
+}
+
+
+#kw-checkbox-container-promot{
+    display: flex;
+    align-items: start;
+    justify-self: start;
+    flex-wrap: wrap;
+}
+
+.kw-checkbox-wrapper-promot{
+    margin: 10px;
+}
+
+.kw-checkbox-wrapper-promot input[type="checkbox"] {
+    display: none;
+    visibility: hidden;
+}
+
+.kw-checkbox-wrapper-promot label {
+    position: relative;
+    padding-left: 2em;
+    padding-right: 1em;
+    line-height: 2;
+    cursor: pointer;
+    display: inline-flex;
+}
+
+.kw-checkbox-wrapper-promot label:before {
+    box-sizing: border-box;
+    content: " ";
+    position: absolute;
+    top: 0.3em;
+    left: 0;
+    display: block;
+    width: 1.4em;
+    height: 1.4em;
+    border: 2px solid #9098A9;
+    border-radius: 6px;
+    z-index: -1;
+}
+
+.kw-checkbox-wrapper-promot input[type="checkbox"]:checked + label {
+    padding-left: 1em;
+    color: #0f5229;
+}
+.kw-checkbox-wrapper-promot input[type="checkbox"]:checked + label:before {
+    top: 0;
+    width: 100%;
+    height: 2em;
+    background: #b7e6c9;
+    border-color: #2cbc63;
+}
+
+.kw-checkbox-wrapper-promot label,
+.kw-checkbox-wrapper-promot label::before {
+    transition: 0.25s all ease;
+}
+
+
+/* Style the overall container */
+#kw-prompt-customization-settings {
+    margin-top: 20px;
+    padding: 20px;
+    background: #f9f9f9;
+    border: 1px solid #e1e1e1;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Style each prompt card */
+.kw-prompt-card {
+    background: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Heading for each card */
+.kw-prompt-card h3 {
+    font-size: 1.2rem;
+    color: #333;
+    margin-bottom: 12px;
+    border-bottom: 2px solid #007cba;
+    padding-bottom: 4px;
+}
+
+/* Notice styling */
+.kw-notice {
+    margin-bottom: 15px;
+    padding: 10px 15px;
+    border-left: 4px solid #007cba;
+    background-color: #f1f8ff;
+    color: #333;
+}
+
+.kw-notice ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: disc;
+    padding-left: 20px;
+}
+
+.kw-notice ul li {
+    margin-bottom: 8px;
+}
+
+/* Form fields */
+.kw-form-field {
+    margin-top: 15px;
+}
+
+.kw-form-field label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 8px;
+}
+
+textarea.large-text {
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.5;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px;
+    width: 100%;
+    resize: vertical;
+}
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .kw-checkbox-item {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .kw-checkbox-item input[type="text"],
+    .kw-checkbox-item .kw-remove-checkbox {
+        width: 100%;
+    }
+
+    #kw-add-checkbox {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+
+#kw_user_prompt{
+    min-width: 50%;
+    width: 100%;
+    margin: 0px;
+}
+
+
+/* Highlight effect on the Publish button */
+.publish-highlight {
+    position: relative;
+    border: 3px solid #ff4500 !important;
+    box-shadow: 0px 0px 20px rgba(255, 69, 0, 1);
+    animation: pulseEffect 1.2s infinite alternate;
+    border-radius: 6px;
+}
+
+/* Notice warning box */
+.publish-warning {
+    background: #ff4500;
+    color: white;
+    padding: 14px 18px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: bold;
+    text-align: center;
+    margin: 12px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    transition: opacity 0.6s ease-in-out;
+    cursor: default;
+    position: relative;
+}
+
+/* Animated warning icon */
+.warning-icon {
+    margin-right: 10px;
+    font-size: 32px; /* Increased size */
+    animation: shakeWarning 1s infinite ease-in-out;
+}
+
+/* Close button */
+.close-notice {
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+    margin-left: 10px;
+    transition: transform 0.2s ease, opacity 0.3s;
+}
+
+/* Keyframe animations */
+@keyframes pulseEffect {
+    0% { box-shadow: 0px 0px 12px rgba(255, 69, 0, 0.7); }
+    100% { box-shadow: 0px 0px 22px rgba(255, 69, 0, 1); }
+}
+
+@keyframes shakeWarning {
+    0%, 100% { transform: rotate(0); }
+    25% { transform: rotate(-10deg); }
+    50% { transform: rotate(10deg); }
+    75% { transform: rotate(-5deg); }
+}

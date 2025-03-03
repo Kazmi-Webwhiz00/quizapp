@@ -47,6 +47,7 @@ function wp_quiz_plugin_render_quizzes_settings_page() { ?>
         <!-- Tab Navigation -->
         <h2 class="nav-tab-wrapper">
             <a href="#general-settings" class="nav-tab nav-tab-active"><?php esc_html_e('General Settings','wp-quiz-plugin'); ?></a>
+            <a href="#kw-prompt-customization-settings" class="nav-tab"><?php esc_html_e('Prompt Customization', 'wp-quiz-plugin'); ?></a>
             <a href="#style-settings" class="nav-tab"><?php esc_html_e('Admin Style Settings','wp-quiz-plugin'); ?></a>
             <a href="#frontend-style-settings" class="nav-tab"><?php esc_html_e('Frontend Style Settings','wp-quiz-plugin'); ?></a>
             <a href="#strings-text-settings" class="nav-tab"><?php esc_html_e('Admin Strings Text','wp-quiz-plugin'); ?></a> 
@@ -67,6 +68,92 @@ function wp_quiz_plugin_render_quizzes_settings_page() { ?>
                 ?>
             </form>
         </div>
+
+        <div id="kw-prompt-customization-settings" class="tab-content" style="display: none;">
+            <h2><?php esc_html_e('Prompt Customization Settings', 'wp-quiz-plugin'); ?></h2>
+
+            <!-- Prompt Customization Card 1: Checkbox Settings -->
+            <div class="kw-prompt-card">
+                <h3><?php esc_html_e('Checkbox Settings', 'wp-quiz-plugin'); ?></h3>
+                <form method="post" action="options.php">
+                    <?php 
+                    // Register setting
+                    settings_fields('wp_quiz_plugin_prompt_customization_settings'); 
+                    do_settings_sections('wp_quiz_plugin_prompt_customization'); 
+
+                    // Retrieve saved values
+                    $checkbox_values = get_option('wp_quiz_plugin_prompt_checkboxes', []);
+                    ?>
+                    
+                    <div id="kw-checkbox-container">
+                        <?php if (!empty($checkbox_values)) : ?>
+                            <?php foreach ($checkbox_values as $value) : ?>
+                                <div class="kw-checkbox-item">
+                                    <input type="text" name="wp_quiz_plugin_prompt_checkboxes[]" value="<?php echo esc_attr($value); ?>" placeholder="<?php esc_attr_e('Enter checkbox value', 'wp-quiz-plugin'); ?>">
+                                    <button type="button" class="kw-remove-checkbox"><?php esc_html_e('Remove', 'wp-quiz-plugin'); ?></button>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </div>
+                    
+                    <button type="button" id="kw-add-checkbox" class="button"><?php esc_html_e('Add Checkbox', 'wp-quiz-plugin'); ?></button>
+                    <?php submit_button(); ?>
+                </form>
+            </div>
+
+            <!-- Prompt Customization Card 2: AI Prompt Template -->
+            <div class="kw-prompt-card">
+                <h3><?php esc_html_e('AI Prompt Template Settings', 'wp-quiz-plugin'); ?></h3>
+                
+                <!-- Instructions for Admin -->
+                <div class="kw-notice notice-info">
+                    <p><strong><?php esc_html_e('How to Use Variables in Your Prompt Template:', 'wp-quiz-plugin'); ?></strong></p>
+                    <ul>
+                        <li><strong>{learnerAge}</strong> - <?php esc_html_e('This will be replaced with the learner\'s age (e.g., 12).', 'wp-quiz-plugin'); ?></li>
+                        <li><strong>{selectedCategories}</strong> - <?php esc_html_e('This will be replaced with the selected categories in the format: Parent Category > Child Category.', 'wp-quiz-plugin'); ?></li>
+                        <li><strong>{userPrompt}</strong> - <?php esc_html_e('This will be replaced with the exact user-provided prompt.', 'wp-quiz-plugin'); ?></li>
+                        <li><strong>{selectedCheckboxes}</strong> - <?php esc_html_e('This will be replaced with the selected checkbox values, separated by commas (e.g., focus1, focus2).', 'wp-quiz-plugin'); ?></li>
+                        <li><strong>{questionTemplate}</strong> - <?php esc_html_e('This will be replaced with the template for the selected question type (e.g., MCQ, T/F, or Text).', 'wp-quiz-plugin'); ?></li>
+                        <li><strong>{previousQuestionsContext}</strong> - <?php esc_html_e('This will include context to avoid generating questions similar to previously generated ones.', 'wp-quiz-plugin'); ?></li>
+                    </ul>
+                    <p><?php esc_html_e('You can use these variables to create a customized AI prompt template.', 'wp-quiz-plugin'); ?></p>
+                    <button type="button" id="kw-reset-default-prompt" class="button-secondary"><?php esc_html_e('Reset to Default', 'wp-quiz-plugin'); ?></button>
+                </div>
+
+                <form method="post" action="options.php">
+                    <?php 
+                    // Register setting
+                    settings_fields('wp_quiz_plugin_ai_prompt_settings'); 
+                    do_settings_sections('wp_quiz_plugin_ai_prompt_customization'); 
+
+                    // Retrieve saved template
+                    $customPromptTemplate = get_option('wp_quiz_plugin_custom_prompt_template', '');
+                    ?>
+                    
+                    <!-- Custom Prompt Template -->
+                    <div class="kw-form-field">
+                        <label for="wp_quiz_plugin_custom_prompt_template">
+                            <strong><?php esc_html_e('Custom AI Prompt Template', 'wp-quiz-plugin'); ?></strong>
+                        </label>
+                        <textarea 
+                            id="wp_quiz_plugin_custom_prompt_template" 
+                            name="wp_quiz_plugin_custom_prompt_template" 
+                            class="large-text" 
+                            rows="10" 
+                            placeholder="<?php esc_attr_e('Define your custom prompt here...', 'wp-quiz-plugin'); ?>"
+                        ><?php echo esc_textarea($customPromptTemplate); ?></textarea>
+                        <p class="description">
+                            <?php esc_html_e('Use the provided variables to customize the AI prompt template. If {questionTemplate} or {previousQuestionsContext} is not included, they will automatically be added at the end of the prompt.', 'wp-quiz-plugin'); ?>
+                        </p>
+                    </div>
+
+                    <?php submit_button(); ?>
+                </form>
+            </div>
+        </div>
+
+
+
 
         <!-- Style Settings Tab Content -->
         <div id="style-settings" class="tab-content" style="display: none;">
@@ -346,6 +433,28 @@ function wp_quiz_plugin_pdf_strings_text_settings_init() {
 
 }
 add_action('admin_init', 'wp_quiz_plugin_pdf_strings_text_settings_init');
+
+
+function wp_quiz_plugin_register_prompt_customization_settings() {
+    // Register checkbox values
+    register_setting('wp_quiz_plugin_prompt_customization_settings', 'wp_quiz_plugin_prompt_checkboxes', [
+        'sanitize_callback' => 'wp_quiz_plugin_sanitize_checkbox_values'
+    ]);
+
+    // Register custom AI prompt template
+    register_setting('wp_quiz_plugin_ai_prompt_settings', 'wp_quiz_plugin_custom_prompt_template', [
+        'sanitize_callback' => 'wp_kses_post' // Allow HTML tags for admin flexibility
+    ]);
+}
+add_action('admin_init', 'wp_quiz_plugin_register_prompt_customization_settings');
+
+function wp_quiz_plugin_sanitize_checkbox_values($values) {
+    if (is_array($values)) {
+        return array_map('sanitize_text_field', $values);
+    }
+    return [];
+}
+
 
 // Callback function for Quiz PDF Title
 function wp_quiz_plugin_pdf_download_quiz_title_callback() {
@@ -991,7 +1100,7 @@ function wp_quiz_plugin_enqueue_admin_styles() {
     wp_enqueue_style('wp-color-picker');
     wp_enqueue_script('wp-color-picker');
     wp_add_inline_script('wp-color-picker', "jQuery(document).ready(function($) { $('.wp-color-picker-field').wpColorPicker(); });");
-    wp_enqueue_style('wp_quiz_plugin_admin_styles', plugins_url('admin-style.css', __FILE__));
+   // wp_enqueue_style('wp_quiz_plugin_admin_styles', plugins_url('admin-style.css', __FILE__));
 }
 add_action('admin_enqueue_scripts', 'wp_quiz_plugin_enqueue_admin_styles');
 
@@ -1310,6 +1419,71 @@ function wp_quiz_plugin_frontend_styles_settings_init() {
 }
 add_action('admin_init', 'wp_quiz_plugin_frontend_styles_settings_init');
 
+
+function wp_quiz_plugin_button_styles_settings_init() {
+    // Define button labels and unique keys
+    $buttons = [
+        'download_pdf' => __('Download PDF', 'wp-quiz-plugin'),
+        'download_answer_key' => __('Download Answer Key', 'wp-quiz-plugin'),
+        'generate_with_ai' => __('Generate with AI', 'wp-quiz-plugin'),
+        'add_question' => __('Add Question', 'wp-quiz-plugin'),
+    ];
+
+    foreach ($buttons as $key => $label) {
+        // Register settings for each button (use the correct group name)
+        register_setting('wp_quiz_plugin_quizzes_settings', "quiz_{$key}_text_color");
+        register_setting('wp_quiz_plugin_quizzes_settings', "quiz_{$key}_bg_color");
+        register_setting('wp_quiz_plugin_quizzes_settings', "quiz_{$key}_font_size");
+
+        // Add a settings section for each button
+        add_settings_section(
+            "wp_quiz_plugin_{$key}_style_section",            // Section ID
+            sprintf(__('Styles for %s Button', 'wp-quiz-plugin'), $label), // Section title
+            null,                                             // Description callback (none)
+            'wp_quiz_plugin'                                  // Page slug
+        );
+
+        // Add text color setting field
+        add_settings_field(
+            "quiz_{$key}_text_color",
+            __('Text Color', 'wp-quiz-plugin'),
+            function () use ($key) {
+                $color = esc_attr(get_option("quiz_{$key}_text_color", '#000000'));
+                echo '<input type="text" id="quiz_' . $key . '_text_color" name="quiz_' . $key . '_text_color" value="' . $color . '" class="wp-color-picker-field" data-default-color="#000000">';
+            },
+            'wp_quiz_plugin',                                 // Page slug
+            "wp_quiz_plugin_{$key}_style_section"             // Section ID
+        );
+
+        // Add background color setting field
+        add_settings_field(
+            "quiz_{$key}_bg_color",
+            __('Background Color', 'wp-quiz-plugin'),
+            function () use ($key) {
+                $color = esc_attr(get_option("quiz_{$key}_bg_color", '#ffffff'));
+                echo '<input type="text" id="quiz_' . $key . '_bg_color" name="quiz_' . $key . '_bg_color" value="' . $color . '" class="wp-color-picker-field" data-default-color="#ffffff">';
+            },
+            'wp_quiz_plugin',                                 // Page slug
+            "wp_quiz_plugin_{$key}_style_section"             // Section ID
+        );
+
+        // Add font size setting field
+        add_settings_field(
+            "quiz_{$key}_font_size",
+            __('Font Size (px)', 'wp-quiz-plugin'),
+            function () use ($key) {
+                $size = esc_attr(get_option("quiz_{$key}_font_size", '14'));
+                echo '<input type="number" id="quiz_' . $key . '_font_size" name="quiz_' . $key . '_font_size" value="' . $size . '" min="8" max="50">';
+            },
+            'wp_quiz_plugin',                                 // Page slug
+            "wp_quiz_plugin_{$key}_style_section"             // Section ID
+        );
+    }
+}
+
+add_action('admin_init', 'wp_quiz_plugin_button_styles_settings_init');
+
+
 // Callback functions for each field
 // function wp_quiz_plugin_font_family_callback() {
 //     $font_family = get_option('wp_quiz_plugin_font_family', 'Arial');
@@ -1537,6 +1711,7 @@ function wp_quiz_plugin_prompt_settings_init() {
     register_setting('wp_quiz_plugin_general_settings', 'wp_quiz_plugin_mcq_prompt_template');
     register_setting('wp_quiz_plugin_general_settings', 'wp_quiz_plugin_tf_prompt_template');
     register_setting('wp_quiz_plugin_general_settings', 'wp_quiz_plugin_text_prompt_template');
+    register_setting('wp_quiz_plugin_general_settings', 'wp_quiz_plugin_learners_age_prompt_template');
 
     // Add settings section for prompt templates
     add_settings_section(
@@ -1572,18 +1747,22 @@ function wp_quiz_plugin_prompt_settings_init() {
         'wp_quiz_plugin_general',
         'wp_quiz_plugin_prompt_settings_section'
     );
+
+    // Learners' Age Prompt Template
+    add_settings_field(
+        'wp_quiz_plugin_learners_age_prompt_template',
+        __('Learners\' Age Prompt Template','wp-quiz-plugin'),
+        'wp_quiz_plugin_learners_age_prompt_template_callback',
+        'wp_quiz_plugin_general',
+        'wp_quiz_plugin_prompt_settings_section'
+    );
 }
 add_action('admin_init', 'wp_quiz_plugin_prompt_settings_init');
 
 // Callback function for MCQ prompt template
 function wp_quiz_plugin_mcq_prompt_template_callback() {
-    // Define the default prompt with newline characters
     $default_prompt = "Generate a quiz question in the same language as the provided prompt. For example, if the prompt is in Polish, generate the question in Polish, and if the prompt is in English, generate the question in English. Use the following format:\nQuestion: [Your question text]\nAnswer Options: A) [Option A], B) [Option B], C) [Option C], D) [Option D]\nCorrect Answer: [A) Option A/B) Option B/C) Option C/D) Option D]";
-    
-    // Retrieve the existing value or use the default prompt
     $mcq_prompt = get_option('wp_quiz_plugin_mcq_prompt_template', $default_prompt);
-    
-    // Output the textarea with proper escaping
     ?>
     <textarea id="wp_quiz_plugin_mcq_prompt_template" name="wp_quiz_plugin_mcq_prompt_template" class="large-text" rows="10"><?php echo esc_textarea(str_replace('\n', "\n", $mcq_prompt)); ?></textarea>
     <button type="button" onclick="document.getElementById('wp_quiz_plugin_mcq_prompt_template').value='<?php echo esc_js(str_replace('\n', "\\n", $default_prompt)); ?>';" class="button-secondary"><?php _e('Use Default','wp-quiz-plugin'); ?></button>
@@ -1591,12 +1770,23 @@ function wp_quiz_plugin_mcq_prompt_template_callback() {
     <?php
 }
 
+// Callback function for Learners' Age prompt template
+function wp_quiz_plugin_learners_age_prompt_template_callback() {
+    $default_prompt = "The learners' age is [age]";
+    $age_prompt = get_option('wp_quiz_plugin_learners_age_prompt_template', $default_prompt);
+    ?>
+    <textarea id="wp_quiz_plugin_learners_age_prompt_template" name="wp_quiz_plugin_learners_age_prompt_template" class="large-text" rows="2"><?php echo esc_textarea($age_prompt); ?></textarea>
+    <button type="button" onclick="document.getElementById('wp_quiz_plugin_learners_age_prompt_template').value='<?php echo esc_js($default_prompt); ?>';" class="button-secondary"><?php _e('Use Default','wp-quiz-plugin'); ?></button>
+    <p class="description"><?php _e('Customize the template for the learners\' age prompt. Use [age] as a placeholder, which will be replaced with the actual learners\' age. This template will automatically get appended.','wp-quiz-plugin'); ?></p>
+    <?php
+}
+
 
 // Callback function for T/F prompt template
 function wp_quiz_plugin_tf_prompt_template_callback() {
     // Define the default prompt with newline characters
-    $default_prompt = "Generate a True or False quiz question in the same language as the provided prompt. For example, if the prompt is in Polish, generate the question in Polish, and if the prompt is in English, generate the question in English. Use the following format:\nQuestion: [Your question text]\nCorrect Answer: [True/False]";
-    
+    $default_prompt = 'Generate a True or False quiz question in the same language as the provided prompt. For example, if the prompt is in Polish, generate the question in Polish, and if the prompt is in English, generate the question in English. Use the following format:\nQuestion: [Your question text]\nCorrect Answer: [0/1] (Use 0 for True and 1 for False)';
+
     // Retrieve the existing value or use the default prompt
     $tf_prompt = get_option('wp_quiz_plugin_tf_prompt_template', $default_prompt);
     

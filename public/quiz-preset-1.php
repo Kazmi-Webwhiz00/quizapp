@@ -27,8 +27,8 @@ function wp_quiz_render_ui($quiz_id, $questions, $background_color, $button_back
             </div>
             <div id="pf_question-container" class="pf_question-card"></div>
             <div class="pf_quiz-footer">
-                <button id="pf_back-question-btn" class="pf_button pf_button-secondary" style="display: none; width: 50%; background-color: <?php echo $button_background_color; ?>; color: <?php echo $button_text_color; ?>;"><?php echo __('Back', 'wp-quiz-plugin'); ?></button>
-                <button id="pf_next-question-btn" class="pf_button pf_button-primary" style="width: 50%; background-color: <?php echo $button_background_color; ?>; color: <?php echo $button_text_color; ?>;">Next</button>
+                <button id="pf_back-question-btn" class="pf_button pf_button-secondary" style="display: none; width: 50%; background-color: <?php echo $button_background_color; ?> !important; color: <?php echo $button_text_color; ?> !important;"><?php echo __('Back', 'wp-quiz-plugin'); ?></button>
+                <button id="pf_next-question-btn" class="pf_button pf_button-primary" style="width: 50%; background-color: <?php echo $button_background_color; ?> !important; color: <?php echo $button_text_color; ?> !important;">Next</button>
             </div>
         </div>
 
@@ -40,6 +40,9 @@ function wp_quiz_render_ui($quiz_id, $questions, $background_color, $button_back
                 const questions = <?php echo json_encode($questions); ?>;
                 let questionIndex = 0;
                 let selectedAnswer = null, answerSubmitted = false;
+                const quiz_ajax_obj = {
+                ajax_url: '<?php echo esc_url(admin_url('admin-ajax.php')); ?>'
+            };
                 
                 const styles = {
                     backgroundColor: '<?php echo $background_color; ?>',
@@ -65,8 +68,8 @@ function wp_quiz_render_ui($quiz_id, $questions, $background_color, $button_back
                     const userNameHTML = `
                         <div class="pf_user-name-prompt" style="background-color: ${styles.backgroundColor}; padding: 10px; border-radius: 5px;">
                             <label for="pf_user-name-input"><?php echo esc_attr__('Please enter your name:', 'wp-quiz-plugin'); ?></label>
-                            <input type="text" id="pf_user-name-input" name="user-name" placeholder="<?php echo esc_attr__('Your name here', 'wp-quiz-plugin'); ?>" style="margin: 10px 0;">
-                            <button id="pf_submit-name-btn" class="pf_button pf_button-primary" style="background-color: ${styles.buttonBackgroundColor}; color: ${styles.buttonTextColor};"><?php echo esc_attr__('Submit', 'wp-quiz-plugin'); ?></button>
+                            <input type="text" id="pf_user-name-input" name="user-name" placeholder="<?php echo esc_attr__('Your name here', 'wp-quiz-plugin'); ?>" style="margin: 10px 0;" autocomplete="off">
+                            <button id="pf_submit-name-btn" class="pf_button pf_button-primary" style="background-color: ${styles.buttonBackgroundColor} !important; color: ${styles.buttonTextColor} !important;"><?php echo esc_attr__('Submit', 'wp-quiz-plugin'); ?></button>
                         </div>
                     `;
                     $('#pf_question-container').html(userNameHTML);
@@ -88,7 +91,7 @@ function wp_quiz_render_ui($quiz_id, $questions, $background_color, $button_back
                     const question = questions[questionIndex];
                     let questionHTML = `
                         <div class="pf_question-header">
-                            <h3 style="font-family: ${styles.questionfontFamily}; color: ${styles.questionfontColor}; font-size: ${styles.questionfontSize}">${question.Title}</h3>
+                            <h3 style="font-family: ${styles.questionfontFamily} !important; color: ${styles.questionfontColor} !important; font-size: ${styles.questionfontSize} !important">${question.Title}</h3>
                             ${question.TitleImage ? `<img src="${question.TitleImage}" class="pf_question-image" style="<?php echo get_image_style($quiz_id)?>" alt="Question Image">` : ''}
                         </div>
                         <div class="pf_answers-container">
@@ -185,14 +188,27 @@ function wp_quiz_render_ui($quiz_id, $questions, $background_color, $button_back
                 function markCorrectTextAnswer(userAnswer) {
                     isAnswerCorrect = true;
                     storeAnswer(questionIndex, null, userAnswer, 'correct');
-                    showAnswerMessage('Correct answer!', '#4CAF50', '#e8f5e9');
+                    showAnswerMessage(
+                                        "<?php echo esc_js(__('Correct answer!', 'wp-quiz-plugin')); ?>",
+                                        '#4CAF50',
+                                        '#e8f5e9'
+                                    );
+
                     $('.pf_answer-textarea').css('border-color', '#4CAF50');
                 }
 
                 function markIncorrectTextAnswer(userAnswer, correctTextAnswer) {
                     isAnswerCorrect = false;
                     storeAnswer(questionIndex, null, userAnswer, 'incorrect');
-                    showAnswerMessage(`Incorrect answer. The correct answer is: "<strong>${correctTextAnswer}</strong>"`, '#f44336', '#ffebee');
+                    const message = "<?php echo esc_js(__('Incorrect answer. The correct answer is:', 'wp-quiz-plugin')); ?>";
+                                            showAnswerMessage(
+                                                message + 
+                                                ` "<strong>${correctTextAnswer}</strong>"`, 
+                                                '#f44336', 
+                                                '#ffebee'
+                                            );
+
+
                     $('.pf_answer-textarea').css('border-color', '#f44336');
                 }
 
@@ -268,7 +284,10 @@ function wp_quiz_render_ui($quiz_id, $questions, $background_color, $button_back
                         $('.pf_answer-textarea').css('border-color', '#4CAF50');
                     } else if (storedData.state === 'incorrect') {
                         $('.pf_answer-textarea').css('border-color', '#f44336');
-                        $('.pf_answer-textarea').after(`<p class="pf_correct-answer-message" style="color: #f44336; background-color: #ffebee; padding: 10px; border-radius: 5px; margin-top: 10px;">Incorrect answer. The correct answer is: "<strong>${JSON.parse(questions[questionIndex].Answer)[0].text}</strong>"</p>`);
+                        $('.pf_answer-textarea').after(`<p class="pf_correct-answer-message" style="color: #f44336; background-color: #ffebee; padding: 10px; border-radius: 5px; margin-top: 10px;">
+                                    <?php echo esc_js(__('Incorrect answer. The correct answer is:', 'wp-quiz-plugin')); ?> 
+                                    "<strong>${JSON.parse(questions[questionIndex].Answer)[0].text}</strong>"
+                                </p>`);
                     }
                     $('#pf_next-question-btn').prop('disabled', false).text(questionIndex < totalQuestions - 1 ? '<?php echo __('Next Question', 'wp-quiz-plugin'); ?>' : '<?php echo __('Submit Quiz', 'wp-quiz-plugin'); ?>');
                     answerSubmitted = true;
@@ -351,7 +370,7 @@ function wp_quiz_render_ui($quiz_id, $questions, $background_color, $button_back
                                 const blob = new Blob([response], { type: 'application/pdf' });
                                 const link = document.createElement('a');
                                 link.href = window.URL.createObjectURL(blob);
-                                link.download = 'quiz_report_card.pdf';
+                                link.download = 'podsumowanie_quizu.pdf';
                                 link.click();
                             }
                         });
@@ -360,6 +379,7 @@ function wp_quiz_render_ui($quiz_id, $questions, $background_color, $button_back
             });
         </script>
     <?php
+    return ob_get_clean();
 }
 
 ?>

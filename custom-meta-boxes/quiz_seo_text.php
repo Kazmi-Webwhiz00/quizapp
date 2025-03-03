@@ -1,13 +1,15 @@
 <?php
-
 // Add custom meta box for SEO Text
 function add_seo_text_meta_box() {
     // Fetch dynamic meta box title
     $meta_box_title = get_option('wp_quiz_plugin_meta_box_title', __('SEO Text (Admin Only)', 'wp-quiz-plugin'));
+    if (empty($meta_box_title)) {
+        $meta_box_title = __('SEO Text (Admin Only)', 'wp-quiz-plugin'); // Fallback in case the option is empty
+    }
 
     add_meta_box(
-        'quiz_seo_text2', // ID of the meta box
-        __(esc_html($meta_box_title),'wp-quiz-plugin'), // Title of the meta box dynamically set
+        'quiz_seo_text_meta_box', // ID of the meta box
+        esc_html($meta_box_title), // Title of the meta box dynamically set
         'render_seo_text_meta_box', // Callback function to display the input field
         'quizzes', // Post type (quizzes)
         'side', // Position
@@ -37,18 +39,22 @@ function render_seo_text_meta_box($post) {
             'textarea_rows' => 10, // Adjust height
             'teeny' => true, // Optional: use a simplified version of the editor
         );
-        
-        wp_editor(esc_html($seo_text), 'quiz_seo_text', $settings);
-        echo '<p>' . _e(esc_html($admin_only_message),'wp-quiz-plugin') . '</p>';
+
+        wp_editor(esc_textarea($seo_text), 'quiz_seo_text', $settings); // Escape existing value for security
+        echo '<p>' . esc_html($admin_only_message) . '</p>'; // Escape message for HTML output
     } else {
         echo '<textarea style="width:100%;height:150px;" id="quiz_seo_text" name="quiz_seo_text" disabled>' . esc_textarea($seo_text) . '</textarea>';
-        echo '<p>' . _e(esc_html($disabled_message),'wp-quiz-plugin') . '</p>';
+        echo '<p>' . esc_html($disabled_message) . '</p>';
     }
 }
 
 // Save the SEO text when the post is saved
 function save_seo_text_meta_box($post_id) {
     // Security checks
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+        return;
+    }
+
     if (!isset($_POST['quiz_seo_text_nonce']) || !wp_verify_nonce($_POST['quiz_seo_text_nonce'], 'save_seo_text')) {
         return;
     }
@@ -60,7 +66,8 @@ function save_seo_text_meta_box($post_id) {
 
     // Save the SEO text
     if (isset($_POST['quiz_seo_text'])) {
-        update_post_meta($post_id, '_quiz_seo_text', sanitize_textarea_field($_POST['quiz_seo_text']));
+        $seo_text = sanitize_textarea_field($_POST['quiz_seo_text']);
+        update_post_meta($post_id, '_quiz_seo_text', $seo_text);
     }
 }
 add_action('save_post', 'save_seo_text_meta_box');
