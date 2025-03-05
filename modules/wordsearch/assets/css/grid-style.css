@@ -1,45 +1,90 @@
-/**
- * Wordfind.js 0.0.1 Styles
- */
+/* 
+  -- MODERNIZED WORD SEARCH STYLING --
+  This file merges your existing styles with enhancements for:
+  1) Game Container & Canvas: updated background, border-radius, shadows
+  2) Matched Word Styling: improved highlight lines & letter colors
+  3) Word List Styling: modern fonts, spacing, rounded corners
+  4) General UI Enhancements: updated buttons, hover states, transitions
+*/
 
+/* -------- GLOBAL RESETS & BASE -------- */
+html,
 body {
-  font: 1em Arial;
+  background-color: #005fa3;
+  margin: 0;
+  padding: 0;
+  /* Use a clean, modern font (e.g., Roboto or Poppins). Fallback to sans-serif. */
+  font-family: "Poppins", "Roboto", sans-serif;
+  background: #f4f4f4; /* Slightly off-white background for overall page */
+  color: #333;
+  line-height: 1.5;
 }
 
+/* Re-apply your basic text styles as needed */
 p {
-  font: 22pt sans-serif;
-  margin: 20px 20px 0px 20px;
+  margin: 20px 20px 0 20px;
+  font-size: 1.1rem;
 }
-
-h1 {
+h1,
+h2,
+h3 {
   text-align: center;
 }
 
+/* -------- MAIN WRAPPER -------- */
 #main {
   margin: 0 auto;
   max-width: 80rem;
   text-align: center;
 }
+
 @media only screen and (min-width: 600px) {
   #main {
     text-align: left;
   }
 }
+.wordsearch-container {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+  align-items: center;
+}
 
-/**
-     * Styles for the puzzle
-     */
-/* #puzzle {
-      display: inline-block;
-      border: 1px solid black;
-      padding: 3vw;
-    } */
+/* -------- GAME CONTAINER & CANVAS -------- */
+#game-container {
+  /* Modern, card-like appearance */
+  /* floralwhite */
+  /* #9acd3257 */
+  background: #808080a1; /* white backdrop */
+  border-radius: 12px; /* softened corners */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* subtle shadow */
+  /* padding: 1rem; */
+  position: relative;
+  /* width: 90%; */
+  /* max-width: 600px; */
+}
 
+/* Let canvas inherit the parent's border-radius, for a smooth shape */
+#game-container canvas {
+  border-radius: 12px;
+  /* width: 100% !important;  */
+  display: block;
+  /* box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); */
+}
+
+/* If you're using a dynamic overlay (e.g., Konva or a second canvas), apply the same corner rounding */
+#konvaLayer,
+#dynamicCanvas,
+#persistentCanvas {
+  border-radius: 12px;
+}
+
+/* -------- PUZZLE LAYOUT -------- */
 #puzzle {
   margin: 0 auto;
-  border: 1px solid #ccc;
   user-select: none;
   border: none;
+  width: 100%;
 }
 
 #puzzle > div {
@@ -47,22 +92,7 @@ h1 {
   margin: 0 auto;
 }
 
-#guessWords {
-  margin: 10px auto;
-  text-align: center;
-}
-
-.badge {
-  background-color: #1976d2;
-  color: #fff;
-  padding: 5px 10px;
-  border-radius: 20px;
-  display: inline-block;
-  margin: 2px;
-  font-weight: bold;
-}
-
-/* style for each square in the puzzle */
+/* Each puzzle square */
 .puzzleSquare {
   height: 7vw;
   width: 7vw;
@@ -70,7 +100,10 @@ h1 {
   background-color: white;
   border: 0;
   font: 5vw sans-serif;
+  /* Optional: add slight transition for hover or selection changes */
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
+
 @media only screen and (min-width: 600px) {
   #puzzle {
     float: left;
@@ -83,48 +116,39 @@ h1 {
   }
 }
 
-button::-moz-focus-inner {
-  border: 0;
-}
-
-/* indicates when a square has been selected */
+/* "selected" squares get a modern highlight */
 #puzzle .selected {
-  /* background-color: orange; */
-  border-radius: 20px;
+  background-color: #ffd54f !important; /* or a soft highlight color */
+  border-radius: 8px;
 }
 
-/* indicates that the square is part of a word that has been found */
+/* Found squares: change text color to white for clarity when line passes over them */
 #puzzle .found {
-  /* background-color: blue; */
-  color: black !important;
-  /* border-radius: 20px; */
+  color: white !important; /* letters turn white */
+  background-color: transparent; /* let the highlight line show behind text */
+  border-radius: 8px;
 }
 
-:where(.wp-site-blocks *:focus) {
-  outline-width: 0 !important;
-  outline-style: none !important;
-}
-/* indicates that the square is part of a solved word */
+/* If you have a 'solved' class or usage */
 #puzzle .solved {
   background-color: purple;
-  color: black;
+  color: #fff;
+  border-radius: 8px;
 }
 
-/* indicates that all words have been found */
-/* #puzzle .complete {
-    background-color: green;
-  } */
-
-/**
-     * Styles for the word list
-     */
+/* -------- WORD LIST STYLING -------- */
 #words {
   display: inline-block;
   max-width: 30rem;
   padding: 1em;
   list-style-type: none;
   text-align: left;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin: 1rem auto;
 }
+
 @media only screen and (min-width: 600px) {
   #words {
     -moz-column-count: 2;
@@ -134,20 +158,47 @@ button::-moz-focus-inner {
   }
 }
 
-#words li {
-  padding: 3px 0;
-  font: 1em sans-serif;
+#wordList {
+  display: flex; /* enable flex layout */
+  flex-wrap: wrap; /* wrap to next line if items exceed width */
+  gap: 10px; /* space between items */
+  list-style: none; /* remove default bullets from <ul> */
+  margin: 0; /* reset default ul margin */
+  padding: 1rem; /* reset default ul padding */
+  justify-content: start;
+  border: 1px solid #00000017;
+  border-radius: 1rem;
+  background-color: ivory;
 }
 
-/* indicates that the word has been found */
-.wordFound {
+/* Each list item (word) */
+#wordList li {
+  display: inline-flex; /* or just 'inline-block' */
+  align-items: center; /* vertically center text if using inline-flex */
+  border-radius: 4px; /* slightly rounded corners */
+  padding: 8px 12px; /* spacing inside each item */
+  font-size: 18px;
+  font-weight: 500;
+  font-family: system-ui;
+  color: #000;
+  transition: color 0.2s ease;
+  text-transform: uppercase; /* optional: make them uppercase */
+  cursor: pointer; /* if you want a pointer on hover */
+  /* margin: 0;  (not needed if using 'gap' on the container) */
+}
+
+/* If you want a 'found' style when the word is discovered: */
+#wordList li.found {
   text-decoration: line-through;
-  color: gray;
+  opacity: 0.5;
 }
 
-/**
-     * Styles for the controls
-     */
+/* Example hover effect if you want it: */
+#words li:hover {
+  color: #555; /* slightly darker on hover */
+}
+
+/* -------- GENERAL CONTROLS & BUTTONS -------- */
 #controls {
   display: inline-block;
   max-width: 30rem;
@@ -155,54 +206,195 @@ button::-moz-focus-inner {
   border: none;
   text-align: left;
 }
+
+/* Modern label spacing */
 label {
-  white-space: nowrap;
-  margin-top: 1em;
-}
-input {
-  border: none;
-  border-bottom: 1px solid #ccc;
-  font-size: 1em;
-}
-input[type="number"] {
-  width: 2rem;
-}
-select {
-  max-width: 10rem;
-}
-#create-grid,
-#solve {
   display: block;
+  margin: 1em 0 0.3em;
+  font-weight: 500;
+}
+
+/* Modern input style */
+input[type="text"],
+input[type="number"],
+select {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  padding: 0.4rem 0.6rem;
+  width: auto;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+select:focus {
+  border-color: #777;
+}
+
+/* Buttons */
+button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
   margin-top: 1rem;
+  display: inline-block;
 }
-#secret-word {
-  text-transform: uppercase;
+button:hover {
+  background-color: #005fa3;
+  transform: translateY(-1px);
+}
+button:active {
+  background-color: #004a82;
+  transform: translateY(1px);
 }
 
-#result-message {
-  font-size: 1.2em;
+/* -------- BADGE EXAMPLE -------- */
+.badge {
+  background-color: #1976d2;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 20px;
+  display: inline-block;
+  margin: 2px;
+  font-weight: bold;
 }
 
-#konvaLayer {
+/* -------- COMPLETION MODAL -------- */
+#completionModal {
+  display: none;
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  /* If you previously had "pointer-events: none;" remove it or comment it out */
-  /* pointer-events: none; */
-  /* Instead, use the default or pointer-events: auto */
-  pointer-events: none;
-  z-index: 999;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  max-width: 400px;
+  padding: 20px;
+  background: #fff;
+  border: 2px solid #333;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  text-align: center;
+  transition: opacity 0.3s ease;
 }
 
-/* .konvajs-content {
-    min-height: 100%;
-    min-width: 100%;
-  }
-  
-  canvas {
-    padding: 1rem !important;
-    min-height: 100%;
-    min-width: 100%;
-  } */
+#completionModal h2 {
+  margin: 0 0 10px;
+  font-size: 1.4rem;
+}
+#completionModal p {
+  margin: 0 0 20px;
+  font-size: 1.1rem;
+}
+
+#closeModal {
+  padding: 0.6rem 1rem;
+  font-size: 1rem;
+  background: #007bff;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+#closeModal:hover {
+  background: #005fa3;
+}
+
+/* -------- "WELL DONE" BANNER -------- */
+#completionBanner {
+  position: relative;
+  display: none; /* hidden by default */
+  text-align: center;
+  background-color: #4caf50;
+  color: #fff;
+  padding: 0.75rem;
+  margin-top: 0.5rem;
+  font-size: 1.2rem;
+  border-radius: 4px;
+  transition: opacity 0.5s ease;
+}
+
+.wordsearch-empty-state {
+  text-align: center;
+  font-family: ui-monospace;
+}
+
+/* Custom styles for jQuery UI dialog */
+.ui-dialog {
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.ui-dialog .ui-dialog-titlebar {
+  background: #0073aa;
+  color: #fff;
+  border: none;
+  border-radius: 8px 8px 0 0;
+  padding: 10px 15px;
+  font-size: 18px;
+}
+
+.ui-dialog .ui-dialog-titlebar-close {
+  border: none;
+  color: #fff;
+  font-size: 18px;
+}
+
+.ui-widget.ui-widget-content {
+  text-align: center;
+  width: 450px !important;
+}
+
+.ui-dialog .ui-dialog-content {
+  padding: 20px;
+  font-size: 16px;
+  font-family: monospace;
+  color: #333;
+}
+
+.ui-dialog .ui-dialog-buttonpane {
+  background: #f1f1f1;
+  border-top: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 0 0 8px 8px;
+}
+
+.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button {
+  background: #0073aa;
+  border: none;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  margin: 0 5px;
+}
+
+.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button:hover {
+  background: #005177;
+}
+
+/* -------- MATCHED WORD LINE COLOR --------
+   This part is often set in JS (e.g., Konva strokeStyle or canvas drawing).
+   But if you set a class for matched lines, define it here. 
+   Example class usage in your highlight logic: 
+   currentLine.stroke("#FF5722") or a pastel color. 
+------------------------------------------*/
+
+/* If you're using a separate overlay for matched lines, you can style it here:
+.konvaLine {
+  stroke: #FF5722 !important; 
+  stroke-width: 12px !important;
+  opacity: 0.8;
+}
+*/

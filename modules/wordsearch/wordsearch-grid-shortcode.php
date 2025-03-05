@@ -1,43 +1,32 @@
 <?php
 // Shortcode function to display the WordSearch game on the frontend
- 
-function wsp_display_game($atts) {
-    ob_start(); // Start output buffering
 
+function render_game(){
     ?>
-    <div id="main" role="main">
-        <h1>WordFind Word Search Puzzle</h1>
-        <!-- Puzzle container: "position: relative" allows a Konva overlay -->
-        <div id="puzzle" style="position: relative;"></div>
-        <!-- Word list (the game code will insert words here) -->
-        <ul id="words">
-            <li><button id="add-word">Add word</button></li>
-        </ul>
-        <!-- Controls -->
-        <fieldset id="controls">
-            <label for="allowed-missing-words">Allowed missing words :
-                <input id="allowed-missing-words" type="number" min="0" max="5" step="1" value="2">
-            </label>
-            <label for="max-grid-growth">Max grid growth :
-                <input id="max-grid-growth" type="number" min="0" max="5" step="1" value="0">
-            </label>
-            <label for="extra-letters">Extra letters :
-                <select id="extra-letters">
-                    <option value="secret-word" selected>form a secret word</option>
-                    <option value="none">none, allow blanks</option>
-                    <option value="secret-word-plus-blanks">form a secret word but allow for extra blanks</option>
-                    <option value="random">random</option>
-                </select>
-            </label>
-            <label for="secret-word">Secret word :
-                <input id="secret-word" type="text">
-            </label>
-            <button id="create-grid">Create grid</button>
-            <p id="result-message"></p>
-            <button id="solve">Solve Puzzle</button>
-        </fieldset>
+    <div class="wordsearch-container">
+        <ul id="wordList"></ul>
+        <!-- <div id="outerWrapper"> -->
+        <div id="game-container"></div>
+        <!-- </div> -->
+    </div>
+    
+    <!-- Word list panel -->
+    <div id="completionBanner">Well Done!</div>
+  
+    <div id="completionModal" style="display: none; position: fixed; top: 50%; left: 50%; 
+         transform: translate(-50%, -50%); background: white; border: 2px solid #333; padding: 20px; z-index: 9999;">
+        <h2>Congratulations!</h2>
+        <p>You have found all the words!</p>
+        <button onclick="document.getElementById('completionModal').style.display='none';">Close</button>
     </div>
     <?php
+}
+
+function display_word_search_game() {
+    ob_start();
+    error_log("display_word_search_game() has been called");
+    // Directly call the render_game() function
+    render_game();
     return ob_get_clean();
 }
-add_shortcode( 'word_search_puzzle', 'wsp_display_game' );
+add_shortcode('word_search_puzzle', 'display_word_search_game');
