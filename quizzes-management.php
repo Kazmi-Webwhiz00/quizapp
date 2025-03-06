@@ -64,6 +64,8 @@ add_action('admin_enqueue_scripts', 'wp_quiz_plugin_enqueue_styles'); // Change 
         //if ($is_crossword_enabled) {
             include_once plugin_dir_path(__FILE__) . 'modules/crossword/index.php';
         //}
+
+        include_once plugin_dir_path(__FILE__) . 'modules/wordsearch/index.php';
     }
     add_action('plugins_loaded', 'load_crossword_module');
 
