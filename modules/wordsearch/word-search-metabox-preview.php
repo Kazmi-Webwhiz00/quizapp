@@ -71,8 +71,8 @@ function enqueue_wordsearch_metabox_preview_assets( $hook ) {
     }
         wp_localize_script( 'wordsearch-grid', 'frontendData', array(
             'entries' => json_encode( $sanitized_entries ),
-            'containerWidth' => "65%",
-            'gridSize' => 8,
+            // 'containerWidth' => "65%",
+            'maximunGridSize' => 10,
             'nonce'   => wp_create_nonce( 'wordsearch_nonce' )
         ) );
     }

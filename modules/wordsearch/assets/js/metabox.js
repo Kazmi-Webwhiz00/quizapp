@@ -7,17 +7,35 @@ jQuery(document).ready(function ($) {
   var savedEntries = entries;
 
   function mergeSavedEntriesIntoCookie(savedEntries, cookieEntries) {
+    // Create a map for cookieEntries keyed by id.
     const map = new Map();
     cookieEntries.forEach((entry) => {
       if (entry.id) {
         map.set(entry.id, entry);
       }
     });
+
+    // Create a Set of saved entry ids for quick lookup.
+    const savedIds = new Set(savedEntries.filter((e) => e.id).map((e) => e.id));
+
+    // if (savedEntries.length > cookieEntries.length) {
+    // Add any missing savedEntries to the map.
     savedEntries.forEach((entry) => {
       if (entry.id && !map.has(entry.id)) {
         map.set(entry.id, entry);
       }
     });
+    // } else if (savedEntries.length < cookieEntries.length) {
+    //   // Remove cookie entries that are not in savedEntries.
+    //   for (const key of map.keys()) {
+    //     if (!savedIds.has(key)) {
+    //       map.delete(key);
+    //     }
+    //   }
+    // } else {
+    //   return;
+    // }
+
     return Array.from(map.values());
   }
 

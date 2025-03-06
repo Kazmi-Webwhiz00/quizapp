@@ -250,40 +250,36 @@ function render_wordsearch_category_meta_box($post) {
         'hide_empty' => false,
     )) : array();
     ?>
-    <div class="wordsearch-category-dropdowns">
-        <label for="selected_school"><?php _e($select_category_school_text, 'wp-quiz-plugin'); ?></label>
+<div class="wordsearch-category-dropdowns" style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+    <!-- School Dropdown -->
+    <div class="dropdown-group">
+        <label for="selected_school_wordsearch"><?php echo esc_html(get_option('wp_wordsearch_plugin_category_select_school_text', _x('Select School','wordsearch','wp-quiz-plugin'))); ?></label>
         <select name="selected_school" id="selected_school_wordsearch">
             <option value=""><?php _e('----------', 'wp-quiz-plugin'); ?></option>
-            <?php foreach ($schools as $school) { ?>
-                <option value="<?php echo esc_attr($school->term_id); ?>" <?php selected($selected_school, $school->term_id); ?>>
+            <?php foreach (get_terms(array('taxonomy' => 'wordsearch_category','parent' => 0, 'hide_empty' => false)) as $school) { ?>
+                <option value="<?php echo esc_attr($school->term_id); ?>">
                     <?php echo esc_html($school->name); ?>
                 </option>
             <?php } ?>
         </select>
-
-        <div id="class_select_container" <?php if (empty($classes)) echo 'style="display:none;"'; ?>>
-            <select name="selected_class" id="selected_class_wordsearch">
-                <option value=""><?php _e('----------', 'wp-quiz-plugin'); ?></option>
-                <?php foreach ($classes as $class) { ?>
-                    <option value="<?php echo esc_attr($class->term_id); ?>" <?php selected($selected_class, $class->term_id); ?>>
-                        <?php echo esc_html($class->name); ?>
-                    </option>
-                <?php } ?>
-            </select>
-        </div>
-
-        <div id="subject_select_container_wordsearch" <?php if (empty($subjects)) echo 'style="display:none;"'; ?>>
-            <select name="selected_subject" id="selected_subject_wordsearch">
-                <option value=""><?php _e('----------', 'wp-quiz-plugin'); ?></option>
-                <?php foreach ($subjects as $subject) { ?>
-                    <option value="<?php echo esc_attr($subject->term_id); ?>" <?php selected($selected_subject, $subject->term_id); ?>>
-                        <?php echo esc_html($subject->name); ?>
-                    </option>
-                <?php } ?>
-            </select>
-        </div>
     </div>
-    <?php wp_nonce_field(basename(__FILE__), 'wordsearch_category_nonce'); ?>
+
+    <div id="class_select_container" class="dropdown-group" style="display: none;">
+        <label for="selected_class_wordsearch"><?php echo esc_html(get_option('wp_wordsearch_plugin_category_select_class_text', _x('Select Class','wordsearch','wp-quiz-plugin'))); ?></label>
+        <select name="selected_class" id="selected_class_wordsearch">
+            <option value=""><?php _e('----------', 'wp-quiz-plugin'); ?></option>
+        </select>
+    </div>
+
+    <!-- Subject Dropdown (initially hidden if no options exist) -->
+    <div id="subject_select_container_wordsearch" class="dropdown-group" style="display: none;">
+        <label for="selected_subject_wordsearch"><?php echo esc_html(get_option('wp_wordsearch_plugin_category_select_subject_text', _x('Select Subject','wordsearch','wp-quiz-plugin'))); ?></label>
+        <select name="selected_subject" id="selected_subject_wordsearch">
+            <option value=""><?php _e('----------', 'wp-quiz-plugin'); ?></option>
+        </select>
+    </div>
+</div>
+<?php wp_nonce_field(basename(__FILE__), 'wordsearch_category_nonce'); ?>
     <?php
 }
 

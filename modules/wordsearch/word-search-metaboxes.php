@@ -88,8 +88,8 @@ function wordsearch_enqueue_assets() {
         // Localize the data: Pass the word entries and a nonce to your JS file.
         wp_localize_script( 'wordsearch-grid', 'wordSearchData', array(
             'entries' => json_encode( $word_entries ),
-            'containerWidth' => "55%",
-            'gridSize' => 8,
+            // 'containerWidth' => "55%",
+            'maximunGridSize' => 10,
             'nonce'   => wp_create_nonce( 'wordsearch_nonce' )
         ) );
     } else {
