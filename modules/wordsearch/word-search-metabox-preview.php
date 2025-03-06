@@ -97,10 +97,20 @@ add_action('add_meta_boxes', 'add_wordsearch_preview_meta_box');
 function render_wordsearch_preview_meta_box($post) {
     ?>
     <div id="wordsearch-preview-container">
+    <div class="button-checkbox-container">
+    <label class="checkbox-label">
+    <input type="checkbox" class="toggle-checkbox" />
+    Show Answers
+  </label>
+  <button id="shuffleButton" class="shuffle-button">Shuffle</button>
+
+</div>
       <!-- Empty state message; hidden by default -->
-      <p id="empty-message" style="text-align: center; display: none;">
+       <div id="empty-message" class="empty-box" style="text-align: center; display: none;">
+      <p class="no-entry-message">
         No word search entries found. 
       </p>
+</div>
       <!-- Game preview content is rendered but hidden -->
       <div id="game-preview-content" style="display: none;">
          <?php render_game(); ?>

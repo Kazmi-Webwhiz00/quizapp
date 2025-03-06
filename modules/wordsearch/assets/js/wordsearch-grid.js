@@ -219,7 +219,7 @@ jQuery(document).ready(function ($) {
     // Immediately update the word list in the UI.
     renderWordList(wordData);
 
-    // (2) Destroy the old Phaser instance completely
+    // Destroy the old instance and clear container before creating a new grid
     if (gameInstance) {
       gameInstance.destroy(true);
       gameInstance = null;
@@ -327,12 +327,25 @@ jQuery(document).ready(function ($) {
       console.error(`Container with id ${containerId} not found.`);
     }
 
+    // NEW CODE: Override the drawmatrix method so WordSearch does not render its default canvases.
+    if (typeof WordSearch !== "undefined") {
+      WordSearch.prototype.drawmatrix = function () {
+        // Do nothing to prevent default rendering.
+      };
+    }
     // Create the puzzle
     const tempDiv = document.createElement("div");
     const ws = new WordSearch(tempDiv, mergedPuzzleOptions);
     const gridMatrix = ws.matrix;
     const gridSize = mergedPuzzleOptions.gridSize;
     const wordList = mergedPuzzleOptions.words;
+
+    // NEW CODE: Hide WordSearch library’s default rendering (the <canvas> letters).
+    // We query all .ws-row, .ws-col, and <canvas> elements that WordSearch draws.
+    const puzzleCanvases = tempDiv.querySelectorAll(".ws-row, .ws-col, canvas");
+    puzzleCanvases.forEach((el) => {
+      el.style.display = "none";
+    });
 
     // Step B: Calculate the dynamic canvas size
     const { width: dynamicWidth, height: dynamicHeight } = getDynamicCanvasSize(
@@ -355,10 +368,11 @@ jQuery(document).ready(function ($) {
     const config = {
       type: Phaser.CANVAS,
       parent: containerId,
-      resolution: 2, // ID of the DOM container for Phaser
+      resolution: window.devicePixelRatio || 2, // ID of the DOM container for Phaser
       width: dynamicWidth,
       height: dynamicHeight,
       transparent: true,
+      roundPixels: true, // ✅ Critical to fix blurry text
       scene: {
         preload,
         create,
@@ -426,8 +440,23 @@ jQuery(document).ready(function ($) {
 
       // Step G: Calculate cellSize from dynamic dimensions
       const cellSize = Math.min(dynamicWidth, dynamicHeight) / gridSize;
-
+      const fontSize = Math.floor(cellSize * 0.6);
       letterTexts = [];
+      const finalStyle = {
+        fontFamily: "Roboto",
+        fontSize: `${fontSize}px`,
+        color: "#000",
+        stroke: "#000",
+        strokeThickness: 0,
+        shadow: {
+          offsetX: 0,
+          offsetY: 0,
+          color: "#000",
+          blur: 0,
+          stroke: false,
+          fill: false,
+        },
+      };
 
       // Render grid letters
       for (let row = 0; row < gridSize; row++) {
@@ -437,12 +466,12 @@ jQuery(document).ready(function ($) {
           const x = col * cellSize + cellSize * 0.5;
           const y = row * cellSize + cellSize * 0.5;
           const textObj = scene.add
-            .text(x, y, letter, {
-              fontFamily: "Arial",
-              fontSize: `${cellSize * 0.6}px`,
-              color: "#000",
-            })
+            .text(x, y, letter, finalStyle)
             .setOrigin(0.5);
+          // Ensure no stroke/shadow if previously set
+          textObj.setStroke("#000", 0); // stroke color + thickness=0
+          textObj.setShadow(0, 0, "#000", 0, false, false); // Disable any shadow
+          textObj.setColor("#000"); // Re-apply solid color
           textObj.setDepth(10);
           textObj.setData("row", row);
           textObj.setData("col", col);
@@ -665,6 +694,22 @@ jQuery(document).ready(function ($) {
     gameCanvas.height = newHeight;
     scene.children.removeAll();
     const cellSize = Math.min(newWidth, newHeight) / gridSize;
+    const fontSize = Math.floor(cellSize * 0.6);
+    const finalStyle = {
+      fontFamily: "Roboto",
+      fontSize: `${fontSize}px`,
+      color: "#000",
+      stroke: "#000",
+      strokeThickness: 0,
+      shadow: {
+        offsetX: 0,
+        offsetY: 0,
+        color: "#000",
+        blur: 0,
+        stroke: false,
+        fill: false,
+      },
+    };
     for (let row = 0; row < gridSize; row++) {
       // Initialize each row if not already defined
       if (!letterTexts[row]) {
@@ -673,13 +718,9 @@ jQuery(document).ready(function ($) {
       for (let col = 0; col < gridSize; col++) {
         const x = col * cellSize + cellSize * 0.5;
         const y = row * cellSize + cellSize * 0.5;
-        const fontSize = Math.floor(cellSize * 0.6);
+        // const fontSize = Math.floor(cellSize * 0.6);
         const letterObj = scene.add
-          .text(x, y, gridMatrix[row][col].letter, {
-            fontFamily: "Arial",
-            fontSize: `${fontSize}px`,
-            color: "#000",
-          })
+          .text(x, y, gridMatrix[row][col].letter, finalStyle)
           .setOrigin(0.5);
         letterTexts[row][col] = letterObj;
       }
@@ -848,16 +889,16 @@ jQuery(document).ready(function ($) {
 
     cells.forEach((cell) => {
       scene.children.list.forEach((obj) => {
-        if (obj.type === "Text") {
-          // Ensure it's a text object
-          const row = obj.getData("row");
-          const col = obj.getData("col"); // Assuming you stored column data
+        // if (obj.type === "Text") {
+        // Ensure it's a text object
+        const row = obj.getData("row");
+        const col = obj.getData("col"); // Assuming you stored column data
 
-          if (row === cell.row && col === cell.col) {
-            obj.setColor("#FFFFFF"); // Change color to white
-            obj.setFontStyle("bold");
-          }
+        if (row === cell.row && col === cell.col) {
+          obj.setColor("#FFFFFF"); // Change color to white
+          // obj.setFontStyle("bold");
         }
+        // }
       });
     });
 
@@ -885,11 +926,20 @@ jQuery(document).ready(function ($) {
       // Add a click handler to the close button.
       const closeBtn = document.getElementById("closeModal");
       if (closeBtn) {
-        closeBtn.onclick = () => {
+        closeBtn.onclick = (event) => {
+          event.preventDefault(); // Prevent default behavior (e.g., form submission)
+          console.log("::Close button clicked");
           // Fade out the modal
           modal.style.opacity = 0;
           setTimeout(() => {
             modal.style.display = "none";
+
+            // NEW CODE: Destroy the game instance if it exists and refresh the grid.
+            if (gameInstance) {
+              gameInstance.destroy(true);
+              gameInstance = null;
+            }
+            updateWordData(); // Reinitialize the grid with current word data
           }, 300);
         };
       }
@@ -910,8 +960,14 @@ jQuery(document).ready(function ($) {
         duration: 300,
         ease: "Bounce.easeOut",
         yoyo: true,
+        onUpdate: () => {
+          // NEW CODE: Continuously enforce white color during animation.
+          letterObj.setColor("#FFFFFF");
+        },
         onComplete: () => {
           letterObj.setScale(1);
+          // NEW CODE: Reapply white color once animation is finished.
+          letterObj.setColor("#FFFFFF");
         },
       });
     });

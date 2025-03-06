@@ -22,8 +22,8 @@ body {
 
 /* Re-apply your basic text styles as needed */
 p {
-  margin: 20px 20px 0 20px;
-  font-size: 1.1rem;
+  /* margin: 20px 20px 0 20px; */
+  /* font-size: 1.1rem; */
 }
 h1,
 h2,
@@ -250,7 +250,7 @@ button:hover {
   transform: translateY(-1px);
 }
 button:active {
-  background-color: #004a82;
+  /* background-color: #004a82; */
   transform: translateY(1px);
 }
 
@@ -383,6 +383,78 @@ button:active {
   background: #005177;
 }
 
+.empty-box {
+  max-width: 100%;
+  background-color: #f9f9f9;
+  padding: 30px;
+  margin-top: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.no-entry-message {
+  background-color: #ffffff;
+  padding: 20px;
+  margin: 0 auto;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  width: 100%;
+  max-width: 300px;
+}
+
+/* Flex container for button and checkbox */
+.button-checkbox-container {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  gap: 12px;
+  padding: 20px;
+}
+
+/* Styled Shuffle Button */
+.shuffle-button {
+  display: inline-block;
+  background-color: #0073aa;
+  margin: 0 10px;
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background-color 0.3s ease, transform 0.2s;
+}
+
+.shuffle-button:hover {
+  background-color: #005f8c;
+  transform: scale(1.05);
+}
+
+.shuffle-button:active {
+  transform: scale(0.98);
+}
+
+/* Checkbox Styling */
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+}
+
+.toggle-checkbox {
+  margin-right: 6px;
+  width: 16px;
+  height: 16px;
+}
+
+canvas {
+  image-rendering: optimizeSpeed;
+  image-rendering: crisp-edges;
+  image-rendering: pixelated; /* fallback for older browsers */
+}
 /* -------- MATCHED WORD LINE COLOR --------
    This part is often set in JS (e.g., Konva strokeStyle or canvas drawing).
    But if you set a class for matched lines, define it here. 

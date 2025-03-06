@@ -5,6 +5,7 @@ jQuery(document).ready(function ($) {
   // Debounce timer variable (placed in an appropriate scope)
   let debounceTimer;
   var savedEntries = entries;
+  console.log("::savedEntries", savedEntries);
 
   function mergeSavedEntriesIntoCookie(savedEntries, cookieEntries) {
     // Create a map for cookieEntries keyed by id.
@@ -16,7 +17,7 @@ jQuery(document).ready(function ($) {
     });
 
     // Create a Set of saved entry ids for quick lookup.
-    const savedIds = new Set(savedEntries.filter((e) => e.id).map((e) => e.id));
+    // const savedIds = new Set(savedEntries.filter((e) => e.id).map((e) => e.id));
 
     // if (savedEntries.length > cookieEntries.length) {
     // Add any missing savedEntries to the map.

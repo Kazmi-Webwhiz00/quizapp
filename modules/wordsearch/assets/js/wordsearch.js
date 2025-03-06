@@ -60,7 +60,7 @@
       }
 
       // Draw the matrix into wrap element
-      this.drawmatrix();
+      // this.drawmatrix();
     }
   }
 
@@ -236,46 +236,49 @@
   /**
    * Draw the matrix
    */
+  // WordSearch.prototype.drawmatrix = function () {
+  //   for (var row = 0; row < this.settings.gridSize; row++) {
+  //     // New row
+  //     var divEl = document.createElement("div");
+  //     divEl.setAttribute("class", "ws-row");
+  //     this.wrapEl.appendChild(divEl);
+
+  //     for (var col = 0; col < this.settings.gridSize; col++) {
+  //       var cvEl = document.createElement("canvas");
+  //       cvEl.setAttribute("class", "ws-col");
+  //       cvEl.setAttribute("width", 40);
+  //       cvEl.setAttribute("height", 40);
+
+  //       // Fill text in middle center
+  //       var x = cvEl.width / 2,
+  //         y = cvEl.height / 2;
+
+  //       var ctx = cvEl.getContext("2d");
+  //       ctx.font = "400 28px Calibri";
+  //       ctx.textAlign = "center";
+  //       ctx.textBaseline = "middle";
+  //       ctx.fillStyle = "#333"; // Text color
+  //       ctx.fillText(this.matrix[row][col].letter, x, y);
+
+  //       // Add event listeners
+  //       cvEl.addEventListener(
+  //         "mousedown",
+  //         this.onMousedown(this.matrix[row][col])
+  //       );
+  //       cvEl.addEventListener(
+  //         "mouseover",
+  //         this.onMouseover(this.matrix[row][col])
+  //       );
+  //       cvEl.addEventListener("mouseup", this.onMouseup());
+
+  //       divEl.appendChild(cvEl);
+  //     }
+  //   }
+  // };
+
   WordSearch.prototype.drawmatrix = function () {
-    for (var row = 0; row < this.settings.gridSize; row++) {
-      // New row
-      var divEl = document.createElement("div");
-      divEl.setAttribute("class", "ws-row");
-      this.wrapEl.appendChild(divEl);
-
-      for (var col = 0; col < this.settings.gridSize; col++) {
-        var cvEl = document.createElement("canvas");
-        cvEl.setAttribute("class", "ws-col");
-        cvEl.setAttribute("width", 40);
-        cvEl.setAttribute("height", 40);
-
-        // Fill text in middle center
-        var x = cvEl.width / 2,
-          y = cvEl.height / 2;
-
-        var ctx = cvEl.getContext("2d");
-        ctx.font = "400 28px Calibri";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillStyle = "#333"; // Text color
-        ctx.fillText(this.matrix[row][col].letter, x, y);
-
-        // Add event listeners
-        cvEl.addEventListener(
-          "mousedown",
-          this.onMousedown(this.matrix[row][col])
-        );
-        cvEl.addEventListener(
-          "mouseover",
-          this.onMouseover(this.matrix[row][col])
-        );
-        cvEl.addEventListener("mouseup", this.onMouseup());
-
-        divEl.appendChild(cvEl);
-      }
-    }
+    return;
   };
-
   /**
    * Fill up the remaining items
    */

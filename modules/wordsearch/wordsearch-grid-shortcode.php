@@ -17,7 +17,7 @@ function render_game(){
          transform: translate(-50%, -50%); background: white; border: 2px solid #333; padding: 20px; z-index: 9999;">
         <h2>Congratulations!</h2>
         <p>You have found all the words!</p>
-        <button onclick="document.getElementById('completionModal').style.display='none';">Close</button>
+        <button id="closeModal">Close</button>
     </div>
     <?php
 }
