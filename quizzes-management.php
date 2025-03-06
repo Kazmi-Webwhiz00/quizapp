@@ -2,7 +2,7 @@
 /*
 Plugin Name: OmniS
 Description: A WordPress plugin to create and manage quizzes with questions and user submissions.
-Version: 5.1.5
+Version: 5.1.6
 Author: Kazmi Webwhiz
 Author URI: https://kazmiwebwhiz.com
 Text Domain: wp-quiz-plugin
@@ -754,9 +754,18 @@ function display_questions_meta_box($post) {
 
                                         $.fn.updatePostAsDraft(postId, postStatus);
 
-                                        function sendRequest(retryCount, count) {
-                                            if (count <= 0) return;
-            
+                                        function sendRequest(retryCount, count, totalCount) {
+                                            // If no more questions to generate, hide the loader and exit
+                                            if (count <= 0) {
+                                                $('.kw-loading').hide();
+                                                return;
+                                            }
+                                            
+                                            // Only show the loader on the very first request
+                                            if (count === totalCount) {
+                                                $('.kw-loading').show();
+                                            }
+                                            
                                             var data = {
                                                 'model': "<?php echo esc_js(get_option('wp_quiz_plugin_openai_model', 'gpt-4o-mini')); ?>",
                                                 'messages': [{
@@ -775,11 +784,10 @@ function display_questions_meta_box($post) {
                                                 },
                                                 data: JSON.stringify(data),
                                                 beforeSend: function () {
-                                                    $('.kw-loading').show();
                                                     console.log('Sending request to OpenAI...', data);
                                                     if (isAdmin) {
                                                         $.fn.showAdminPrompt(data.messages[0].content);
-                                                        }
+                                                    }
                                                     $('#kw_generate-question-btn').text('<?php echo esc_js(__('Generating...', 'wp-quiz-plugin')); ?>').prop('disabled', true);
                                                 },
                                                 success: function (response) {
@@ -787,18 +795,18 @@ function display_questions_meta_box($post) {
                                                     try {
                                                         var generatedContent = response.choices[0].message.content.trim();
                                                         console.log('Generated content:', generatedContent);
-            
                                                         handleGeneratedContent(selectedType, generatedContent);
-                                                        sendRequest(3, count - 1); // Recursively call to generate the next question
+                                                        // Recursive call – pass totalCount unchanged
+                                                        sendRequest(3, count - 1, totalCount);
                                                     } catch (error) {
                                                         console.error('Error parsing response:', error);
-                                                            Swal.fire(
-                                                                '<?php echo esc_js(__('Error', 'wp-quiz-plugin')); ?>',
-                                                                '<?php echo esc_js(__('Could not parse the response. Ensure the AI response follows the expected format.', 'wp-quiz-plugin')); ?>',
-                                                                'error'
-                                                            );
-                                                            $('.kw-loading').hide();
-                                                            $.fn.highlightPublishButton();
+                                                        Swal.fire(
+                                                            '<?php echo esc_js(__('Error', 'wp-quiz-plugin')); ?>',
+                                                            '<?php echo esc_js(__('Could not parse the response. Ensure the AI response follows the expected format.', 'wp-quiz-plugin')); ?>',
+                                                            'error'
+                                                        );
+                                                        $('.kw-loading').hide();
+                                                        $.fn.highlightPublishButton();
                                                         $('#kw_generate-question-btn').text('<?php echo esc_js(__('Generate with ChatGPT', 'wp-quiz-plugin')); ?>').prop('disabled', false);
                                                     }
                                                 },
@@ -806,15 +814,15 @@ function display_questions_meta_box($post) {
                                                     console.error('API request error:', xhr.responseText);
                                                     if (retryCount > 0) {
                                                         console.log(`Retrying request... Attempts left: ${retryCount}`);
-                                                        setTimeout(() => sendRequest(retryCount - 1, count), 2000); // Retry after 2 seconds
+                                                        setTimeout(() => sendRequest(retryCount - 1, count, totalCount), 2000);
                                                     } else {
                                                         var errorMsg = '<?php echo esc_js(__('Failed to generate question.', 'wp-quiz-plugin')); ?>';
                                                         errorMsg += xhr.responseJSON?.error?.message || '<?php echo esc_js(__('Error: ', 'wp-quiz-plugin')); ?>' + error;
                                                         Swal.fire(
-                                                                        '<?php echo esc_js(__('Error', 'wp-quiz-plugin')); ?>',
-                                                                        errorMsg,
-                                                                        'error'
-                                                                    );
+                                                            '<?php echo esc_js(__('Error', 'wp-quiz-plugin')); ?>',
+                                                            errorMsg,
+                                                            'error'
+                                                        );
                                                         $('.kw-loading').hide();
                                                         $.fn.highlightPublishButton();
                                                         $('#kw_generate-question-btn').text('<?php echo esc_js(__('Generate with ChatGPT', 'wp-quiz-plugin')); ?>').prop('disabled', false);
@@ -822,8 +830,8 @@ function display_questions_meta_box($post) {
                                                 }
                                             });
                                         }
-            
-                                        sendRequest(3, selectedCount); // Start generating questions
+
+                                        sendRequest(3, selectedCount, selectedCount);
                                     }
                                 });
                                     }
@@ -1060,18 +1068,18 @@ function display_questions_meta_box($post) {
                                         <div class="kw_answers-container kw_four-column-container">${answersHtml}</div>
                                     </div>
                                 </div>`);
-                            $('.kw-loading').hide();
+                            // $('.kw-loading').hide();
                             $.fn.highlightPublishButton();
                             $('#kw_generate-question-btn').text('Generate with ChatGPT').prop('disabled', false);
                         } else {
                             console.error('Error saving generated question:', response.message);
-                            $('.kw-loading').hide();
+                            // $('.kw-loading').hide();
                             $.fn.highlightPublishButton();
                             $('#kw_generate-question-btn').text('Generate with ChatGPT').prop('disabled', false);
                         }
                     }).fail(function(xhr, status, error) {
                         console.error('AJAX error saving generated question:', error);
-                        $('.kw-loading').hide();
+                        // $('.kw-loading').hide();
                         $.fn.highlightPublishButton();
                         $('#kw_generate-question-btn').text('Generate with ChatGPT').prop('disabled', false);
                     });
