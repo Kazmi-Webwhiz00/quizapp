@@ -8,15 +8,7 @@ function ws_render_docs_page() {
     <h3><?php esc_html_e('Shortcodes', 'wp-quiz-plugin'); ?></h3>
     <p><?php esc_html_e('Below are the available shortcodes for the Quiz and Wordsearch modules. Click "Copy" to copy the shortcode to your clipboard.', 'wp-quiz-plugin'); ?></p>
     
-    <h4><?php esc_html_e('Quiz Module Shortcode', 'wp-quiz-plugin'); ?></h4>
-
-    <div class="shortcode-box">
-        <!-- Hidden input for Quiz Description Shortcode -->
-        <input id="quiz-copy-input-desc" type="text" value="[quiz_description]" readonly class="hidden-input">
-        <code>[quiz_description]</code>
-        <button id="quiz-copy-button-desc" class="copy-button">Copy</button>
-        <span id="quiz-copy-message-desc" class="copy-message">Copied to clipboard!</span>
-    </div>
+    <h4><?php esc_html_e('Wordsearch Module Shortcode', 'wp-quiz-plugin'); ?></h4>
     
     <h4><?php esc_html_e('Wordsearch Module Shortcode', 'wp-quiz-plugin'); ?></h4>
     <div class="shortcode-box">

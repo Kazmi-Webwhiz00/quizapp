@@ -144,9 +144,9 @@ $shuffle_text_color = get_option('kw_wordsearch_admin_shuffle_button_text_color'
 
 </div>
       <!-- Empty state message; hidden by default -->
-      <p id="empty-message" style="text-align: center; display: none;">
-        No word search entries found. 
-      </p>
+      <div id="wordsearch-empty-box" style="text-align: center; display: none;">
+       <p class="wordsearch-empty-message"> No word search entries found. </p>
+</div>
       <!-- Game preview content is rendered but hidden -->
       <div id="game-preview-content" style="display: none;">
          <?php render_game(); ?>
@@ -173,7 +173,7 @@ $shuffle_text_color = get_option('kw_wordsearch_admin_shuffle_button_text_color'
           function checkAndTogglePreview() {
             var rawData = getCookie('wordsearch_entries');
             var entries = rawData ? JSON.parse(rawData) : [];
-            var emptyMsg = document.getElementById('empty-message');
+            var emptyMsg = document.getElementById('wordsearch-empty-box');
             var gameContent = document.getElementById('game-preview-content');
 
             if (entries.length > 0) {

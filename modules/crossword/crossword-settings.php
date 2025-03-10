@@ -10,7 +10,7 @@ function crossword_add_meta_boxes() {
         'crossword_words_clues_meta_box_callback',
         'crossword', // Ensure the post type matches the registered singular value
         'normal',
-        'high'
+        'low'
     );
 }
 add_action('add_meta_boxes', 'crossword_add_meta_boxes');
@@ -27,7 +27,7 @@ function crossword_preview_meta_box() {
         'crossword_preview_meta_box_callback', // Callback function
         'crossword', // Post type where it should appear
         'normal', // Context ('normal', 'side', 'advanced')
-        'high' // Priority
+        'low' // Priority
     );
 }
 add_action('add_meta_boxes', 'crossword_preview_meta_box');
@@ -42,7 +42,7 @@ function crossword_register_create_with_ai_meta_box() {
         'crossword_render_ai_meta_box',  // Callback function
         'Crossword',                          // Post type
         'normal',
-        'high'
+        'default'
     );
 }
 add_action('add_meta_boxes', 'crossword_register_create_with_ai_meta_box');
@@ -172,7 +172,7 @@ function add_crossword_description_meta_box() {
         'display_crossword_description_meta_box',
         'crossword',
         'normal',
-        'high' 
+        'core' 
     );
 }
 add_action('add_meta_boxes', 'add_crossword_description_meta_box');
@@ -247,10 +247,6 @@ function exclude_private_crosswords($query) {
     }
 }
 add_action('pre_get_posts', 'exclude_private_crosswords');
-
-
-
-
 
 
 function crossword_save_ajax_meta_box_data_new() {

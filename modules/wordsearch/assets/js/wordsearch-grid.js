@@ -1088,7 +1088,8 @@ jQuery(document).ready(function ($) {
       // Add a click handler to the close button.
       const closeBtn = document.getElementById("closeModal");
       if (closeBtn) {
-        closeBtn.onclick = () => {
+        closeBtn.onclick = (event) => {
+          event.preventDefault();
           // Fade out the modal
           modal.style.opacity = 0;
           setTimeout(() => {
