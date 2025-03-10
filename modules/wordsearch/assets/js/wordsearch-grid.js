@@ -474,11 +474,7 @@ jQuery(document).ready(function ($) {
           const x = col * cellSize + cellSize * 0.5;
           const y = row * cellSize + cellSize * 0.5;
           const textObj = scene.add
-            .text(x, y, letter, {
-              fontFamily: "Arial",
-              fontSize: `${cellSize * 0.6}px`,
-              color: "#000",
-            })
+            .text(x, y, letter, finalStyle)
             .setOrigin(0.5);
           // Ensure no stroke/shadow if previously set
           textObj.setStroke(fontColor, 0); // stroke color + thickness=0
@@ -850,11 +846,7 @@ jQuery(document).ready(function ($) {
         const y = row * cellSize + cellSize * 0.5;
         const fontSize = Math.floor(cellSize * 0.6);
         const letterObj = scene.add
-          .text(x, y, gridMatrix[row][col].letter, {
-            fontFamily: "Arial",
-            fontSize: `${fontSize}px`,
-            color: "#000",
-          })
+          .text(x, y, gridMatrix[row][col].letter, finalStyle)
           .setOrigin(0.5);
         letterTexts[row][col] = letterObj;
       }
