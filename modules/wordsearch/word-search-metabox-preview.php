@@ -10,6 +10,15 @@ include_once plugin_dir_path(__FILE__) . '/wordsearch-grid-shortcode.php';
 function enqueue_wordsearch_metabox_preview_assets( $hook ) {
     // Check if we are on the WordSearch post edit screen.
     $screen = get_current_screen();
+
+        // Fetch the filled cell background color with a default value
+        $grid_bg_color = get_option('kw_grid_bg_color', '#808080a1');
+        $higlightedCellTextColor = get_option('kw_highlight_cell_text_color', '#d4edda');
+        $lineColor = get_option('kw_wordsearch_line_color', 'rgba(0, 123, 255, 0.8)');
+        $gridTextColor = get_option('kw_grid_text_font_color', '#000');
+        // error_log("color" . print_r($gridTextColor , true));
+        $gridTextFontFamily = get_option('kw_grid_text_font_family', 'Roboto');
+
     if ( $screen && $screen->post_type === 'wordsearch' && 
          ( $hook === 'post-new.php' || $hook === 'post.php' ) ) {
         
@@ -50,6 +59,9 @@ function enqueue_wordsearch_metabox_preview_assets( $hook ) {
         wp_localize_script( 'wordsearch-grid', 'pluginURL', array(
             'url' => plugin_dir_url( __FILE__ )
         ) );
+
+        // Initialize sanitized_entries as an empty array.
+        $sanitized_entries = [];
         
         if ( isset( $_COOKIE['wordsearch_entries'] ) && ! empty( $_COOKIE['wordsearch_entries'] ) ) {
             $raw_data = wp_unslash( $_COOKIE['wordsearch_entries'] );
@@ -69,21 +81,32 @@ function enqueue_wordsearch_metabox_preview_assets( $hook ) {
         // Optionally, if you need to pass word entries or other localized data:
         }
     }
-        wp_localize_script( 'wordsearch-grid', 'frontendData', array(
-            'entries' => json_encode( $sanitized_entries ),
-            // 'containerWidth' => "65%",
-            'maximunGridSize' => 10,
-            'nonce'   => wp_create_nonce( 'wordsearch_nonce' )
-        ) );
+    wp_localize_script( 'wordsearch-grid', 'frontendData', array(
+      'entries'          => json_encode($sanitized_entries),
+      'maximunGridSize'  => 10,
+      'shuffleElement'   => 'shuffleButton',
+      'checkBoxElement'  => 'toggle-checkbox',
+      'gridStyles'       => array( 
+          'fontColor'              => esc_attr( $gridTextColor ),
+          'fontFamily'             => esc_attr( $gridTextFontFamily ),
+          'bgColor'                => esc_attr( $grid_bg_color ),
+          'higlightedCellTextColor'=> esc_attr( $higlightedCellTextColor ),
+          'lineColor'              => esc_attr( $lineColor ),
+      )
+  ));
     }
 }
 add_action( 'admin_enqueue_scripts', 'enqueue_wordsearch_metabox_preview_assets' );
 
 // Register the meta box for the 'wordsearch' post type.
 function add_wordsearch_preview_meta_box() {
+   // Retrieve the meta value for the full view container label, or fall back to the default
+   $default_label = __('Preview Word Search', 'wp-quiz-plugin');
+   $meta_label = get_option('kw_wordsearch_admin_full_view_container_label', $default_label);
+   
     add_meta_box(
         'wordsearch_preview_meta_box',                // Unique ID.
-        'Preview Search Word',                // Meta box title.
+        esc_html__($meta_label, 'wp-quiz-plugin'), // Use the retrieved label as the meta box title
         'render_wordsearch_preview_meta_box', // Callback to render the meta box.
         'wordsearch',                         // Post type.
         'normal',                             // Context.
@@ -93,10 +116,33 @@ function add_wordsearch_preview_meta_box() {
 add_action('add_meta_boxes', 'add_wordsearch_preview_meta_box');
 
 
+
 // Render the preview meta box content.
 function render_wordsearch_preview_meta_box($post) {
+$default_show_answers_label = __('Show Answers', 'wp-quiz-plugin');
+$show_answer_label = get_option('kw_wordsearch_admin_show_answers_checkbox_label', $default_show_answers_label);
+$default_shuffle_button_label = __('Shuffle', 'wp-quiz-plugin');
+$shuffle_label =  get_option('kw_wordsearch_admin_shuffle_button_label', $default_shuffle_button_label);
+$shuffle_bg_color = get_option('kw_wordsearch_admin_shuffle_button_color', '#0073aa');
+$shuffle_text_color = get_option('kw_wordsearch_admin_shuffle_button_text_color', '#ffffff');
+
+  
+  // Fallback for the shuffle label
     ?>
     <div id="wordsearch-preview-container">
+    <div class="button-checkbox-container">
+    <label class="checkbox-label">
+    <input type="checkbox" class="toggle-checkbox" id="toggle-answers">
+    <?php echo esc_html__($show_answer_label); ?>
+    </label>
+
+    <button id="shuffleButton" class="shuffle-button" style="background-color: <?php echo esc_attr($shuffle_bg_color); ?>; color: <?php echo esc_attr($shuffle_text_color); ?>;">
+    <?php echo esc_html__($shuffle_label); ?>
+    </button>
+
+  <!-- <button id="shuffleButton" class="shuffle-button" >Shuffle</button> -->
+
+</div>
       <!-- Empty state message; hidden by default -->
       <p id="empty-message" style="text-align: center; display: none;">
         No word search entries found. 
@@ -109,6 +155,7 @@ function render_wordsearch_preview_meta_box($post) {
 
     <script>
       (function(){
+
           // Helper: Retrieve a cookie by name.
           function getCookie(name) {
             var nameEQ = name + "=";

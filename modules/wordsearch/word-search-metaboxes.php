@@ -1,10 +1,15 @@
 <?php
 include_once plugin_dir_path(__FILE__) . '/wordsearch-grid-shortcode.php';
+
+
+
 // Register the meta box for the 'wordsearch' post type.
 function add_wordsearch_meta_box() {
+    // Retrieve the meta value for the container label, or fall back to the default
+$meta_label = get_option('kw_wordsearch_admin_add_words_container_label',  __('Add Words', 'wp-quiz-plugin'));
     add_meta_box(
         'wordsearch_meta_box',                   // Unique ID for the meta box.
-        'Add Words',                             // Title of the meta box.
+        esc_html__( $meta_label, 'wp-quiz-plugin' ), // Use the retrieved label
         'render_wordsearch_meta_box',            // Callback function to render the meta box.
         'wordsearch',                            // Post type where it should appear.
         'normal',                                // Context.
@@ -13,7 +18,7 @@ function add_wordsearch_meta_box() {
 }
 add_action('add_meta_boxes', 'add_wordsearch_meta_box');
 
-// Enqueue the JavaScrossword-image-previewipt file for the meta box.
+// Enqueue the JavaSwordsearch-image-previewipt file for the meta box.
 function enqueue_style_script( $hook ) {
     $screen = get_current_screen();
     if ( $screen && $screen->post_type === 'wordsearch' && ($hook === 'post-new.php' || $hook === 'post.php') ) {
@@ -29,6 +34,14 @@ function enqueue_style_script( $hook ) {
 add_action('admin_enqueue_scripts', 'enqueue_style_script');
 
 function wordsearch_enqueue_assets() {
+
+            // Fetch the filled cell background color with a default value
+        $grid_bg_color = get_option('kw_grid_bg_color', '#808080a1');
+        $higlightedCellTextColor = get_option('kw_highlight_cell_text_color', '#d4edda');
+        $lineColor = get_option('kw_wordsearch_line_color', 'rgba(0, 123, 255, 0.8)');
+        $gridTextColor = get_option('kw_grid_text_font_color', '#000');
+        // error_log("color" . print_r($gridTextColor , true));
+        $gridTextFontFamily = get_option('kw_grid_text_font_family', 'Roboto');
 
     // Enqueue jQuery if not already loaded.
     wp_enqueue_script( 'jquery' );
@@ -90,14 +103,25 @@ function wordsearch_enqueue_assets() {
             'entries' => json_encode( $word_entries ),
             // 'containerWidth' => "55%",
             'maximunGridSize' => 10,
-            'nonce'   => wp_create_nonce( 'wordsearch_nonce' )
-        ) );
+            'nonce'   => wp_create_nonce( 'wordsearch_nonce' ),
+            'gridStyles'       => array( 
+                'fontColor'         => esc_attr( $gridTextColor ),
+                'fontFamily'        => esc_attr( $gridTextFontFamily ),
+                'bgColor'           => esc_attr( $grid_bg_color ),
+                'higlightedCellTextColor'=> esc_attr( $higlightedCellTextColor ),
+                'lineColor'         => esc_attr( $lineColor ),
+            )
+
+        ));
+
+
     } else {
         // If not on a single WordSearch post, you can pass default data.
         wp_localize_script( 'wordsearch-grid', 'wordSearchData', array(
             'entries' => '[]',
             'nonce'   => wp_create_nonce( 'wordsearch_nonce' )
         ) );
+
     }
 }
 add_action( 'wp_enqueue_scripts', 'wordsearch_enqueue_assets' );
@@ -154,6 +178,70 @@ function save_wordsearch_meta_box_data( $post_id ) {
 }
 add_action( 'save_post', 'save_wordsearch_meta_box_data' );
 
+/**
+ * AJAX handler for saving Wordsearch data.
+ */
+function save_wordsearch_ajax_handler() {
+    // 1. Security: Verify the AJAX nonce.
+    check_ajax_referer('wordsearch_ajax_nonce', 'security');
+
+    // 2. Validate the post ID and user capabilities.
+    $post_id = isset($_POST['post_id']) ? intval($_POST['post_id']) : 0;
+    if (!$post_id) {
+        wp_send_json_error(array('message' => 'Invalid post ID.'));
+    }
+    if (!current_user_can('edit_post', $post_id)) {
+        wp_send_json_error(array('message' => 'You do not have permission to edit this post.'));
+    }
+
+    // 3. Process and save the word/clue data (here we only have 'wordText' + 'imageUrl')
+    if (isset($_POST['word_seach_data']) && is_array($_POST['word_seach_data'])) {
+        $entries = array();
+        foreach ($_POST['word_seach_data'] as $entry) {
+            $word_text = isset($entry['wordText']) ? trim($entry['wordText']) : '';
+            if (!empty($word_text)) {
+                $entries[] = array(
+                    'id' => sanitize_text_field($entry['id'] ?? uniqid('ws_', true)),
+                    'wordText' => sanitize_text_field($word_text),
+                    'imageUrl' => esc_url($entry['imageUrl'] ?? ''),
+                );
+            }
+        }
+
+        if (!empty($entries)) {
+            update_post_meta($post_id, 'word_search_entries', $entries);
+        } else {
+            delete_post_meta($post_id, 'word_search_entries');
+        }
+    } else {
+        // If no data was passed, remove the meta.
+        delete_post_meta($post_id, 'word_search_entries');
+    }
+
+    // 4. (Optional) If you have additional grid data or other structures, handle them here
+    // E.g. if ( isset( $_POST['wordsearch_grid_data'] ) ) { ...similar pattern... }
+
+    // Log that the data was saved successfully.
+    error_log( "Wordsearch data saved successfully via AJAX for post {$post_id}" );
+    
+    // --- New Code to Verify Saved Data ---
+    // Retrieve the saved meta data and log it.
+    
+    $storedData = get_post_meta( $post_id, 'word_search_entries', true );
+        // Send response with the saved entries
+        wp_send_json_success( array( 
+            'message' => 'Word Search Entries saved successfully.',
+            'data' => $storedData 
+        ) );
+    
+    // 5. Send a success response.
+    wp_send_json_success( array( 'message' => 'Wordsearch saved successfully.' ) );
+
+}
+add_action('wp_ajax_save_wordsearch_ajax', 'save_wordsearch_ajax_handler');
+
+
+
 
 // Render the meta box content.
 function render_wordsearch_meta_box($post) {
@@ -168,18 +256,17 @@ function render_wordsearch_meta_box($post) {
     }
 
 
-    // Retrieve button settings.
-    
-    
-    $default_add_word_label   = __('Add a Word', 'wp-quiz-plugin');
-    $add_word_label           = get_option('kw_wordsearch_admin_add_word_button_label', $default_add_word_label);
-    $add_word_bg_color        = get_option('kw_wordsearch_admin_add_word_button_color', '#0073aa');
-    $add_word_text_color      = get_option('kw_wordsearch_admin_add_word_button_text_color', '#ffffff');
+// Retrieve settings for Add Word and Clear List buttons
+// Retrieve settings for Add Word and Clear List buttons
+$default_add_word_label = __('Add a Word', 'wp-quiz-plugin');
+$add_word_label = get_option('kw_wordsearch_admin_add_word_button_label', $default_add_word_label);
+$add_word_bg_color = get_option('kw_wordsearch_admin_add_word_button_color', '#0073aa');
+$add_word_text_color = get_option('kw_wordsearch_admin_add_word_button_text_color', '#ffffff');
 
-    $default_clear_list_label = __('Clear List', 'wp-quiz-plugin');
-    $clear_list_label         = get_option('kw_wordsearch_admin_clear_list_button_label', $default_clear_list_label);
-    $clear_list_bg_color      = get_option('kw_wordsearch_admin_clear_list_button_color', '#0073aa');
-    $clear_list_text_color    = get_option('kw_wordsearch_admin_clear_list_button_text_color', '#ffffff');
+$default_clear_list_label = __('Clear List', 'wp-quiz-plugin');
+$clear_list_label = get_option('kw_wordsearch_admin_clear_list_button_label', $default_clear_list_label);
+$clear_list_bg_color = get_option('kw_wordsearch_admin_clear_list_button_color', '#0073aa');
+$clear_list_text_color = get_option('kw_wordsearch_admin_clear_list_button_text_color', '#ffffff');
     ?>
 
 <div id="wordsearch-container">
@@ -234,13 +321,13 @@ function render_wordsearch_meta_box($post) {
 
         <div class="wordsearch-add-button-container">
             <button type="button" id="add-wordsearch-button" 
-                    style="border:none; background-color: <?php echo esc_attr($add_word_bg_color); ?>; color: <?php echo esc_attr($add_word_text_color); ?>;">
-                <?php echo esc_html($add_word_label); ?>
+                    style="background-color: <?php echo esc_attr($add_word_bg_color); ?>; color: <?php echo esc_attr($add_word_text_color); ?>;">
+                <?php echo esc_html__($add_word_label); ?>
             </button>
             
             <button type="button" id="clear-wordsearch-list-button" 
-                    style="border:none; background-color: <?php echo esc_attr($clear_list_bg_color); ?>; color: <?php echo esc_attr($clear_list_text_color); ?>;">
-                <?php echo esc_html($clear_list_label); ?>
+                    style="background-color: <?php echo esc_attr($clear_list_bg_color); ?>; color: <?php echo esc_attr($clear_list_text_color); ?>;">
+                <?php echo esc_html__($clear_list_label); ?>
             </button>
             <!-- Hidden field stores the JSON-encoded word entries -->
             <input type="hidden" id="word_search_entries" name="word_search_entries" 
@@ -273,7 +360,8 @@ $entry_count = is_array($word_entries) ? count($word_entries) : 0;
              name="wordsearch_words[{{index}}][word]" 
              placeholder="<?php esc_attr_e('Word', 'wp-quiz-plugin'); ?>" 
              value="" />
-      <input type="hidden" id="word_search_entries" name="word_search_entries" />
+             <input type="hidden" name="wordsearch_words[{{index}}][uniqueId]" value="" />
+      <!-- <input type="hidden" id="word_search_entries" name="word_search_entries" /> -->
       <div class="actions">
         <div class="wordsearch-image-preview wordsearch-image-preview-{{uniqueId}}">
           <!-- Image preview will be appended here if needed -->
