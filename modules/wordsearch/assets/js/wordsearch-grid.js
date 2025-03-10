@@ -8,12 +8,21 @@ jQuery(document).ready(function ($) {
   let previousGridSize = 0;
   // Global variable to hold the timer ID.
   window.wordsearchGridTimerId = null;
+  // Global timer ID for grid updates (or game clock)
+  let gameTimerID = null;
+  // Global variable to store elapsed time (in seconds, for example)
+  let elapsedTime = 0;
+  let customStyles = [];
 
   if (typeof wordSearchData !== "undefined") {
     localizedEntries = JSON.parse(wordSearchData.entries || "[]");
   }
 
   let cookieEntries = JSON.parse(getCookie("wordsearch_entries") || "[]");
+  customStyles =
+    typeof wordSearchData !== "undefined"
+      ? wordSearchData["gridStyles"]
+      : frontendData["gridStyles"];
 
   // Store previous counts to detect changes.
   // let previousLocalizedCount = localizedEntries.length;
@@ -228,6 +237,9 @@ jQuery(document).ready(function ($) {
     // (3) Clear the DOM container so it's fresh
     const containerEl = document.getElementById("game-container");
     if (containerEl) {
+      containerEl.style.backgroundColor = customStyles
+        ? customStyles["bgColor"]
+        : "#808080a1";
       containerEl.innerHTML = "";
     }
 
@@ -284,10 +296,9 @@ jQuery(document).ready(function ($) {
 
   // Start the wait-for-WordSearch logic.
   // waitForWordSearch();
-
   let foundWords = [];
-  let previousWidth = null;
-  let previousHeight = null;
+  let showAnswers = false;
+  let checkBoxElement = null;
 
   function createWordSearchGame({
     containerId = "game-container",
@@ -333,6 +344,13 @@ jQuery(document).ready(function ($) {
     const gridMatrix = ws.matrix;
     const gridSize = mergedPuzzleOptions.gridSize;
     const wordList = mergedPuzzleOptions.words;
+    // Directions you want to check (example: left->right, top->down, diagonal down-right, diagonal down-left)
+    const SOLVER_DIRECTIONS = [
+      { name: "W", deltaRow: 0, deltaCol: 1 }, // horizontal
+      { name: "N", deltaRow: 1, deltaCol: 0 }, // vertical
+      { name: "WN", deltaRow: 1, deltaCol: 1 }, // diagonal down-right
+      { name: "EN", deltaRow: 1, deltaCol: -1 }, // diagonal down-left
+    ];
 
     // Step B: Calculate the dynamic canvas size
     const { width: dynamicWidth, height: dynamicHeight } = getDynamicCanvasSize(
@@ -405,11 +423,15 @@ jQuery(document).ready(function ($) {
     function create() {
       const scene = this;
       scene.letterTexts = letterTexts;
-
+      const fontColor = customStyles ? customStyles["fontColor"] : "#000";
+      const fontFamily = customStyles ? customStyles["fontFamily"] : "Roboto";
       // Update grid size for the first time (using mergedPuzzleOptions.gridSize)
       updateGridSize(mergedPuzzleOptions.gridSize); // This calls resizeGame internally
 
       if (this.cache.audio.exists("wordFound")) {
+        if (this.wordFoundSound) {
+          this.wordFoundSound.destroy(); // Destroy any existing instance
+        }
         this.wordFoundSound = this.sound.add("wordFound");
       } else {
         console.error("Sound file is missing from the cache!");
@@ -426,8 +448,23 @@ jQuery(document).ready(function ($) {
 
       // Step G: Calculate cellSize from dynamic dimensions
       const cellSize = Math.min(dynamicWidth, dynamicHeight) / gridSize;
-
+      const fontSize = Math.floor(cellSize * 0.5);
       letterTexts = [];
+      const finalStyle = {
+        fontFamily: fontFamily,
+        fontSize: `${fontSize}px`,
+        color: fontColor,
+        stroke: fontColor,
+        strokeThickness: 0,
+        shadow: {
+          offsetX: 0,
+          offsetY: 0,
+          color: fontColor,
+          blur: 0,
+          stroke: false,
+          fill: false,
+        },
+      };
 
       // Render grid letters
       for (let row = 0; row < gridSize; row++) {
@@ -443,6 +480,10 @@ jQuery(document).ready(function ($) {
               color: "#000",
             })
             .setOrigin(0.5);
+          // Ensure no stroke/shadow if previously set
+          textObj.setStroke(fontColor, 0); // stroke color + thickness=0
+          textObj.setShadow(0, 0, fontColor, 0, false, false); // Disable any shadow
+          textObj.setColor(fontColor); // Re-apply solid color
           textObj.setDepth(10);
           textObj.setData("row", row);
           textObj.setData("col", col);
@@ -461,6 +502,9 @@ jQuery(document).ready(function ($) {
           gridMatrix
         );
       }
+
+      // Start a timer only if it's not already running
+      startGameTimer();
 
       // POINTER EVENTS
       scene.input.on("pointerdown", (pointer) => {
@@ -496,6 +540,9 @@ jQuery(document).ready(function ($) {
         const currentX = Phaser.Math.Clamp(pointer.x, 0, dynamicCanvas.width);
         const currentY = Phaser.Math.Clamp(pointer.y, 0, dynamicCanvas.height);
         const tolerance = 30;
+        // const lineColor = customStyles
+        //   ? customStyles["lineColor"]
+        //   : "rgba(0, 123, 255, 0.8)";
 
         // Restriction logic example:
         if (currentY < startPoint.y - tolerance) {
@@ -586,6 +633,116 @@ jQuery(document).ready(function ($) {
         localOnGameReady(scene);
         window.startWordsearchGridTimer();
       }
+
+      if (typeof frontendData !== "undefined") {
+        checkBoxElement = document.getElementsByClassName(
+          frontendData.checkBoxElement
+        );
+        if (checkBoxElement) {
+          $(checkBoxElement).off("change"); // Remove old handlers
+          $(checkBoxElement).on("change", function () {
+            showAnswers = $(this).is(":checked");
+            console.log("Show Answers:", showAnswers);
+            if (typeof autoSolvePuzzle === "function") {
+              autoSolvePuzzle(
+                scene,
+                gridMatrix,
+                wordData,
+                persistentCanvas,
+                cellSize,
+                gridSize,
+                showAnswers
+              );
+            }
+          });
+        }
+      } else {
+        console.log("::enterd outside of conditional block");
+      }
+    }
+
+    function autoSolvePuzzle(
+      scene,
+      gridMatrix,
+      wordData,
+      persistentCanvas,
+      cellSize,
+      gridSize,
+      showAnswers
+    ) {
+      if (!showAnswers && !isAdmin) return; // If the user doesn't want answers, do nothing.
+
+      // For each word in the list
+      wordData.forEach((word) => {
+        let found = false;
+
+        // If we find it, we highlight & skip further searching
+        for (let row = 0; row < gridMatrix.length && !found; row++) {
+          for (let col = 0; col < gridMatrix[row].length && !found; col++) {
+            // Try each direction
+            for (const dir of SOLVER_DIRECTIONS) {
+              const matchedCells = checkWordInDirection(
+                gridMatrix,
+                row,
+                col,
+                word,
+                dir.deltaRow,
+                dir.deltaCol
+              );
+              if (matchedCells) {
+                foundWordsCount++;
+                // Found the word! highlight it
+                highlightWord(
+                  scene,
+                  matchedCells,
+                  persistentCanvas,
+                  cellSize,
+                  wordData,
+                  word,
+                  gridSize
+                );
+                updateWordListUI(word, foundWordsCount, wordData);
+                found = true;
+                break;
+              }
+            }
+          }
+        }
+      });
+    }
+
+    /**
+     * checkWordInDirection
+     * Attempts to match a word starting at (row, col) in the grid along
+     * the given deltas. If all letters match, returns the list of cells
+     * that form that word; otherwise returns null.
+     */
+    function checkWordInDirection(matrix, row, col, word, deltaRow, deltaCol) {
+      const maxRow = matrix.length; // Number of rows
+      const maxCol = matrix[0].length; // Number of columns
+      const lettersNeeded = word.length;
+
+      // Make sure we have enough space in this direction
+      const endRow = row + (lettersNeeded - 1) * deltaRow;
+      const endCol = col + (lettersNeeded - 1) * deltaCol;
+      if (endRow < 0 || endRow >= maxRow || endCol < 0 || endCol >= maxCol) {
+        // Out of bounds, can't fit the word in this direction
+        return null;
+      }
+
+      // Gather letters and compare
+      const matchedCells = [];
+      for (let i = 0; i < lettersNeeded; i++) {
+        const curRow = row + i * deltaRow;
+        const curCol = col + i * deltaCol;
+        if (matrix[curRow][curCol].letter !== word[i]) {
+          return null;
+        }
+        matchedCells.push({ row: curRow, col: curCol });
+      }
+
+      // If we got here, the entire word matched
+      return matchedCells;
     }
 
     function localOnGameReady(scene) {
@@ -665,6 +822,24 @@ jQuery(document).ready(function ($) {
     gameCanvas.height = newHeight;
     scene.children.removeAll();
     const cellSize = Math.min(newWidth, newHeight) / gridSize;
+    const fontSize = Math.floor(cellSize * 0.5);
+    const fontColor = customStyles ? customStyles["fontColor"] : "#000";
+    const fontFamily = customStyles ? customStyles["fontFamily"] : "Roboto";
+    const finalStyle = {
+      fontFamily: fontFamily,
+      fontSize: `${fontSize}px`,
+      color: fontColor,
+      stroke: fontColor,
+      strokeThickness: 0,
+      shadow: {
+        offsetX: 0,
+        offsetY: 0,
+        color: fontColor,
+        blur: 0,
+        stroke: false,
+        fill: false,
+      },
+    };
     for (let row = 0; row < gridSize; row++) {
       // Initialize each row if not already defined
       if (!letterTexts[row]) {
@@ -683,6 +858,25 @@ jQuery(document).ready(function ($) {
           .setOrigin(0.5);
         letterTexts[row][col] = letterObj;
       }
+    }
+  }
+
+  function startGameTimer() {
+    if (!gameTimerID) {
+      console.log("::Entered");
+      gameTimerID = setInterval(() => {
+        elapsedTime++;
+        document.getElementById("timerDisplay").innerText =
+          formatTime(elapsedTime);
+      }, 1000);
+    }
+  }
+
+  function stopGameTimer() {
+    if (gameTimerID) {
+      clearInterval(gameTimerID);
+      gameTimerID = null;
+      console.log("Timer stopped at", elapsedTime, "seconds.");
     }
   }
 
@@ -821,6 +1015,9 @@ jQuery(document).ready(function ($) {
     persistentCtx.lineWidth = strokeWidth;
     persistentCtx.strokeStyle = getRandomTransparentColor(); // Use a helper function to generate a semi-transparent color.
     persistentCtx.lineCap = "round";
+    const higlightedCellTextColor = customStyles
+      ? customStyles["higlightedCellTextColor"]
+      : "#fff";
 
     // Get the centers of the first and last cells.
     const firstCell = cells[0];
@@ -840,8 +1037,14 @@ jQuery(document).ready(function ($) {
     persistentCtx.stroke();
 
     // Play the word found sound if available.
-    if (scene.wordFoundSound) {
+    // Guard the sound play call
+    if (
+      scene.wordFoundSound &&
+      typeof scene.wordFoundSound.play === "function"
+    ) {
       scene.wordFoundSound.play();
+    } else {
+      console.warn("wordFoundSound is not available; skipping sound play.");
     }
 
     // 1. Change the letter color to white for all cells under the highlight line
@@ -854,8 +1057,8 @@ jQuery(document).ready(function ($) {
           const col = obj.getData("col"); // Assuming you stored column data
 
           if (row === cell.row && col === cell.col) {
-            obj.setColor("#FFFFFF"); // Change color to white
-            obj.setFontStyle("bold");
+            obj.setColor(higlightedCellTextColor); // Change color to white
+            // obj.setFontStyle("bold");
           }
         }
       });
@@ -890,6 +1093,15 @@ jQuery(document).ready(function ($) {
           modal.style.opacity = 0;
           setTimeout(() => {
             modal.style.display = "none";
+            // Stop timer on modal close
+            stopGameTimer();
+            // NEW CODE: Destroy the game instance if it exists and refresh the grid.
+            if (gameInstance) {
+              gameInstance.destroy(true);
+              gameInstance = null;
+            }
+            $(checkBoxElement).prop("checked", false);
+            updateWordData(); // Reinitialize the grid with current word data
           }, 300);
         };
       }
@@ -902,6 +1114,9 @@ jQuery(document).ready(function ($) {
    * animateMatch - a simple bounce animation for matched letters
    */
   function animateMatch(scene, cells, letterTexts, cellSize) {
+    const higlightedCellTextColor = customStyles
+      ? customStyles["higlightedCellTextColor"]
+      : "#fff";
     cells.forEach(({ row, col }) => {
       const letterObj = letterTexts[row][col];
       scene.tweens.add({
@@ -910,8 +1125,14 @@ jQuery(document).ready(function ($) {
         duration: 300,
         ease: "Bounce.easeOut",
         yoyo: true,
+        onUpdate: () => {
+          // NEW CODE: Continuously enforce white color during animation.
+          letterObj.setColor(higlightedCellTextColor);
+        },
         onComplete: () => {
           letterObj.setScale(1);
+          // NEW CODE: Reapply white color once animation is finished.
+          letterObj.setColor(higlightedCellTextColor);
         },
       });
     });
@@ -948,16 +1169,20 @@ jQuery(document).ready(function ($) {
   }
 
   // --- NEW: Strikes out the found word in the #wordList
-  function updateWordListUI(foundWord, foundWordsCount, wordList, wordData) {
+  function updateWordListUI(foundWord, foundWordsCount, wordList) {
     foundWord = foundWord ? foundWord.toLowerCase() : "";
     const foundItem = document.getElementById(`word-${foundWord}`);
     console.log("::foundItem", foundWord);
     if (foundItem) {
       foundItem.classList.add("found");
     }
+
     if (foundWordsCount === wordList.length) {
+      stopGameTimer();
+      elapsedTime = 0;
       showCompletionMessage();
     }
+    // updateWordData();
   }
 
   function computeEffectiveGridSize(wordData) {
@@ -985,4 +1210,33 @@ jQuery(document).ready(function ($) {
   //     banner.style.opacity = "1"; // in case you want a fade-in effect
   //   }
   // }
+  if (typeof frontendData !== "undefined") {
+    const shuffleElement = document.getElementById(frontendData.shuffleElement);
+    if (shuffleElement) {
+      shuffleElement.addEventListener("click", function (event) {
+        event.preventDefault();
+        stopGameTimer(); // Stop timer before destroying the game
+        if (gameInstance) {
+          gameInstance.destroy(true);
+          gameInstance = null;
+        }
+        updateWordData();
+        $(checkBoxElement).prop("checked", false);
+      });
+    }
+  } else {
+    console.log("::enterd outside of conditional block");
+  }
+
+  // Helper function to format seconds as hh:mm:ss
+  function formatTime(seconds) {
+    const hrs = Math.floor(seconds / 3600);
+    const mins = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+    // Format with leading zeros if necessary
+    const hrsStr = hrs > 0 ? hrs + ":" : "";
+    const minsStr = (hrs > 0 && mins < 10 ? "0" : "") + mins;
+    const secsStr = (secs < 10 ? "0" : "") + secs;
+    return hrsStr + minsStr + ":" + secsStr;
+  }
 });

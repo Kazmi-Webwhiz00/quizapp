@@ -1,5 +1,7 @@
 jQuery(document).ready(function ($) {
   $("#selected_school_wordsearch").on("change", function () {
+    alert("Hello");
+
     var selectedSchool = $(this).val();
     $("#class_select_container, #subject_select_container_wordsearch").hide();
 

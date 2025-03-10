@@ -7,6 +7,10 @@
   position: relative;
 }
 
+#wordsearch-container {
+  padding: 3rem;
+}
+
 .word-number {
   margin-right: 10px;
   font-weight: bold;
@@ -21,7 +25,7 @@
 }
 
 .word-input {
-  max-width: 200px;
+  max-width: 300px;
   flex: 1;
   padding: 5px;
 }
@@ -51,10 +55,9 @@
 
 #add-wordsearch-button,
 #clear-wordsearch-list-button {
-  border: none;
-  background-color: #0073aa;
-  padding: 10px;
   border-radius: 3px;
+  background-color: #0073aa;
+  padding: 8px 10px;
   color: #fff;
   cursor: pointer;
 }

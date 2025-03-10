@@ -2,9 +2,18 @@ jQuery(document).ready(function ($) {
   // Cache selectors for performance
   var $wordsContainer = $("#wordsearch-words-container");
   var template = $("#wordsearch-word-template").html();
+  // Global array to hold all word entry objects
+  var wordEntries = [];
   // Debounce timer variable (placed in an appropriate scope)
   let debounceTimer;
   var savedEntries = entries;
+
+  // When the document receives the custom event, update the metabox accordingly.
+  $(document).on("wordsearchEntriesUpdated", function (event, updatedEntries) {
+    console.log("Updated entries received in metabox.js:", updatedEntries);
+    wordEntries = updatedEntries.data;
+    // For example, update a global variable or refresh the entries list in the DOM.
+  });
 
   function mergeSavedEntriesIntoCookie(savedEntries, cookieEntries) {
     // Create a map for cookieEntries keyed by id.
@@ -89,9 +98,6 @@ jQuery(document).ready(function ($) {
     }
     return null;
   }
-
-  // Global array to hold all word entry objects
-  var wordEntries = [];
 
   // On page load, try to get stored data from cookie "wordsearch_entries"
   var rawData = getCookie("wordsearch_entries");
@@ -315,11 +321,13 @@ jQuery(document).ready(function ($) {
           .text(index + 1 + ".");
         // Also update the name attributes if needed
       });
+      console.log("::wordEntries6", uniqueId, wordEntries);
 
       // Filter the array to remove the object with the matching id.
       wordEntries = wordEntries.filter(function (item) {
         return item.id !== uniqueId;
       });
+      console.log("::wordEntries7", wordEntries);
 
       // Update the cookie with the new array.
       if (wordEntries.length === 0) {
