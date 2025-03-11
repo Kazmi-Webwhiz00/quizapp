@@ -106,26 +106,27 @@ function crossword_enqueue_preview_assets($hook) {
 
     if ($hook === 'post.php' || $hook === 'post-new.php') {
         if ($post->post_type === 'crossword') {
-            // Enqueue the custom JavaScript file
-            wp_enqueue_script(
-                'crossword-preview-script',
-                plugin_dir_url(__FILE__) . 'assets/js/crossword-preview.js',
-                array('jquery'),
-                '1.0',
-                true
-            );
-            
-            // Localize script to pass "across" and "down" labels
-            wp_localize_script(
-                'crossword-preview-script',
-                'crosswordLabels',
-                array(
-                    'acrossLabel' => esc_html(get_option('kw_crossword_admin_across_label', __('Across', 'wp-quiz-plugin'))),
-                    'downLabel'   => esc_html(get_option('kw_crossword_admin_down_label', __('Down', 'wp-quiz-plugin'))),
-                    'filledCellColor' => esc_html(get_option('kw_crossword_admin_filled_cell_color', '#e1f5fe')),
-                    'emptyCrosswordMessage' => esc_html__('Please add some words to generate the crossword.', 'wp-quiz-plugin'),
-                )
-            );
+        // Enqueue the custom JavaScript file
+        wp_enqueue_script(
+            'crossword-preview-script',
+            plugin_dir_url( __FILE__ ) . 'assets/js/crossword-preview.js',
+            array( 'jquery' ),
+            '1.0',
+            true
+        );
+        
+        // Localize script to pass "across" and "down" labels
+        wp_localize_script(
+            'crossword-preview-script',
+            'crosswordLabels',
+            array(
+                'acrossLabel'           => esc_html( get_option( 'kw_crossword_admin_across_label', __( 'Across', 'wp-quiz-plugin' ) ) ),
+                'downLabel'             => esc_html( get_option( 'kw_crossword_admin_down_label', __( 'Down', 'wp-quiz-plugin' ) ) ),
+                'filledCellColor'       => esc_html( get_option( 'kw_crossword_admin_filled_cell_color', '#e1f5fe' ) ),
+                'emptyCrosswordMessage' => esc_html__( 'Please add some words to generate the crossword.', 'wp-quiz-plugin' ),
+                'errorMessageText'      => esc_html__( "Keep adding new words! The following words can't be included in the crossword puzzle because they do not have enough letters in common with other words:", 'wp-quiz-plugin' )
+            )
+        );
             
 
             // Enqueue the custom CSS for the crossword styling
@@ -143,7 +144,6 @@ function crossword_enqueue_preview_assets($hook) {
 
             $pdf_button_text = get_option('kw_crossword_admin_download_pdf_button_label', $default_pdf_label);
             $key_button_text = get_option('kw_crossword_admin_download_key_button_label', $default_key_label);
-
             wp_localize_script(
                 'generate-pdf-script',
                 'cross_ajax_obj',
