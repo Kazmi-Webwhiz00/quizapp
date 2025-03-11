@@ -14,6 +14,7 @@ $default_settings = [
     ],
     'download_button' => [
         'text' => __('Download', 'wp-quiz-plugin'),
+        'downloading_text' => __('Downloading...', 'wp-quiz-plugin'),
         'bg_color' => '#00796b',
         'text_color' => '#ffffff',
         'font_size' => '16px',

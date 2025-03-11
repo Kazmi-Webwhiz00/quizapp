@@ -18,6 +18,7 @@ function crossword_register_frontend_styles_settings() {
 
     // Download Button
     register_setting('kw_crossword_fe_settings', 'kw_fe_download_button_text', ['default' => __('Download', 'wp-quiz-plugin')]);
+    register_setting('kw_crossword_fe_settings', 'kw_fe_download_button_downloading_text', ['default' => __('Downloading...', 'wp-quiz-plugin')]);
     register_setting('kw_crossword_fe_settings', 'kw_fe_download_button_bg_color', ['default' => '#00796b']);
     register_setting('kw_crossword_fe_settings', 'kw_fe_download_button_text_color', ['default' => '#ffffff']);
     register_setting('kw_crossword_fe_settings', 'kw_fe_download_button_font_size', ['default' => '16px']);

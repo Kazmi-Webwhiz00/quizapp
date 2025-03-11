@@ -22,6 +22,13 @@ function load_crossword_assets_fe() {
     $clue_image_height = intval(get_option('kw_fe_clue_image_height', 150)); // Default height
     $clue_image_width = intval(get_option('kw_fe_clue_image_width', 150)); // Default width
 
+    // Get option for download button text
+    $default_download_text = __('Download', 'wp-quiz-plugin');  // Default download button text
+    $default_downloading_text = __('Downloading...', 'wp-quiz-plugin');  // Default downloading button text
+    $download_button_text = get_option('kw_fe_download_button_text', $default_download_text);
+    $downloading_button_text = get_option('kw_fe_download_button_downloading_text', $default_downloading_text);
+
+
     // Enqueue the JavaScript file
     wp_enqueue_script('fe-crossword-script', plugin_dir_url(__FILE__) . 'assets/js/fe-crossword-script.js', array('jquery'), null, true);
 
@@ -79,8 +86,8 @@ function load_crossword_assets_fe() {
         'cross_ajax_download_obj',
         array(
             'ajax_url' => admin_url('admin-ajax.php'),
-            'downloadingText' => __('Downloading...', 'wp-quiz-plugin'),
-            'pdfButtonText' => "downlaod",
+            'downloadingText' => $downloading_button_text,
+            'pdfButtonText' =>  $download_button_text,
             'strings' => array(
                 'errorMessage' => _x('An error occurred while generating the PDF.', 'FE-crossword_pdf_error', 'wp-quiz-plugin'),
                 'successMessage' => _x('PDF generated successfully.', 'FE-crossword_pdf_success', 'wp-quiz-plugin')
