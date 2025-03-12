@@ -7,7 +7,7 @@ if (!defined('ABSPATH')) {
 // Get values from options
 $api_key = get_option('kw_crossword_openai_api_key', '');
 $model = get_option('kw_crossword_openai_model', 'gpt-4o-mini');
-$max_tokens = get_option('kw_crossword_openai_max_tokens', 299);
+$max_tokens = get_option('kw_crossword_openai_max_tokens', 499);
 $temperature = get_option('kw_crossword_openai_temperature', 0.4);
 ?>
 
@@ -36,8 +36,8 @@ $temperature = get_option('kw_crossword_openai_temperature', 0.4);
     <!-- Max Tokens -->
     <div class="kw-settings-field">
         <label for="kw_crossword_openai_max_tokens"><?php esc_html_e('Max Tokens', 'wp-quiz-plugin'); ?></label>
-        <input type="number" id="kw_crossword_openai_max_tokens" name="kw_crossword_openai_max_tokens" value="<?php echo esc_attr($max_tokens); ?>" class="small-text" min="50" max="300">
-        <p class="description"><?php esc_html_e('Set the maximum number of tokens for the response (50 to 300).', 'wp-quiz-plugin'); ?></p>
+        <input type="number" id="kw_crossword_openai_max_tokens" name="kw_crossword_openai_max_tokens" value="<?php echo esc_attr($max_tokens); ?>" class="small-text" min="50" max="499">
+        <p class="description"><?php esc_html_e('Set the maximum number of tokens for the response (50 to 500).', 'wp-quiz-plugin'); ?></p>
     </div>
 
     <!-- Temperature -->
