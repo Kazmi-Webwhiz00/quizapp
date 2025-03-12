@@ -80,7 +80,7 @@ function load_crossword_assets($hook) {
             'defaultContextPrompt' => get_option('kw_crossword_context_prompt', 'Avoid using the following words:[existing_words]'),
             'defaultGenerationPrompt' => get_option(
                 'kw_crossword_generation_prompt',
-                'Generate a crossword with [number] words on the topic [topic] suitable for users aged [age]. The crossword should be created in the [language] language.'
+                "Generate a crossword with [number] words on the topic [topic] suitable for users aged [age]. The crossword should be created in the [language] language. Avoid any additional formatting such as markdown code blocks or triple backticks; provide only raw JSON output in the following format:\n\n[\n  { \"word\": \"exampleWord1\", \"clue\": \"Example clue for word 1\" },\n  { \"word\": \"exampleWord2\", \"clue\": \"Example clue for word 2\" },\n  ...\n]"
             ),
             'defaultReturnFormatPrompt' => get_option(
                 'kw_crossword_return_format_prompt',
