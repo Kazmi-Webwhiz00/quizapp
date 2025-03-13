@@ -50,7 +50,8 @@ function load_crossword_assets_fe() {
             'bodyText' => get_option('kw_crossword_success_popup_body_text', __('You have successfully completed the crossword!', 'wp-quiz-plugin')),
             'buttonText' => get_option('kw_crossword_success_popup_button_text', __('Awesome!', 'wp-quiz-plugin')),
             'iconColor' => '#00796b',
-            'buttonColor' => '#00796b',
+            'buttonColor' => get_option('kw_crossword_success_popup_button_color', '#00796b'),
+            'buttonTextColor' => get_option('kw_crossword_success_popup_button_text_color', '#fffff')
         ),
 
         // Failure Popup Settings

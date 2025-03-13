@@ -39,7 +39,7 @@ function crossword_register_frontend_styles_settings() {
     register_setting('kw_crossword_fe_settings', 'kw_fe_enable_live_word_check_button_enabled_color', ['default' => '#00796b']);
     register_setting('kw_crossword_fe_settings', 'kw_fe_enable_live_word_check_button_text_color', ['default' => '#000000']);
     register_setting('kw_crossword_fe_settings', 'kw_fe_enable_live_word_check_button_font_size', ['default' => '16px']);
-    register_setting('kw_crossword_fe_settings', 'kw_fe_enable_live_word_check_button_font_family', ['default' => 'Arial, sans-serif']);
+    register_setting('kw_crossword_fe_settings', 'kw_fe_enable_live_word_check_button_font_family', ['default' => 'Arial, sans-serif']);    
 
     // Filled Cell Background
     register_setting('kw_crossword_fe_settings', 'kw_fe_filled_cell_bg_color', ['default' => '#e1f5fe']);
@@ -76,10 +76,12 @@ function crossword_register_frontend_styles_settings() {
     register_setting('kw_crossword_fe_settings', 'kw_fe_clue_image_width', ['default' => '100']); // Default width
 
 
-     // Success Popup Settings
+     // Success Popup Settings  
      register_setting('kw_crossword_fe_settings', 'kw_crossword_success_popup_title', ['default' => __('Success!', 'wp-quiz-plugin')]);
      register_setting('kw_crossword_fe_settings', 'kw_crossword_success_popup_body_text', ['default' => __('You have successfully completed the crossword!', 'wp-quiz-plugin')]);
      register_setting('kw_crossword_fe_settings', 'kw_crossword_success_popup_button_text', ['default' => __('Close', 'wp-quiz-plugin')]);
+     register_setting('kw_crossword_fe_settings', 'kw_crossword_success_popup_button_color', ['default' => '#00796b']);
+     register_setting('kw_crossword_fe_settings', 'kw_crossword_success_popup_button_text_color', ['default' => '#fffff']);
  
      // Failure Popup Settings
      register_setting('kw_crossword_fe_settings', 'kw_crossword_failure_popup_title', ['default' => __('Are you Sure ?', 'wp-quiz-plugin')]);

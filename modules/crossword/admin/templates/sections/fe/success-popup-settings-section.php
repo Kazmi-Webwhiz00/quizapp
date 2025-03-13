@@ -9,6 +9,8 @@ $success_defaults = [
     'title' => __('Success!', 'wp-quiz-plugin'),
     'body_text' => __('You have successfully completed the crossword!', 'wp-quiz-plugin'),
     'button_text' => __('Close', 'wp-quiz-plugin'),
+    'button_color' => '#00796b',
+    'button_text_color' => '#ffffff',
 ];
 
 // Retrieve saved values or use defaults
@@ -16,6 +18,8 @@ $success_settings = [
     'title' => get_option('kw_crossword_success_popup_title', $success_defaults['title']),
     'body_text' => get_option('kw_crossword_success_popup_body_text', $success_defaults['body_text']),
     'button_text' => get_option('kw_crossword_success_popup_button_text', $success_defaults['button_text']),
+    'button_color' =>  get_option('kw_crossword_success_popup_button_color', $success_defaults['button_color']),
+    'button_text_color' => get_option('kw_crossword_success_popup_button_text_color', $success_defaults['button_text_color']),
 ];
 ?>
 
@@ -68,6 +72,30 @@ $success_settings = [
             data-default="<?php echo esc_attr($success_defaults['button_text']); ?>"
         >
         <p class="description"><?php esc_html_e('Set the text for the button in the success popup.', 'wp-quiz-plugin'); ?></p>
+    </div>
+
+        <!-- OK Button Color -->
+        <div class="kw-settings-field">
+        <label for="kw_crossword_success_popup_button_color">
+            <?php esc_html_e('Button Color', 'wp-quiz-plugin'); ?>
+        </label>
+        <input type="text" id="kw_crossword_success_popup_button_color" 
+            name="kw_crossword_success_popup_button_color" 
+            class="kw-color-picker wp-color-picker"
+            value="<?php echo esc_attr($success_settings['button_color']); ?>"
+            data-default="<?php echo esc_attr($success_defaults['button_color']); ?>">
+    </div>
+
+            <!-- OK Button Text Color -->
+            <div class="kw-settings-field">
+        <label for="kw_crossword_success_popup_button_text_color">
+            <?php esc_html_e('Button Text Color', 'wp-quiz-plugin'); ?>
+        </label>
+        <input type="text" id="kw_crossword_success_popup_button_text_color" 
+            name="kw_crossword_success_popup_button_text_color" 
+            class="kw-color-picker wp-color-picker"
+            value="<?php echo esc_attr($success_settings['button_text_color']); ?>"
+            data-default="<?php echo esc_attr($success_defaults['button_text_color']); ?>">
     </div>
 
     <!-- Reset Button -->
