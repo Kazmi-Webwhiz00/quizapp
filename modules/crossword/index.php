@@ -67,7 +67,9 @@ function load_crossword_assets($hook) {
             'model' => get_option('kw_crossword_openai_model', 'gpt-4o-mini'),
             'maxTokens' => (int) get_option('kw_crossword_openai_max_tokens', 50),  // Cast to integer
             'temperature' => (float) get_option('kw_crossword_openai_temperature', 0.5),  // Cast to float
-
+            'responseFormat' => [
+                'type' => 'json_object', 
+                ], 
             'maxNumberOfWords' => get_option('kw_genreate_with_ai_max_limit', 10),
             // AJAX URL for WordPress admin-ajax
             'ajaxUrl' => admin_url('admin-ajax.php'),

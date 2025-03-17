@@ -181,6 +181,7 @@ jQuery(document).ready(function ($) {
         },
       ],
       max_tokens: parseInt(wpQuizPlugin.maxTokens),
+      response_format: wpQuizPlugin.responseFormat,
       temperature: parseFloat(wpQuizPlugin.temperature),
     };
 
