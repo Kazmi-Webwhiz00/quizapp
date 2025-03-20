@@ -138,10 +138,13 @@ jQuery(document).ready(function ($) {
     ) {
       // No valid entries: clear the cookie.
       setCookie("wordsearch_entries", "", 1);
+      $(document).trigger("wordsearchEntriesUpdated", { data: [] });
       return;
     }
     // Otherwise, update the cookie with the current wordEntries.
     setCookie("wordsearch_entries", JSON.stringify(wordEntries), 1); // expires in 1 day
+    // Trigger the event with the updated entries.
+    $(document).trigger("wordsearchEntriesUpdated", { data: wordEntries });
   }
 
   // Function to add a new word entry using the template
@@ -149,20 +152,14 @@ jQuery(document).ready(function ($) {
     // Get the current number of word entries in the container
     var index = $wordsContainer.children(".add-word-container").length;
 
-    // Increment the global entry count
-    entryNumber++;
-
-    // Set the display number for the new entry
-    var number = entryNumber;
+    // Use the index for the display number (instead of a separate counter)
+    var number = index + 1;
 
     // Generate a new unique ID for this entry
     var uniqueId = generateUniqueId();
 
     // Update the id variable with the new uniqueId
     id = uniqueId;
-
-    // Reassign number using the updated entryCount (optional, as number is already set)
-    number = entryNumber;
 
     // Replace placeholders in the template with actual values
     var newEntryHtml = template
@@ -308,35 +305,43 @@ jQuery(document).ready(function ($) {
   });
 
   // Remove an entry.
+  // Remove an entry.
   $wordsContainer.on("click", ".remove-word", function () {
-    if (confirm("Are you sure you want to remove this word?")) {
-      var $wordDiv = $(this).closest(".add-word-container");
-      var uniqueId = $wordDiv.data("unique-id");
-      // Remove the element from the DOM.
-      $wordDiv.remove();
-      $wordsContainer.children(".add-word-container").each(function (index) {
-        $(this).attr("data-index", index);
-        $(this)
-          .find(".word-number")
-          .text(index + 1 + ".");
-        // Also update the name attributes if needed
-      });
-      console.log("::wordEntries6", uniqueId, wordEntries);
+    var $wordDiv = $(this).closest(".add-word-container");
+    var uniqueId = $wordDiv.data("unique-id");
 
-      // Filter the array to remove the object with the matching id.
-      wordEntries = wordEntries.filter(function (item) {
-        return item.id !== uniqueId;
-      });
-      console.log("::wordEntries7", wordEntries);
+    // Remove the element from the DOM.
+    $wordDiv.remove();
 
-      // Update the cookie with the new array.
-      if (wordEntries.length === 0) {
-        console.log("No more entries, deleting cookie.");
-        // Delete the cookie by setting it with an expired date.
-        setCookie("wordsearch_entries", "", -1);
-      } else {
-        updateCookie();
-      }
+    // After removal, update the indices of remaining elements
+    $wordsContainer.children(".add-word-container").each(function (index) {
+      console.log("::index", index);
+      $(this).attr("data-index", index);
+      $(this)
+        .find(".word-number")
+        .text(index + 1 + ".");
+      // Also update the name attributes if needed
+    });
+
+    // If you need to keep entryNumber in sync, reset it to the actual count
+    entryNumber = $wordsContainer.children(".add-word-container").length;
+
+    console.log("::wordEntries6", uniqueId, wordEntries);
+
+    // Filter the array to remove the object with the matching id.
+    wordEntries = wordEntries.filter(function (item) {
+      return item.id !== uniqueId;
+    });
+    console.log("::wordEntries7", wordEntries);
+
+    // Update the cookie with the new array.
+    if (wordEntries.length === 0) {
+      console.log("No more entries, deleting cookie.");
+      // Delete the cookie by setting it with an expired date.
+      setCookie("wordsearch_entries", "", -1);
+      $(document).trigger("wordsearchEntriesUpdated", { data: [] });
+    } else {
+      updateCookie();
     }
   });
   // Delegate removal of word entries to dynamically added elements

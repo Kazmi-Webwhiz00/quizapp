@@ -45,7 +45,7 @@ function ws_register_ai_settings() {
         'default' => __('Generate with AI', 'wp-quiz-plugin'),
     ]);
     register_setting('kw_wordsearch_ai_settings', 'kw_generate_with_ai_max_limit_ws', [
-        'default' => 10,
+        'default' => 20,
     ]);
 
     // Add the AI Box settings section
