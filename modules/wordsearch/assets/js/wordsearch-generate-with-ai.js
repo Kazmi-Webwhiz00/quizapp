@@ -293,6 +293,7 @@ jQuery(document).ready(function ($) {
             $.fn.highlightPublishButton();
           } catch (error) {
             console.error("Error parsing response (wordsearch):", error);
+            $(".kw-loading").hide();
             Swal.fire(
               wpQuizPlugin.wsStrings.errorTitle,
               wpQuizPlugin.wsStrings.errorMessage,

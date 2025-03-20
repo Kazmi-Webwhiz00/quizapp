@@ -55,7 +55,7 @@ function wordsearch_enqueue_assets() {
         "all"
     );
 
-    wp_enqueue_script('phaser', 'https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.js', array(), null, true);
+    wp_enqueue_script('phaser', plugin_dir_url(__FILE__) . './assets/js/phaser.js', array(), null, true);
 
         // Enqueue the frontend JS.
         wp_enqueue_script(
@@ -65,15 +65,6 @@ function wordsearch_enqueue_assets() {
             '1.0',
             true
         );
-
-            // Enqueue the frontend JS.
-    wp_enqueue_script(
-        'wordsearch-min',
-        plugin_dir_url(__FILE__) . '/assets/js/wordsearch.min.js',
-        array('jquery'),
-        '1.0',
-        true
-    );
 
     // Enqueue the frontend JS.
     wp_enqueue_script(

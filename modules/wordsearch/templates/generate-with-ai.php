@@ -17,7 +17,7 @@ $ws_button_color = get_option('kw_generate_with_ai_button_color_ws', '#6c9bd1');
     <input type="text" id="ws-topic" placeholder="<?php esc_attr_e('Topic', 'wp-quiz-plugin'); ?>" />
     <input type="text" id="ws-age" placeholder="<?php esc_attr_e('Age', 'wp-quiz-plugin'); ?>" />
     <input type="text" id="ws-language" placeholder="<?php esc_attr_e('Language', 'wp-quiz-plugin'); ?>" />
-    <input type="number" id="ws-words" placeholder="<?php esc_attr_e('Number', 'wp-quiz-plugin'); ?>" min="1" max="10" />
+    <input type="number" id="ws-words" placeholder="<?php esc_attr_e('Number', 'wp-quiz-plugin'); ?>" min="1" max="20" />
 
     <button type="button" id="ws-generate-ai-button" style="background-color: <?php echo esc_attr($ws_button_color); ?>; width: 100%;">
         <?php echo esc_html__($ws_button_label, 'wp-quiz-plugin' ); ?>

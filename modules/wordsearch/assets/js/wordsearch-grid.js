@@ -5,6 +5,7 @@ jQuery(document).ready(function ($) {
   let previousFinalEntriesStr = JSON.stringify([]);
   let finalEntries = [];
   let letterTexts = [];
+  let cookieEntries = [];
   let previousGridSize = 0;
   // Global variable to hold the timer ID.
   window.wordsearchGridTimerId = null;
@@ -18,69 +19,93 @@ jQuery(document).ready(function ($) {
     localizedEntries = JSON.parse(wordSearchData.entries || "[]");
   }
 
-  let cookieEntries = JSON.parse(getCookie("wordsearch_entries") || "[]");
+  // console.log("::entries", frontendData.entries);
+  if (typeof frontendData !== "undefined") {
+    cookieEntries = JSON.parse(frontendData.entries || "[]");
+  } else {
+    cookieEntries = [];
+  }
   customStyles =
     typeof wordSearchData !== "undefined"
       ? wordSearchData["gridStyles"]
       : frontendData["gridStyles"];
 
-  // Store previous counts to detect changes.
-  // let previousLocalizedCount = localizedEntries.length;
-  // let previousCookieCount = cookieEntries.length;
+  const rawData =
+    typeof frontendData !== "undefined" ? frontendData.entries : [];
+  if (rawData) {
+    try {
+      const parsed = JSON.parse(rawData);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        finalEntries = parsed;
+      }
+    } catch (e) {
+      console.log("Error parsing initial wordsearch_entries cookie:", e);
+    }
+  }
 
-  // Access container dimensions and grid sizes
-  // let adminContainerWidth = wordSearchData.containerWidth;
-  // let adminGridSize = wordSearchData.gridSize;
-  // let frontendContainerWidth = frontendData.containerWidth;
-  // let frontendGridSize = frontendData.gridSize;
+  // 2) If we have entries, initialize the puzzle right away
+  if (finalEntries.length > 0) {
+    console.log("::finalEntries", finalEntries);
+    updateFinalEntries(finalEntries); // This calls updateWordData -> which calls waitForWordSearch
+    waitForWordSearch(wordData);
+  }
+
+  if (!gameInstance) {
+    gameInstance = createWordSearchGame({
+      containerId: "game-container",
+      puzzleOptions: {
+        // start with an empty word list
+        // You can include other default puzzle options as needed.
+      },
+      onGameReady: function (scene) {
+        console.log("Default empty game instance created.");
+      },
+    });
+  }
 
   finalEntries = mergeEntries(localizedEntries, cookieEntries);
   /************************************************************
    * 1) Cookie Helpers
    ************************************************************/
   // Helper: Set a cookie
-  function setCookie(name, value, days) {
-    var expires = "";
-    if (days) {
-      var date = new Date();
-      date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
-      expires = "; expires=" + date.toUTCString();
-    }
-    document.cookie = name + "=" + (value || "") + expires + "; path=/";
-  }
+  // function setCookie(name, value, days) {
+  //   var expires = "";
+  //   if (days) {
+  //     var date = new Date();
+  //     date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+  //     expires = "; expires=" + date.toUTCString();
+  //   }
+  //   document.cookie = name + "=" + (value || "") + expires + "; path=/";
+  // }
 
   // Helper: Get a cookie
-  function getCookie(name) {
-    var nameEQ = name + "=";
-    var ca = document.cookie.split(";");
-    for (var i = 0; i < ca.length; i++) {
-      var c = ca[i].trim();
-      if (c.indexOf(nameEQ) === 0) {
-        return c.substring(nameEQ.length, c.length);
-      }
-    }
-    return null;
-  }
+  // function getCookie(name) {
+  //   var nameEQ = name + "=";
+  //   var ca = document.cookie.split(";");
+  //   for (var i = 0; i < ca.length; i++) {
+  //     var c = ca[i].trim();
+  //     if (c.indexOf(nameEQ) === 0) {
+  //       return c.substring(nameEQ.length, c.length);
+  //     }
+  //   }
+  //   return null;
+  // }
 
   // Helper: Clear a cookie by setting it to expire in the past
-  function clearCookie(name) {
-    setCookie(name, "", -1);
-  }
+  // function clearCookie(name) {
+  //   setCookie(name, "", -1);
+  // }
 
   // 2) Merge them for the first time
   // finalEntries = mergeEntries(localizedEntries, cookieEntries);
 
   // Determine context first
   const isAdmin = typeof wordSearchData !== "undefined";
-  const containerWidth = isAdmin
-    ? wordSearchData.containerWidth
-    : frontendData.containerWidth;
-  const maximunGridSize = isAdmin
-    ? wordSearchData.maximunGridSize
-    : frontendData.maximunGridSize;
 
   // 3) Initialize the puzzle with whatever we have
   if (finalEntries.length > 0) {
+    console.log("::finalEntries", finalEntries);
+
     updateWordData(); // This will create the game
   } else {
     console.log("No initial finalEntries. Waiting for new entries...");
@@ -89,97 +114,69 @@ jQuery(document).ready(function ($) {
   /************************************************************
    * 2) Clear Cookie on "Add New WordSearch" Page
    ************************************************************/
-  if (window.location.href.indexOf("post-new.php") !== -1) {
-    clearCookie("wordsearch_entries");
-    console.log("Cleared cookie: wordsearch_entries");
-  }
+  // if (window.location.href.indexOf("post-new.php") !== -1) {
+  //   clearCookie("wordsearch_entries");
+  //   console.log("Cleared cookie: wordsearch_entries");
+  // }
 
-  // Periodically check for changes
-  function startGridTimer() {
-    window.wordsearchGridTimerId = setInterval(() => {
-      let hasChanged = false;
-      if (typeof wordSearchData !== "undefined" && wordSearchData.entries) {
-        try {
-          const newLocalizedEntries = JSON.parse(wordSearchData.entries);
-          if (
-            JSON.stringify(newLocalizedEntries) !==
-            JSON.stringify(localizedEntries)
-          ) {
-            localizedEntries = newLocalizedEntries;
-            hasChanged = true;
-          }
-        } catch (e) {
-          console.error("Error parsing localized data:", e);
-        }
-      }
+  // Instead, listen for word entry updates via a custom event.
+  $(document).on("wordsearchEntriesUpdated", function (event, updatedEntries) {
+    console.log("Updated entries received in game via event:", updatedEntries);
+    // Function to try rendering the grid
+    // Check if WordSearch library and container are ready
+    //     let hasChanged = false;
+    if (typeof wordSearchData !== "undefined" && wordSearchData.entries) {
       try {
-        const rawCookieData = getCookie("wordsearch_entries");
-        let newCookieEntries = [];
-        newCookieEntries = rawCookieData ? JSON.parse(rawCookieData) : [];
-
+        const newLocalizedEntries = JSON.parse(wordSearchData.entries);
         if (
-          JSON.stringify(newCookieEntries) !== JSON.stringify(cookieEntries)
+          JSON.stringify(newLocalizedEntries) !==
+          JSON.stringify(localizedEntries)
         ) {
-          cookieEntries = newCookieEntries;
+          localizedEntries = newLocalizedEntries;
           hasChanged = true;
         }
       } catch (e) {
-        console.error("Error parsing cookie data:", e);
+        console.error("Error parsing localized data:", e);
       }
+    }
+    try {
+      let newCookieEntries = [];
+      newCookieEntries = updatedEntries.data ? updatedEntries.data : [];
 
-      if (hasChanged) {
-        const merged = mergeEntries(localizedEntries, cookieEntries);
-        const mergedStr = merged ? JSON.stringify(merged) : [];
-        if (merged.length === 0) {
-          finalEntries = [];
-          updateFinalEntries([]);
-          clearInterval(window.wordsearchGridTimerId); // Stop the timer.
-          window.wordsearchGridTimerId = null;
-        } else if (mergedStr !== previousFinalEntriesStr) {
-          previousFinalEntriesStr = mergedStr;
+      if (newCookieEntries !== cookieEntries) {
+        cookieEntries = newCookieEntries;
+        hasChanged = true;
+      }
+    } catch (e) {
+      console.error("Error parsing cookie data:", e);
+    }
+    if (hasChanged) {
+      const merged = mergeEntries(localizedEntries, cookieEntries);
+      const mergedStr = merged ? JSON.stringify(merged) : [];
+      if (merged.length === 0) {
+        finalEntries = [];
+        updateFinalEntries([]);
+      } else if (mergedStr !== previousFinalEntriesStr) {
+        previousFinalEntriesStr = mergedStr;
+        if (!gameInstance) {
           updateFinalEntries(merged);
-          // ✅ Update grid size dynamically after merging new words
-          if (
-            gameInstance &&
-            gameInstance.scene &&
-            gameInstance.scene.scenes[0]
-          ) {
-            const scene = gameInstance.scene.scenes[0];
-            if (scene.letterTexts && scene.letterTexts.length > 0) {
-              updateGridBasedOnWords(merged, scene, scene.letterTexts);
-            } else {
-              console.warn("letterTexts not ready; postponing grid update.");
-              // Optionally, schedule a delayed call:
-              // setTimeout(() => {
-              if (scene.letterTexts && scene.letterTexts.length > 0) {
+        } else {
+          // Game instance exists. Update the entire grid.
+          updateFinalEntries(merged);
+          const scene = gameInstance.scene.scenes[0];
+          if (scene && scene.letterTexts && scene.letterTexts.length > 0) {
+            updateGridBasedOnWords(merged, scene, scene.letterTexts);
+          } else {
+            setTimeout(() => {
+              if (scene && scene.letterTexts && scene.letterTexts.length > 0) {
                 updateGridBasedOnWords(merged, scene, scene.letterTexts);
               }
-              // }, 500);
-            }
+            }, 500);
           }
         }
       }
-    }, 1000);
-  }
-
-  // Expose a global function to start the timer only if it's not already running.
-  window.startWordsearchGridTimer = function () {
-    if (!window.wordsearchGridTimerId) {
-      startGridTimer();
-      console.log("Timer started.");
     }
-  };
-
-  // Expose a function to stop the timer manually.
-  window.stopWordsearchGridTimer = function () {
-    if (window.wordsearchGridTimerId) {
-      clearInterval(window.wordsearchGridTimerId);
-      window.wordsearchGridTimerId = null;
-      console.log(
-        "wordsearchGridTimer has been stopped via window.stopWordsearchGridTimer()."
-      );
-    }
-  };
+  });
 
   /**
    * Merges two arrays of objects by unique 'id'.
@@ -237,20 +234,25 @@ jQuery(document).ready(function ($) {
     // (3) Clear the DOM container so it's fresh
     const containerEl = document.getElementById("game-container");
     if (containerEl) {
-      containerEl.style.backgroundColor = customStyles
-        ? customStyles["bgColor"]
-        : "#808080a1";
+      // containerEl.style.backgroundColor = customStyles
+      //   ? customStyles["bgColor"]
+      //   : "#808080a1";
+      containerEl.style.backgroundColor = "#f5e9d1";
+      containerEl.style.borderRadius = "8px";
+      containerEl.style.boxShadow = "0 4px 12px rgba(0,0,0,0.1)";
       containerEl.innerHTML = "";
     }
 
     // (4) Now create a fresh puzzle if we have words
     if (wordData.length > 0) {
+      console.log("::finalEntries1");
       waitForWordSearch(wordData);
     } else {
     }
   }
 
   function waitForWordSearch(wordData, retries = 5) {
+    console.log("::Game");
     // First, check if wordData is available and an array
     if (!Array.isArray(wordData) || wordData.length === 0) {
       console.log("No wordData found. Skipping puzzle creation...");
@@ -269,10 +271,14 @@ jQuery(document).ready(function ($) {
     // Compute gridSize dynamically
     const effectiveGridSize = computeEffectiveGridSize(wordData);
     previousGridSize = effectiveGridSize ? effectiveGridSize : 0;
+    if (gameInstance) {
+      gameInstance.destroy(true);
+      gameInstance = null;
+    }
     // Once both wordEntries and WordSearch are available, initialize the game.
     gameInstance = createWordSearchGame({
       containerId: "game-container",
-      containerWidth: containerWidth,
+      // containerWidth: containerWidth,
       puzzleOptions: {
         gridSize: effectiveGridSize,
         words: wordData,
@@ -303,7 +309,7 @@ jQuery(document).ready(function ($) {
   function createWordSearchGame({
     containerId = "game-container",
     containerWidth = "100%",
-    containerMaxWidth = "800px",
+    containerMaxWidth = "600px",
     // gameWidth = 600,
     // gameHeight = 600,
     puzzleOptions = {},
@@ -311,16 +317,6 @@ jQuery(document).ready(function ($) {
     onGameReady: localOnGameReady,
   }) {
     // Set the container's width dynamically
-    // const container = document.getElementById(containerId);
-    // if (container) {
-    //   container.style.width = containerWidth;
-    // } else {
-    //   console.error(`Container with id ${containerId} not found.`);
-    // }
-    // const wordList = puzzleOptions.words;
-    // const wordList = ["nsaik", "smell", "example", "touch", "taste"];
-    // console.log("::wordList", wordList);
-    // Default puzzle options if none provided.
     const defaultPuzzleOpts = {
       directions: ["W", "N", "WN", "EN"],
       orientations: ["horizontal", "vertical", "diagonal"],
@@ -340,10 +336,14 @@ jQuery(document).ready(function ($) {
 
     // Create the puzzle
     const tempDiv = document.createElement("div");
+    // Make sure this div stays detached
     const ws = new WordSearch(tempDiv, mergedPuzzleOptions);
     const gridMatrix = ws.matrix;
+    // Explicitly discard the tempDiv (though JS garbage collection would handle this)
+    tempDiv.remove();
     const gridSize = mergedPuzzleOptions.gridSize;
     const wordList = mergedPuzzleOptions.words;
+
     // Directions you want to check (example: left->right, top->down, diagonal down-right, diagonal down-left)
     const SOLVER_DIRECTIONS = [
       { name: "W", deltaRow: 0, deltaCol: 1 }, // horizontal
@@ -356,14 +356,14 @@ jQuery(document).ready(function ($) {
     const { width: dynamicWidth, height: dynamicHeight } = getDynamicCanvasSize(
       containerId,
       gridSize,
-      800 // or any max size you want
+      600 // or any max size you want
     );
 
     // Internal states
     let isDrawing = false;
     // let letterTexts = [];
     let startPoint = null;
-    let cellSize;
+    // let cellSize;
     let dynamicCanvas, persistentCanvas;
     let foundWordsCount = 0;
     // --- NEW: Render word list in the DOM so players see what to find ---
@@ -399,7 +399,7 @@ jQuery(document).ready(function ($) {
         const { width: newWidth, height: newHeight } = getDynamicCanvasSize(
           containerId,
           newGridSize,
-          800
+          700
         );
         resizeGame(
           newWidth,
@@ -418,15 +418,21 @@ jQuery(document).ready(function ($) {
         "wordFound",
         pluginURL.url + "assets/audio/word-matched.mp3"
       );
+      this.load.audio("letterHover", pluginURL.url + "assets/audio/hover.mp3");
     }
 
     function create() {
+      console.log("::Entered");
+
       const scene = this;
+      letterTexts = [];
       scene.letterTexts = letterTexts;
-      const fontColor = customStyles ? customStyles["fontColor"] : "#000";
-      const fontFamily = customStyles ? customStyles["fontFamily"] : "Roboto";
+      // const fontColor = customStyles ? customStyles["fontColor"] : "#000";
+      // const fontFamily = customStyles ? customStyles["fontFamily"] : "Roboto";
       // Update grid size for the first time (using mergedPuzzleOptions.gridSize)
-      updateGridSize(mergedPuzzleOptions.gridSize); // This calls resizeGame internally
+      // destroyAllTextObjects(scene);
+
+      // destroyAllTextObjects(scene);
 
       if (this.cache.audio.exists("wordFound")) {
         if (this.wordFoundSound) {
@@ -448,56 +454,42 @@ jQuery(document).ready(function ($) {
 
       // Step G: Calculate cellSize from dynamic dimensions
       const cellSize = Math.min(dynamicWidth, dynamicHeight) / gridSize;
-      const fontSize = Math.floor(cellSize * 0.5);
+      // const fontSize = Math.floor(cellSize * 0.5);
       letterTexts = [];
-      const finalStyle = {
-        fontFamily: fontFamily,
-        fontSize: `${fontSize}px`,
-        color: fontColor,
-        stroke: fontColor,
-        strokeThickness: 0,
-        shadow: {
-          offsetX: 0,
-          offsetY: 0,
-          color: fontColor,
-          blur: 0,
-          stroke: false,
-          fill: false,
-        },
-      };
 
       // Render grid letters
-      for (let row = 0; row < gridSize; row++) {
-        letterTexts[row] = [];
-        for (let col = 0; col < gridSize; col++) {
-          const { letter } = gridMatrix[row][col];
-          const x = col * cellSize + cellSize * 0.5;
-          const y = row * cellSize + cellSize * 0.5;
-          const textObj = scene.add
-            .text(x, y, letter, finalStyle)
-            .setOrigin(0.5);
-          // Ensure no stroke/shadow if previously set
-          textObj.setStroke(fontColor, 0); // stroke color + thickness=0
-          textObj.setShadow(0, 0, fontColor, 0, false, false); // Disable any shadow
-          textObj.setColor(fontColor); // Re-apply solid color
-          textObj.setDepth(10);
-          textObj.setData("row", row);
-          textObj.setData("col", col);
-          letterTexts[row][col] = textObj;
-        }
-      }
+      // for (let row = 0; row < gridSize; row++) {
+      //   if (!letterTexts[row]) {
+      //     letterTexts[row] = [];
+      //   }
+      //   for (let col = 0; col < gridSize; col++) {
+      //     if (letterTexts[row][col]) {
+      //       letterTexts[row][col].destroy();
+      //     }
+      //     console.log("::gridMatrix", gridMatrix[row][col].letter.length);
+      //     const { letter } = gridMatrix[row][col];
+      //     const x = col * cellSize + cellSize * 0.7;
+      //     const y = row * cellSize + cellSize * 0.7;
+      //     const textObj = scene.add
+      //       .text(x, y, letter, finalStyle)
+      //       .setOrigin(0.5);
+      //     // Ensure no stroke/shadow if previously set
+      //     textObj.setStroke(fontColor, 0); // stroke color + thickness=0
+      //     textObj.setShadow(0, 0, fontColor, 0, false, false); // Disable any shadow
+      //     textObj.setColor(fontColor); // Re-apply solid color
+      //     textObj.setDepth(10);
+      //     textObj.setData("row", row);
+      //     textObj.setData("col", col);
+      //     letterTexts[row][col] = textObj;
+      //   }
+      // }
 
-      // (Optional) If you have a dedicated updateGridSize function that calls resizeGame:
-      function updateGridSize(newSize) {
-        resizeGame(
-          scene.sys.game.config.width,
-          scene.sys.game.config.height,
-          scene,
-          letterTexts,
-          newSize,
-          gridMatrix
-        );
-      }
+      updateGridSize(
+        mergedPuzzleOptions.gridSize,
+        scene,
+        letterTexts,
+        gridMatrix
+      ); // This calls resizeGame internally
 
       // Start a timer only if it's not already running
       startGameTimer();
@@ -560,7 +552,7 @@ jQuery(document).ready(function ($) {
         dynamicCtx.beginPath();
         dynamicCtx.moveTo(startPoint.x, startPoint.y);
         dynamicCtx.lineTo(currentX, currentY);
-        dynamicCtx.strokeStyle = "rgba(0, 123, 255, 0.8)";
+        dynamicCtx.strokeStyle = "rgba(184, 134, 11, 0.6)";
         dynamicCtx.lineWidth = cellSize * 0.8;
         dynamicCtx.lineCap = "round";
         dynamicCtx.stroke();
@@ -627,7 +619,7 @@ jQuery(document).ready(function ($) {
       // Optional callback after setup
       if (typeof localOnGameReady === "function") {
         localOnGameReady(scene);
-        window.startWordsearchGridTimer();
+        // window.startWordsearchGridTimer();
       }
 
       if (typeof frontendData !== "undefined") {
@@ -655,6 +647,18 @@ jQuery(document).ready(function ($) {
       } else {
         console.log("::enterd outside of conditional block");
       }
+    }
+
+    // (Optional) If you have a dedicated updateGridSize function that calls resizeGame:
+    function updateGridSize(newSize, scene, letterTexts, gridMatrix) {
+      resizeGame(
+        scene.sys.game.config.width,
+        scene.sys.game.config.height,
+        scene,
+        letterTexts,
+        newSize,
+        gridMatrix
+      );
     }
 
     function autoSolvePuzzle(
@@ -697,6 +701,8 @@ jQuery(document).ready(function ($) {
                   word,
                   gridSize
                 );
+                animateMatch(scene, matchedCells, letterTexts, cellSize);
+
                 updateWordListUI(word, foundWordsCount, wordData);
                 found = true;
                 break;
@@ -773,16 +779,15 @@ jQuery(document).ready(function ($) {
     }
   }
 
-  function getDynamicCanvasSize(containerId, gridSize, maxCanvasSize = 800) {
+  function getDynamicCanvasSize(containerId, gridSize, maxCanvasSize = 700) {
     const container = document.getElementById(containerId);
     if (!container) {
       console.error(`Container with id ${containerId} not found.`);
       // Fallback to a default size if container is missing
       return { width: 600, height: 600 };
     }
-
     // Use the container width to determine a base cell size
-    const containerWidth = container.clientWidth;
+    const containerWidth = container.clientWidth || maxCanvasSize;
 
     // Example: keep the puzzle square by using containerWidth alone
     // If you want a rectangular puzzle, also measure container.clientHeight
@@ -805,6 +810,12 @@ jQuery(document).ready(function ($) {
     };
   }
 
+  //   // Reset the letterTexts array to ensure clean slate
+  //   if (typeof letterTexts !== "undefined") {
+  //     letterTexts = [];
+  //   }
+  // }
+
   function resizeGame(
     newWidth,
     newHeight,
@@ -813,49 +824,145 @@ jQuery(document).ready(function ($) {
     gridSize,
     gridMatrix
   ) {
+    console.log("::Resizing");
     const gameCanvas = scene.sys.game.canvas;
     gameCanvas.width = newWidth;
     gameCanvas.height = newHeight;
     scene.children.removeAll();
     const cellSize = Math.min(newWidth, newHeight) / gridSize;
     const fontSize = Math.floor(cellSize * 0.5);
-    const fontColor = customStyles ? customStyles["fontColor"] : "#000";
-    const fontFamily = customStyles ? customStyles["fontFamily"] : "Roboto";
+    // const fontColor = customStyles ? customStyles["fontColor"] : "#000";
+    // const fontFamily = customStyles ? customStyles["fontFamily"] : "Roboto";
+
+    // UPDATED: Modified colors to maintain the gold theme but with better contrast
+    const fontColor = "#473214";
+    const fontFamily = "Georgia, serif";
+
     const finalStyle = {
-      fontFamily: fontFamily,
+      fontFamily: "Georgia, serif",
       fontSize: `${fontSize}px`,
-      color: fontColor,
-      stroke: fontColor,
-      strokeThickness: 0,
+      color: "#5c4012",
+      fontWeight: "bold",
+      stroke: "#ffffff",
+      strokeThickness: 0.5,
       shadow: {
-        offsetX: 0,
-        offsetY: 0,
-        color: fontColor,
-        blur: 0,
+        offsetX: 1,
+        offsetY: 1,
+        color: "rgba(0,0,0,0.08)",
+        blur: 1,
         stroke: false,
-        fill: false,
+        fill: true,
       },
     };
+
+    // NEW: Add subtle gradient background
+    const backgroundGradient = scene.add.graphics();
+    backgroundGradient.fillStyle(0xf5e9d1, 1);
+    backgroundGradient.fillGradientStyle(
+      0xf5d992,
+      0xe6ba6c,
+      0xdca745,
+      0xc89836,
+      1,
+      1,
+      1,
+      1
+    );
+    backgroundGradient.fillRect(0, 0, newWidth, newHeight);
+
+    // NEW: Add subtle grid pattern
+    const gridPattern = scene.add.graphics();
+    gridPattern.lineStyle(1, 0xd6a651, 0.2);
+
+    // Draw grid lines
+    for (let i = 0; i <= gridSize; i++) {
+      // Horizontal lines
+      gridPattern.moveTo(0, i * cellSize);
+      gridPattern.lineTo(newWidth, i * cellSize);
+
+      // Vertical lines
+      gridPattern.moveTo(i * cellSize, 0);
+      gridPattern.lineTo(i * cellSize, newHeight);
+    }
+
+    // NEW: Add cell backgrounds with alternating patterns
+    const cellBackgrounds = scene.add.graphics();
+    for (let row = 0; row < gridSize; row++) {
+      for (let col = 0; col < gridSize; col++) {
+        // Create subtle checkerboard pattern
+        const isEvenCell = (row + col) % 2 === 0;
+        cellBackgrounds.fillStyle(isEvenCell ? 0xecd8b3 : 0xf5e9d1, 1);
+
+        cellBackgrounds.fillRect(
+          col * cellSize,
+          row * cellSize,
+          cellSize,
+          cellSize
+        );
+      }
+    }
+
+    // Load sound effects - ADD THIS SECTION
+    if (!scene.sound.get("letterHover")) {
+      scene.load.audio("letterHover", "assets/audio/hover.mp3");
+      scene.load.once("complete", function () {
+        console.log("Sound loaded successfully");
+      });
+      scene.load.start();
+    }
+
     for (let row = 0; row < gridSize; row++) {
       // Initialize each row if not already defined
       if (!letterTexts[row]) {
         letterTexts[row] = [];
       }
       for (let col = 0; col < gridSize; col++) {
+        if (letterTexts[row][col]) {
+          letterTexts[row][col].destroy();
+        }
+        // NEW: Add subtle circular highlights behind letters
+        scene.add.circle(
+          col * cellSize + cellSize * 0.5,
+          row * cellSize + cellSize * 0.5,
+          cellSize * 0.4,
+          0xffffff,
+          0.1
+        );
+
         const x = col * cellSize + cellSize * 0.5;
         const y = row * cellSize + cellSize * 0.5;
-        const fontSize = Math.floor(cellSize * 0.6);
         const letterObj = scene.add
           .text(x, y, gridMatrix[row][col].letter, finalStyle)
           .setOrigin(0.5);
+        // Add interactive hover effect
+        // Add interactive hover effect
+        letterObj.setInteractive();
+        letterObj.on("pointerover", function () {
+          this.setScale(1.1);
+          // Play sound effect on hover - ADD THIS LINE
+          scene.sound.play("letterHover", { volume: 0.5 });
+          // Add glow effect - ADD THIS
+          this.setStroke("#FF9900", 2.5);
+          this.setShadow(2, 2, "#ffd700", 6, true, true);
+          this.setColor("#8B4513");
+        });
+        letterObj.on("pointerout", function () {
+          this.setScale(1.0);
+          this.setStroke("#b8860b", 0.7);
+          this.setShadow(1, 1, "#ffd700", 2, false, true);
+          this.setColor("#473214");
+        });
+        // Store necessary data
         letterTexts[row][col] = letterObj;
+        // letterObj.setData("layer", "second");
+        letterObj.setData("row", row);
+        letterObj.setData("col", col);
       }
     }
   }
 
   function startGameTimer() {
     if (!gameTimerID) {
-      console.log("::Entered");
       gameTimerID = setInterval(() => {
         elapsedTime++;
         document.getElementById("timerDisplay").innerText =
@@ -1107,9 +1214,10 @@ jQuery(document).ready(function ($) {
    * animateMatch - a simple bounce animation for matched letters
    */
   function animateMatch(scene, cells, letterTexts, cellSize) {
-    const higlightedCellTextColor = customStyles
-      ? customStyles["higlightedCellTextColor"]
-      : "#fff";
+    // const higlightedCellTextColor = customStyles
+    //   ? customStyles["higlightedCellTextColor"]
+    //   : "#fff";
+    const higlightedCellTextColor = "#FFFFFF";
     cells.forEach(({ row, col }) => {
       const letterObj = letterTexts[row][col];
       scene.tweens.add({
@@ -1135,11 +1243,16 @@ jQuery(document).ready(function ($) {
    * getRandomTransparentColor - returns a random semi-transparent color string
    */
   function getRandomTransparentColor() {
-    // Generate a random hue (0-359 degrees)
-    const hue = Math.floor(Math.random() * 360);
-    // Use high saturation (90%) and moderate lightness (50%)
-    // The alpha is set to 0.8 for transparency.
-    return `hsla(${hue}, 90%, 30%, 0.3)`;
+    // Enhanced color palette - warm, vibrant colors that complement the gold theme
+    const colorPalette = [
+      "hsla(28, 90%, 50%, 0.4)", // Orange
+      "hsla(350, 90%, 55%, 0.4)", // Red
+      "hsla(190, 90%, 50%, 0.4)", // Teal
+      "hsla(120, 70%, 45%, 0.4)", // Green
+      "hsla(270, 80%, 55%, 0.4)", // Purple
+    ];
+
+    return colorPalette[Math.floor(Math.random() * colorPalette.length)];
   }
 
   // --- NEW: Renders the word list in the #wordList container
@@ -1190,7 +1303,8 @@ jQuery(document).ready(function ($) {
       totalLetters += trimmed.length;
     });
     const heuristic = Math.ceil(Math.sqrt(totalLetters));
-    const effectiveGridSize = Math.max(longest, heuristic, 6);
+    let effectiveGridSize = Math.max(longest, heuristic, 6);
+    // If there are fewer than 5 words, force a minimum grid size (e.g., 10) so cells are smaller.
     console.log("Effective Grid Size:", effectiveGridSize, longest, heuristic);
     return effectiveGridSize;
   }

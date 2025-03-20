@@ -8,7 +8,7 @@ if (!defined('ABSPATH')) {
 $default_button_color = '#6c9bd1'; // Default to blue
 $default_button_label = __('Generate with AI', 'wp-quiz-plugin');
 $default_box_title = __('Generate with AI', 'wp-quiz-plugin');
-$default_max_limit = 10;
+$default_max_limit = 20;
 
 // Get saved values or use defaults for Wordsearch
 $button_color = get_option('kw_generate_with_ai_button_color_ws', $default_button_color);

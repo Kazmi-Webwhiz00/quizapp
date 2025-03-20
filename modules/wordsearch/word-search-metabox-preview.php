@@ -35,7 +35,7 @@ function enqueue_wordsearch_metabox_preview_assets( $hook ) {
     );
         
         // Enqueue Phaser from a CDN.
-        wp_enqueue_script( 'phaser', 'https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.js', array(), null, true );
+        wp_enqueue_script( 'phaser', plugin_dir_url(__FILE__) . './assets/js/phaser.js', array(), null, true );
         
         // Enqueue your WordSearch frontend JS (if it’s not already loaded).
         wp_enqueue_script(
@@ -57,32 +57,20 @@ function enqueue_wordsearch_metabox_preview_assets( $hook ) {
         
         // Pass any needed data to your JS.
         wp_localize_script( 'wordsearch-grid', 'pluginURL', array(
-            'url' => plugin_dir_url( __FILE__ )
+            'url' => plugin_dir_url( __FILE__ ),
+            'workerUrl' => plugins_url('modules/wordsearch/assets/js/gridworker.js', __FILE__)
         ) );
 
         // Initialize sanitized_entries as an empty array.
-        $sanitized_entries = [];
+        // $sanitized_entries = [];
         
-        if ( isset( $_COOKIE['wordsearch_entries'] ) && ! empty( $_COOKIE['wordsearch_entries'] ) ) {
-            $raw_data = wp_unslash( $_COOKIE['wordsearch_entries'] );
-            $entries  = json_decode( $raw_data, true );
-    
-            // Check if JSON decoded correctly and is an array.
-            if ( json_last_error() === JSON_ERROR_NONE && is_array( $entries ) ) {
-                // Sanitize each entry before saving.
-                $sanitized_entries = array_map( function( $entry ) {
-                    return array(
-                        'id'       => sanitize_text_field( isset( $entry['id'] ) ? $entry['id'] : '' ),
-                        'wordText' => sanitize_text_field( isset( $entry['wordText'] ) ? $entry['wordText'] : '' ),
-                        'imageUrl' => esc_url_raw( isset( $entry['imageUrl'] ) ? $entry['imageUrl'] : '' ),
-                    );
-                }, $entries );
-
-        // Optionally, if you need to pass word entries or other localized data:
+        global $post;
+        $word_entries = get_post_meta( $post->ID, 'word_search_entries', true );
+        if ( ! is_array( $word_entries ) ) {
+            $word_entries = []; // Ensure it's always an array.
         }
-    }
     wp_localize_script( 'wordsearch-grid', 'frontendData', array(
-      'entries'          => json_encode($sanitized_entries),
+      'entries'          => json_encode($word_entries),
       'maximunGridSize'  => 10,
       'shuffleElement'   => 'shuffleButton',
       'checkBoxElement'  => 'toggle-checkbox',
