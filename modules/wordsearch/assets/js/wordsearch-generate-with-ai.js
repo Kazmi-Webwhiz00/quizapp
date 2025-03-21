@@ -5,6 +5,34 @@ jQuery(document).ready(function ($) {
   // Global array to hold all word entry objects (if not defined already)
   var wordEntries = [];
 
+  // Helper functions to set and get cookies
+  function setCookie(name, value, days) {
+    var expires = "";
+    if (days) {
+      var date = new Date();
+      date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+      expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "") + expires + "; path=/";
+  }
+
+  function updateCookie() {
+    // Check if there is at least one entry with a non-empty wordText
+    if (
+      !wordEntries ||
+      !wordEntries.length ||
+      !wordEntries.some(function (entry) {
+        return entry.wordText && entry.wordText.trim().length > 0;
+      })
+    ) {
+      // No valid entries: clear the cookie.
+      setCookie("wordsearch_entries", "", 1);
+      return;
+    }
+    // Otherwise, update the cookie with the current wordEntries.
+    setCookie("wordsearch_entries", JSON.stringify(wordEntries), 1); // expires in 1 day
+  }
+
   /**
    * Replaces placeholders in a string using an object of key-value pairs.
    *
@@ -238,6 +266,7 @@ jQuery(document).ready(function ($) {
               }
               // Push the modified entry to the global wordEntries array
               wordEntries.push(item);
+              updateCookie();
             });
 
             // Update the cookie with the new entries
@@ -328,6 +357,14 @@ jQuery(document).ready(function ($) {
     });
 
     console.log(":entries:", word_search_data);
+    alert("Post ID: " + $("#post_ID").val());
+    const postId = $("#post_ID").val();
+    const newUrl =
+      window.location.origin +
+      "/wp-admin/post.php?post=" +
+      postId +
+      "&action=edit";
+    window.history.replaceState(null, "", newUrl);
 
     $.ajax({
       url: wordsearchScriptVar.ajaxUrl,

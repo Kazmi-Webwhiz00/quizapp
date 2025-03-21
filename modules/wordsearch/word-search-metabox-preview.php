@@ -177,12 +177,19 @@ $shuffle_text_color = get_option('kw_wordsearch_admin_shuffle_button_text_color'
 
           // Checks the cookie and toggles the preview accordingly.
           function checkAndTogglePreview() {
+            // let wordDataAdded = false;
+            // $(document).on("wordsearchEntriesUpdated", function (event, updatedEntries) {
+            //  wordDataAdded = updatedEntries && window.wordData.length > 0 ? true : false;
+            // });
             var rawData = getCookie('wordsearch_entries');
             var entries = rawData ? JSON.parse(rawData) : [];
             var emptyMsg = document.getElementById('wordsearch-empty-box');
             var gameContent = document.getElementById('game-preview-content');
 
-            if (entries.length > 0) {
+            const wordDataAdded = window.wordData && window.wordData.length > 0 ? true : false;
+
+            if (entries.length > 0 || wordDataAdded) {
+
               // If entries exist, show game content and hide the empty message.
               gameContent.style.display = 'block';
               emptyMsg.style.display = 'none';

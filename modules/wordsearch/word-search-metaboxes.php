@@ -260,7 +260,6 @@ function render_wordsearch_meta_box($post) {
     wp_nonce_field('wordsearch_meta_box_nonce', 'wordsearch_meta_box_nonce_field');
 
     $word_entries = get_post_meta($post->ID, 'word_search_entries', true);
-    error_log("Entries" . print_r($word_entries , true));
 
     if (empty($word_entries) || !is_array($word_entries)) {
         $word_entries = array();
