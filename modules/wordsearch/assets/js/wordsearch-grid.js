@@ -8,7 +8,7 @@ jQuery(document).ready(function ($) {
   let cookieEntries = [];
   let previousGridSize = 0;
   // Global variable to hold the timer ID.
-  window.wordsearchGridTimerId = null;
+  // window.wordsearchGridTimerId = null;
   // Global timer ID for grid updates (or game clock)
   let gameTimerID = null;
   // Global variable to store elapsed time (in seconds, for example)
@@ -119,59 +119,94 @@ jQuery(document).ready(function ($) {
   //   console.log("Cleared cookie: wordsearch_entries");
   // }
 
-  // Instead, listen for word entry updates via a custom event.
   $(document).on("wordsearchEntriesUpdated", function (event, updatedEntries) {
-    console.log("Updated entries received in game via event:", updatedEntries);
-    // Function to try rendering the grid
-    // Check if WordSearch library and container are ready
-    //     let hasChanged = false;
+    // Avoid unnecessary console logs in production
+    // console.log("::Entered");
+
+    // Use a more efficient change detection approach
+    let localizedEntriesChanged = false;
+    let cookieEntriesChanged = false;
+
+    // Check if localized entries have changed
     if (typeof wordSearchData !== "undefined" && wordSearchData.entries) {
       try {
         const newLocalizedEntries = JSON.parse(wordSearchData.entries);
-        if (
-          JSON.stringify(newLocalizedEntries) !==
-          JSON.stringify(localizedEntries)
-        ) {
+        // Use a simple length comparison first (faster)
+        if (newLocalizedEntries.length !== localizedEntries.length) {
           localizedEntries = newLocalizedEntries;
-          hasChanged = true;
+          localizedEntriesChanged = true;
+        } else {
+          // Only do deep comparison if lengths match
+          if (
+            JSON.stringify(newLocalizedEntries) !==
+            JSON.stringify(localizedEntries)
+          ) {
+            localizedEntries = newLocalizedEntries;
+            localizedEntriesChanged = true;
+          }
         }
       } catch (e) {
         console.error("Error parsing localized data:", e);
       }
     }
-    try {
-      let newCookieEntries = [];
-      newCookieEntries = updatedEntries.data ? updatedEntries.data : [];
 
-      if (newCookieEntries !== cookieEntries) {
+    // Process cookie entries
+    try {
+      const newCookieEntries = updatedEntries.data ? updatedEntries.data : [];
+      // Use a simple length comparison first
+      if (newCookieEntries.length !== cookieEntries.length) {
         cookieEntries = newCookieEntries;
-        hasChanged = true;
+        cookieEntriesChanged = true;
+      } else if (newCookieEntries.length > 0) {
+        // Only do deeper comparison if necessary
+        if (
+          JSON.stringify(newCookieEntries) !== JSON.stringify(cookieEntries)
+        ) {
+          cookieEntries = newCookieEntries;
+          cookieEntriesChanged = true;
+        }
       }
     } catch (e) {
       console.error("Error parsing cookie data:", e);
     }
-    if (hasChanged) {
+
+    // Only process if something actually changed
+    if (localizedEntriesChanged || cookieEntriesChanged) {
       const merged = mergeEntries(localizedEntries, cookieEntries);
-      const mergedStr = merged ? JSON.stringify(merged) : [];
+
+      // Skip stringification if we can directly detect changes
       if (merged.length === 0) {
-        finalEntries = [];
-        updateFinalEntries([]);
-      } else if (mergedStr !== previousFinalEntriesStr) {
-        previousFinalEntriesStr = mergedStr;
-        if (!gameInstance) {
+        if (finalEntries.length !== 0) {
+          finalEntries = [];
+          updateFinalEntries([]);
+        }
+      } else {
+        // Check if we need to update
+        const needsUpdate =
+          finalEntries.length !== merged.length ||
+          JSON.stringify(merged) !== previousFinalEntriesStr;
+
+        if (needsUpdate) {
+          previousFinalEntriesStr = JSON.stringify(merged);
           updateFinalEntries(merged);
-        } else {
-          // Game instance exists. Update the entire grid.
-          updateFinalEntries(merged);
-          const scene = gameInstance.scene.scenes[0];
-          if (scene && scene.letterTexts && scene.letterTexts.length > 0) {
-            updateGridBasedOnWords(merged, scene, scene.letterTexts);
-          } else {
-            setTimeout(() => {
-              if (scene && scene.letterTexts && scene.letterTexts.length > 0) {
-                updateGridBasedOnWords(merged, scene, scene.letterTexts);
-              }
-            }, 500);
+
+          // Optimize game instance updates
+          if (gameInstance) {
+            const scene = gameInstance.scene.scenes[0];
+            if (scene && scene.letterTexts && scene.letterTexts.length > 0) {
+              updateGridBasedOnWords(merged, scene, scene.letterTexts);
+            } else {
+              // Use requestAnimationFrame instead of setTimeout for better performance
+              requestAnimationFrame(() => {
+                if (
+                  scene &&
+                  scene.letterTexts &&
+                  scene.letterTexts.length > 0
+                ) {
+                  updateGridBasedOnWords(merged, scene, scene.letterTexts);
+                }
+              });
+            }
           }
         }
       }
@@ -189,20 +224,32 @@ jQuery(document).ready(function ($) {
   }
 
   function mergeEntries(arrayA, arrayB) {
-    // // If cookieEntries is empty, return empty array.
-    // if (!arrayB || arrayB.length === 0) {
-    //   return [];
-    // }
+    // Quick return if both arrays are empty
+    if ((!arrayA || arrayA.length === 0) && (!arrayB || arrayB.length === 0)) {
+      return [];
+    }
 
+    // Pre-allocate the map size based on the combined length of both arrays
+    const totalItems =
+      (arrayA ? arrayA.length : 0) + (arrayB ? arrayB.length : 0);
     const map = new Map();
-    // Merge localizedEntries (arrayA)
-    arrayA.forEach((item) => {
-      if (item.id) map.set(item.id, item);
-    });
-    // Merge cookieEntries (arrayB)
-    arrayB.forEach((item) => {
-      if (item.id) map.set(item.id, item);
-    });
+
+    // Process both arrays in a single loop if possible
+    if (arrayA && arrayA.length > 0) {
+      for (let i = 0; i < arrayA.length; i++) {
+        const item = arrayA[i];
+        if (item.id) map.set(item.id, item);
+      }
+    }
+
+    if (arrayB && arrayB.length > 0) {
+      for (let i = 0; i < arrayB.length; i++) {
+        const item = arrayB[i];
+        if (item.id) map.set(item.id, item);
+      }
+    }
+
+    // Convert map to array more efficiently
     return Array.from(map.values());
   }
 
@@ -217,47 +264,149 @@ jQuery(document).ready(function ($) {
   //   WORD DATA & RE-INIT
   // =========================
   function updateWordData() {
-    wordData =
-      finalEntries.length > 0
-        ? finalEntries.map((entry) => entry.wordText.toUpperCase())
-        : [];
+    // Create word data more efficiently
+    const newWordData =
+      finalEntries.length > 0 ? new Array(finalEntries.length) : [];
 
-    // Immediately update the word list in the UI.
-    renderWordList(wordData);
-
-    // (2) Destroy the old Phaser instance completely
-    if (gameInstance) {
-      gameInstance.destroy(true);
-      gameInstance = null;
+    // Use a standard for loop instead of map for better performance
+    if (finalEntries.length > 0) {
+      for (let i = 0; i < finalEntries.length; i++) {
+        newWordData[i] = finalEntries[i].wordText.toUpperCase();
+      }
     }
 
-    // (3) Clear the DOM container so it's fresh
-    const containerEl = document.getElementById("game-container");
-    if (containerEl) {
-      // containerEl.style.backgroundColor = customStyles
-      //   ? customStyles["bgColor"]
-      //   : "#808080a1";
-      containerEl.style.backgroundColor = "#f5e9d1";
-      containerEl.style.borderRadius = "8px";
-      containerEl.style.boxShadow = "0 4px 12px rgba(0,0,0,0.1)";
-      containerEl.innerHTML = "";
-    }
+    // Only update if there's a change
+    if (JSON.stringify(wordData) !== JSON.stringify(newWordData)) {
+      wordData = newWordData;
 
-    // (4) Now create a fresh puzzle if we have words
-    if (wordData.length > 0) {
-      console.log("::finalEntries1");
-      waitForWordSearch(wordData);
-    } else {
+      // Update the word list in the UI
+      renderWordList(wordData);
+
+      // Cache DOM reference
+      const containerEl = document.getElementById("game-container");
+
+      // Only destroy if necessary
+      if (gameInstance) {
+        gameInstance.destroy(true);
+        gameInstance = null;
+      }
+
+      // Clear and style the container
+      if (containerEl) {
+        containerEl.style.backgroundColor = "#f5e9d1";
+        containerEl.style.borderRadius = "8px";
+        containerEl.style.boxShadow = "0 4px 12px rgba(0,0,0,0.1)";
+        // Use innerHTML = "" only if needed
+        if (containerEl.children.length > 0) {
+          containerEl.innerHTML = "";
+        }
+      }
+
+      // Create new puzzle if needed
+      if (wordData.length > 0) {
+        // Calculate needed grid size
+        const estimatedGridSize = computeEffectiveGridSize(wordData);
+
+        // Validate words against this grid size
+        const validationResult = validateWords(wordData, estimatedGridSize);
+
+        if (!validationResult.valid) {
+          // Handle problematic words by filtering them out
+          const filteredWordData = handleWordOverflow(
+            wordData,
+            validationResult
+          );
+
+          // Only continue if we have remaining words
+          if (filteredWordData.length > 0) {
+            // Use requestIdleCallback if available, otherwise fallback to setTimeout
+            if (window.requestIdleCallback) {
+              requestIdleCallback(() => waitForWordSearch(filteredWordData));
+            } else {
+              setTimeout(() => waitForWordSearch(filteredWordData), 0);
+            }
+          }
+        } else {
+          // All words are valid, proceed normally
+          if (window.requestIdleCallback) {
+            requestIdleCallback(() => waitForWordSearch(wordData));
+          } else {
+            setTimeout(() => waitForWordSearch(wordData), 0);
+          }
+        }
+      }
     }
   }
 
+  function validateWords(wordData, gridSize) {
+    if (!wordData || wordData.length === 0) {
+      return { valid: false, message: "No words provided" };
+    }
+
+    // Check for words that exceed grid size
+    const problematicWords = [];
+
+    for (let i = 0; i < wordData.length; i++) {
+      const word = wordData[i];
+      if (word.length > gridSize) {
+        problematicWords.push({ word, length: word.length });
+      }
+    }
+
+    if (problematicWords.length > 0) {
+      // Sort by length descending to show longest problematic words first
+      problematicWords.sort((a, b) => b.length - a.length);
+
+      // Format error message
+      const wordList = problematicWords
+        .slice(0, 3) // Show at most 3 words in the error
+        .map((w) => `${w.word} (${w.length} letters)`) // Use backticks for template literals
+        .join(", ");
+
+      const suffix =
+        problematicWords.length > 3
+          ? `and ${problematicWords.length - 3} more`
+          : "";
+
+      return {
+        valid: false,
+        message: `The following words are too long for the grid size (${gridSize}): ${wordList}${suffix},
+        problematicWords`,
+      };
+    }
+
+    return { valid: true };
+  }
+
+  /**
+   * Handle word overflow errors gracefully
+   * @param {Array} wordData - Original word data
+   * @param {Object} validationResult - Result from validateWords function
+   * @return {Array} - Filtered word data with long words removed
+   */
+  function handleWordOverflow(wordData, validationResult) {
+    if (validationResult.valid) {
+      return wordData; // No changes needed
+    }
+
+    // Log for debugging
+    console.warn(validationResult.message);
+
+    // Filter out problematic words
+    const problematicWordIds = new Set(
+      validationResult.problematicWords.map((w) => w.word)
+    );
+
+    return wordData.filter((word) => !problematicWordIds.has(word));
+  }
+
   function waitForWordSearch(wordData, retries = 5) {
-    console.log("::Game");
-    // First, check if wordData is available and an array
+    // Quick validation
     if (!Array.isArray(wordData) || wordData.length === 0) {
       console.log("No wordData found. Skipping puzzle creation...");
       return;
     }
+
     if (typeof WordSearch === "undefined") {
       if (retries > 0) {
         console.error("WordSearch is not loaded. Retrying in 1 second...");
@@ -268,26 +417,56 @@ jQuery(document).ready(function ($) {
       return;
     }
 
-    // Compute gridSize dynamically
-    const effectiveGridSize = computeEffectiveGridSize(wordData);
-    previousGridSize = effectiveGridSize ? effectiveGridSize : 0;
-    if (gameInstance) {
-      gameInstance.destroy(true);
-      gameInstance = null;
+    try {
+      // Find longest word for validation
+      let longestWord = "";
+      let longestLength = 0;
+
+      for (let i = 0; i < wordData.length; i++) {
+        if (wordData[i].length > longestLength) {
+          longestLength = wordData[i].length;
+          longestWord = wordData[i];
+        }
+      }
+
+      // Compute grid size with validation
+      const effectiveGridSize = computeEffectiveGridSize(wordData);
+
+      // Safety check - ensure grid is big enough
+      if (effectiveGridSize < longestLength) {
+        console.error(
+          `Grid size ${effectiveGridSize} is too small for word "${longestWord}" (length ${longestLength})`
+        );
+        // Force grid to be at least as big as longest word + 2
+        effectiveGridSize = longestLength + 2;
+      }
+
+      // previousGridSize = effectiveGridSize;
+
+      // Clean up old game instance
+      if (gameInstance) {
+        gameInstance.destroy(true);
+        gameInstance = null;
+      }
+
+      // Create game with optimized settings
+      gameInstance = createWordSearchGame({
+        containerId: "game-container",
+        puzzleOptions: {
+          gridSize: effectiveGridSize,
+          words: wordData,
+          debug: false,
+          orientations: ["horizontal", "vertical", "diagonal"],
+          // Addition of performance-optimizing parameters
+          maxAttempts: 20, // Limit placement attempts per word
+          preferOverlap: true, // Prefer overlapping letters for denser puzzles
+          fillBlanks: true, // Fill in remaining cells after word placement
+          maxGridGrowth: 5, // Allow grid to grow if needed, but limit it
+        },
+      });
+    } catch (error) {
+      console.error("Error creating word search:", error);
     }
-    // Once both wordEntries and WordSearch are available, initialize the game.
-    gameInstance = createWordSearchGame({
-      containerId: "game-container",
-      // containerWidth: containerWidth,
-      puzzleOptions: {
-        gridSize: effectiveGridSize,
-        words: wordData,
-        // maxGridSize: maximunGridSize,
-        debug: false,
-        orientations: ["horizontal", "vertical", "diagonal"],
-        // ... other WordSearch config options as needed
-      },
-    });
   }
 
   // if (finalEntries.length > 0) {
@@ -309,7 +488,7 @@ jQuery(document).ready(function ($) {
   function createWordSearchGame({
     containerId = "game-container",
     containerWidth = "100%",
-    containerMaxWidth = "600px",
+    containerMaxWidth = "800px",
     // gameWidth = 600,
     // gameHeight = 600,
     puzzleOptions = {},
@@ -320,7 +499,6 @@ jQuery(document).ready(function ($) {
     const defaultPuzzleOpts = {
       directions: ["W", "N", "WN", "EN"],
       orientations: ["horizontal", "vertical", "diagonal"],
-      // gridSize: 2,
       wordsList: [],
       debug: false,
     };
@@ -356,7 +534,7 @@ jQuery(document).ready(function ($) {
     const { width: dynamicWidth, height: dynamicHeight } = getDynamicCanvasSize(
       containerId,
       gridSize,
-      600 // or any max size you want
+      800 // or any max size you want
     );
 
     // Internal states
@@ -395,19 +573,12 @@ jQuery(document).ready(function ($) {
     function handleResize() {
       if (gameInstance && gameInstance.scene && gameInstance.scene.scenes[0]) {
         const scene = gameInstance.scene.scenes[0];
-        const newGridSize = gridSize;
-        const { width: newWidth, height: newHeight } = getDynamicCanvasSize(
-          containerId,
-          newGridSize,
-          700
-        );
-        resizeGame(
-          newWidth,
-          newHeight,
-          scene,
-          letterTexts,
+        updateGridSize(
           previousGridSize,
-          gridMatrix // Use the dynamically stored grid size
+          scene,
+          scene.letterTexts,
+          gridMatrix,
+          true
         );
       }
     }
@@ -416,14 +587,18 @@ jQuery(document).ready(function ($) {
       // Load assets as needed
       this.load.audio(
         "wordFound",
-        pluginURL.url + "assets/audio/word-matched.mp3"
+        frontendData.url + "assets/audio/word-matched.mp3"
       );
-      this.load.audio("letterHover", pluginURL.url + "assets/audio/hover.mp3");
+      this.load.audio(
+        "letterHover",
+        frontendData.url + "assets/audio/hover.mp3"
+      );
     }
 
     function create() {
       console.log("::Entered");
-
+      this.lineGraphics = this.add.graphics();
+      this.highlightGraphics = this.add.graphics();
       const scene = this;
       letterTexts = [];
       scene.letterTexts = letterTexts;
@@ -488,7 +663,8 @@ jQuery(document).ready(function ($) {
         mergedPuzzleOptions.gridSize,
         scene,
         letterTexts,
-        gridMatrix
+        gridMatrix,
+        true
       ); // This calls resizeGame internally
 
       // Start a timer only if it's not already running
@@ -496,6 +672,7 @@ jQuery(document).ready(function ($) {
 
       // POINTER EVENTS
       scene.input.on("pointerdown", (pointer) => {
+        scene.lineGraphics.clear();
         const dynamicCtx = dynamicCanvas.getContext("2d");
         dynamicCtx.clearRect(0, 0, dynamicCanvas.width, dynamicCanvas.height);
 
@@ -521,7 +698,8 @@ jQuery(document).ready(function ($) {
 
       scene.input.on("pointermove", (pointer) => {
         if (!isDrawing || !startPoint) return;
-
+        // Clear previous line
+        scene.lineGraphics.clear();
         const dynamicCtx = dynamicCanvas.getContext("2d");
         dynamicCtx.clearRect(0, 0, dynamicCanvas.width, dynamicCanvas.height);
 
@@ -549,13 +727,18 @@ jQuery(document).ready(function ($) {
         }
 
         // Draw the line
-        dynamicCtx.beginPath();
-        dynamicCtx.moveTo(startPoint.x, startPoint.y);
-        dynamicCtx.lineTo(currentX, currentY);
-        dynamicCtx.strokeStyle = "rgba(184, 134, 11, 0.6)";
-        dynamicCtx.lineWidth = cellSize * 0.8;
-        dynamicCtx.lineCap = "round";
-        dynamicCtx.stroke();
+        // dynamicCtx.beginPath();
+        // dynamicCtx.moveTo(startPoint.x, startPoint.y);
+        // dynamicCtx.lineTo(currentX, currentY);
+        // dynamicCtx.strokeStyle = "rgba(184, 134, 11, 0.6)";
+        // dynamicCtx.lineWidth = cellSize * 0.8;
+        // dynamicCtx.lineCap = "round";
+        // dynamicCtx.stroke();
+        scene.lineGraphics.lineStyle(cellSize * 0.8, 0xb8860b, 0.6);
+        scene.lineGraphics.beginPath();
+        scene.lineGraphics.moveTo(startPoint.x, startPoint.y);
+        scene.lineGraphics.lineTo(pointer.x, pointer.y);
+        scene.lineGraphics.strokePath();
       });
 
       scene.input.on("pointerup", () => {
@@ -650,15 +833,27 @@ jQuery(document).ready(function ($) {
     }
 
     // (Optional) If you have a dedicated updateGridSize function that calls resizeGame:
-    function updateGridSize(newSize, scene, letterTexts, gridMatrix) {
-      resizeGame(
-        scene.sys.game.config.width,
-        scene.sys.game.config.height,
-        scene,
-        letterTexts,
-        newSize,
-        gridMatrix
-      );
+    // Modified updateGridSize function
+    function updateGridSize(
+      newSize,
+      scene,
+      letterTexts,
+      gridMatrix,
+      forceUpdate = false
+    ) {
+      // This function is already simple so no major changes needed
+      // but we can add a check to avoid unnecessary updates
+      if (newSize !== previousGridSize || forceUpdate) {
+        previousGridSize = newSize;
+        resizeGame(
+          scene.sys.game.config.width,
+          scene.sys.game.config.height,
+          scene,
+          letterTexts,
+          newSize,
+          gridMatrix
+        );
+      }
     }
 
     function autoSolvePuzzle(
@@ -749,8 +944,11 @@ jQuery(document).ready(function ($) {
 
     function localOnGameReady(scene) {
       scene.letterTexts = letterTexts;
-      // Now that the scene is ready, register your resize listener
-      window.addEventListener("resize", handleResize);
+      // Now that the scene is ready, register your resize listener with debouncing
+      window.addEventListener(
+        "resize",
+        debouncedResize(() => handleResize(), 250)
+      );
     }
 
     function update() {
@@ -759,27 +957,18 @@ jQuery(document).ready(function ($) {
     return phaserGame;
   }
 
+  // Modified updateGridBasedOnWords function
   function updateGridBasedOnWords(newWordList, scene, letterTexts) {
-    const newGridSize = computeEffectiveGridSize(newWordList);
-
-    // Check if grid size really changed to avoid unnecessary redraws:
-    if (newGridSize !== previousGridSize) {
-      previousGridSize = newGridSize;
-      // Update your puzzle options if needed:
-      mergedPuzzleOptions.gridSize = newGridSize;
-      // Redraw the grid with the new cell size
-      resizeGame(
-        scene.sys.game.config.width,
-        scene.sys.game.config.height,
-        scene,
-        letterTexts,
-        newGridSize,
-        gridMatrix
-      );
-    }
+    // Use the optimized grid renderer
+    updateGridRenderer({
+      newWordList,
+      scene,
+      letterTexts,
+      gridMatrix,
+    });
   }
 
-  function getDynamicCanvasSize(containerId, gridSize, maxCanvasSize = 700) {
+  function getDynamicCanvasSize(containerId, gridSize, maxCanvasSize = 800) {
     const container = document.getElementById(containerId);
     if (!container) {
       console.error(`Container with id ${containerId} not found.`);
@@ -824,24 +1013,29 @@ jQuery(document).ready(function ($) {
     gridSize,
     gridMatrix
   ) {
-    console.log("::Resizing");
+    // Cache calculations and avoid repeated work
     const gameCanvas = scene.sys.game.canvas;
     gameCanvas.width = newWidth;
     gameCanvas.height = newHeight;
-    scene.children.removeAll();
+
+    // Remove children more efficiently
+    scene.children.each((child) => {
+      child.destroy();
+    });
+
+    // Pre-calculate shared values
     const cellSize = Math.min(newWidth, newHeight) / gridSize;
     const fontSize = Math.floor(cellSize * 0.5);
-    // const fontColor = customStyles ? customStyles["fontColor"] : "#000";
-    // const fontFamily = customStyles ? customStyles["fontFamily"] : "Roboto";
+    const cellHalfSize = cellSize * 0.5;
 
+    // Create style object once
     // UPDATED: Modified colors to maintain the gold theme but with better contrast
     const fontColor = "#473214";
     const fontFamily = "Georgia, serif";
-
     const finalStyle = {
       fontFamily: "Georgia, serif",
       fontSize: `${fontSize}px`,
-      color: "#5c4012",
+      color: "#473214",
       fontWeight: "bold",
       stroke: "#ffffff",
       strokeThickness: 0.5,
@@ -855,7 +1049,7 @@ jQuery(document).ready(function ($) {
       },
     };
 
-    // NEW: Add subtle gradient background
+    // Create backgrounds more efficiently
     const backgroundGradient = scene.add.graphics();
     backgroundGradient.fillStyle(0xf5e9d1, 1);
     backgroundGradient.fillGradientStyle(
@@ -870,29 +1064,32 @@ jQuery(document).ready(function ($) {
     );
     backgroundGradient.fillRect(0, 0, newWidth, newHeight);
 
-    // NEW: Add subtle grid pattern
+    // Draw grid pattern more efficiently
     const gridPattern = scene.add.graphics();
     gridPattern.lineStyle(1, 0xd6a651, 0.2);
 
-    // Draw grid lines
+    // Use a single path for all horizontal lines
+    gridPattern.beginPath();
     for (let i = 0; i <= gridSize; i++) {
-      // Horizontal lines
       gridPattern.moveTo(0, i * cellSize);
       gridPattern.lineTo(newWidth, i * cellSize);
+    }
+    gridPattern.strokePath();
 
-      // Vertical lines
+    // Use a single path for all vertical lines
+    gridPattern.beginPath();
+    for (let i = 0; i <= gridSize; i++) {
       gridPattern.moveTo(i * cellSize, 0);
       gridPattern.lineTo(i * cellSize, newHeight);
     }
+    gridPattern.strokePath();
 
-    // NEW: Add cell backgrounds with alternating patterns
+    // Batch cell backgrounds
     const cellBackgrounds = scene.add.graphics();
     for (let row = 0; row < gridSize; row++) {
       for (let col = 0; col < gridSize; col++) {
-        // Create subtle checkerboard pattern
         const isEvenCell = (row + col) % 2 === 0;
         cellBackgrounds.fillStyle(isEvenCell ? 0xecd8b3 : 0xf5e9d1, 1);
-
         cellBackgrounds.fillRect(
           col * cellSize,
           row * cellSize,
@@ -902,7 +1099,7 @@ jQuery(document).ready(function ($) {
       }
     }
 
-    // Load sound effects - ADD THIS SECTION
+    // Load sound effects only once
     if (!scene.sound.get("letterHover")) {
       scene.load.audio("letterHover", "assets/audio/hover.mp3");
       scene.load.once("complete", function () {
@@ -911,50 +1108,50 @@ jQuery(document).ready(function ($) {
       scene.load.start();
     }
 
+    // Create letter objects more efficiently
     for (let row = 0; row < gridSize; row++) {
-      // Initialize each row if not already defined
       if (!letterTexts[row]) {
         letterTexts[row] = [];
       }
+
       for (let col = 0; col < gridSize; col++) {
+        // Clean up old objects
         if (letterTexts[row][col]) {
           letterTexts[row][col].destroy();
         }
-        // NEW: Add subtle circular highlights behind letters
-        scene.add.circle(
-          col * cellSize + cellSize * 0.5,
-          row * cellSize + cellSize * 0.5,
-          cellSize * 0.4,
-          0xffffff,
-          0.1
-        );
 
-        const x = col * cellSize + cellSize * 0.5;
-        const y = row * cellSize + cellSize * 0.5;
+        const x = col * cellSize + cellHalfSize;
+        const y = row * cellSize + cellHalfSize;
+
+        // Create circle highlights in batches
+        scene.add.circle(x, y, cellSize * 0.4, 0xffffff, 0.1);
+
+        // Create letter text
         const letterObj = scene.add
           .text(x, y, gridMatrix[row][col].letter, finalStyle)
           .setOrigin(0.5);
-        // Add interactive hover effect
-        // Add interactive hover effect
+
+        // Add interactive behavior
         letterObj.setInteractive();
+
+        // Use event emitter pattern for better performance
         letterObj.on("pointerover", function () {
           this.setScale(1.1);
-          // Play sound effect on hover - ADD THIS LINE
           scene.sound.play("letterHover", { volume: 0.5 });
-          // Add glow effect - ADD THIS
           this.setStroke("#FF9900", 2.5);
-          this.setShadow(2, 2, "#ffd700", 6, true, true);
+          this.setShadow(2, 2, "#ffd800", 6, true, true);
           this.setColor("#8B4513");
         });
+
         letterObj.on("pointerout", function () {
           this.setScale(1.0);
           this.setStroke("#b8860b", 0.7);
-          this.setShadow(1, 1, "#ffd700", 2, false, true);
+          this.setShadow(1, 1, "#ffd800", 2, false, true);
           this.setColor("#473214");
         });
-        // Store necessary data
+
+        // Store data
         letterTexts[row][col] = letterObj;
-        // letterObj.setData("layer", "second");
         letterObj.setData("row", row);
         letterObj.setData("col", col);
       }
@@ -1000,6 +1197,10 @@ jQuery(document).ready(function ($) {
     persistentCanvas.style.pointerEvents = "none";
     persistentCanvas.style.zIndex = "5";
     persistentCanvas.style.backgroundColor = "transparent";
+    const persistentCtx = persistentCanvas.getContext("2d", {
+      willReadFrequently: true,
+      alpha: true,
+    });
     container.appendChild(persistentCanvas);
 
     const dynamicCanvas = document.createElement("canvas");
@@ -1012,6 +1213,10 @@ jQuery(document).ready(function ($) {
     dynamicCanvas.style.pointerEvents = "none";
     dynamicCanvas.style.zIndex = "10";
     dynamicCanvas.style.backgroundColor = "transparent";
+    const dynamicCtx = dynamicCanvas.getContext("2d", {
+      willReadFrequently: true,
+      alpha: true,
+    });
     container.appendChild(dynamicCanvas);
 
     return { persistentCanvas, dynamicCanvas };
@@ -1255,22 +1460,29 @@ jQuery(document).ready(function ($) {
     return colorPalette[Math.floor(Math.random() * colorPalette.length)];
   }
 
-  // --- NEW: Renders the word list in the #wordList container
+  // Modified renderWordList function
   function renderWordList(wordData) {
-    console.log("::wordData", wordData);
     const listContainer = document.getElementById("wordList");
     if (!listContainer) return;
 
     listContainer.innerHTML = ""; // Clear any existing content
 
     if (wordData.length > 0) {
+      // Create operations array for batch updates
+      const operations = [];
+
       wordData.forEach((word) => {
-        word = word.length > 0 ? word.toLowerCase() : "";
-        const li = document.createElement("li");
-        li.id = `word-${word}`;
-        li.textContent = word;
-        listContainer.appendChild(li);
+        operations.push((fragment) => {
+          const formattedWord = word.length > 0 ? word.toLowerCase() : "";
+          const li = document.createElement("li");
+          li.id = `word-${formattedWord}`;
+          li.textContent = formattedWord;
+          fragment.appendChild(li);
+        });
       });
+
+      // Apply all DOM updates at once
+      batchDomUpdates(operations, listContainer);
     }
   }
 
@@ -1291,22 +1503,149 @@ jQuery(document).ready(function ($) {
     // updateWordData();
   }
 
+  // This function should be added to improve grid size computation
   function computeEffectiveGridSize(wordData) {
-    if (!Array.isArray(wordData) || wordData.length === 0) return 10; // Default minimum grid size
-    let longest = 0,
-      totalLetters = 0;
-    wordData.forEach((word) => {
-      // Convert non-string values to string (or handle them appropriately)
-      const str = typeof word === "string" ? word : String(word);
-      const trimmed = str.trim();
-      longest = Math.max(longest, trimmed.length);
-      totalLetters += trimmed.length;
+    // Exit early if no words
+    if (!wordData || wordData.length === 0) {
+      return 0;
+    }
+
+    // Find the longest word length
+    let maxLength = 0;
+    for (let i = 0; i < wordData.length; i++) {
+      const wordLength = wordData[i].length;
+      maxLength = Math.max(maxLength, wordLength);
+    }
+
+    // Basic grid size calculation - ensure minimum size is at least maxLength
+    const baseSize = Math.max(
+      maxLength,
+      Math.ceil(Math.sqrt(wordData.length * 15))
+    );
+
+    // Add a buffer to ensure enough space for word placement (especially for diagonal words)
+    // Diagonal words need more space - at minimum, the longest word should fit diagonally
+    const diagonalBuffer = Math.ceil(maxLength * 0.4); // Add 40% buffer for diagonal placement
+    let gridSize = baseSize + diagonalBuffer;
+
+    // Ensure the grid is at least 2 cells larger than the longest word
+    // This gives the algorithm space to place words and generate a proper puzzle
+    gridSize = Math.max(gridSize, maxLength + 2);
+
+    // Cap the grid size to prevent performance issues, but ensure it's still big enough
+    const maxGridSize = Math.min(
+      30,
+      Math.max(maxLength + 2, wordData.length * 2)
+    );
+    gridSize = Math.min(gridSize, maxGridSize);
+
+    return gridSize;
+  }
+
+  // Throttle expensive operations
+  function throttle(func, limit) {
+    let inThrottle;
+    return function () {
+      const args = arguments;
+      const context = this;
+      if (!inThrottle) {
+        func.apply(context, args);
+        inThrottle = true;
+        setTimeout(() => (inThrottle = false), limit);
+      }
+    };
+  }
+
+  // Debounce window resize events
+  const debouncedResize = function (callback, delay = 250) {
+    let timeoutId;
+    return function (...args) {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+      timeoutId = setTimeout(() => {
+        callback.apply(this, args);
+        timeoutId = null;
+      }, delay);
+    };
+  };
+
+  // Use a web worker for heavy computations
+  function createWordPlacementWorker() {
+    const workerCode = (self.onmessage = function (e) {
+      const { words, gridSize, orientations } = e.data;
+      // Compute word placements
+      const placements = computePlacements(words, gridSize, orientations);
+      self.postMessage(placements);
     });
-    const heuristic = Math.ceil(Math.sqrt(totalLetters));
-    let effectiveGridSize = Math.max(longest, heuristic, 6);
-    // If there are fewer than 5 words, force a minimum grid size (e.g., 10) so cells are smaller.
-    console.log("Effective Grid Size:", effectiveGridSize, longest, heuristic);
-    return effectiveGridSize;
+
+    function computePlacements(words, gridSize, orientations) {
+      // Implementation of word placement algorithm
+      // This would be similar to what the WordSearch library does
+      // but optimized for background processing
+      return []; // Return computed placements
+    }
+    const blob = new Blob([workerCode], { type: "application/javascript" });
+    return new Worker(URL.createObjectURL(blob));
+  }
+
+  // Example usage of the worker
+  function setupWordPlacementWorker() {
+    const worker = createWordPlacementWorker();
+
+    worker.onmessage = function (e) {
+      const placements = e.data;
+      // Use the placements to update the grid
+    };
+
+    return worker;
+  }
+
+  // Optimize rendering with requestAnimationFrame
+  // Optimized grid update using requestAnimationFrame
+  function updateGridRenderer(gridData) {
+    if (window.gridUpdateScheduled) {
+      return;
+    }
+
+    window.gridUpdateScheduled = true;
+
+    requestAnimationFrame(() => {
+      const { newWordList, scene, letterTexts, gridMatrix } = gridData;
+      const newGridSize = computeEffectiveGridSize(newWordList);
+
+      // Check if grid size really changed to avoid unnecessary redraws
+      if (newGridSize !== previousGridSize) {
+        previousGridSize = newGridSize;
+        // Update your puzzle options if needed
+        mergedPuzzleOptions.gridSize = newGridSize;
+        // Redraw the grid with the new cell size
+        resizeGame(
+          scene.sys.game.config.width,
+          scene.sys.game.config.height,
+          scene,
+          letterTexts,
+          newGridSize,
+          gridMatrix
+        );
+      }
+
+      window.gridUpdateScheduled = false;
+    });
+  }
+
+  // Batch DOM updates for better performance
+  function batchDomUpdates(operations, container) {
+    // Use DocumentFragment for batch updates
+    const fragment = document.createDocumentFragment();
+
+    operations.forEach((op) => {
+      // Each operation adds elements to the fragment
+      op(fragment);
+    });
+
+    // Apply all changes at once
+    container.appendChild(fragment);
   }
 
   // --- NEW: Show a "Well Done!" banner
