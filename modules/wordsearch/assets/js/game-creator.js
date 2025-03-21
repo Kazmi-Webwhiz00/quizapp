@@ -32,7 +32,6 @@ export function createWordSearchGame({
   const container = document.getElementById(
     containerId ? containerId : "game-container"
   );
-  console.log("::wordData1", window.wordData);
 
   // console.log("::effectiveGridSize", effectiveGridSize);
   function updateGridSize(
@@ -92,7 +91,6 @@ export function createWordSearchGame({
       debug: false,
     };
     // Merge user puzzle options with defaults
-    console.log("::wordData", puzzleOptions);
 
     let mergedPuzzleOptions = { ...defaultPuzzleOpts, ...puzzleOptions };
     mergedPuzzleOptions.words = window.wordData;
@@ -271,6 +269,13 @@ export function createWordSearchGame({
         scene.lineGraphics.clear();
         const dynamicCtx = dynamicCanvas.getContext("2d");
         dynamicCtx.clearRect(0, 0, dynamicCanvas.width, dynamicCanvas.height);
+        let newSize = computeEffectiveGridSize(window.wordData);
+        const { width: newWidth, height: newHeight } = getDynamicCanvasSize(
+          (containerId = "game-container"),
+          newSize,
+          newSize < 10 ? 800 : 10000
+        );
+        const cellSize = Math.min(newWidth, newHeight) / newSize;
 
         const clampedX = Phaser.Math.Clamp(pointer.x, 0, dynamicCanvas.width);
         const clampedY = Phaser.Math.Clamp(pointer.y, 0, dynamicCanvas.height);
@@ -298,7 +303,6 @@ export function createWordSearchGame({
 
         const dynamicCtx = dynamicCanvas.getContext("2d");
         dynamicCtx.clearRect(0, 0, dynamicCanvas.width, dynamicCanvas.height);
-
         const currentX = Phaser.Math.Clamp(pointer.x, 0, dynamicCanvas.width);
         const currentY = Phaser.Math.Clamp(pointer.y, 0, dynamicCanvas.height);
         const tolerance = 30;
@@ -439,7 +443,6 @@ export function createWordSearchGame({
   const resizeObserver = new ResizeObserver((entries) => {
     for (let entry of entries) {
       const newWidth = entry.contentRect.width;
-      console.log("Container width changed to:", newWidth);
       window.newWidth = newWidth;
       let effectiveGridSize = computeEffectiveGridSize(window.wordData);
 

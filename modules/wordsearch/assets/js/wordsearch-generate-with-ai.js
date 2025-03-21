@@ -5,6 +5,17 @@ jQuery(document).ready(function ($) {
   // Global array to hold all word entry objects (if not defined already)
   var wordEntries = [];
 
+  function getCookie(name) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(";");
+    for (var i = 0; i < ca.length; i++) {
+      var c = ca[i];
+      while (c.charAt(0) === " ") c = c.substring(1, c.length);
+      if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+    }
+    return null;
+  }
+
   // Helper functions to set and get cookies
   function setCookie(name, value, days) {
     var expires = "";
@@ -29,8 +40,26 @@ jQuery(document).ready(function ($) {
       setCookie("wordsearch_entries", "", 1);
       return;
     }
-    // Otherwise, update the cookie with the current wordEntries.
-    setCookie("wordsearch_entries", JSON.stringify(wordEntries), 1); // expires in 1 day
+
+    // Retrieve existing cookie entries
+    var existingCookie = getCookie("wordsearch_entries");
+    var existingEntries = [];
+    if (existingCookie) {
+      try {
+        existingEntries = JSON.parse(existingCookie);
+        if (!Array.isArray(existingEntries)) {
+          existingEntries = [];
+        }
+      } catch (e) {
+        existingEntries = [];
+      }
+    }
+
+    // Append new entries to the existing ones
+    var combinedEntries = existingEntries.concat(wordEntries);
+
+    // Update the cookie with the combined entries (expires in 1 day)
+    setCookie("wordsearch_entries", JSON.stringify(combinedEntries), 1);
   }
 
   /**
@@ -266,8 +295,8 @@ jQuery(document).ready(function ($) {
               }
               // Push the modified entry to the global wordEntries array
               wordEntries.push(item);
-              updateCookie();
             });
+            updateCookie();
 
             // Update the cookie with the new entries
             // Commented out UI update related to word entry rendering

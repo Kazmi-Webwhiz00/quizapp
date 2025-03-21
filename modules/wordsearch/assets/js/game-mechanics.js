@@ -302,7 +302,6 @@ export function waitForWordSearch(wordData, retries = 5) {
       window.gameInstance.destroy(true);
       window.gameInstance = null;
     }
-    console.log("::wordData6", wordData);
     // Create game with optimized settings
     window.gameInstance = createWordSearchGame({
       containerId: "game-container",
@@ -726,8 +725,7 @@ export function autoSolvePuzzle(
   gridSize,
   showAnswers
 ) {
-  // console.log("::wordData6", window.gridMatrix);
-  // if (!showAnswers && !window.isAdmin) return;
+  if (!showAnswers && !window.isAdmin) return;
 
   // Directions to check
   const SOLVER_DIRECTIONS = [

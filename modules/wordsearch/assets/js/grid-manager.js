@@ -81,7 +81,6 @@ export function resizeGame(
 
   // Pre-calculate shared values
   const cellSize = Math.min(newWidth, newHeight) / gridSize;
-  console.log("::cellSize", cellSize);
   fontSize = Math.floor(cellSize * 0.5);
   if (cellSize < 85) {
     fontSize = cellSize * 0.4;
@@ -290,7 +289,6 @@ export function resizeGame(
   }
 
   // Debug log
-  console.log("Letter texts created:", window.letterTexts);
 }
 
 // Helper function to create letter textures
@@ -319,8 +317,6 @@ function createLetterTextsFixedPositioning(
   gridMatrix,
   textStyle
 ) {
-  console.log("Creating letter texts with grid matrix:", gridMatrix);
-
   const letterTexts = [];
 
   // Container-Based Rendering: Separate containers for organization
@@ -724,15 +720,6 @@ export function computeEffectiveGridSize(wordData) {
 
   // Cap to 30 (or you can pick a different number if desired)
   gridSize = Math.min(gridSize, 30);
-
-  console.log("computeEffectiveGridSize ->", {
-    wordCount: wordData.length,
-    maxLength,
-    baseSize,
-    diagonalBuffer,
-    finalSize: gridSize,
-  });
-
   return gridSize;
 }
 
