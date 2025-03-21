@@ -357,7 +357,6 @@ jQuery(document).ready(function ($) {
     });
 
     console.log(":entries:", word_search_data);
-    alert("Post ID: " + $("#post_ID").val());
     const postId = $("#post_ID").val();
     const newUrl =
       window.location.origin +

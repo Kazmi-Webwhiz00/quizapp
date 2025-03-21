@@ -713,7 +713,7 @@ export function updateWordListUI(foundWord, foundWordsCount, wordList) {
   if (foundWordsCount === wordList.length) {
     stopGameTimer();
     window.elapsedTime = 0;
-    showCompletionMessage();
+    !window.isAdmin && showCompletionMessage();
   }
 }
 
