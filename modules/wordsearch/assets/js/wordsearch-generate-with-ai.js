@@ -94,7 +94,7 @@ jQuery(document).ready(function ($) {
     const returnFormatPrompt = wpQuizPlugin.wsDefaultReturnFormatPrompt;
 
     // 1) Get selected categories using updated selectors for wordsearch
-    // const selectedCategories = ws_getSelectedCategories();
+    const selectedCategories = ws_getSelectedCategories();
 
     // 2) (Optional) Retrieve existing words to avoid duplicates.
     // Commented out as it relates to the UI grid:
@@ -110,7 +110,7 @@ jQuery(document).ready(function ($) {
       topic: topic,
       age: age,
       language: language,
-      // categories: selectedCategories,
+      categories: selectedCategories,
     });
 
     // 4) Combine prompts into the final prompt
@@ -176,32 +176,38 @@ jQuery(document).ready(function ($) {
    *
    * This function grabs the text of the selected options from the new dropdowns.
    */
-  /*
   function ws_getSelectedCategories() {
     let selectedCategories = [];
-    let selectedSchool = $("#ws-selected_school_wordsearch")
+    let selectedSchool = $("#selected_school_wordsearch")
       .find(":selected")
       .text()
       .trim();
-    let selectedClass = $("#ws-selected_class_wordsearch")
+    let selectedClass = $("#selected_class_wordsearch")
       .find(":selected")
       .text()
       .trim();
-    let selectedSubject = $("#ws-selected_subject_wordsearch")
+    let selectedSubject = $("#selected_subject_wordsearch")
       .find(":selected")
       .text()
       .trim();
+
     const isValidCategory = (category) => {
       return category.length > 0 && !category.match(/^-{3,}$/);
     };
-    if (isValidCategory(selectedSchool))
+
+    if (isValidCategory(selectedSchool)) {
       selectedCategories.push(selectedSchool);
-    if (isValidCategory(selectedClass)) selectedCategories.push(selectedClass);
-    if (isValidCategory(selectedSubject))
+    }
+    if (isValidCategory(selectedClass)) {
+      selectedCategories.push(selectedClass);
+    }
+    if (isValidCategory(selectedSubject)) {
       selectedCategories.push(selectedSubject);
+    }
+
     return selectedCategories.join(" > ");
   }
-*/
+
   // Unique ID for the wordsearch generate button
   const generateButtonId = "#ws-generate-ai-button";
 
@@ -210,11 +216,14 @@ jQuery(document).ready(function ($) {
     const topic = $("#ws-topic").val().trim();
     const age = $("#ws-age").val().trim();
     const number = $("#ws-words").val().trim();
-    totalEntries = parseInt(number, 10) + totalEntries;
-    if (totalEntries > 15) {
+    const newEntries = parseInt(number, 10);
+
+    if (totalEntries + newEntries > 15) {
       window.showWordLimitModal();
       return;
     }
+
+    totalEntries += newEntries;
     const language = $("#ws-language").val().trim();
     const maxNumberOfWords = parseInt(wpQuizPlugin.wsMaxNumberOfWords);
     if (number < 1 || number > maxNumberOfWords) {
