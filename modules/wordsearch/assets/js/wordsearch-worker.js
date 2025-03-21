@@ -324,7 +324,6 @@ function generatePuzzleData(settings) {
 
   // 3) Sort words by length (longest first) – helps placement
   settings.words.sort((a, b) => b.length - a.length);
-
   // 4) Systematically place all words via backtracking
   const allPlaced = placeAllWordsBacktracking(
     matrix,
@@ -378,8 +377,20 @@ function placeAllWordsBacktracking(matrix, words, directions, gridSize, i) {
 
   const word = words[i];
 
+  // Create a copy and shuffle the directions to try different orders
+  const shuffledDirections = [...directions];
+
+  // Simple shuffle
+  for (let j = shuffledDirections.length - 1; j > 0; j--) {
+    const k = Math.floor(Math.random() * (j + 1));
+    [shuffledDirections[j], shuffledDirections[k]] = [
+      shuffledDirections[k],
+      shuffledDirections[j],
+    ];
+  }
+
   // Try each direction systematically
-  for (const direction of directions) {
+  for (const direction of shuffledDirections) {
     // Compute valid start positions for this direction
     const startPositions = computeValidStartPositions(
       word,
@@ -389,10 +400,16 @@ function placeAllWordsBacktracking(matrix, words, directions, gridSize, i) {
 
     // Try each start position
     for (const [startRow, startCol] of startPositions) {
-      if (canPlaceWord(matrix, word, direction, startRow, startCol)) {
+      const canPlace = canPlaceWord(
+        matrix,
+        word,
+        direction,
+        startRow,
+        startCol
+      );
+      if (canPlace) {
         // Place it
         placeWord(matrix, word, direction, startRow, startCol);
-
         // Recurse for the next word
         if (
           placeAllWordsBacktracking(matrix, words, directions, gridSize, i + 1)
@@ -406,7 +423,6 @@ function placeAllWordsBacktracking(matrix, words, directions, gridSize, i) {
       }
     }
   }
-
   // If none of the directions / positions worked, return false
   return false;
 }
@@ -483,74 +499,6 @@ function removeWord(matrix, word, direction, row, col) {
       matrix[r][c].letter = ".";
     }
   }
-}
-
-// Try to place all words. Return boolean: did it work?
-function addWords(matrix, settings) {
-  // For each word, pick a direction and attempt to insert it
-  let allGood = true;
-  for (let i = 0; i < settings.words.length; i++) {
-    const word = settings.words[i];
-    // Randomly pick one from the directions
-    const dir =
-      settings.directions[Math.rangeInt(settings.directions.length - 1)];
-    const placed = addSingleWord(matrix, word, dir, settings.gridSize);
-    if (!placed) {
-      allGood = false;
-      break;
-    }
-  }
-  return allGood;
-}
-
-// Insert one word in a given direction
-function addSingleWord(matrix, word, direction, gridSize) {
-  const directionsMap = {
-    W: [0, 1], // Horizontal: left-to-right
-    N: [1, 0], // Vertical: top-to-bottom
-    WN: [1, 1], // Diagonal: top-left to bottom-right
-    EN: [1, -1], // Diagonal: top-right to bottom-left
-  };
-
-  let row = 0,
-    col = 0;
-  switch (direction) {
-    case "W":
-      row = Math.rangeInt(gridSize - 1);
-      col = Math.rangeInt(gridSize - word.length);
-      break;
-    case "N":
-      row = Math.rangeInt(gridSize - word.length);
-      col = Math.rangeInt(gridSize - 1);
-      break;
-    case "WN":
-      row = Math.rangeInt(gridSize - word.length);
-      col = Math.rangeInt(gridSize - word.length);
-      break;
-    case "EN":
-      row = Math.rangeInt(gridSize - word.length);
-      col = Math.rangeInt(word.length - 1, gridSize - 1);
-      break;
-    default:
-      return false; // Unknown direction
-  }
-
-  const [shiftY, shiftX] = directionsMap[direction];
-  // Try to place each letter
-  for (let i = 0; i < word.length; i++) {
-    const newRow = row + i * shiftY;
-    const newCol = col + i * shiftX;
-    if (!matrix[newRow] || !matrix[newRow][newCol]) return false;
-
-    const origin = matrix[newRow][newCol].letter;
-    // If it's free (".") or already matches the letter, we can place
-    if (origin === "." || origin === word[i]) {
-      matrix[newRow][newCol].letter = word[i];
-    } else {
-      return false;
-    }
-  }
-  return true;
 }
 
 // Fill remaining squares with random letters

@@ -160,11 +160,6 @@ export function checkWordInDirection(
   for (let i = 0; i < lettersNeeded; i++) {
     const curRow = row + i * deltaRow;
     const curCol = col + i * deltaCol;
-    console.log(
-      "First letter Matrix: ",
-      matrix[curRow][curCol].letter,
-      word[0]
-    );
     if (matrix[curRow][curCol].letter.toUpperCase() !== word[i].toUpperCase()) {
       return null;
     }
