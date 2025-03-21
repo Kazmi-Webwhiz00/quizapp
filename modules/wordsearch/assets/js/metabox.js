@@ -11,49 +11,57 @@ jQuery(document).ready(function ($) {
 
   // When the document receives the custom event, update the metabox accordingly.
 
+  var savedEntries = entries; // entries from the database
+
+  /**
+   * Merges savedEntries with cookieEntries so that:
+   * - Any cookie entry whose id does not exist in savedEntries is dropped.
+   * - For entries that exist in both, the cookie version is used (preserving any local extra info).
+   * - Any savedEntry missing in the cookie is added.
+   */
   function mergeSavedEntriesIntoCookie(savedEntries, cookieEntries) {
     // Create a map for cookieEntries keyed by id.
-    const map = new Map();
+    const cookieMap = new Map();
     cookieEntries.forEach((entry) => {
       if (entry.id) {
-        map.set(entry.id, entry);
+        cookieMap.set(entry.id, entry);
       }
     });
 
-    // Create a Set of saved entry ids for quick lookup.
-    const savedIds = new Set(savedEntries.filter((e) => e.id).map((e) => e.id));
-
-    // if (savedEntries.length > cookieEntries.length) {
-    // Add any missing savedEntries to the map.
-    savedEntries.forEach((entry) => {
-      if (entry.id && !map.has(entry.id)) {
-        map.set(entry.id, entry);
+    // Build the merged array solely from the savedEntries.
+    // For each saved entry, if there is a matching cookie entry, use that; otherwise, use the saved entry.
+    const mergedEntries = savedEntries.map((entry) => {
+      if (entry.id && cookieMap.has(entry.id)) {
+        return cookieMap.get(entry.id);
       }
+      return entry;
     });
 
-    return Array.from(map.values());
+    return mergedEntries;
   }
 
   function syncSavedEntriesWithCookie(savedEntries) {
-    // Retrieve cookie data for wordsearch_entries
+    // If there are no saved entries, clear the cookie.
     if (savedEntries.length === 0) {
       console.log("No saved entries to sync with cookie.");
       setCookie("wordsearch_entries", "", -1);
       return;
     }
+
+    // Retrieve cookie data for wordsearch_entries.
     const cookieDataStr = getCookie("wordsearch_entries");
     let cookieEntries = cookieDataStr ? JSON.parse(cookieDataStr) : [];
 
-    // Merge saved entries with the cookie data
+    // Merge the database saved entries with the cookie entries.
     const mergedEntries = mergeSavedEntriesIntoCookie(
       savedEntries,
       cookieEntries
     );
 
-    // Update the cookie if there's a difference
+    // If there is any difference, update the cookie.
     if (JSON.stringify(mergedEntries) !== JSON.stringify(cookieEntries)) {
       setCookie("wordsearch_entries", JSON.stringify(mergedEntries), 1);
-      console.log("Cookie updated with missing saved entries:", mergedEntries);
+      console.log("Cookie updated. New entries:", mergedEntries);
       return mergedEntries;
     } else {
       console.log("Cookie entries are already up-to-date.");
@@ -369,6 +377,7 @@ jQuery(document).ready(function ($) {
       wordEntries = [];
       // Delete the cookie by setting it with an expired date.
       setCookie("wordsearch_entries", "", -1);
+      $(document).trigger("wordsearchEntriesUpdated", { data: [] });
     }
   });
   function handleImageUpload(

@@ -1,6 +1,11 @@
 <?php
-// include_once plugin_dir_path(__FILE__) . 'assets/templates/wordsearch-limit-modal.php'; 
 // Shortcode function to display the WordSearch game on the frontend
+
+function showWordLimitModal(){
+  ob_start();
+  include plugin_dir_path(__FILE__) . 'assets/templates/wordsearch-limit-modal.php'; 
+  return ob_get_clean();
+}
 
 function render_game(){
 
@@ -54,19 +59,9 @@ $success_popup_button_text = get_option('kw_wordsearch_success_popup_button_text
   <div style="color: #473214; font-weight: bold;" class="renderingPara">Rendering grid...</div>
 </div>
 
-<!-- <div id="wordLimitModal" class="word-limit-modal">
-  <div class="word-limit-modal-content">
-    <div class="word-limit-modal-header">
-      <h3>Entry Limit Reached</h3>
-    </div>
-    <div class="word-limit-modal-body">
-      <p>You cannot add more than 15 entries to the word search.</p>
-    </div>
-    <div class="word-limit-modal-footer">
-      <button id="wordLimitOkButton" class="word-limit-ok-button">OK</button>
-    </div>
-  </div>
-</div> -->
+<?php
+echo showWordLimitModal();
+?>
 
     <?php
 }
