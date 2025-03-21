@@ -32,6 +32,13 @@ if (typeof Math.rangeInt !== "function") {
   };
 }
 
+const directionsMap = {
+  W: [0, 1], // Horizontal: left-to-right
+  N: [1, 0], // Vertical: top-to-bottom
+  WN: [1, 1], // Diagonal: top-left to bottom-right
+  EN: [1, -1], // Diagonal: top-right to bottom-left
+};
+
 // Put your removeDiacritics and searchLanguage EXACTLY as they were:
 var defaultDiacriticsRemovalMap = [
   {
@@ -299,46 +306,45 @@ function searchLanguage(firstLetter) {
  * Returns the matrix plus the final wordsList
  */
 function generatePuzzleData(settings) {
-  // We replicate your original constructor steps:
-
-  // 1) Convert words and store them in wordsList
+  console.log("::settings", settings);
+  // 1) Normalize and validate words
   const wordsList = [];
   for (let i = 0; i < settings.words.length; i++) {
     wordsList[i] = settings.words[i].trim();
     settings.words[i] = removeDiacritics(wordsList[i].toUpperCase());
-    // If a word is longer than the grid, bail out (as your code originally did).
     if (settings.words[i].length > settings.gridSize) {
-      // Mark this as invalid so the main thread knows
+      // If any word is longer than the entire grid dimension, bail out
+      console.error(`Word "${settings.words[i]}" too long for grid.`);
       return { matrix: [], wordsList: [] };
     }
   }
 
-  // 2) Keep trying to place words until they fit
-  let matrix;
-  let isWorked = false;
-  let attempt = 0;
-  while (!isWorked) {
-    attempt++;
-    matrix = initMatrix(settings.gridSize);
+  // 2) Create empty matrix
+  const matrix = initMatrix(settings.gridSize);
 
-    isWorked = addWords(matrix, settings);
-    if (attempt > 1000) {
-      console.log("Unable to place all words after many attempts.");
-      break;
-    }
+  // 3) Sort words by length (longest first) – helps placement
+  settings.words.sort((a, b) => b.length - a.length);
+
+  // 4) Systematically place all words via backtracking
+  const allPlaced = placeAllWordsBacktracking(
+    matrix,
+    settings.words,
+    settings.directions,
+    settings.gridSize,
+    0
+  );
+  if (!allPlaced) {
+    console.error("Unable to place all words - no valid arrangement found.");
+    return { matrix: [], wordsList: [] };
   }
-  console.log("Attempts:", attempt);
 
-  // 3) If not debugging, fill random letters for leftover cells
+  // 5) Fill remaining spots with random letters if not debugging
   if (!settings.debug) {
     fillUpFools(matrix, settings.words[0], settings.gridSize);
   }
 
-  // Return final data
-  return {
-    matrix,
-    wordsList,
-  };
+  // 6) Return final puzzle
+  return { matrix, wordsList };
 }
 
 // ---------- Helper Functions (migrated from the original) ---------- //
@@ -346,17 +352,137 @@ function generatePuzzleData(settings) {
 // Create the 2D matrix filled with "."
 function initMatrix(size) {
   const matrix = [];
-  for (let row = 0; row < size; row++) {
-    matrix[row] = [];
-    for (let col = 0; col < size; col++) {
-      matrix[row][col] = {
-        letter: ".",
-        row: row,
-        col: col,
-      };
+  for (let r = 0; r < size; r++) {
+    matrix[r] = [];
+    for (let c = 0; c < size; c++) {
+      matrix[r][c] = { letter: ".", row: r, col: c };
     }
   }
   return matrix;
+}
+
+/**
+ * Backtracking function that places words in the matrix one by one.
+ * @param {Array} matrix - The puzzle grid (2D array of cell objects).
+ * @param {Array} words - The array of words to place (already uppercase).
+ * @param {Array} directions - The allowed direction codes (e.g., ["W", "N", "WN", "EN"]).
+ * @param {number} gridSize - The size of the puzzle grid.
+ * @param {number} i - Index of the current word being placed.
+ * @returns {boolean} True if all words placed; False if no arrangement found.
+ */
+function placeAllWordsBacktracking(matrix, words, directions, gridSize, i) {
+  // Base case: if i == words.length, we've placed them all
+  if (i >= words.length) {
+    return true;
+  }
+
+  const word = words[i];
+
+  // Try each direction systematically
+  for (const direction of directions) {
+    // Compute valid start positions for this direction
+    const startPositions = computeValidStartPositions(
+      word,
+      direction,
+      gridSize
+    );
+
+    // Try each start position
+    for (const [startRow, startCol] of startPositions) {
+      if (canPlaceWord(matrix, word, direction, startRow, startCol)) {
+        // Place it
+        placeWord(matrix, word, direction, startRow, startCol);
+
+        // Recurse for the next word
+        if (
+          placeAllWordsBacktracking(matrix, words, directions, gridSize, i + 1)
+        ) {
+          // Success, bubble up
+          return true;
+        }
+
+        // Otherwise, remove (backtrack) and try another position
+        removeWord(matrix, word, direction, startRow, startCol);
+      }
+    }
+  }
+
+  // If none of the directions / positions worked, return false
+  return false;
+}
+
+function computeValidStartPositions(word, direction, gridSize) {
+  const positions = [];
+  const length = word.length;
+  switch (direction) {
+    case "W": // Horizontal: left-to-right
+      for (let r = 0; r < gridSize; r++) {
+        for (let c = 0; c <= gridSize - length; c++) {
+          positions.push([r, c]);
+        }
+      }
+      break;
+    case "N": // Vertical: top-to-bottom
+      for (let r = 0; r <= gridSize - length; r++) {
+        for (let c = 0; c < gridSize; c++) {
+          positions.push([r, c]);
+        }
+      }
+      break;
+    case "WN": // Diagonal: top-left to bottom-right
+      for (let r = 0; r <= gridSize - length; r++) {
+        for (let c = 0; c <= gridSize - length; c++) {
+          positions.push([r, c]);
+        }
+      }
+      break;
+    case "EN": // Diagonal: top-right to bottom-left
+      for (let r = 0; r <= gridSize - length; r++) {
+        for (let c = length - 1; c < gridSize; c++) {
+          positions.push([r, c]);
+        }
+      }
+      break;
+    default:
+      break;
+  }
+  return positions;
+}
+
+/**
+ * Checks if `word` can be placed in `matrix` from (row, col) in `direction`
+ * without overriding different letters.
+ */
+function canPlaceWord(matrix, word, direction, row, col) {
+  const [dr, dc] = directionsMap[direction];
+  for (let i = 0; i < word.length; i++) {
+    const r = row + i * dr;
+    const c = col + i * dc;
+    if (matrix[r][c].letter !== "." && matrix[r][c].letter !== word[i]) {
+      return false;
+    }
+  }
+  return true;
+}
+
+function placeWord(matrix, word, direction, row, col) {
+  const [dr, dc] = directionsMap[direction];
+  for (let i = 0; i < word.length; i++) {
+    const r = row + i * dr;
+    const c = col + i * dc;
+    matrix[r][c].letter = word[i];
+  }
+}
+
+function removeWord(matrix, word, direction, row, col) {
+  const [dr, dc] = directionsMap[direction];
+  for (let i = 0; i < word.length; i++) {
+    const r = row + i * dr;
+    const c = col + i * dc;
+    if (matrix[r][c].letter === word[i]) {
+      matrix[r][c].letter = ".";
+    }
+  }
 }
 
 // Try to place all words. Return boolean: did it work?
@@ -380,10 +506,10 @@ function addWords(matrix, settings) {
 // Insert one word in a given direction
 function addSingleWord(matrix, word, direction, gridSize) {
   const directionsMap = {
-    W: [0, 1], // left -> right
-    N: [1, 0], // top -> bottom
-    WN: [1, 1], // diagonal top-left -> bottom-right
-    EN: [1, -1], // diagonal top-right -> bottom-left
+    W: [0, 1], // Horizontal: left-to-right
+    N: [1, 0], // Vertical: top-to-bottom
+    WN: [1, 1], // Diagonal: top-left to bottom-right
+    EN: [1, -1], // Diagonal: top-right to bottom-left
   };
 
   let row = 0,
@@ -429,15 +555,15 @@ function addSingleWord(matrix, word, direction, gridSize) {
 
 // Fill remaining squares with random letters
 function fillUpFools(matrix, firstWord, gridSize) {
-  if (firstWord) {
-    const rangeLanguage = searchLanguage(firstWord[0]);
-    for (let row = 0; row < gridSize; row++) {
-      for (let col = 0; col < gridSize; col++) {
-        if (matrix[row][col].letter === ".") {
-          matrix[row][col].letter = String.fromCharCode(
-            Math.rangeInt(rangeLanguage[0], rangeLanguage[1])
-          );
-        }
+  if (!firstWord) return;
+  const rangeLanguage = searchLanguage(firstWord[0]);
+  for (let r = 0; r < gridSize; r++) {
+    for (let c = 0; c < gridSize; c++) {
+      if (matrix[r][c].letter === ".") {
+        // Fill with random letter from the same language range
+        matrix[r][c].letter = String.fromCharCode(
+          Math.rangeInt(rangeLanguage[0], rangeLanguage[1])
+        );
       }
     }
   }
