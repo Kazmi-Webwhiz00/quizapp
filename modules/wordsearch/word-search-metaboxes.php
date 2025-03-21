@@ -1,5 +1,7 @@
 <?php
 include_once plugin_dir_path(__FILE__) . '/wordsearch-grid-shortcode.php';
+// include_once plugin_dir_path(__FILE__) . 'assets/templates/wordsearch-limit-modal.php'; 
+
 
 
 
@@ -66,14 +68,19 @@ function wordsearch_enqueue_assets() {
             true
         );
 
+        wp_localize_script( 'wordsearch', 'pluginUrl', array(
+            'url' => plugin_dir_url( __FILE__ ),
+        ));
+
     // Enqueue the frontend JS.
     wp_enqueue_script(
         'wordsearch-grid',
-        plugin_dir_url(__FILE__) . '/assets/js/wordsearch-grid.js',
+        plugin_dir_url(__FILE__) . '/assets/js/index.js',
         array('jquery','phaser','wordsearch'),
-        '1.0',
+        '1.0' . time(),
         true
     );
+    wp_script_add_data( 'wordsearch-grid', 'type', 'module' );
 
         // Pass plugin URL to JavaScript
         wp_localize_script('wordsearch-grid', 'pluginURL', array(
@@ -88,13 +95,16 @@ function wordsearch_enqueue_assets() {
         if ( ! is_array( $word_entries ) ) {
             $word_entries = []; // Ensure it's always an array.
         }
+        $timer_value = get_post_meta($post->ID, '_wordsearch_timer_value', true);
 
         // Localize the data: Pass the word entries and a nonce to your JS file.
         wp_localize_script( 'wordsearch-grid', 'wordSearchData', array(
+            'url' => plugin_dir_url( __FILE__ ),
             'entries' => json_encode( $word_entries ),
             // 'containerWidth' => "55%",
             'maximunGridSize' => 10,
             'nonce'   => wp_create_nonce( 'wordsearch_nonce' ),
+            'timerValue' => $timer_value,
             'gridStyles'       => array( 
                 'fontColor'         => esc_attr( $gridTextColor ),
                 'fontFamily'        => esc_attr( $gridTextFontFamily ),
@@ -119,6 +129,13 @@ add_action( 'wp_enqueue_scripts', 'wordsearch_enqueue_assets' );
 
 // Save the meta box data.
 function save_wordsearch_meta_box_data( $post_id ) {
+    if ( function_exists( 'wp_doing_ajax' ) && wp_doing_ajax() ) {
+        return $post_id;
+    }
+
+    error_log("Entered");
+
+
     // Check if nonce is set.
     if ( ! isset( $_POST['wordsearch_meta_box_nonce_field'] ) ) {
         return $post_id;
@@ -139,6 +156,7 @@ function save_wordsearch_meta_box_data( $post_id ) {
     } else {
         return $post_id;
     }
+    
 
     // Process the cookie data for word entries.
     if ( isset( $_COOKIE['wordsearch_entries'] ) && ! empty( $_COOKIE['wordsearch_entries'] ) ) {
@@ -175,7 +193,9 @@ add_action( 'save_post', 'save_wordsearch_meta_box_data' );
 function save_wordsearch_ajax_handler() {
     // 1. Security: Verify the AJAX nonce.
     check_ajax_referer('wordsearch_ajax_nonce', 'security');
+    if (isset($_POST['word_search_data']) && is_array($_POST['word_search_data'])) {
 
+    }
     // 2. Validate the post ID and user capabilities.
     $post_id = isset($_POST['post_id']) ? intval($_POST['post_id']) : 0;
     if (!$post_id) {
@@ -186,9 +206,9 @@ function save_wordsearch_ajax_handler() {
     }
 
     // 3. Process and save the word/clue data (here we only have 'wordText' + 'imageUrl')
-    if (isset($_POST['word_seach_data']) && is_array($_POST['word_seach_data'])) {
+    if (isset($_POST['word_search_data']) && is_array($_POST['word_search_data'])) {
         $entries = array();
-        foreach ($_POST['word_seach_data'] as $entry) {
+        foreach ($_POST['word_search_data'] as $entry) {
             $word_text = isset($entry['wordText']) ? trim($entry['wordText']) : '';
             if (!empty($word_text)) {
                 $entries[] = array(
@@ -198,9 +218,9 @@ function save_wordsearch_ajax_handler() {
                 );
             }
         }
-
         if (!empty($entries)) {
             update_post_meta($post_id, 'word_search_entries', $entries);
+
         } else {
             delete_post_meta($post_id, 'word_search_entries');
         }
@@ -219,14 +239,14 @@ function save_wordsearch_ajax_handler() {
     // Retrieve the saved meta data and log it.
     
     $storedData = get_post_meta( $post_id, 'word_search_entries', true );
+    error_log("Data" . print_r($storedData , true));
+
         // Send response with the saved entries
         wp_send_json_success( array( 
             'message' => 'Word Search Entries saved successfully.',
             'data' => $storedData 
         ) );
-    
-    // 5. Send a success response.
-    wp_send_json_success( array( 'message' => 'Wordsearch saved successfully.' ) );
+
 
 }
 add_action('wp_ajax_save_wordsearch_ajax', 'save_wordsearch_ajax_handler');
@@ -239,8 +259,8 @@ function render_wordsearch_meta_box($post) {
     // Add a nonce field for security.
     wp_nonce_field('wordsearch_meta_box_nonce', 'wordsearch_meta_box_nonce_field');
 
-    // Fetch existing words from the '_wordsearch_word_entries' meta key
     $word_entries = get_post_meta($post->ID, 'word_search_entries', true);
+    error_log("Entries" . print_r($word_entries , true));
 
     if (empty($word_entries) || !is_array($word_entries)) {
         $word_entries = array();

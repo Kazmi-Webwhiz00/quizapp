@@ -44,32 +44,118 @@ h3 {
   }
 }
 .wordsearch-container {
+  max-width: 1200px;
+  margin: 1rem auto;
+  padding: 0 1rem;
   display: flex;
   flex-direction: column;
-  gap: 50px;
+  gap: 1.5rem;
+  background-color: white;
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  padding: 1rem;
+}
+
+/* Game header with title and timer */
+.game-header {
+  display: flex;
+  flex-direction: row-reverse;
+  gap: 16%;
+  justify-content: left;
   align-items: center;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 1rem;
+  /* margin-bottom: 1rem; */
+}
+
+.game-title {
+  font-size: 2rem !important;
+  margin: 0 0 1rem !important;
+  color: #1a2a3a;
+  font-weight: 800 !important;
+  font-family: "Montserrat", sans-serif !important;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.15), 0 0 10px rgba(72, 138, 255, 0.2);
+  background: linear-gradient(135deg, #2c3e50, #4a6990);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  padding: 0.3rem 0 !important;
+  position: relative;
+  display: inline-block;
+}
+
+.game-title::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #4a6990, transparent);
+}
+
+#gridTimer {
+  display: none;
+}
+
+.timer-container {
+  display: none;
+  align-items: center;
+  background: #f0f8ff;
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e0e7ff;
+}
+
+.timer-icon {
+  margin-right: 0.5rem;
+  font-size: 1.2rem;
 }
 
 /* -------- GAME CONTAINER & CANVAS -------- */
 #game-container {
-  /* Modern, card-like appearance */
-  /* floralwhite */
-  /* #9acd3257 */
-  background: #808080a1; /* white backdrop */
-  border-radius: 12px; /* softened corners */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* subtle shadow */
-  /* padding: 1rem; */
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  flex: 1;
+  min-height: 350px;
   position: relative;
-  /* width: 90%; */
-  /* max-width: 600px; */
+  overflow: hidden;
+  border: 1px solid #eaeaea;
+}
+
+.word-panel {
+  /* width: 100%; */
+  max-width: 170px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+}
+
+.word-panel-title {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+  font-size: 1.3rem;
+  color: #2c3e50;
+  text-align: left;
+  font-weight: 600;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 0.5rem;
 }
 
 /* Let canvas inherit the parent's border-radius, for a smooth shape */
 #game-container canvas {
   border-radius: 12px;
-  /* width: 100% !important;  */
   display: block;
-  /* box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); */
+  image-rendering: optimizeSpeed;
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
 }
 
 /* If you're using a dynamic overlay (e.g., Konva or a second canvas), apply the same corner rounding */
@@ -159,45 +245,83 @@ h3 {
 }
 
 #wordList {
-  display: flex; /* enable flex layout */
-  flex-wrap: wrap; /* wrap to next line if items exceed width */
-  gap: 10px; /* space between items */
-  list-style: none; /* remove default bullets from <ul> */
-  margin: 0; /* reset default ul margin */
-  padding: 1rem; /* reset default ul padding */
-  justify-content: space-evenly;
-  border: 1px solid #00000017;
-  border-radius: 1rem;
-  background-color: ivory;
-  max-width: 600px;
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 8px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 /* Each list item (word) */
 #wordList li {
-  display: inline-flex; /* or just 'inline-block' */
-  align-items: center; /* vertically center text if using inline-flex */
-  border-radius: 4px; /* slightly rounded corners */
-  padding: 8px 12px; /* spacing inside each item */
-  font-size: 18px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  padding: 0.5rem;
+  font-size: 0.9rem;
   font-weight: 500;
-  font-family: system-ui;
-  color: #000;
-  transition: color 0.2s ease;
-  text-transform: uppercase; /* optional: make them uppercase */
-  cursor: pointer; /* if you want a pointer on hover */
-  /* margin: 0;  (not needed if using 'gap' on the container) */
+  color: #4a5568;
+  text-align: center;
+  border: 1px solid #e2e8f0;
+  transition: all 0.2s ease;
+}
+
+#wordList li:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 /* If you want a 'found' style when the word is discovered: */
 #wordList li.found {
-  text-decoration: line-through;
-  opacity: 0.5;
+  text-decoration: none;
+  background: #e6f7e6;
+  color: #55a455;
+  border-color: #c1e7c1;
+  position: relative;
+}
+
+#wordList li.found::after {
+  content: "✓";
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-weight: bold;
+  color: #4caf50;
+}
+
+@keyframes foundWord {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+#wordList li.found {
+  animation: foundWord 0.5s ease;
+}
+
+@media (max-width: 768px) {
+  #wordList {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  #wordList {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 /* Example hover effect if you want it: */
-#words li:hover {
-  color: #555; /* slightly darker on hover */
-}
+/* #words li:hover {
+  color: #555;
+}  */
 
 .left-panel {
   display: flex;
@@ -210,6 +334,7 @@ h3 {
 }
 
 .grid-timer {
+  display: none;
   width: 100%;
   max-width: 150px;
   background-color: darkturquoise; /* Removed quotes for valid CSS */
@@ -232,11 +357,26 @@ h3 {
 }
 
 #timerDisplay {
-  align-self: center;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   font-weight: 600;
   margin: 0;
-  text-align: center;
+  color: #3a6ea5;
+}
+
+/* Main game content layout */
+.game-content {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+@media (min-width: 900px) {
+  .game-content {
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+  }
 }
 
 /* -------- GENERAL CONTROLS & BUTTONS -------- */
@@ -549,26 +689,26 @@ button:active {
 
 /* Styled Shuffle Button */
 .shuffle-button {
-  display: inline-block;
-  background-color: #0073aa;
-  margin: 0 10px;
-  color: #ffffff;
+  background: linear-gradient(135deg, #3a6ea5 0%, #2c5282 100%);
+  color: white;
   border: none;
-  padding: 10px 20px;
-  font-size: 16px;
-  font-weight: bold;
+  padding: 0.8rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
   cursor: pointer;
-  border-radius: 6px;
-  transition: background-color 0.3s ease, transform 0.2s;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  align-self: center;
 }
 
 .shuffle-button:hover {
-  background-color: #005f8c;
-  transform: scale(1.05);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 .shuffle-button:active {
-  transform: scale(0.98);
+  transform: translateY(0);
 }
 
 /* Checkbox Styling */
@@ -592,17 +732,229 @@ canvas {
   image-rendering: crisp-edges;
   image-rendering: pixelated; /* fallback for older browsers */
 }
-/* -------- MATCHED WORD LINE COLOR --------
-   This part is often set in JS (e.g., Konva strokeStyle or canvas drawing).
-   But if you set a class for matched lines, define it here. 
-   Example class usage in your highlight logic: 
-   currentLine.stroke("#FF5722") or a pastel color. 
-------------------------------------------*/
-
-/* If you're using a separate overlay for matched lines, you can style it here:
-.konvaLine {
-  stroke: #FF5722 !important; 
-  stroke-width: 12px !important;
-  opacity: 0.8;
+.grid-loading-indicator {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
-*/
+
+.grid-loading-spinner {
+  display: inline-block;
+  width: 60px;
+  height: 60px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3a6ea5;
+  border-radius: 50%;
+  animation: spin 1.5s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+@media (max-width: 768px) {
+  .wordsearch-container {
+    padding: 1rem;
+    margin: 1rem;
+  }
+  .game-header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  /* .word-panel {
+    max-width: 100%;
+  } */
+}
+
+.word-limit-modal {
+  position: fixed;
+  z-index: 1001;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease-in-out;
+}
+
+.word-limit-modal.show {
+  display: flex;
+  animation: modalFadeIn 0.4s forwards;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.word-limit-modal-content {
+  background-color: #ffffff;
+  max-width: 420px;
+  width: 90%;
+  border-radius: 12px;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transform: translateY(-20px);
+  opacity: 0;
+  transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1),
+    opacity 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.word-limit-modal.show .word-limit-modal-content {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.word-limit-modal-header {
+  padding: 20px 24px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-bottom: 1px solid #e9ecef;
+  position: relative;
+}
+
+.word-limit-modal-header::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(58, 110, 165, 0.2) 50%,
+    transparent 100%
+  );
+}
+
+.word-limit-modal-header h3 {
+  margin: 0;
+  color: #2d3748;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.word-limit-modal-header h3::before {
+  content: "⚠️";
+  margin-right: 10px;
+  font-size: 16px;
+}
+
+.word-limit-modal-body {
+  padding: 24px;
+  background-color: #ffffff;
+}
+
+.word-limit-modal-body p {
+  margin: 0;
+  color: #4a5568;
+  font-size: 16px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+.word-limit-modal-footer {
+  padding: 18px 24px;
+  display: flex;
+  justify-content: flex-end;
+  border-top: 1px solid #e9ecef;
+  background: linear-gradient(135deg, #ffffff 0%, #f7fafc 100%);
+}
+
+.word-limit-ok-button {
+  background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+.word-limit-ok-button:hover {
+  background: linear-gradient(135deg, #3182ce 0%, #2c5282 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
+}
+
+.word-limit-ok-button:active {
+  transform: translateY(1px);
+  box-shadow: 0 3px 6px rgba(50, 50, 93, 0.08), 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.word-limit-ok-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
+}
+
+.word-limit-ok-button::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.word-limit-ok-button:hover::after {
+  opacity: 1;
+}
+
+/* Additional responsive improvements */
+@media (max-width: 480px) {
+  .word-limit-modal-content {
+    width: 95%;
+    max-width: none;
+  }
+
+  .word-limit-modal-header {
+    padding: 16px 20px;
+  }
+
+  .word-limit-modal-body {
+    padding: 20px;
+  }
+
+  .word-limit-modal-footer {
+    padding: 16px 20px;
+  }
+}
+
+/* Responsive adjustments */

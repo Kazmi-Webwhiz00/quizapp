@@ -1,4 +1,5 @@
 <?php
+// include_once plugin_dir_path(__FILE__) . 'assets/templates/wordsearch-limit-modal.php'; 
 // Shortcode function to display the WordSearch game on the frontend
 
 function render_game(){
@@ -13,30 +14,28 @@ $default_popup_button_text = __('Close', 'wp-quiz-plugin');
 $success_popup_button_text = get_option('kw_wordsearch_success_popup_button_text', $default_popup_button_text);
 
     ?>
-    <div class="wordsearch-container">
-        <div class="left-panel">
-        <ul id="wordList"></ul>
-        <div class="grid-timer arrow-right-center">
-        <p id="timerDisplay"></p>
-        </div>
-        </div>
-        <div id="game-container"></div>
+<div class="wordsearch-container">
+  <div class="game-header">
+    <h2 class="game-title">Word Search Challenge</h2>
+    <div class="timer-container">
+      <div class="timer-icon">⏱️</div>
+      <p id="timerDisplay">00:00</p>
     </div>
-    
-    <!-- Word list panel -->
-    <div id="completionBanner">Well Done!</div>
-        
-    <!-- NEW: Timer display div for styling -->
-    <!-- <div id="timerDisplay" style="font-size: 18px; font-weight: bold; margin-top: 10px;">
-        Time: 0 seconds
-    </div> -->
+  </div>
   
-    <!-- <div id="completionModal" style="display: none; position: fixed; top: 50%; left: 50%; 
-         transform: translate(-50%, -50%); background: white; border: 2px solid #333; padding: 20px; z-index: 9999;">
-        <h2><?php echo $success_popup_title; ?></h2>
-        <p><?php echo $success_popup_body_text; ?></p>
-        <button id="closeModal"><?php echo $success_popup_button_text; ?></button>
-    </div> -->
+  <div class="game-content">
+    <div id="game-container"></div>
+    
+    <div class="word-panel">
+      <h3 class="word-panel-title">Find These Words:</h3>
+      <ul id="wordList"></ul>
+      <!-- <button id="shuffle-btn" class="shuffle-button">Shuffle</button> -->
+    </div>
+  </div>
+  
+  <div id="completionBanner">Well Done!</div>
+</div>
+
 
     <div id="completionModal" style="display: none; padding: 20px; z-index: 9999;">
   <div class="container-inner">
@@ -49,6 +48,26 @@ $success_popup_button_text = get_option('kw_wordsearch_success_popup_button_text
     </div>
   </div>
 </div>
+<!-- This will be shown/hidden programmatically -->
+<div class="grid-loading-indicator" style="display: none;">
+  <div class="grid-loading-spinner"></div>
+  <div style="color: #473214; font-weight: bold;" class="renderingPara">Rendering grid...</div>
+</div>
+
+<!-- <div id="wordLimitModal" class="word-limit-modal">
+  <div class="word-limit-modal-content">
+    <div class="word-limit-modal-header">
+      <h3>Entry Limit Reached</h3>
+    </div>
+    <div class="word-limit-modal-body">
+      <p>You cannot add more than 15 entries to the word search.</p>
+    </div>
+    <div class="word-limit-modal-footer">
+      <button id="wordLimitOkButton" class="word-limit-ok-button">OK</button>
+    </div>
+  </div>
+</div> -->
+
     <?php
 }
 

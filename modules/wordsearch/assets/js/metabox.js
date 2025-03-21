@@ -6,14 +6,10 @@ jQuery(document).ready(function ($) {
   var wordEntries = [];
   // Debounce timer variable (placed in an appropriate scope)
   let debounceTimer;
+  let totalEntries = 0;
   var savedEntries = entries;
 
   // When the document receives the custom event, update the metabox accordingly.
-  $(document).on("wordsearchEntriesUpdated", function (event, updatedEntries) {
-    console.log("Updated entries received in metabox.js:", updatedEntries);
-    wordEntries = updatedEntries.data;
-    // For example, update a global variable or refresh the entries list in the DOM.
-  });
 
   function mergeSavedEntriesIntoCookie(savedEntries, cookieEntries) {
     // Create a map for cookieEntries keyed by id.
@@ -34,16 +30,6 @@ jQuery(document).ready(function ($) {
         map.set(entry.id, entry);
       }
     });
-    // } else if (savedEntries.length < cookieEntries.length) {
-    //   // Remove cookie entries that are not in savedEntries.
-    //   for (const key of map.keys()) {
-    //     if (!savedIds.has(key)) {
-    //       map.delete(key);
-    //     }
-    //   }
-    // } else {
-    //   return;
-    // }
 
     return Array.from(map.values());
   }
@@ -141,11 +127,21 @@ jQuery(document).ready(function ($) {
       $(document).trigger("wordsearchEntriesUpdated", { data: [] });
       return;
     }
+    $(document).trigger("wordsearchEntriesUpdated", [wordEntries]);
     // Otherwise, update the cookie with the current wordEntries.
     setCookie("wordsearch_entries", JSON.stringify(wordEntries), 1); // expires in 1 day
     // Trigger the event with the updated entries.
     $(document).trigger("wordsearchEntriesUpdated", { data: wordEntries });
   }
+
+  $(document).on("wordsearchEntriesAdded", function (event, entries) {
+    entries.data.forEach(function (entry) {
+      if (entry.id && !wordEntries.includes(entry)) {
+        wordEntries.push(entry);
+      }
+    });
+    $(document).trigger("wordsearchEntriesUpdated", { data: wordEntries });
+  });
 
   // Function to add a new word entry using the template
   function addNewWordEntry() {
@@ -175,6 +171,11 @@ jQuery(document).ready(function ($) {
   // Handler for "Add Word" button click
   $("#add-wordsearch-button").on("click", function (e) {
     e.preventDefault();
+    totalEntries = totalEntries + 1;
+    if (totalEntries > 15) {
+      window.showWordLimitModal();
+      return;
+    }
     addNewWordEntry();
   });
 

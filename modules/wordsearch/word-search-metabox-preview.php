@@ -45,35 +45,39 @@ function enqueue_wordsearch_metabox_preview_assets( $hook ) {
             '1.0',
             true
         );
+
+        wp_localize_script( 'wordsearch', 'pluginUrl', array(
+          'url' => plugin_dir_url( __FILE__ ),
+      ));
         
         // Enqueue the grid JS file which initializes the game.
         wp_enqueue_script(
-            'wordsearch-grid',
-            plugin_dir_url(__FILE__) . '/assets/js/wordsearch-grid.js',
-            array('jquery', 'phaser', 'wordsearch'),
-            '1.0',
-            true
-        );
-        
-        // Pass any needed data to your JS.
-        wp_localize_script( 'wordsearch-grid', 'pluginURL', array(
-            'url' => plugin_dir_url( __FILE__ ),
-            'workerUrl' => plugins_url('modules/wordsearch/assets/js/gridworker.js', __FILE__)
-        ) );
-
+          'wordsearch-grid',
+          plugin_dir_url(__FILE__) . '/assets/js/index.js',
+          array('jquery', 'phaser', 'wordsearch'),
+          '1.0' . time(),
+          true
+      );
         // Initialize sanitized_entries as an empty array.
         // $sanitized_entries = [];
         
         global $post;
         $word_entries = get_post_meta( $post->ID, 'word_search_entries', true );
+        error_log("Word Entries" . print_r($word_entries,true));
         if ( ! is_array( $word_entries ) ) {
             $word_entries = []; // Ensure it's always an array.
         }
+
+    $timer_value = get_post_meta($post->ID, '_wordsearch_timer_value', true);
+
+
     wp_localize_script( 'wordsearch-grid', 'frontendData', array(
+      'url' => plugin_dir_url( __FILE__ ),
       'entries'          => json_encode($word_entries),
       'maximunGridSize'  => 10,
       'shuffleElement'   => 'shuffleButton',
       'checkBoxElement'  => 'toggle-checkbox',
+      'timerValue' => $timer_value,
       'gridStyles'       => array( 
           'fontColor'              => esc_attr( $gridTextColor ),
           'fontFamily'             => esc_attr( $gridTextFontFamily ),
@@ -85,6 +89,20 @@ function enqueue_wordsearch_metabox_preview_assets( $hook ) {
     }
 }
 add_action( 'admin_enqueue_scripts', 'enqueue_wordsearch_metabox_preview_assets' );
+
+function add_module_type_attribute( $tag, $handle, $src ) {
+  // List the handles that should be treated as modules.
+  $module_handles = array( 'wordsearch-grid' );  // Add your handle here
+  
+  // Check if the current handle is in the list of module handles.
+  if ( in_array( $handle, $module_handles, true ) ) {
+      // Modify the tag to add type="module"
+      $tag = '<script type="module" src="' . esc_url( $src ) . '"></script>';
+  }
+  
+  return $tag;
+}
+add_filter( 'script_loader_tag', 'add_module_type_attribute', 10, 3 );
 
 // Register the meta box for the 'wordsearch' post type.
 function add_wordsearch_preview_meta_box() {
