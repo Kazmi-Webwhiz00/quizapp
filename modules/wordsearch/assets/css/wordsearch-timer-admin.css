@@ -1,0 +1,74 @@
+/**
+ * Word Search Timer Admin Styles
+ */
+
+/* Metabox container */
+.wordsearch-timer-metabox .timer-inputs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 10px;
+  margin-bottom: 12px;
+}
+
+.wordsearch-timer-metabox .time-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.wordsearch-timer-metabox .time-field label {
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+
+.wordsearch-timer-metabox .time-field input {
+  width: 100%;
+  text-align: center;
+}
+
+.wordsearch-timer-metabox .timer-heading {
+  margin-top: 12px;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.wordsearch-timer-metabox .timer-preview {
+  background: #f0f0f1;
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 3px;
+  font-family: monospace;
+  font-size: 14px;
+}
+
+.wordsearch-timer-metabox .timer-message {
+  margin-bottom: 10px;
+}
+
+.wordsearch-timer-metabox .timer-description {
+  color: #646970;
+  font-style: italic;
+  font-size: 12px;
+  margin-top: 0;
+}
+
+/* WordPress metabox adjustments */
+#wordsearch-timer .inside {
+  padding: 0 12px 12px;
+}
+
+/* Timer preview formatting */
+#timer-preview-value {
+  font-weight: bold;
+}
+
+/* Responsive adjustments for small screens */
+@media screen and (max-width: 782px) {
+  .wordsearch-timer-metabox .timer-inputs {
+    grid-template-columns: 1fr;
+    grid-gap: 8px;
+  }
+
+  .wordsearch-timer-metabox .time-field {
+    margin-bottom: 5px;
+  }
+}

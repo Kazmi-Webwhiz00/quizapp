@@ -23,13 +23,12 @@
    * @param {Array} settings
    * constructor
    */
+  /**
+   * WordSearch constructor on the main thread
+   */
   function WordSearch(wrapEl, settings) {
     this.wrapEl = wrapEl;
-
-    // Add `.ws-area` to wrap element
     this.wrapEl.classList.add("ws-area");
-
-    //Words solved.
     this.solved = 0;
 
     // Default settings
@@ -42,27 +41,52 @@
     };
     this.settings = Object.assign({}, default_settings, settings);
 
-    // Check the words' length if it is overflow the grid
-    if (this.parseWords(this.settings.gridSize)) {
-      // Add words into the matrix data
-      var isWorked = false;
-
-      while (isWorked == false) {
-        // initialize the application
-        this.initialize();
-
-        isWorked = this.addWords();
-      }
-
-      // Fill up the remaining blank items
-      if (!this.settings.debug) {
-        this.fillUpFools();
-      }
-
-      // Draw the matrix into wrap element
-      this.drawmatrix();
+    // A container <ul> for showing words to find, if you want:
+    // (optional: remove if you already handle this differently)
+    let wordList = document.createElement("ul");
+    wordList.className = "ws-words";
+    for (let i = 0; i < this.settings.words.length; i++) {
+      let li = document.createElement("li");
+      li.textContent = this.settings.words[i];
+      wordList.appendChild(li);
     }
+    this.wrapEl.appendChild(wordList);
+
+    // --------------------------------------------------
+    // 1) Spawn the worker and request puzzle generation
+    // --------------------------------------------------
+    console.log(
+      "::workerUrl",
+      pluginUrl.url + "assets/js/wordsearch-worker.js"
+    );
+    this.worker = new Worker(pluginUrl.url + "assets/js/wordsearch-worker.js"); // path to your worker file
+
+    // Listen for the puzzle data
+    // Create a promise that resolves when the worker returns the puzzle
+    this._matrixPromise = new Promise((resolve) => {
+      this.worker.onmessage = (e) => {
+        if (e.data.type === "PUZZLE_READY") {
+          this.matrix = e.data.matrix;
+          this.settings.wordsList = e.data.wordsList;
+          this.drawmatrix();
+          resolve(this.matrix); // resolve the promise with the matrix
+          // if (typeof onReady === "function") {
+          //   onReady(this);
+          // }
+        }
+      };
+    });
+
+    // Send a request to generate the puzzle with our current settings
+    this.worker.postMessage({
+      type: "GENERATE_PUZZLE",
+      settings: this.settings,
+    });
   }
+
+  WordSearch.prototype.getMatrix = function () {
+    return this._matrixPromise;
+  };
 
   /**
    * Parse words
@@ -81,10 +105,10 @@
 
       var word = this.settings.words[i];
       if (word.length > maxSize) {
-        alert("The length of word `" + word + "` is overflow the gridSize.");
-        console.error(
-          "The length of word `" + word + "` is overflow the gridSize."
-        );
+        // alert("The length of word `" + word + "` is overflow the gridSize.");
+        // console.error(
+        //   "The length of word `" + word + "` is overflow the gridSize."
+        // );
         itWorked = false;
       }
     }
@@ -350,17 +374,14 @@
    * @param {Array} selected
    */
   WordSearch.prototype.lookup = function (selected) {
-    var words = [""];
-
-    for (var i = 0; i < selected.length; i++) {
-      words[0] += selected[i].letter;
-    }
-    words.push(words[0].split("").reverse().join(""));
+    var joined = selected.map((item) => item.letter).join("");
+    var reversed = joined.split("").reverse().join("");
 
     if (
-      this.settings.words.indexOf(words[0]) > -1 ||
-      this.settings.words.indexOf(words[1]) > -1
+      this.settings.words.indexOf(joined) > -1 ||
+      this.settings.words.indexOf(reversed) > -1
     ) {
+      // Mark them found in the UI
       for (var i = 0; i < selected.length; i++) {
         var row = selected[i].row + 1,
           col = selected[i].col + 1,
@@ -371,32 +392,27 @@
               col +
               ")"
           );
-
         el.classList.add("ws-found");
       }
 
-      //Cross word off list.
+      // Strike out in the word list
       var wordList = document.querySelector(".ws-words");
-      var wordListItems = wordList.getElementsByTagName("li");
-      for (var i = 0; i < wordListItems.length; i++) {
-        if (
-          words[0] == removeDiacritics(wordListItems[i].innerHTML.toUpperCase())
-        ) {
-          if (
-            wordListItems[i].innerHTML !=
-            "<del>" + wordListItems[i].innerHTML + "</del>"
-          ) {
-            //Check the word is never found
-            wordListItems[i].innerHTML =
-              "<del>" + wordListItems[i].innerHTML + "</del>";
-            //Increment solved words.
-            this.solved++;
+      if (wordList) {
+        var wordListItems = wordList.getElementsByTagName("li");
+        for (var j = 0; j < wordListItems.length; j++) {
+          var originalText = wordListItems[j].innerHTML;
+          var normalized = removeDiacritics(originalText.toUpperCase());
+          if (joined === normalized || reversed === normalized) {
+            if (!/^<del>/.test(originalText)) {
+              wordListItems[j].innerHTML = "<del>" + originalText + "</del>";
+              this.solved++;
+            }
           }
         }
       }
 
-      //Game over?
-      if (this.solved == this.settings.words.length) {
+      // Check game over
+      if (this.solved === this.settings.words.length) {
         this.gameOver();
       }
     }
@@ -406,14 +422,11 @@
    * Game Over
    */
   WordSearch.prototype.gameOver = function () {
-    //Create overlay.
     var overlay = document.createElement("div");
     overlay.setAttribute("id", "ws-game-over-outer");
     overlay.setAttribute("class", "ws-game-over-outer");
     this.wrapEl.parentNode.appendChild(overlay);
 
-    //Create overlay content.
-    var overlay = document.getElementById("ws-game-over-outer");
     overlay.innerHTML =
       "<div class='ws-game-over-inner' id='ws-game-over-inner'>" +
       "<div class='ws-game-over' id='ws-game-over'>" +
@@ -422,7 +435,6 @@
       "</div>" +
       "</div>";
   };
-
   /**
    * Mouse event - Mouse down
    * @param {Object} item
@@ -463,7 +475,7 @@
                 ")"
             );
 
-          el.className += " ws-selected";
+          if (el) el.classList.add("ws-selected");
         }
       }
     };
@@ -477,7 +489,7 @@
     return function () {
       _this.selectFrom = null;
       _this.clearHighlight();
-      _this.lookup(_this.selected);
+      if (_this.selected) _this.lookup(_this.selected);
       _this.selected = [];
     };
   };
@@ -714,7 +726,7 @@ function removeDiacritics(str) {
 //------------------------------Search language--------------------------------------------------//
 // Determine what letters injected on grid
 function searchLanguage(firstLetter) {
-  codefirstLetter = firstLetter.charCodeAt();
+  let codefirstLetter = firstLetter.charCodeAt();
   var codeLetter = [65, 90];
   if (codefirstLetter >= 65 && codefirstLetter <= 90) {
     // Latin

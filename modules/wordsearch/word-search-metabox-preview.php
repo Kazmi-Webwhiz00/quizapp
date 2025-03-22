@@ -35,7 +35,7 @@ function enqueue_wordsearch_metabox_preview_assets( $hook ) {
     );
         
         // Enqueue Phaser from a CDN.
-        wp_enqueue_script( 'phaser', 'https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.js', array(), null, true );
+        wp_enqueue_script( 'phaser', plugin_dir_url(__FILE__) . './assets/js/phaser.js', array(), null, true );
         
         // Enqueue your WordSearch frontend JS (if it’s not already loaded).
         wp_enqueue_script(
@@ -45,47 +45,39 @@ function enqueue_wordsearch_metabox_preview_assets( $hook ) {
             '1.0',
             true
         );
+
+        wp_localize_script( 'wordsearch', 'pluginUrl', array(
+          'url' => plugin_dir_url( __FILE__ ),
+      ));
         
         // Enqueue the grid JS file which initializes the game.
         wp_enqueue_script(
-            'wordsearch-grid',
-            plugin_dir_url(__FILE__) . '/assets/js/wordsearch-grid.js',
-            array('jquery', 'phaser', 'wordsearch'),
-            '1.0',
-            true
-        );
-        
-        // Pass any needed data to your JS.
-        wp_localize_script( 'wordsearch-grid', 'pluginURL', array(
-            'url' => plugin_dir_url( __FILE__ )
-        ) );
-
+          'wordsearch-grid',
+          plugin_dir_url(__FILE__) . '/assets/js/index.js',
+          array('jquery', 'phaser', 'wordsearch'),
+          '1.0' . time(),
+          true
+      );
         // Initialize sanitized_entries as an empty array.
-        $sanitized_entries = [];
+        // $sanitized_entries = [];
         
-        if ( isset( $_COOKIE['wordsearch_entries'] ) && ! empty( $_COOKIE['wordsearch_entries'] ) ) {
-            $raw_data = wp_unslash( $_COOKIE['wordsearch_entries'] );
-            $entries  = json_decode( $raw_data, true );
-    
-            // Check if JSON decoded correctly and is an array.
-            if ( json_last_error() === JSON_ERROR_NONE && is_array( $entries ) ) {
-                // Sanitize each entry before saving.
-                $sanitized_entries = array_map( function( $entry ) {
-                    return array(
-                        'id'       => sanitize_text_field( isset( $entry['id'] ) ? $entry['id'] : '' ),
-                        'wordText' => sanitize_text_field( isset( $entry['wordText'] ) ? $entry['wordText'] : '' ),
-                        'imageUrl' => esc_url_raw( isset( $entry['imageUrl'] ) ? $entry['imageUrl'] : '' ),
-                    );
-                }, $entries );
-
-        // Optionally, if you need to pass word entries or other localized data:
+        global $post;
+        $word_entries = get_post_meta( $post->ID, 'word_search_entries', true );
+        error_log("Word Entries" . print_r($word_entries,true));
+        if ( ! is_array( $word_entries ) ) {
+            $word_entries = []; // Ensure it's always an array.
         }
-    }
+
+    $timer_value = get_post_meta($post->ID, '_wordsearch_timer_value', true);
+
+
     wp_localize_script( 'wordsearch-grid', 'frontendData', array(
-      'entries'          => json_encode($sanitized_entries),
+      'url' => plugin_dir_url( __FILE__ ),
+      'entries'          => json_encode($word_entries),
       'maximunGridSize'  => 10,
       'shuffleElement'   => 'shuffleButton',
       'checkBoxElement'  => 'toggle-checkbox',
+      'timerValue' => $timer_value,
       'gridStyles'       => array( 
           'fontColor'              => esc_attr( $gridTextColor ),
           'fontFamily'             => esc_attr( $gridTextFontFamily ),
@@ -97,6 +89,20 @@ function enqueue_wordsearch_metabox_preview_assets( $hook ) {
     }
 }
 add_action( 'admin_enqueue_scripts', 'enqueue_wordsearch_metabox_preview_assets' );
+
+function add_module_type_attribute( $tag, $handle, $src ) {
+  // List the handles that should be treated as modules.
+  $module_handles = array( 'wordsearch-grid' );  // Add your handle here
+  
+  // Check if the current handle is in the list of module handles.
+  if ( in_array( $handle, $module_handles, true ) ) {
+      // Modify the tag to add type="module"
+      $tag = '<script type="module" src="' . esc_url( $src ) . '"></script>';
+  }
+  
+  return $tag;
+}
+add_filter( 'script_loader_tag', 'add_module_type_attribute', 10, 3 );
 
 // Register the meta box for the 'wordsearch' post type.
 function add_wordsearch_preview_meta_box() {
@@ -171,12 +177,19 @@ $shuffle_text_color = get_option('kw_wordsearch_admin_shuffle_button_text_color'
 
           // Checks the cookie and toggles the preview accordingly.
           function checkAndTogglePreview() {
+            // let wordDataAdded = false;
+            // $(document).on("wordsearchEntriesUpdated", function (event, updatedEntries) {
+            //  wordDataAdded = updatedEntries && window.wordData.length > 0 ? true : false;
+            // });
             var rawData = getCookie('wordsearch_entries');
             var entries = rawData ? JSON.parse(rawData) : [];
             var emptyMsg = document.getElementById('wordsearch-empty-box');
             var gameContent = document.getElementById('game-preview-content');
 
-            if (entries.length > 0) {
+            const wordDataAdded = window.wordData && window.wordData.length > 0 ? true : false;
+
+            if (entries.length > 0 || wordDataAdded) {
+
               // If entries exist, show game content and hide the empty message.
               gameContent.style.display = 'block';
               emptyMsg.style.display = 'none';

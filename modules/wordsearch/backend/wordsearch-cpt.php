@@ -223,7 +223,7 @@ function render_wordsearch_category_meta_box($post) {
     // Retrieve associated terms for the wordsearch post
     $selected_schools = wp_get_post_terms($post->ID, 'wordsearch_category', array('fields' => 'ids', 'parent' => 0));
     $selected_school  = !empty($selected_schools) ? $selected_schools[0] : '';
-
+    error_log("Selected". print_r($selected_school,true));
     // Retrieve term objects then extract the ID for selected class
     $selected_classes = !empty($selected_school) ? wp_get_post_terms($post->ID, 'wordsearch_category', array('parent' => $selected_school)) : array();
     $selected_class   = !empty($selected_classes) ? $selected_classes[0]->term_id : '';
@@ -253,29 +253,47 @@ function render_wordsearch_category_meta_box($post) {
 <div class="wordsearch-category-dropdowns" style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
     <!-- School Dropdown -->
     <div class="dropdown-group">
-        <label for="selected_school_wordsearch"><?php echo esc_html(get_option('wp_wordsearch_plugin_category_select_school_text', _x('Select School','wordsearch','wp-quiz-plugin'))); ?></label>
+        <label for="selected_school_wordsearch"><?php echo esc_html($select_category_school_text); ?></label>
         <select name="selected_school" id="selected_school_wordsearch">
             <option value=""><?php _e('----------', 'wp-quiz-plugin'); ?></option>
-            <?php foreach (get_terms(array('taxonomy' => 'wordsearch_category','parent' => 0, 'hide_empty' => false)) as $school) { ?>
-                <option value="<?php echo esc_attr($school->term_id); ?>">
+            <?php foreach ($schools as $school) { ?>
+                <option value="<?php echo esc_attr($school->term_id); ?>" <?php selected($selected_school, $school->term_id); ?>>
                     <?php echo esc_html($school->name); ?>
                 </option>
             <?php } ?>
         </select>
     </div>
 
-    <div id="class_select_container" class="dropdown-group" style="display: none;">
-        <label for="selected_class_wordsearch"><?php echo esc_html(get_option('wp_wordsearch_plugin_category_select_class_text', _x('Select Class','wordsearch','wp-quiz-plugin'))); ?></label>
+    <div id="class_select_container" class="dropdown-group" style="<?php echo ($selected_school && count($classes) > 1) ? '' : 'display: none;'; ?>">
+        <label for="selected_class_wordsearch"><?php echo esc_html($select_category_class_text); ?></label>
         <select name="selected_class" id="selected_class_wordsearch">
             <option value=""><?php _e('----------', 'wp-quiz-plugin'); ?></option>
+            <?php 
+            if (!empty($classes)) {
+                foreach ($classes as $class) { ?>
+                    <option value="<?php echo esc_attr($class->term_id); ?>" <?php selected($selected_class, $class->term_id); ?>>
+                        <?php echo esc_html($class->name); ?>
+                    </option>
+                <?php }
+            }
+            ?>
         </select>
     </div>
 
     <!-- Subject Dropdown (initially hidden if no options exist) -->
-    <div id="subject_select_container_wordsearch" class="dropdown-group" style="display: none;">
-        <label for="selected_subject_wordsearch"><?php echo esc_html(get_option('wp_wordsearch_plugin_category_select_subject_text', _x('Select Subject','wordsearch','wp-quiz-plugin'))); ?></label>
+    <div id="subject_select_container_wordsearch" class="dropdown-group" style="<?php echo ($selected_class && count($subjects) > 1) ? '' : 'display: none;'; ?>">
+        <label for="selected_subject_wordsearch"><?php echo esc_html($select_category_subject_text); ?></label>
         <select name="selected_subject" id="selected_subject_wordsearch">
             <option value=""><?php _e('----------', 'wp-quiz-plugin'); ?></option>
+            <?php 
+            if (!empty($subjects)) {
+                foreach ($subjects as $subject) { ?>
+                    <option value="<?php echo esc_attr($subject->term_id); ?>" <?php selected($selected_subject, $subject->term_id); ?>>
+                        <?php echo esc_html($subject->name); ?>
+                    </option>
+                <?php }
+            }
+            ?>
         </select>
     </div>
 </div>

@@ -1,19 +1,9 @@
 jQuery(document).ready(function ($) {
   console.log("is admin (wordsearch) is ", wpQuizPlugin.isAdmin);
+  let totalEntries = 0;
 
   // Global array to hold all word entry objects (if not defined already)
-  var wordEntries = window.wordEntries || [];
-
-  // Helper functions for cookie handling
-  function setCookie(name, value, days) {
-    var expires = "";
-    if (days) {
-      var date = new Date();
-      date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
-      expires = "; expires=" + date.toUTCString();
-    }
-    document.cookie = name + "=" + (value || "") + expires + "; path=/";
-  }
+  var wordEntries = [];
 
   function getCookie(name) {
     var nameEQ = name + "=";
@@ -24,6 +14,17 @@ jQuery(document).ready(function ($) {
       if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
     }
     return null;
+  }
+
+  // Helper functions to set and get cookies
+  function setCookie(name, value, days) {
+    var expires = "";
+    if (days) {
+      var date = new Date();
+      date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+      expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "") + expires + "; path=/";
   }
 
   function updateCookie() {
@@ -39,8 +40,26 @@ jQuery(document).ready(function ($) {
       setCookie("wordsearch_entries", "", 1);
       return;
     }
-    // Otherwise, update the cookie with the current wordEntries.
-    setCookie("wordsearch_entries", JSON.stringify(wordEntries), 1); // expires in 1 day
+
+    // Retrieve existing cookie entries
+    var existingCookie = getCookie("wordsearch_entries");
+    var existingEntries = [];
+    if (existingCookie) {
+      try {
+        existingEntries = JSON.parse(existingCookie);
+        if (!Array.isArray(existingEntries)) {
+          existingEntries = [];
+        }
+      } catch (e) {
+        existingEntries = [];
+      }
+    }
+
+    // Append new entries to the existing ones
+    var combinedEntries = existingEntries.concat(wordEntries);
+
+    // Update the cookie with the combined entries (expires in 1 day)
+    setCookie("wordsearch_entries", JSON.stringify(combinedEntries), 1);
   }
 
   /**
@@ -75,7 +94,7 @@ jQuery(document).ready(function ($) {
     const returnFormatPrompt = wpQuizPlugin.wsDefaultReturnFormatPrompt;
 
     // 1) Get selected categories using updated selectors for wordsearch
-    // const selectedCategories = ws_getSelectedCategories();
+    const selectedCategories = ws_getSelectedCategories();
 
     // 2) (Optional) Retrieve existing words to avoid duplicates.
     // Commented out as it relates to the UI grid:
@@ -91,7 +110,7 @@ jQuery(document).ready(function ($) {
       topic: topic,
       age: age,
       language: language,
-      // categories: selectedCategories,
+      categories: selectedCategories,
     });
 
     // 4) Combine prompts into the final prompt
@@ -157,32 +176,38 @@ jQuery(document).ready(function ($) {
    *
    * This function grabs the text of the selected options from the new dropdowns.
    */
-  /*
   function ws_getSelectedCategories() {
     let selectedCategories = [];
-    let selectedSchool = $("#ws-selected_school_wordsearch")
+    let selectedSchool = $("#selected_school_wordsearch")
       .find(":selected")
       .text()
       .trim();
-    let selectedClass = $("#ws-selected_class_wordsearch")
+    let selectedClass = $("#selected_class_wordsearch")
       .find(":selected")
       .text()
       .trim();
-    let selectedSubject = $("#ws-selected_subject_wordsearch")
+    let selectedSubject = $("#selected_subject_wordsearch")
       .find(":selected")
       .text()
       .trim();
+
     const isValidCategory = (category) => {
       return category.length > 0 && !category.match(/^-{3,}$/);
     };
-    if (isValidCategory(selectedSchool))
+
+    if (isValidCategory(selectedSchool)) {
       selectedCategories.push(selectedSchool);
-    if (isValidCategory(selectedClass)) selectedCategories.push(selectedClass);
-    if (isValidCategory(selectedSubject))
+    }
+    if (isValidCategory(selectedClass)) {
+      selectedCategories.push(selectedClass);
+    }
+    if (isValidCategory(selectedSubject)) {
       selectedCategories.push(selectedSubject);
+    }
+
     return selectedCategories.join(" > ");
   }
-*/
+
   // Unique ID for the wordsearch generate button
   const generateButtonId = "#ws-generate-ai-button";
 
@@ -191,6 +216,14 @@ jQuery(document).ready(function ($) {
     const topic = $("#ws-topic").val().trim();
     const age = $("#ws-age").val().trim();
     const number = $("#ws-words").val().trim();
+    const newEntries = parseInt(number, 10);
+
+    if (totalEntries + newEntries > 15) {
+      window.showWordLimitModal();
+      return;
+    }
+
+    totalEntries += newEntries;
     const language = $("#ws-language").val().trim();
     const maxNumberOfWords = parseInt(wpQuizPlugin.wsMaxNumberOfWords);
     if (number < 1 || number > maxNumberOfWords) {
@@ -272,9 +305,9 @@ jQuery(document).ready(function ($) {
               // Push the modified entry to the global wordEntries array
               wordEntries.push(item);
             });
+            updateCookie();
 
             // Update the cookie with the new entries
-            updateCookie();
             // Commented out UI update related to word entry rendering
             ws_appendGeneratedContent(generatedContent);
             // $("#ws-shuffle-button").click();
@@ -293,6 +326,7 @@ jQuery(document).ready(function ($) {
             $.fn.highlightPublishButton();
           } catch (error) {
             console.error("Error parsing response (wordsearch):", error);
+            $(".kw-loading").hide();
             Swal.fire(
               wpQuizPlugin.wsStrings.errorTitle,
               wpQuizPlugin.wsStrings.errorMessage,
@@ -334,18 +368,23 @@ jQuery(document).ready(function ($) {
     //   wordsearch.updateHiddenFields();
     // }
     console.log("Saving wordsearch data via AJAX");
-    var rawData = getCookie("wordsearch_entries");
-    rawData = rawData ? rawData.trim() : "";
-    word_entries = rawData.length > 0 ? JSON.parse(rawData) : [];
-    var word_seach_data = [];
+    // var rawData = getCookie("wordsearch_entries");
+    // rawData = rawData ? rawData.trim() : "";
+    // word_entries = rawData.length > 0 ? JSON.parse(rawData) : [];
+    var word_search_data = [];
     $(".add-word-container").each(function () {
       var $wordDiv = $(this);
       var wordText = $wordDiv.find('input[name*="[word]"]').val();
       // var clue = $clueDiv.find('input[name*="[clue]"]').val();
       var uniqueId = $wordDiv.find('input[name*="[uniqueId]"]').val();
       var imageUrl = $wordDiv.find("input.wordsearch-image-url").val() || "";
-      if (wordText && $.trim(wordText) !== "") {
-        word_seach_data.push({
+      if (
+        wordText &&
+        $.trim(wordText) !== "" &&
+        uniqueId &&
+        $.trim(uniqueId) !== ""
+      ) {
+        word_search_data.push({
           id: uniqueId,
           wordText: wordText,
           // clue: clue,
@@ -355,6 +394,15 @@ jQuery(document).ready(function ($) {
       }
     });
 
+    console.log(":entries:", word_search_data);
+    const postId = $("#post_ID").val();
+    const newUrl =
+      window.location.origin +
+      "/wp-admin/post.php?post=" +
+      postId +
+      "&action=edit";
+    window.history.replaceState(null, "", newUrl);
+
     $.ajax({
       url: wordsearchScriptVar.ajaxUrl,
       type: "POST",
@@ -363,14 +411,14 @@ jQuery(document).ready(function ($) {
         action: "save_wordsearch_ajax",
         security: wordsearchScriptVar.nonce,
         post_id: $("#post_ID").val(),
-        wordsearch_data: word_entries,
-        word_seach_data: word_seach_data,
+        // wordsearch_data: word_entries,
+        word_search_data: word_search_data,
       },
       success: function (response) {
         if (response.success) {
           console.log("Wordsearch saved successfully via AJAX.", response.data);
           // Trigger a custom event with the updated entries as data
-          $(document).trigger("wordsearchEntriesUpdated", response.data);
+          $(document).trigger("wordsearchEntriesAdded", response.data);
         } else {
           console.error("Error saving wordsearch:", response.data);
         }

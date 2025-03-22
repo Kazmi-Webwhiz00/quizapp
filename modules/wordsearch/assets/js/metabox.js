@@ -6,68 +6,62 @@ jQuery(document).ready(function ($) {
   var wordEntries = [];
   // Debounce timer variable (placed in an appropriate scope)
   let debounceTimer;
+  let totalEntries = 0;
   var savedEntries = entries;
 
   // When the document receives the custom event, update the metabox accordingly.
-  $(document).on("wordsearchEntriesUpdated", function (event, updatedEntries) {
-    console.log("Updated entries received in metabox.js:", updatedEntries);
-    wordEntries = updatedEntries.data;
-    // For example, update a global variable or refresh the entries list in the DOM.
-  });
 
+  var savedEntries = entries; // entries from the database
+
+  /**
+   * Merges savedEntries with cookieEntries so that:
+   * - Any cookie entry whose id does not exist in savedEntries is dropped.
+   * - For entries that exist in both, the cookie version is used (preserving any local extra info).
+   * - Any savedEntry missing in the cookie is added.
+   */
   function mergeSavedEntriesIntoCookie(savedEntries, cookieEntries) {
     // Create a map for cookieEntries keyed by id.
-    const map = new Map();
+    const cookieMap = new Map();
     cookieEntries.forEach((entry) => {
       if (entry.id) {
-        map.set(entry.id, entry);
+        cookieMap.set(entry.id, entry);
       }
     });
 
-    // Create a Set of saved entry ids for quick lookup.
-    const savedIds = new Set(savedEntries.filter((e) => e.id).map((e) => e.id));
-
-    // if (savedEntries.length > cookieEntries.length) {
-    // Add any missing savedEntries to the map.
-    savedEntries.forEach((entry) => {
-      if (entry.id && !map.has(entry.id)) {
-        map.set(entry.id, entry);
+    // Build the merged array solely from the savedEntries.
+    // For each saved entry, if there is a matching cookie entry, use that; otherwise, use the saved entry.
+    const mergedEntries = savedEntries.map((entry) => {
+      if (entry.id && cookieMap.has(entry.id)) {
+        return cookieMap.get(entry.id);
       }
+      return entry;
     });
-    // } else if (savedEntries.length < cookieEntries.length) {
-    //   // Remove cookie entries that are not in savedEntries.
-    //   for (const key of map.keys()) {
-    //     if (!savedIds.has(key)) {
-    //       map.delete(key);
-    //     }
-    //   }
-    // } else {
-    //   return;
-    // }
 
-    return Array.from(map.values());
+    return mergedEntries;
   }
 
   function syncSavedEntriesWithCookie(savedEntries) {
-    // Retrieve cookie data for wordsearch_entries
+    // If there are no saved entries, clear the cookie.
     if (savedEntries.length === 0) {
       console.log("No saved entries to sync with cookie.");
       setCookie("wordsearch_entries", "", -1);
       return;
     }
+
+    // Retrieve cookie data for wordsearch_entries.
     const cookieDataStr = getCookie("wordsearch_entries");
     let cookieEntries = cookieDataStr ? JSON.parse(cookieDataStr) : [];
 
-    // Merge saved entries with the cookie data
+    // Merge the database saved entries with the cookie entries.
     const mergedEntries = mergeSavedEntriesIntoCookie(
       savedEntries,
       cookieEntries
     );
 
-    // Update the cookie if there's a difference
+    // If there is any difference, update the cookie.
     if (JSON.stringify(mergedEntries) !== JSON.stringify(cookieEntries)) {
       setCookie("wordsearch_entries", JSON.stringify(mergedEntries), 1);
-      console.log("Cookie updated with missing saved entries:", mergedEntries);
+      console.log("Cookie updated. New entries:", mergedEntries);
       return mergedEntries;
     } else {
       console.log("Cookie entries are already up-to-date.");
@@ -138,31 +132,38 @@ jQuery(document).ready(function ($) {
     ) {
       // No valid entries: clear the cookie.
       setCookie("wordsearch_entries", "", 1);
+      $(document).trigger("wordsearchEntriesUpdated", { data: [] });
       return;
     }
+    $(document).trigger("wordsearchEntriesUpdated", [wordEntries]);
     // Otherwise, update the cookie with the current wordEntries.
     setCookie("wordsearch_entries", JSON.stringify(wordEntries), 1); // expires in 1 day
+    // Trigger the event with the updated entries.
+    $(document).trigger("wordsearchEntriesUpdated", { data: wordEntries });
   }
+
+  $(document).on("wordsearchEntriesAdded", function (event, entries) {
+    entries.data.forEach(function (entry) {
+      if (entry.id && !wordEntries.includes(entry)) {
+        wordEntries.push(entry);
+      }
+    });
+    $(document).trigger("wordsearchEntriesUpdated", { data: wordEntries });
+  });
 
   // Function to add a new word entry using the template
   function addNewWordEntry() {
     // Get the current number of word entries in the container
     var index = $wordsContainer.children(".add-word-container").length;
 
-    // Increment the global entry count
-    entryNumber++;
-
-    // Set the display number for the new entry
-    var number = entryNumber;
+    // Use the index for the display number (instead of a separate counter)
+    var number = index + 1;
 
     // Generate a new unique ID for this entry
     var uniqueId = generateUniqueId();
 
     // Update the id variable with the new uniqueId
     id = uniqueId;
-
-    // Reassign number using the updated entryCount (optional, as number is already set)
-    number = entryNumber;
 
     // Replace placeholders in the template with actual values
     var newEntryHtml = template
@@ -178,6 +179,11 @@ jQuery(document).ready(function ($) {
   // Handler for "Add Word" button click
   $("#add-wordsearch-button").on("click", function (e) {
     e.preventDefault();
+    totalEntries = totalEntries + 1;
+    if (totalEntries > 15) {
+      window.showWordLimitModal();
+      return;
+    }
     addNewWordEntry();
   });
 
@@ -308,35 +314,43 @@ jQuery(document).ready(function ($) {
   });
 
   // Remove an entry.
+  // Remove an entry.
   $wordsContainer.on("click", ".remove-word", function () {
-    if (confirm("Are you sure you want to remove this word?")) {
-      var $wordDiv = $(this).closest(".add-word-container");
-      var uniqueId = $wordDiv.data("unique-id");
-      // Remove the element from the DOM.
-      $wordDiv.remove();
-      $wordsContainer.children(".add-word-container").each(function (index) {
-        $(this).attr("data-index", index);
-        $(this)
-          .find(".word-number")
-          .text(index + 1 + ".");
-        // Also update the name attributes if needed
-      });
-      console.log("::wordEntries6", uniqueId, wordEntries);
+    var $wordDiv = $(this).closest(".add-word-container");
+    var uniqueId = $wordDiv.data("unique-id");
 
-      // Filter the array to remove the object with the matching id.
-      wordEntries = wordEntries.filter(function (item) {
-        return item.id !== uniqueId;
-      });
-      console.log("::wordEntries7", wordEntries);
+    // Remove the element from the DOM.
+    $wordDiv.remove();
 
-      // Update the cookie with the new array.
-      if (wordEntries.length === 0) {
-        console.log("No more entries, deleting cookie.");
-        // Delete the cookie by setting it with an expired date.
-        setCookie("wordsearch_entries", "", -1);
-      } else {
-        updateCookie();
-      }
+    // After removal, update the indices of remaining elements
+    $wordsContainer.children(".add-word-container").each(function (index) {
+      console.log("::index", index);
+      $(this).attr("data-index", index);
+      $(this)
+        .find(".word-number")
+        .text(index + 1 + ".");
+      // Also update the name attributes if needed
+    });
+
+    // If you need to keep entryNumber in sync, reset it to the actual count
+    entryNumber = $wordsContainer.children(".add-word-container").length;
+
+    console.log("::wordEntries6", uniqueId, wordEntries);
+
+    // Filter the array to remove the object with the matching id.
+    wordEntries = wordEntries.filter(function (item) {
+      return item.id !== uniqueId;
+    });
+    console.log("::wordEntries7", wordEntries);
+
+    // Update the cookie with the new array.
+    if (wordEntries.length === 0) {
+      console.log("No more entries, deleting cookie.");
+      // Delete the cookie by setting it with an expired date.
+      setCookie("wordsearch_entries", "", -1);
+      $(document).trigger("wordsearchEntriesUpdated", { data: [] });
+    } else {
+      updateCookie();
     }
   });
   // Delegate removal of word entries to dynamically added elements
@@ -363,6 +377,7 @@ jQuery(document).ready(function ($) {
       wordEntries = [];
       // Delete the cookie by setting it with an expired date.
       setCookie("wordsearch_entries", "", -1);
+      $(document).trigger("wordsearchEntriesUpdated", { data: [] });
     }
   });
   function handleImageUpload(

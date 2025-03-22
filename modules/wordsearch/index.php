@@ -2,6 +2,7 @@
 include_once plugin_dir_path(__FILE__) . '/backend/wordsearch-cpt.php';
 include_once plugin_dir_path(__FILE__) . '/word-search-metaboxes.php';
 include_once plugin_dir_path(__FILE__) . '/word-search-metabox-preview.php';
+include_once plugin_dir_path(__FILE__) . '/word-search-timer-metabox.php';
 include_once plugin_dir_path(__FILE__) . '/word-search-metabox-ai.php';
 include_once plugin_dir_path(__FILE__) . '/admin/admin-settings.php';
 
@@ -68,38 +69,4 @@ function load_wordsearch_assets($hook) {
 }
 
 add_action('admin_enqueue_scripts', 'load_wordsearch_assets');
-
-/*
-function wordsearch_enqueue_preview_assets($hook) {
-    global $post;
-
-    if ($hook === 'post.php' || $hook === 'post-new.php') {
-        if ($post->post_type === 'wordsearch') {
-            // Enqueue the custom JavaScript file for preview (not AI related)
-            wp_enqueue_script(
-                'wordsearch-preview-script',
-                plugin_dir_url(__FILE__) . 'assets/js/wordsearch-preview.js',
-                array('jquery'),
-                '1.0',
-                true
-            );
-            
-            // Localize script to pass additional labels/settings if needed
-            wp_localize_script(
-                'wordsearch-preview-script',
-                'wordsearchLabels',
-                array(
-                    'acrossLabel' => esc_html(get_option('kw_wordsearch_admin_across_label', __('Across', 'wp-quiz-plugin'))),
-                    'downLabel'   => esc_html(get_option('kw_wordsearch_admin_down_label', __('Down', 'wp-quiz-plugin'))),
-                    'filledCellColor' => esc_html(get_option('kw_wordsearch_admin_filled_cell_color', '#e1f5fe')),
-                    'emptyWordsearchMessage' => esc_html__('Please add some words to generate the wordsearch.', 'wp-quiz-plugin'),
-                )
-            );
-            
-            wp_enqueue_style('wordsearch-preview-style', plugin_dir_url(__FILE__) . 'assets/css/wordsearch-preview-styles.css');
-        }
-    }
-}
-add_action('admin_enqueue_scripts', 'wordsearch_enqueue_preview_assets');
-*/
 
