@@ -76,6 +76,7 @@ function enqueue_wordsearch_metabox_preview_assets( $hook ) {
       'entries'          => json_encode($word_entries),
       'maximunGridSize'  => 10,
       'shuffleElement'   => 'shuffleButton',
+      'downloadElement'   => 'downloadButton',
       'checkBoxElement'  => 'toggle-checkbox',
       'timerValue' => $timer_value,
       'gridStyles'       => array( 
@@ -144,6 +145,10 @@ $shuffle_text_color = get_option('kw_wordsearch_admin_shuffle_button_text_color'
 
     <button id="shuffleButton" class="shuffle-button" style="background-color: <?php echo esc_attr($shuffle_bg_color); ?>; color: <?php echo esc_attr($shuffle_text_color); ?>;">
     <?php echo esc_html__($shuffle_label); ?>
+    </button>
+
+    <button id="downloadButton" class="download-button" style="background-color: <?php echo esc_attr($shuffle_bg_color); ?>; color: <?php echo esc_attr($shuffle_text_color); ?>;">
+    Download Pdf
     </button>
 
   <!-- <button id="shuffleButton" class="shuffle-button" >Shuffle</button> -->

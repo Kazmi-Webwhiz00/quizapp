@@ -9,6 +9,8 @@ import {
   stopGameTimer,
 } from "./game-mechanics.js";
 
+import { downloadWordSearchAsPDF } from "./utils.js";
+
 jQuery(document).ready(function ($) {
   // Global variables
   window.localizedEntries = [];
@@ -41,7 +43,6 @@ jQuery(document).ready(function ($) {
   if (window.isAdmin) {
     let cookieData = JSON.parse(frontendData.entries || "[]");
     adminEntries = cookieData.map((entry) => entry);
-    console.log("::frontendData6", adminEntries);
   } else {
     adminEntries = [];
   }
@@ -62,11 +63,35 @@ jQuery(document).ready(function ($) {
     }
   }
 
+  window.finalEntries = mergeEntries(window.localizedEntries, adminEntries);
+
   // If we have entries, initialize the puzzle right away
   if (window.finalEntries.length > 0) {
-    console.log("::finalEntries", window.finalEntries);
-    updateFinalEntries(window.finalEntries); // This calls updateWordData -> which calls waitForWordSearch
+    updateFinalEntries(window.finalEntries);
     waitForWordSearch(window.wordData);
+    // Check for duplicate wordText values (ignoring empty strings).
+    const entries = window.finalEntries;
+    const wordSet = new Set();
+    let duplicateFound = false;
+    for (const entry of entries) {
+      if (entry.wordText && entry.wordText.trim() !== "") {
+        if (wordSet.has(entry.wordText)) {
+          duplicateFound = true;
+          break;
+        }
+        wordSet.add(entry.wordText);
+      }
+    }
+    // If any duplicate wordText is found, update the visual clues and return immediately.
+    if (duplicateFound) {
+      updateVisualClues(entries);
+      return;
+    }
+
+    if (window.finalEntries) {
+      // Add a small delay to ensure DOM is ready after any grid updates
+      updateVisualClues(window.finalEntries);
+    }
   }
 
   if (!window.gameInstance) {
@@ -82,13 +107,10 @@ jQuery(document).ready(function ($) {
     });
   }
 
-  window.finalEntries = mergeEntries(window.localizedEntries, adminEntries);
-
   // Determine context first
 
   // Initialize the puzzle with whatever we have
   if (window.finalEntries.length > 0) {
-    console.log("::finalEntries", window.finalEntries);
     updateWordData(); // This will create the game
   } else {
     console.log("No initial finalEntries. Waiting for new entries...");
@@ -131,13 +153,136 @@ jQuery(document).ready(function ($) {
 
   window.showWordLimitModal = showWordLimitModal;
 
+  // Function to handle adding and updating visual clues
+  function updateVisualClues(entries) {
+    // Clear previous clues by emptying the container and ensure it's visible.
+    const $container = $(".visual-clues-container");
+    $container.empty().css("display", "block");
+
+    // Only proceed if entries exist.
+    if (!Array.isArray(entries) || entries.length === 0) return;
+
+    // Sets to track processed words and image URLs.
+    const addedWords = new Set();
+    const addedImageUrls = new Set();
+
+    for (const entry of entries) {
+      // Process only entries with both wordText and imageUrl.
+      if (entry.wordText && entry.imageUrl) {
+        // If this imageUrl or wordText has already been processed, skip it.
+        if (
+          addedImageUrls.has(entry.imageUrl) ||
+          addedWords.has(entry.wordText)
+        ) {
+          continue;
+        }
+
+        // Record this entry as processed.
+        addedWords.add(entry.wordText);
+        addedImageUrls.add(entry.imageUrl);
+
+        // Add the visual clue.
+        addVisualClue(entry.wordText, entry.imageUrl);
+      }
+    }
+  }
+
+  // Function to add a single visual clue with random positioning
+  function addVisualClue(word, imageUrl) {
+    const clueWidth = 60;
+    const clueHeight = 60;
+    const containerWidth = $(".visual-clues-container").width();
+    const containerHeight = $(".visual-clues-container").height();
+
+    // Default dimensions if container not yet sized
+    const cWidth = containerWidth || 180;
+    const cHeight = containerHeight || 350;
+
+    const maxLeft = cWidth - clueWidth;
+    const maxTop = cHeight - clueHeight;
+
+    // Generate random position
+    const position = {
+      top: Math.floor(Math.random() * maxTop),
+      left: Math.floor(Math.random() * maxLeft),
+      rotation: Math.floor(Math.random() * 40 - 20), // -20 to +20 degrees
+    };
+
+    // Create visual clue element
+    const $clue = $("<div></div>")
+      .addClass("visual-clue")
+      .attr("data-word", word.toLowerCase())
+      .css({
+        top: position.top + "px",
+        left: position.left + "px",
+        "--rotation": position.rotation + "deg", // CSS variable for rotation
+        transform: "rotate(" + position.rotation + "deg)",
+      });
+
+    // Create and append image
+    $("<img>").attr("src", imageUrl).attr("alt", word).appendTo($clue);
+
+    // Add to container
+    $(".visual-clues-container").append($clue);
+  }
+
+  function checkCollision($element, allElements) {
+    const rect1 = $element[0].getBoundingClientRect();
+
+    let collides = false;
+    allElements.each(function () {
+      if (this === $element[0]) return; // Skip self
+
+      const rect2 = this.getBoundingClientRect();
+
+      // Simple collision detection
+      if (
+        !(
+          rect1.right < rect2.left ||
+          rect1.left > rect2.right ||
+          rect1.bottom < rect2.top ||
+          rect1.top > rect2.bottom
+        )
+      ) {
+        collides = true;
+        return false; // Break loop
+      }
+    });
+
+    return collides;
+  }
+
   // Event listener for word entries updates
   $(document).on("wordsearchEntriesUpdated", function (event, updatedEntries) {
-    console.log("::updatedEntries", updatedEntries, adminEntries);
     // Avoid unnecessary console logs in production
     // Use a more efficient change detection approach
     let localizedEntriesChanged = false;
     let cookieEntriesChanged = false;
+
+    const entries = updatedEntries.data;
+
+    // Check for duplicate wordText values (ignoring empty strings).
+    const wordSet = new Set();
+    let duplicateFound = false;
+    for (const entry of entries) {
+      if (entry.wordText && entry.wordText.trim() !== "") {
+        if (wordSet.has(entry.wordText)) {
+          duplicateFound = true;
+          break;
+        }
+        wordSet.add(entry.wordText);
+      }
+    }
+    // If any duplicate wordText is found, update the visual clues and return immediately.
+    if (duplicateFound) {
+      updateVisualClues(entries);
+      return;
+    }
+
+    if (updatedEntries.data) {
+      // Add a small delay to ensure DOM is ready after any grid updates
+      updateVisualClues(updatedEntries.data);
+    }
 
     // Check if localized entries have changed
     if (!window.isAdmin && wordSearchData.entries) {
@@ -248,7 +393,34 @@ jQuery(document).ready(function ($) {
         $(window.checkBoxElement).prop("checked", false);
       });
     }
-  } else {
-    console.log("::entered outside of conditional block");
+  }
+
+  const downloadElement = document.getElementById(
+    typeof frontendData !== "undefined"
+      ? frontendData.downloadElement
+      : wordSearchData.downloadElement
+  );
+  if (downloadElement) {
+    downloadElement.addEventListener("click", function (event) {
+      downloadElement.style.padding = "10px 20px";
+      downloadElement.style.backgroundColor = "#f5d992";
+      downloadElement.style.border = "2px solid #c89836";
+      downloadElement.style.borderRadius = "4px";
+      downloadElement.style.color = "#473214";
+      downloadElement.style.fontWeight = "bold";
+      downloadElement.style.cursor = "pointer";
+      downloadElement.style.fontFamily = "Georgia, serif";
+      downloadElement.style.boxShadow = "0 2px 4px rgba(0,0,0,0.2)";
+      event.preventDefault();
+      // Add hover effect
+      downloadElement.onmouseover = function () {
+        this.style.backgroundColor = "#e6ba6c";
+      };
+      downloadElement.onmouseout = function () {
+        this.style.backgroundColor = "#f5d992";
+      };
+
+      downloadWordSearchAsPDF();
+    });
   }
 });

@@ -101,6 +101,7 @@ function wordsearch_enqueue_assets() {
         wp_localize_script( 'wordsearch-grid', 'wordSearchData', array(
             'url' => plugin_dir_url( __FILE__ ),
             'entries' => json_encode( $word_entries ),
+            'downloadElement'   => 'downloadButton',
             // 'containerWidth' => "55%",
             'maximunGridSize' => 10,
             'nonce'   => wp_create_nonce( 'wordsearch_nonce' ),

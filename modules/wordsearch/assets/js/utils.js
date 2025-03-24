@@ -110,11 +110,9 @@ export function getRandomTransparentColor() {
 
 export function throttle(func, limit) {
   let inThrottle;
-  return function () {
-    const args = arguments;
-    const context = this;
+  return function (...args) {
     if (!inThrottle) {
-      func.apply(context, args);
+      func.apply(this, args);
       inThrottle = true;
       setTimeout(() => (inThrottle = false), limit);
     }
@@ -197,4 +195,290 @@ export function setupWordPlacementWorker() {
   };
 
   return worker;
+}
+
+function extractGameColors() {
+  // Initialize with safe default colors
+  const colors = {
+    header: "#2c3752",
+    accent: "#D6A651",
+    cellEven: "#ecd8b3",
+    cellOdd: "#f5e9d1",
+    cellBorder: "#d6a651",
+    text: "#5c4012",
+  };
+
+  try {
+    const gameInstance = window.gameInstance;
+    if (gameInstance) {
+      // Try to get color scheme from direct properties
+      if (gameInstance.colorScheme) {
+        Object.assign(colors, gameInstance.colorScheme);
+      }
+
+      // Additional extraction from scene objects if needed
+      // (simplified for safety)
+    }
+  } catch (e) {
+    console.warn("Error extracting game colors:", e);
+    // Fall back to defaults if anything goes wrong
+  }
+
+  return colors;
+}
+
+/**
+ * Converts game color formats (0xRRGGBB) to standard hex (#RRGGBB)
+ */
+
+/**
+ * Converts hex color to RGB object for jsPDF
+ */
+function hexToRgbArray(hex) {
+  const defaultColor = [0, 0, 0];
+  try {
+    if (!hex || typeof hex !== "string") return defaultColor;
+    hex = hex.replace(/^#/, "");
+    if (hex.length === 3) {
+      hex = hex
+        .split("")
+        .map((ch) => ch + ch)
+        .join("");
+    }
+    if (hex.length !== 6) return defaultColor;
+    const r = parseInt(hex.substring(0, 2), 16);
+    const g = parseInt(hex.substring(2, 4), 16);
+    const b = parseInt(hex.substring(4, 6), 16);
+    return [isNaN(r) ? 0 : r, isNaN(g) ? 0 : g, isNaN(b) ? 0 : b];
+  } catch (e) {
+    console.warn("Error converting color:", e);
+    return defaultColor;
+  }
+}
+
+function getTextureFillColor(texture) {
+  const canvas = texture.getSourceImage();
+  const ctx = canvas.getContext("2d");
+  const pixelData = ctx.getImageData(0, 0, 1, 1).data;
+  return [pixelData[0], pixelData[1], pixelData[2]];
+}
+
+export function downloadWordSearchAsPDF() {
+  // Ensure jsPDF is loaded
+  if (typeof window.jspdf === "undefined") {
+    const jspdfScript = document.createElement("script");
+    jspdfScript.src = window.isAdmin
+      ? frontendData.url + "assets/library/jspdf.umd.min.js"
+      : wordSearchData.url + "assets/library/jspdf.umd.min.js";
+    document.head.appendChild(jspdfScript);
+    jspdfScript.onload = downloadWordSearchAsPDF;
+    return;
+  }
+
+  // Get game instance and grid data
+  const gameInstance = window.gameInstance;
+  if (!gameInstance) {
+    console.error("Game instance not found");
+    return;
+  }
+  const gridMatrix = gameInstance.gridMatrix || window.gridMatrix || [];
+  if (!gridMatrix.length) {
+    console.error("Grid matrix data not found");
+    return;
+  }
+
+  // Retrieve scene and dynamic game colors
+  const scene = gameInstance.scene.scenes[0];
+  const gameColors = extractGameColors();
+  const gridSize = gridMatrix.length;
+
+  // Extract cell textures and their fill colors
+  const evenTexture = scene.textures.get("evenCell");
+  const oddTexture = scene.textures.get("oddCell");
+  const evenRgb = getTextureFillColor(evenTexture);
+  const oddRgb = getTextureFillColor(oddTexture);
+  const borderRgb = hexToRgbArray(gameColors.cellBorder);
+  const textRgb = hexToRgbArray(gameColors.text);
+
+  // Retrieve word list
+  const words = gameInstance.words || window.wordData || getWordsList();
+
+  // Calculate dimensions based on canvas and grid content
+  const canvasWidth = gameInstance.canvas?.width || 600;
+  const baseCellSize = Math.min(35, Math.floor(canvasWidth / gridSize));
+  const puzzleWidth = gridSize * baseCellSize;
+  const puzzleHeight = gridSize * baseCellSize;
+  const wordBlockHeight = 30;
+  const totalWordListHeight = words.length * wordBlockHeight + 60;
+  const margin = 60,
+    headerHeight = 120,
+    footerHeight = 30,
+    gap = 40,
+    pageHeightPadding = 200;
+  const avgCharWidth = 8;
+  const maxWordLength = words.reduce(
+    (max, word) => Math.max(max, word.length),
+    0
+  );
+  const wordListBoxWidth = Math.max(150, maxWordLength * avgCharWidth + 40);
+  const contentHeight = Math.max(puzzleHeight, totalWordListHeight);
+  const neededWidth = margin + puzzleWidth + gap + wordListBoxWidth + margin;
+  const neededHeight =
+    margin +
+    headerHeight +
+    contentHeight +
+    footerHeight +
+    margin +
+    pageHeightPadding;
+
+  // Create PDF with custom dimensions
+  const pdf = new jspdf.jsPDF("portrait", "pt", [neededWidth, neededHeight]);
+
+  // --- HEADER ---
+  pdf.setFillColor(...hexToRgbArray(gameColors.header));
+  pdf.rect(0, 0, neededWidth, headerHeight, "F");
+  pdf.setFontSize(28);
+  pdf.setTextColor(255, 255, 255);
+  const titleText = "WORD SEARCH PUZZLE";
+  const titleWidth = pdf.getTextWidth(titleText);
+  pdf.text(titleText, (neededWidth - titleWidth) / 2, headerHeight / 2 + 10);
+  pdf.setDrawColor(...hexToRgbArray(gameColors.accent));
+  pdf.setLineWidth(2);
+  pdf.line(margin, headerHeight + 10, neededWidth - margin, headerHeight + 10);
+
+  // --- PUZZLE GRID ---
+  const puzzleX = margin,
+    puzzleY = headerHeight + margin,
+    cellSize = baseCellSize;
+  pdf.setFillColor(230, 230, 230);
+  pdf.roundedRect(
+    puzzleX - 5,
+    puzzleY - 5,
+    puzzleWidth + 10,
+    puzzleHeight + 10,
+    3,
+    3,
+    "F"
+  );
+
+  for (let row = 0; row < gridSize; row++) {
+    for (let col = 0; col < gridSize; col++) {
+      const isEvenCell = (row + col) % 2 === 0;
+      const cellColor = isEvenCell ? evenRgb : oddRgb;
+      pdf.setFillColor(...cellColor);
+      pdf.rect(
+        puzzleX + col * cellSize,
+        puzzleY + row * cellSize,
+        cellSize,
+        cellSize,
+        "F"
+      );
+    }
+  }
+
+  // Draw grid lines
+  pdf.setDrawColor(...borderRgb);
+  pdf.setLineWidth(0.5);
+  for (let i = 0; i <= gridSize; i++) {
+    pdf.line(
+      puzzleX + i * cellSize,
+      puzzleY,
+      puzzleX + i * cellSize,
+      puzzleY + puzzleHeight
+    );
+    pdf.line(
+      puzzleX,
+      puzzleY + i * cellSize,
+      puzzleX + puzzleWidth,
+      puzzleY + i * cellSize
+    );
+  }
+
+  // Add letters to grid
+  pdf.setFontSize(cellSize * 0.6);
+  pdf.setTextColor(...textRgb);
+  for (let row = 0; row < gridSize; row++) {
+    for (let col = 0; col < gridSize; col++) {
+      const cell = gridMatrix[row] && gridMatrix[row][col];
+      if (cell) {
+        const letter = cell.letter || "";
+        const textWidth = pdf.getTextWidth(letter);
+        const textX = puzzleX + col * cellSize + (cellSize - textWidth) / 2;
+        const textY = puzzleY + row * cellSize + cellSize * 0.7;
+        pdf.text(letter, textX, textY);
+      }
+    }
+  }
+
+  // --- WORD LIST ---
+  const wordListX = puzzleX + puzzleWidth + gap,
+    wordListY = puzzleY;
+  pdf.rect(wordListX, wordListY, wordListBoxWidth, 40, "F");
+  pdf.setFontSize(16);
+  pdf.setTextColor(255, 255, 255);
+  pdf.text("Find These Words:", wordListX + 10, wordListY + 25);
+  let wordY = wordListY + 60;
+  pdf.setFontSize(12);
+  words.forEach((word) => {
+    pdf.setFillColor(100, 100, 100);
+    pdf.setDrawColor(100, 100, 100);
+    pdf.roundedRect(wordListX, wordY - 10, wordListBoxWidth, 25, 3, 3, "FD");
+    const centerX = wordListX + wordListBoxWidth / 2;
+    const centerY = wordY - 10 + 25 / 2;
+    pdf.text(word.toUpperCase(), centerX, centerY, {
+      align: "center",
+      baseline: "middle",
+    });
+    wordY += wordBlockHeight;
+  });
+
+  // --- FOOTER ---
+  const today = new Date();
+  pdf.setFontSize(8);
+  pdf.setTextColor(100, 100, 100);
+  pdf.text(
+    `Generated on ${today.toLocaleDateString()} at ${today.toLocaleTimeString()}`,
+    margin,
+    neededHeight - 20
+  );
+
+  pdf.save("word-search-puzzle.pdf");
+}
+/**
+ * Example fallback for retrieving words
+ */
+function getWordsList() {
+  const gameScene = window.gameInstance.scene.scenes[0];
+
+  // If you have a global window.wordData, use it
+  if (window.wordData && window.wordData.length) {
+    return window.wordData;
+  }
+
+  // Try different possible locations in the game scene
+  if (gameScene.wordList) {
+    return gameScene.wordList;
+  }
+  if (gameScene.words) {
+    return gameScene.words;
+  }
+  if (gameScene.foundWords && gameScene.foundWords.targets) {
+    return gameScene.foundWords.targets;
+  }
+  if (window.wordSearchData && window.wordSearchData.words) {
+    return window.wordSearchData.words;
+  }
+
+  // Default fallback
+  return [
+    "DRAMA",
+    "COMEDY",
+    "HORROR",
+    "FANTASY",
+    "ADVENTURE",
+    "ANIMATION",
+    "THRILLER",
+    "ROMANCE",
+    "DOCUMENTARY",
+  ];
 }

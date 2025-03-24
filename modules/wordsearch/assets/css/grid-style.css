@@ -128,12 +128,13 @@ h3 {
 }
 
 .word-panel {
-  /* width: 100%; */
-  max-width: 170px;
+  width: 100%;
+  /* max-width: 170px; */
   background: #fff;
   border-radius: 12px;
   padding: 1rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
 }
@@ -143,7 +144,7 @@ h3 {
   margin-bottom: 0.75rem;
   font-size: 1.3rem;
   color: #2c3e50;
-  text-align: left;
+  text-align: center;
   font-weight: 600;
   border-bottom: 2px solid #f0f0f0;
   padding-bottom: 0.5rem;
@@ -245,9 +246,11 @@ h3 {
 }
 
 #wordList {
-  display: grid;
-  grid-template-columns: repeat(1, 1fr);
+  display: flex;
+  justify-content: center;
+  align-items: center;
   gap: 8px;
+  flex-wrap: wrap;
   list-style: none;
   margin: 0;
   padding: 0;
@@ -258,6 +261,7 @@ h3 {
   background: #f8f9fa;
   border-radius: 6px;
   padding: 0.5rem;
+  min-width: 100px;
   font-size: 0.9rem;
   font-weight: 500;
   color: #4a5568;
@@ -367,15 +371,36 @@ h3 {
 .game-content {
   display: flex;
   justify-content: center;
-  flex-direction: column;
+  flex-direction: row;
+  width: 100%;
+  /* position: relative; */
   gap: 2rem;
+  gap: 20px;
+  flex: 1;
+  z-index: 2;
+  background-color: transparent;
 }
 
 @media (min-width: 900px) {
-  .game-content {
-    flex-direction: row;
-    justify-content: center;
-    align-items: flex-start;
+  .game-main-content {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .visual-clue {
+    width: 50px;
+    height: 50px;
+  }
+}
+
+@media (max-width: 600px) {
+  .visual-clues-container {
+    height: 120px;
+  }
+
+  .visual-clue {
+    width: 40px;
+    height: 40px;
   }
 }
 
@@ -734,8 +759,8 @@ canvas {
 }
 .grid-loading-indicator {
   position: absolute;
-  top: 50%;
-  left: 50%;
+  top: 55%;
+  left: 40%;
   transform: translate(-50%, -50%);
   background-color: rgba(255, 255, 255, 0.9);
   padding: 1.5rem;
@@ -746,6 +771,7 @@ canvas {
   display: flex;
   flex-direction: column;
   align-items: center;
+  pointer-events: none;
 }
 
 .grid-loading-spinner {
@@ -957,4 +983,125 @@ canvas {
   }
 }
 
+.game-main-content {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  flex-direction: column;
+}
+
+/* Container for both game and visual clues */
+
+/* Visual clues container */
+.visual-clues-container {
+  display: none;
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: 12px;
+  position: relative;
+  border: 1px solid #eaeaea;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  flex-shrink: 0;
+  width: 100%;
+  height: 100%;
+  max-width: 180px;
+  min-height: 350px;
+  z-index: 1;
+  pointer-events: none; /* Makes the container click-through */
+}
+
+/* Individual clue styling */
+.visual-clue {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  transition: all 0.5s ease;
+  z-index: 2;
+}
+/* Different animation delays for varied movement */
+.visual-clue:nth-child(2n) {
+  animation-delay: 1s;
+  animation-duration: 9s;
+}
+
+.visual-clue:nth-child(3n) {
+  animation-delay: 2s;
+  animation-duration: 10s;
+}
+
+.visual-clue:nth-child(4n) {
+  animation-delay: 3s;
+  animation-duration: 11s;
+}
+
+/* Image inside clue */
+.visual-clue img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.1));
+  transition: all 0.3s ease;
+}
+
+.visual-clue:hover {
+  z-index: 5;
+  transform: scale(1.1) rotate(var(--rotation, 0deg)) !important;
+}
+
+/* Highlight effect when word is found */
+.visual-clue.found {
+  transform: scale(1.2) rotate(var(--rotation, 0deg)) !important;
+  filter: drop-shadow(0 0 8px rgba(74, 144, 226, 0.8));
+}
+
+.visual-clue.found img {
+  /* Make found word images more vibrant */
+  filter: brightness(1.1) drop-shadow(0 3px 5px rgba(0, 0, 0, 0.2));
+}
+
+/* Floating animation */
+@keyframes float-visual {
+  0%,
+  100% {
+    transform: translateY(0) rotate(var(--rotation, 0deg));
+  }
+  50% {
+    transform: translateY(-8px) rotate(var(--rotation, 0deg));
+  }
+}
+
+.visual-clue:nth-child(odd) {
+  animation: float-visual 8s ease-in-out infinite;
+}
+
+.visual-clue:nth-child(even) {
+  animation: float-visual 10s ease-in-out infinite 1s;
+}
+
+.visual-clue:nth-child(3n) {
+  animation: float-visual 12s ease-in-out infinite 2s;
+}
+
+#game-container,
+.word-panel {
+  position: relative;
+  z-index: 3;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .visual-clue {
+    width: 45px;
+    height: 45px;
+  }
+}
+
+@media (max-width: 480px) {
+  .visual-clue {
+    width: 35px;
+    height: 35px;
+  }
+}
 /* Responsive adjustments */
