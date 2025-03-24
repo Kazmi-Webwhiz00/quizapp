@@ -9,7 +9,6 @@ import { createWordSearchGame } from "./game-creator.js";
 
 export function updateFinalEntries(newEntries) {
   window.finalEntries = newEntries.map((entry) => entry);
-  console.log("::merged", window.finalEntries);
   updateWordData(); // Your custom function that regenerates the word list, etc.
 }
 
@@ -121,8 +120,14 @@ export function updateWordData() {
 
 // Process word data in batches for large sets
 function processWordData(wordData) {
+  const container = document.getElementById("game-container");
   // For large word sets, use request animation frame to prevent UI freezing
-  showLoadingIndicator();
+
+  if (wordData.length > 0) {
+    showLoadingIndicator();
+    container.style.pointerEvents = "none";
+  }
+
   if (wordData.length > 10) {
     requestAnimationFrame(() => {
       waitForWordSearch(wordData);
@@ -176,7 +181,6 @@ export function showLoadingIndicator() {
 
 // Hide loading indicator
 export function hideLoadingIndicator() {
-  console.log("::loader");
   const loader = document.getElementsByClassName("grid-loading-indicator");
   if (loader) {
     loader[0].style.display = "none";
@@ -242,7 +246,6 @@ export function handleWordOverflow(wordData, validationResult) {
 export function waitForWordSearch(wordData, retries = 5) {
   // Quick validation
   if (!Array.isArray(wordData) || wordData.length === 0) {
-    console.log("No wordData found. Skipping puzzle creation...");
     return;
   }
 
@@ -293,7 +296,6 @@ export function waitForWordSearch(wordData, retries = 5) {
 
     // // Important: Store the matrix globally and log it for debugging
     // window.gridMatrix = ws.matrix;
-    // console.log("Grid matrix created:", window.gridMatrix);
 
     // tempDiv.remove();
 
@@ -347,7 +349,6 @@ export function updateGridBasedOnWords(newWordList, scene, letterTexts) {
 }
 
 export function updateGridRenderer(gridData) {
-  console.log("::gridData", gridData);
   if (window.gridUpdateScheduled) {
     return;
   }
@@ -385,8 +386,6 @@ export function updateGridRenderer(gridData) {
 }
 
 export function startGameTimer() {
-  console.log("::timer triggered", window.gamerTimerValue);
-
   // Ensure a valid allowed time is set; if not, do nothing.
   if (!window.gamerTimerValue || window.gamerTimerValue <= 0) return;
 
@@ -438,7 +437,6 @@ export function stopGameTimer(timeFinished = false) {
     // Stop the timer
     clearInterval(window.gameTimerID);
     window.gameTimerID = null;
-    console.log("Timer stopped at", window.elapsedTime, "seconds.");
 
     // Destroy the game instance
     if (window.gameInstance) {
@@ -704,7 +702,6 @@ export function animateMatch(scene, cells, letterTexts, cellSize) {
 export function updateWordListUI(foundWord, foundWordsCount, wordList) {
   foundWord = foundWord ? foundWord.toLowerCase() : "";
   const foundItem = document.getElementById(`word-${foundWord}`);
-  console.log("::foundItem", foundWord);
   if (foundItem) {
     foundItem.classList.add("found");
   }
@@ -753,7 +750,6 @@ export function autoSolvePuzzle(
             dir.deltaCol
           );
           if (matchedCells) {
-            console.log("::Entered6");
             let foundWordsCount = window.foundWords.length + 1;
             // Found the word! highlight it
             highlightWord(

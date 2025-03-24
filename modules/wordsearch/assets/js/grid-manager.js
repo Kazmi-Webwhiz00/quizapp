@@ -13,7 +13,6 @@ export function getDynamicCanvasSize(
     console.error(`Container with id ${containerId} not found.`);
     return { width: 600, height: 600 };
   }
-  console.log("::canvasWidth", window.newWidth);
   // Use the container width to determine a base cell size
   let containerWidth = window.newWidth || maxCanvasSize;
 
@@ -37,7 +36,27 @@ export function getDynamicCanvasSize(
   };
 }
 
-export function resizeGame(
+// Helper function to wrap the worker logic in a promise.
+function runResizeWorker({ gridSize, newWidth, newHeight }) {
+  return new Promise((resolve, reject) => {
+    const worker = new Worker(
+      window.isAdmin
+        ? frontendData.url + "assets/js/resize-worker.js"
+        : wordSearchData.url + "assets/js/resize-worker.js"
+    );
+    worker.onmessage = (e) => {
+      resolve(e.data);
+      worker.terminate();
+    };
+    worker.onerror = (err) => {
+      reject(err);
+      worker.terminate();
+    };
+    worker.postMessage({ gridSize, newWidth, newHeight });
+  });
+}
+
+export async function resizeGame(
   newWidth,
   newHeight,
   scene,
@@ -45,7 +64,12 @@ export function resizeGame(
   gridSize,
   gridMatrix
 ) {
-  console.log("Resizing game with grid matrix:", newWidth, newHeight, gridSize);
+  // This is the asynchronous line that waits for the worker response:
+  const { cellSize, cellHalfSize, fontSize, positions } = await runResizeWorker(
+    { gridSize, newWidth, newHeight }
+  );
+
+  // === Begin Main-Thread Rendering Code ===
 
   // Cache calculations and avoid repeated work
   const gameCanvas = scene.sys.game.canvas;
@@ -57,19 +81,16 @@ export function resizeGame(
   scene.cameras.main.setScroll(0, 0);
   // scene.cameras.main.setZoom(1);
 
-  // Memory Optimization: Properly destroy old objects
+  // 3. Destroy old objects to free memory.
   if (scene.gridContainer) {
     scene.gridContainer.destroy();
   } else {
-    scene.children.each((child) => {
-      child.destroy();
-    });
+    scene.children.each((child) => child.destroy());
   }
 
   // Reset letter texts array to prevent issues with old references
   scene.letterTexts = null;
   window.letterTexts = null;
-  let fontSize = 0;
 
   // 2) Reset the camera to top-left so it doesn't scroll upward.
 
@@ -79,17 +100,9 @@ export function resizeGame(
   // Container-Based Rendering: Main container for better batching
   scene.gridContainer = scene.add.container(0, 0);
 
-  // Pre-calculate shared values
-  const cellSize = Math.min(newWidth, newHeight) / gridSize;
-  fontSize = Math.floor(cellSize * 0.5);
-  if (cellSize < 85) {
-    fontSize = cellSize * 0.4;
-  }
-  console.log("::fontSize", fontSize);
-  const cellHalfSize = cellSize * 0.5;
-
   // Optimized Text Rendering: Enhanced style with better WebGL settings
-  const finalStyle = {
+
+  const textStyle = {
     fontFamily: "Georgia, serif",
     fontSize: `${fontSize}px`,
     color: "#5c4012",
@@ -171,9 +184,7 @@ export function resizeGame(
     // Load sound effects - ADD THIS SECTION
     if (!scene.sound.get("letterHover")) {
       scene.load.audio("letterHover", "assets/audio/hover.mp3");
-      scene.load.once("complete", function () {
-        console.log("Sound loaded successfully");
-      });
+      scene.load.once("complete", function () {});
       scene.load.start();
     }
 
@@ -241,9 +252,7 @@ export function resizeGame(
   // Load sound effects only once
   if (!scene.sound.get("letterHover")) {
     scene.load.audio("letterHover", "assets/audio/hover.mp3");
-    scene.load.once("complete", function () {
-      console.log("Sound loaded successfully");
-    });
+    scene.load.once("complete", function () {});
     scene.load.start();
   }
 
@@ -263,30 +272,39 @@ export function resizeGame(
       }
 
       if (!scene.textures.exists(letterTextureKey)) {
-        createLetterTexture(scene, letter, finalStyle, letterTextureKey);
+        createLetterTexture(scene, letter, textStyle, letterTextureKey);
       }
     }
   }
+
+  // 8. Create letter and highlight containers.
+  const circlesContainer = scene.add.container(0, 0);
+  const lettersContainer = scene.add.container(0, 0);
+  scene.gridContainer.add(circlesContainer);
+  scene.gridContainer.add(lettersContainer);
 
   // Create letter objects more efficiently with fixed positioning
   window.letterTexts = createLetterTextsFixedPositioning(
     scene,
     gridSize,
-    cellSize,
-    cellHalfSize,
+    positions,
     gridMatrix,
-    finalStyle
+    textStyle
   );
 
   // Save reference
   scene.letterTexts = window.letterTexts;
 
   if (scene.letterTexts) {
-    console.log("::Done");
+    const container = document.getElementById("game-container");
     if (typeof hideLoadingIndicator === "function") {
       hideLoadingIndicator();
+      container.style.pointerEvents = "auto";
     }
   }
+
+  // Finalize any other cleanup (if necessary)
+  console.log("Resize complete.");
 
   // Debug log
 }
@@ -312,8 +330,7 @@ function createLetterTexture(scene, letter, style, textureKey) {
 function createLetterTextsFixedPositioning(
   scene,
   gridSize,
-  cellSize,
-  cellHalfSize,
+  positions,
   gridMatrix,
   textStyle
 ) {
@@ -332,8 +349,11 @@ function createLetterTextsFixedPositioning(
 
     for (let col = 0; col < gridSize; col++) {
       // Calculate positions consistently
-      const x = col * cellSize + cellHalfSize;
-      const y = row * cellSize + cellHalfSize;
+      // const x = col * cellSize + cellHalfSize;
+      // const y = row * cellSize + cellHalfSize;
+
+      // Use computed positions from the worker.
+      const { x, y } = positions[row][col];
 
       // Get letter from grid matrix with safety checks
       let letter = "";
@@ -535,7 +555,6 @@ function createLetterTextsFixedPositioning(
 //   gridSize,
 //   gridMatrix
 // ) {
-//   console.log("::Resizing");
 //   const gameCanvas = scene.sys.game.canvas;
 //   gameCanvas.width = newWidth;
 //   gameCanvas.height = newHeight;
@@ -617,7 +636,6 @@ function createLetterTextsFixedPositioning(
 //   if (!scene.sound.get("letterHover")) {
 //     scene.load.audio("letterHover", "assets/audio/hover.mp3");
 //     scene.load.once("complete", function () {
-//       console.log("Sound loaded successfully");
 //     });
 //     scene.load.start();
 //   }
@@ -670,7 +688,6 @@ function createLetterTextsFixedPositioning(
 //       letterObj.setData("col", col);
 
 //       if (letterTexts[row][col]) {
-//         console.log("::Done");
 //         if (typeof hideLoadingIndicator === "function") {
 //           hideLoadingIndicator();
 //         }
@@ -723,15 +740,13 @@ export function computeEffectiveGridSize(wordData) {
   return gridSize;
 }
 
-export function debouncedResize(callback, delay = 250) {
-  let timeoutId;
+export function debouncedResize(func, wait) {
+  let timeout;
   return function (...args) {
-    if (timeoutId) {
-      clearTimeout(timeoutId);
-    }
-    timeoutId = setTimeout(() => {
-      callback.apply(this, args);
-      timeoutId = null;
-    }, delay);
+    const context = this;
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      func.apply(context, args);
+    }, wait);
   };
 }
