@@ -44,6 +44,7 @@ jQuery(document).ready(function ($) {
 
   if (window.isAdmin) {
     let cookieData = JSON.parse(frontendData.entries || "[]");
+    window.cookieEntries = cookieData.map((entry) => entry);
     adminEntries = cookieData.map((entry) => entry);
   } else {
     adminEntries = [];
@@ -401,7 +402,7 @@ jQuery(document).ready(function ($) {
     }
   }
 
-  if (!window.isAdmin) {
+  if (window.localizedEntries.length > 0 || window.cookieEntries.length > 0) {
     const downloadElement = document.getElementById(
       typeof frontendData !== "undefined"
         ? frontendData.downloadElement
