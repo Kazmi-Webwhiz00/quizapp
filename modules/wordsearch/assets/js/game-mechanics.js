@@ -751,6 +751,19 @@ export function autoSolvePuzzle(
           );
           if (matchedCells) {
             let foundWordsCount = window.foundWords.length + 1;
+            const visualClues = document.getElementsByClassName("visual-clue");
+
+            // Loop through the elements
+            for (let i = 0; i < visualClues.length; i++) {
+              const clue = visualClues[i];
+              // Get the data-word attribute and compare (case-insensitive) to guessedWord
+              if (
+                clue.getAttribute("data-word").toLowerCase() ===
+                word.toLowerCase()
+              ) {
+                clue.classList.add("found");
+              }
+            }
             // Found the word! highlight it
             highlightWord(
               scene,

@@ -60,9 +60,9 @@ h3 {
 .game-header {
   display: flex;
   flex-direction: row-reverse;
-  gap: 16%;
-  justify-content: left;
-  align-items: center;
+  gap: 10%;
+  justify-content: space-around;
+  align-items: start;
   border-bottom: 2px solid #f0f0f0;
   padding-bottom: 1rem;
   /* margin-bottom: 1rem; */
@@ -1002,9 +1002,9 @@ canvas {
   position: relative;
   flex-shrink: 0;
   width: 100%;
-  /* height: 600px;    */
+  max-height: 600px;
   max-width: 180px;
-  overflow-y: scroll;    /* Enable vertical scroll */
+  overflow-y: scroll; /* Enable vertical scroll */
   z-index: 1;
 }
 
@@ -1101,5 +1101,9 @@ canvas {
     width: 35px;
     height: 35px;
   }
+}
+
+.download-button {
+  display: none;
 }
 /* Responsive adjustments */
