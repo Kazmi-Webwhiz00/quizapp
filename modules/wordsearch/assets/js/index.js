@@ -27,7 +27,9 @@ jQuery(document).ready(function ($) {
   window.customStyles = [];
   window.foundWords = [];
   window.showAnswers = false;
+  window.showWords = false;
   window.checkBoxElement = null;
+  window.showWordsElement = null;
   window.newGridSize = 0;
   window.isAdmin = typeof wordSearchData === "undefined";
 
@@ -157,7 +159,10 @@ jQuery(document).ready(function ($) {
   function updateVisualClues(entries) {
     // Clear previous clues by emptying the container and ensure it's visible.
     const $container = $(".visual-clues-container");
-    $container.empty().css("display", "block");
+    const hasImageEntry = entries.some((entry) => entry.imageUrl !== "");
+    if (hasImageEntry) {
+      $container.empty().css("display", "block");
+    }
 
     // Only proceed if entries exist.
     if (!Array.isArray(entries) || entries.length === 0) return;
@@ -183,6 +188,7 @@ jQuery(document).ready(function ($) {
 
         // Add the visual clue.
         addVisualClue(entry.wordText, entry.imageUrl);
+        addedImageUrls.clear();
       }
     }
   }
@@ -395,32 +401,35 @@ jQuery(document).ready(function ($) {
     }
   }
 
-  const downloadElement = document.getElementById(
-    typeof frontendData !== "undefined"
-      ? frontendData.downloadElement
-      : wordSearchData.downloadElement
-  );
-  if (downloadElement) {
-    downloadElement.addEventListener("click", function (event) {
-      downloadElement.style.padding = "10px 20px";
-      downloadElement.style.backgroundColor = "#f5d992";
-      downloadElement.style.border = "2px solid #c89836";
-      downloadElement.style.borderRadius = "4px";
-      downloadElement.style.color = "#473214";
-      downloadElement.style.fontWeight = "bold";
-      downloadElement.style.cursor = "pointer";
-      downloadElement.style.fontFamily = "Georgia, serif";
-      downloadElement.style.boxShadow = "0 2px 4px rgba(0,0,0,0.2)";
-      event.preventDefault();
-      // Add hover effect
-      downloadElement.onmouseover = function () {
-        this.style.backgroundColor = "#e6ba6c";
-      };
-      downloadElement.onmouseout = function () {
-        this.style.backgroundColor = "#f5d992";
-      };
+  if (!window.isAdmin) {
+    const downloadElement = document.getElementById(
+      typeof frontendData !== "undefined"
+        ? frontendData.downloadElement
+        : wordSearchData.downloadElement
+    );
+    if (downloadElement) {
+      downloadElement.style.display = "block";
+      downloadElement.addEventListener("click", function (event) {
+        downloadElement.style.padding = "10px 20px";
+        downloadElement.style.backgroundColor = "#f5d992";
+        downloadElement.style.border = "2px solid #c89836";
+        downloadElement.style.borderRadius = "4px";
+        downloadElement.style.color = "#473214";
+        downloadElement.style.fontWeight = "bold";
+        downloadElement.style.cursor = "pointer";
+        downloadElement.style.fontFamily = "Georgia, serif";
+        downloadElement.style.boxShadow = "0 2px 4px rgba(0,0,0,0.2)";
+        event.preventDefault();
+        // Add hover effect
+        downloadElement.onmouseover = function () {
+          this.style.backgroundColor = "#e6ba6c";
+        };
+        downloadElement.onmouseout = function () {
+          this.style.backgroundColor = "#f5d992";
+        };
 
-      downloadWordSearchAsPDF();
-    });
+        downloadWordSearchAsPDF();
+      });
+    }
   }
 });

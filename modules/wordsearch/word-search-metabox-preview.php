@@ -78,6 +78,7 @@ function enqueue_wordsearch_metabox_preview_assets( $hook ) {
       'shuffleElement'   => 'shuffleButton',
       'downloadElement'   => 'downloadButton',
       'checkBoxElement'  => 'toggle-checkbox',
+      'toogleWordsBox'  => 'toggle-words-checkbox',
       'timerValue' => $timer_value,
       'gridStyles'       => array( 
           'fontColor'              => esc_attr( $gridTextColor ),
@@ -132,6 +133,13 @@ $default_shuffle_button_label = __('Shuffle', 'wp-quiz-plugin');
 $shuffle_label =  get_option('kw_wordsearch_admin_shuffle_button_label', $default_shuffle_button_label);
 $shuffle_bg_color = get_option('kw_wordsearch_admin_shuffle_button_color', '#0073aa');
 $shuffle_text_color = get_option('kw_wordsearch_admin_shuffle_button_text_color', '#ffffff');
+$default_show_words_label = __('Show Words', 'wp-quiz-plugin');
+
+global $post;
+$word_entries = get_post_meta( $post->ID, 'word_search_entries', true );
+if ( ! is_array( $word_entries ) ) {
+    $word_entries = []; // Ensure it's always an array.
+}
 
   
   // Fallback for the shuffle label
@@ -143,13 +151,23 @@ $shuffle_text_color = get_option('kw_wordsearch_admin_shuffle_button_text_color'
     <?php echo esc_html__($show_answer_label); ?>
     </label>
 
+    <label class="checkbox-label">
+    <input type="checkbox" class="toggle-words-checkbox" id="toggle-words">
+    <?php echo esc_html__($default_show_words_label); ?>
+    </label>
+
     <button id="shuffleButton" class="shuffle-button" style="background-color: <?php echo esc_attr($shuffle_bg_color); ?>; color: <?php echo esc_attr($shuffle_text_color); ?>;">
     <?php echo esc_html__($shuffle_label); ?>
     </button>
-
-    <button id="downloadButton" class="download-button" style="background-color: <?php echo esc_attr($shuffle_bg_color); ?>; color: <?php echo esc_attr($shuffle_text_color); ?>;">
-    Download Pdf
-    </button>
+    <?php 
+    if ($word_entries) {
+    ?>
+      <button id="downloadButton" class="download-button" style="background-color: <?php echo esc_attr($shuffle_bg_color); ?>; color: <?php echo esc_attr($shuffle_text_color); ?>;">
+        Download Pdf
+      </button>
+    <?php 
+    } 
+    ?>
 
   <!-- <button id="shuffleButton" class="shuffle-button" >Shuffle</button> -->
 
