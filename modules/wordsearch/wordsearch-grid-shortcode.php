@@ -21,6 +21,9 @@ $success_popup_button_text = get_option('kw_wordsearch_success_popup_button_text
     ?>
 <div class="wordsearch-container">
   <div class="game-header">
+    <button id="downloadButton" class="download-button">
+      Download Pdf
+    </button>
     <h2 class="game-title">Word Search Challenge</h2>
     <div class="timer-container">
       <div class="timer-icon">⏱️</div>
@@ -28,28 +31,34 @@ $success_popup_button_text = get_option('kw_wordsearch_success_popup_button_text
     </div>
   </div>
   
-  <div class="game-content">
-    <div id="game-container"></div>
-    
+  <!-- Add theme-container to wrap game content and image clues -->
+  <div class="game-main-content">
+    <!-- Visual clues container now as a separate column -->
     <div class="word-panel">
-      <h3 class="word-panel-title">Find These Words:</h3>
-      <ul id="wordList"></ul>
-      <!-- <button id="shuffle-btn" class="shuffle-button">Shuffle</button> -->
+        <h3 class="word-panel-title">Find These Words:</h3>
+        <ul id="wordList"></ul>
+      </div>
+
+    
+    <div class="game-content">
+      <div id="game-container"></div>
+      <div class="visual-clues-container">
+      <!-- Images will be dynamically inserted here via JavaScript -->
+    </div>
     </div>
   </div>
   
   <div id="completionBanner">Well Done!</div>
 </div>
 
-
     <div id="completionModal" style="display: none; padding: 20px; z-index: 9999;">
   <div class="container-inner">
     <div class="content">
-    <h2><?php echo $success_popup_title; ?></h2>
-    <p><?php echo $success_popup_body_text; ?></p>
+      <h2><?php echo $success_popup_title; ?></h2>
+      <p><?php echo $success_popup_body_text; ?></p>
     </div>
     <div class="buttons">
-    <button class="close" id="closeModal"><?php echo $success_popup_button_text; ?></button>
+      <button class="close" id="closeModal"><?php echo $success_popup_button_text; ?></button>
     </div>
   </div>
 </div>

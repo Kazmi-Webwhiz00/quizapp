@@ -43,7 +43,6 @@ jQuery(document).ready(function ($) {
   function syncSavedEntriesWithCookie(savedEntries) {
     // If there are no saved entries, clear the cookie.
     if (savedEntries.length === 0) {
-      console.log("No saved entries to sync with cookie.");
       setCookie("wordsearch_entries", "", -1);
       return;
     }
@@ -61,10 +60,8 @@ jQuery(document).ready(function ($) {
     // If there is any difference, update the cookie.
     if (JSON.stringify(mergedEntries) !== JSON.stringify(cookieEntries)) {
       setCookie("wordsearch_entries", JSON.stringify(mergedEntries), 1);
-      console.log("Cookie updated. New entries:", mergedEntries);
       return mergedEntries;
     } else {
-      console.log("Cookie entries are already up-to-date.");
       return cookieEntries;
     }
   }
@@ -122,20 +119,26 @@ jQuery(document).ready(function ($) {
 
   // Instead of updating a hidden field, update the cookie with the current wordEntries array
   function updateCookie() {
-    // Check if there is at least one entry with a non-empty wordText
-    if (
-      !wordEntries ||
-      !wordEntries.length ||
-      !wordEntries.some(function (entry) {
-        return entry.wordText && entry.wordText.trim().length > 0;
-      })
-    ) {
-      // No valid entries: clear the cookie.
-      setCookie("wordsearch_entries", "", 1);
-      $(document).trigger("wordsearchEntriesUpdated", { data: [] });
+    // Proceed only if every entry has a valid non-empty wordText.
+    const allEntriesValid = wordEntries.every(
+      (entry) => entry.wordText && entry.wordText.trim().length > 0
+    );
+    if (!allEntriesValid) {
       return;
     }
-    $(document).trigger("wordsearchEntriesUpdated", [wordEntries]);
+
+    // Filter out entries that don't have a valid wordText (ignore those that only have imageUrl)
+    var validWordEntries = wordEntries.filter(function (entry) {
+      return entry.wordText && entry.wordText.trim().length > 0;
+    });
+
+    // If no valid entries exist, clear the cookie and trigger the event with an empty array.
+    if (!validWordEntries.length) {
+      setCookie("wordsearch_entries", "", 1);
+      // $(document).trigger("wordsearchEntriesUpdated", { data: [] });
+      return;
+    }
+
     // Otherwise, update the cookie with the current wordEntries.
     setCookie("wordsearch_entries", JSON.stringify(wordEntries), 1); // expires in 1 day
     // Trigger the event with the updated entries.
@@ -173,7 +176,6 @@ jQuery(document).ready(function ($) {
 
     // Append the new entry HTML to the container
     $wordsContainer.append(newEntryHtml);
-    console.log("Appended newEntryHtml to $wordsContainer");
   }
 
   // Handler for "Add Word" button click
@@ -324,7 +326,6 @@ jQuery(document).ready(function ($) {
 
     // After removal, update the indices of remaining elements
     $wordsContainer.children(".add-word-container").each(function (index) {
-      console.log("::index", index);
       $(this).attr("data-index", index);
       $(this)
         .find(".word-number")
@@ -335,17 +336,13 @@ jQuery(document).ready(function ($) {
     // If you need to keep entryNumber in sync, reset it to the actual count
     entryNumber = $wordsContainer.children(".add-word-container").length;
 
-    console.log("::wordEntries6", uniqueId, wordEntries);
-
     // Filter the array to remove the object with the matching id.
     wordEntries = wordEntries.filter(function (item) {
       return item.id !== uniqueId;
     });
-    console.log("::wordEntries7", wordEntries);
 
     // Update the cookie with the new array.
     if (wordEntries.length === 0) {
-      console.log("No more entries, deleting cookie.");
       // Delete the cookie by setting it with an expired date.
       setCookie("wordsearch_entries", "", -1);
       $(document).trigger("wordsearchEntriesUpdated", { data: [] });
@@ -392,7 +389,6 @@ jQuery(document).ready(function ($) {
       const item = button.closest(itemSelector);
       const uniqueId = item.data("uniqueId");
 
-      console.log("id is", uniqueId);
       const customUploader = wp
         .media({
           title: "Select Image",

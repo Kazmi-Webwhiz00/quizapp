@@ -19,7 +19,6 @@ jQuery(document).ready(function ($) {
     localizedEntries = JSON.parse(wordSearchData.entries || "[]");
   }
 
-  // console.log("::entries", frontendData.entries);
   if (typeof frontendData !== "undefined") {
     cookieEntries = JSON.parse(frontendData.entries || "[]");
   } else {
@@ -45,7 +44,6 @@ jQuery(document).ready(function ($) {
 
   // 2) If we have entries, initialize the puzzle right away
   if (finalEntries.length > 0) {
-    console.log("::finalEntries", finalEntries);
     updateFinalEntries(finalEntries); // This calls updateWordData -> which calls waitForWordSearch
     waitForWordSearch(wordData);
   }
@@ -64,37 +62,6 @@ jQuery(document).ready(function ($) {
   }
 
   finalEntries = mergeEntries(localizedEntries, cookieEntries);
-  /************************************************************
-   * 1) Cookie Helpers
-   ************************************************************/
-  // Helper: Set a cookie
-  // function setCookie(name, value, days) {
-  //   var expires = "";
-  //   if (days) {
-  //     var date = new Date();
-  //     date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
-  //     expires = "; expires=" + date.toUTCString();
-  //   }
-  //   document.cookie = name + "=" + (value || "") + expires + "; path=/";
-  // }
-
-  // Helper: Get a cookie
-  // function getCookie(name) {
-  //   var nameEQ = name + "=";
-  //   var ca = document.cookie.split(";");
-  //   for (var i = 0; i < ca.length; i++) {
-  //     var c = ca[i].trim();
-  //     if (c.indexOf(nameEQ) === 0) {
-  //       return c.substring(nameEQ.length, c.length);
-  //     }
-  //   }
-  //   return null;
-  // }
-
-  // Helper: Clear a cookie by setting it to expire in the past
-  // function clearCookie(name) {
-  //   setCookie(name, "", -1);
-  // }
 
   // 2) Merge them for the first time
   // finalEntries = mergeEntries(localizedEntries, cookieEntries);
@@ -104,8 +71,6 @@ jQuery(document).ready(function ($) {
 
   // 3) Initialize the puzzle with whatever we have
   if (finalEntries.length > 0) {
-    console.log("::finalEntries", finalEntries);
-
     updateWordData(); // This will create the game
   } else {
     console.log("No initial finalEntries. Waiting for new entries...");
@@ -121,7 +86,6 @@ jQuery(document).ready(function ($) {
 
   $(document).on("wordsearchEntriesUpdated", function (event, updatedEntries) {
     // Avoid unnecessary console logs in production
-    // console.log("::Entered");
 
     // Use a more efficient change detection approach
     let localizedEntriesChanged = false;
@@ -596,7 +560,6 @@ jQuery(document).ready(function ($) {
     }
 
     function create() {
-      console.log("::Entered");
       this.lineGraphics = this.add.graphics();
       this.highlightGraphics = this.add.graphics();
       const scene = this;
@@ -641,7 +604,6 @@ jQuery(document).ready(function ($) {
       //     if (letterTexts[row][col]) {
       //       letterTexts[row][col].destroy();
       //     }
-      //     console.log("::gridMatrix", gridMatrix[row][col].letter.length);
       //     const { letter } = gridMatrix[row][col];
       //     const x = col * cellSize + cellSize * 0.7;
       //     const y = row * cellSize + cellSize * 0.7;
@@ -769,8 +731,6 @@ jQuery(document).ready(function ($) {
           endCell.col
         );
         const guessedWord = getStringFromCells(selectedCells, gridMatrix);
-
-        console.log("::guessedWord", guessedWord);
 
         const isMatch = wordData.includes(guessedWord);
         if (isMatch) {
@@ -1374,7 +1334,6 @@ jQuery(document).ready(function ($) {
 
     // If all words have been found, show the completion message.
     // if (foundWords.length === wordData.length) {
-    //   console.log("::guessedWord1", guessedWord);
     //   showCompletionMessage();
     // }
   }
@@ -1490,7 +1449,6 @@ jQuery(document).ready(function ($) {
   function updateWordListUI(foundWord, foundWordsCount, wordList) {
     foundWord = foundWord ? foundWord.toLowerCase() : "";
     const foundItem = document.getElementById(`word-${foundWord}`);
-    console.log("::foundItem", foundWord);
     if (foundItem) {
       foundItem.classList.add("found");
     }
