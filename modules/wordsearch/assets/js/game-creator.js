@@ -26,6 +26,7 @@ export function createWordSearchGame({
   containerId = "game-container",
   containerWidth = "100%",
   containerMaxWidth = "800px",
+  containerMaxHeight = "800px",
   puzzleOptions = {},
   canvasParentId = "game-container",
   onGameReady: localOnGameReady,
@@ -103,6 +104,8 @@ export function createWordSearchGame({
       // container.style.width = containerWidth;
       container.style.maxWidth =
         effectiveGridSize < 10 ? containerMaxWidth : "1000px";
+      container.style.maxHeight =
+        effectiveGridSize < 10 ? containerMaxHeight : "1000px";
     } else {
       console.error(`Container with id ${containerId} not found.`);
     }
@@ -406,7 +409,23 @@ export function createWordSearchGame({
         );
 
         const isMatch = window.wordData.includes(guessedWord);
+
         if (isMatch) {
+          // Get all elements with the class "visual-clue"
+          const visualClues = document.getElementsByClassName("visual-clue");
+
+          // Loop through the elements
+          for (let i = 0; i < visualClues.length; i++) {
+            const clue = visualClues[i];
+            // Get the data-word attribute and compare (case-insensitive) to guessedWord
+            if (
+              clue.getAttribute("data-word").toLowerCase() ===
+              guessedWord.toLowerCase()
+            ) {
+              clue.classList.add("found");
+            }
+          }
+
           highlightWord(
             scene,
             selectedCells,
@@ -435,7 +454,9 @@ export function createWordSearchGame({
         var elements = document.getElementsByClassName(
           frontendData.checkBoxElement
         );
-
+        var showWordselements = document.getElementsByClassName(
+          frontendData.toogleWordsBox
+        );
         function checkboxChangeHandler(e) {
           window.showAnswers = e.target.checked; // Equivalent to $(this).is(":checked")
           if (window.showAnswers) {
@@ -453,6 +474,24 @@ export function createWordSearchGame({
           }
         }
 
+        function showWordsListing(e) {
+          window.showWords = e.target.checked; // true or false
+
+          let wordPanel = document.getElementsByClassName("word-panel");
+
+          // Make sure there is at least one element with class "word-panel"
+          if (wordPanel.length === 0) {
+            console.warn("No elements with class 'word-panel' found.");
+            return;
+          }
+
+          if (!window.showWords) {
+            wordPanel[0].style.display = "none";
+          } else {
+            wordPanel[0].style.display = "flex";
+          }
+        }
+
         // If there is at least one element, handle it
         if (elements.length > 0) {
           window.checkBoxElement = elements; // This is a collection of DOM elements
@@ -461,6 +500,14 @@ export function createWordSearchGame({
           Array.from(window.checkBoxElement).forEach(function (element) {
             element.removeEventListener("change", checkboxChangeHandler);
             element.addEventListener("change", checkboxChangeHandler);
+          });
+        }
+        if (showWordselements.length > 0) {
+          window.showWordsElement = showWordselements;
+          Array.from(showWordselements).forEach(function (element) {
+            element.checked = true;
+            element.removeEventListener("change", showWordsListing);
+            element.addEventListener("change", showWordsListing);
           });
         }
       } else {

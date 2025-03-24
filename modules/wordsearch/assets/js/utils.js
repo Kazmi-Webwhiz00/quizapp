@@ -303,30 +303,86 @@ export function downloadWordSearchAsPDF() {
   // Retrieve word list
   const words = gameInstance.words || window.wordData || getWordsList();
 
+  // Get visual clues/images
+  const visualClues = window.finalEntries || [];
+  const hasImages = visualClues.some((entry) => entry && entry.imageUrl !== "");
+
+  // Count valid images
+  const validImages = visualClues.filter(
+    (entry) =>
+      entry && entry.wordText && entry.imageUrl && entry.imageUrl.trim() !== ""
+  );
+  const imageCount = validImages.length;
+
+  // Calculate image dimensions based on total count
+  let imageWidth, imageHeight;
+  const mainColumnImages = []; // Images to display in the right column
+  const bottomRowImages = []; // Images to display in the bottom row
+
+  if (imageCount <= 6) {
+    // Standard size for 6 or fewer images
+    imageWidth = 140;
+    imageHeight = Math.min(80, 400 / Math.min(imageCount, 6));
+    mainColumnImages.push(...validImages);
+  } else {
+    // Smaller size for more than 6 images
+    imageWidth = 140;
+    imageHeight = Math.min(60, 400 / 6);
+
+    // First 6 images go in the right column
+    mainColumnImages.push(...validImages.slice(0, 6));
+
+    // Remaining images go in the bottom row
+    bottomRowImages.push(...validImages.slice(6));
+  }
+
   // Calculate dimensions based on canvas and grid content
   const canvasWidth = gameInstance.canvas?.width || 600;
   const baseCellSize = Math.min(35, Math.floor(canvasWidth / gridSize));
   const puzzleWidth = gridSize * baseCellSize;
   const puzzleHeight = gridSize * baseCellSize;
-  const wordBlockHeight = 30;
-  const totalWordListHeight = words.length * wordBlockHeight + 60;
-  const margin = 60,
-    headerHeight = 120,
-    footerHeight = 30,
-    gap = 40,
-    pageHeightPadding = 200;
-  const avgCharWidth = 8;
-  const maxWordLength = words.reduce(
-    (max, word) => Math.max(max, word.length),
-    0
+
+  // Calculate word list dimensions
+  const wordsPerRow = 5; // Number of words per row in the top section
+  const wordBoxWidth = 100;
+  const wordBoxHeight = 25;
+  const wordBoxGap = 10;
+  const wordsRowsNeeded = Math.ceil(words.length / wordsPerRow);
+  const wordsAreaHeight = wordsRowsNeeded * (wordBoxHeight + wordBoxGap) + 50; // +50 for header
+
+  // Visual clues container dimensions
+  const cluesWidth = hasImages ? 180 : 0;
+  const cluesGap = hasImages ? 20 : 0;
+
+  // Overall layout dimensions
+  const margin = 60;
+  const headerHeight = 120;
+  const footerHeight = 30;
+  const gap = 40;
+  const pageHeightPadding = 200;
+
+  // Calculate bottom row height if needed
+  let bottomRowHeight = 0;
+  if (bottomRowImages.length > 0) {
+    // Calculate height needed for bottom row of images
+    bottomRowHeight = imageHeight + 40; // Image height plus padding
+  }
+
+  // New layout dimensions
+  const contentWidth = puzzleWidth + (hasImages ? cluesGap + cluesWidth : 0);
+  const contentHeight = puzzleHeight;
+  const neededWidth = Math.max(
+    margin + contentWidth + margin,
+    margin + (words.length * (wordBoxWidth + wordBoxGap)) / 2 + margin
   );
-  const wordListBoxWidth = Math.max(150, maxWordLength * avgCharWidth + 40);
-  const contentHeight = Math.max(puzzleHeight, totalWordListHeight);
-  const neededWidth = margin + puzzleWidth + gap + wordListBoxWidth + margin;
   const neededHeight =
     margin +
     headerHeight +
+    gap +
+    wordsAreaHeight +
+    gap +
     contentHeight +
+    (bottomRowHeight > 0 ? gap + bottomRowHeight : 0) +
     footerHeight +
     margin +
     pageHeightPadding;
@@ -346,10 +402,39 @@ export function downloadWordSearchAsPDF() {
   pdf.setLineWidth(2);
   pdf.line(margin, headerHeight + 10, neededWidth - margin, headerHeight + 10);
 
-  // --- PUZZLE GRID ---
-  const puzzleX = margin,
-    puzzleY = headerHeight + margin,
-    cellSize = baseCellSize;
+  // --- WORD LIST (now at the top) ---
+  const wordsStartY = headerHeight + gap;
+  pdf.setFontSize(16);
+  pdf.setTextColor(60, 60, 60);
+  pdf.text("Find These Words:", margin, wordsStartY + 20);
+
+  // Create word boxes in multiple rows
+  pdf.setFontSize(12);
+  for (let i = 0; i < words.length; i++) {
+    const row = Math.floor(i / wordsPerRow);
+    const col = i % wordsPerRow;
+
+    const boxX = margin + col * (wordBoxWidth + wordBoxGap);
+    const boxY = wordsStartY + 40 + row * (wordBoxHeight + wordBoxGap);
+
+    pdf.setFillColor(100, 100, 100);
+    pdf.setDrawColor(100, 100, 100);
+    pdf.roundedRect(boxX, boxY, wordBoxWidth, wordBoxHeight, 3, 3, "FD");
+
+    pdf.setTextColor(255, 255, 255);
+    const centerX = boxX + wordBoxWidth / 2;
+    const centerY = boxY + wordBoxHeight / 2;
+    pdf.text(words[i].toUpperCase(), centerX, centerY, {
+      align: "center",
+      baseline: "middle",
+    });
+  }
+
+  // --- PUZZLE GRID (now below word list) ---
+  const puzzleX = margin;
+  const puzzleY = wordsStartY + wordsAreaHeight + gap;
+  const cellSize = baseCellSize;
+
   pdf.setFillColor(230, 230, 230);
   pdf.roundedRect(
     puzzleX - 5,
@@ -410,27 +495,133 @@ export function downloadWordSearchAsPDF() {
     }
   }
 
-  // --- WORD LIST ---
-  const wordListX = puzzleX + puzzleWidth + gap,
-    wordListY = puzzleY;
-  pdf.rect(wordListX, wordListY, wordListBoxWidth, 40, "F");
-  pdf.setFontSize(16);
-  pdf.setTextColor(255, 255, 255);
-  pdf.text("Find These Words:", wordListX + 10, wordListY + 25);
-  let wordY = wordListY + 60;
-  pdf.setFontSize(12);
-  words.forEach((word) => {
-    pdf.setFillColor(100, 100, 100);
-    pdf.setDrawColor(100, 100, 100);
-    pdf.roundedRect(wordListX, wordY - 10, wordListBoxWidth, 25, 3, 3, "FD");
-    const centerX = wordListX + wordListBoxWidth / 2;
-    const centerY = wordY - 10 + 25 / 2;
-    pdf.text(word.toUpperCase(), centerX, centerY, {
-      align: "center",
-      baseline: "middle",
-    });
-    wordY += wordBlockHeight;
-  });
+  // --- VISUAL CLUES (right column) - No background, aligned with grid top ---
+  if (hasImages && mainColumnImages.length > 0) {
+    const cluesX = puzzleX + puzzleWidth + cluesGap;
+    const cluesY = puzzleY; // Grid Y position
+
+    try {
+      // Start position for images - aligned exactly with the top of the grid
+      let currentImageY = cluesY; // Removed the +10 padding to align exactly with grid
+      const imageGap = 15; // Increased gap between images
+
+      // Add images to the right column
+      for (const entry of mainColumnImages) {
+        if (
+          entry &&
+          entry.wordText &&
+          entry.imageUrl &&
+          entry.imageUrl.trim() !== ""
+        ) {
+          // Create subtle border for each image - no background fill
+          pdf.setDrawColor(210, 210, 230);
+          pdf.setLineWidth(0.5);
+          pdf.roundedRect(
+            cluesX + 5,
+            currentImageY,
+            imageWidth + 10,
+            imageHeight + 10,
+            3,
+            3,
+            "D"
+          );
+
+          // Try to find the image element from the DOM
+          const img = document.querySelector(
+            `[data-word="${entry.wordText.toLowerCase()}"] img`
+          );
+          if (img && img.complete && img.naturalHeight !== 0) {
+            try {
+              // Add image
+              pdf.addImage(
+                img,
+                "JPEG",
+                cluesX + 10,
+                currentImageY + 5,
+                imageWidth,
+                imageHeight
+              );
+
+              currentImageY += imageHeight + imageGap;
+            } catch (imgErr) {
+              console.error("Error adding specific image:", imgErr);
+            }
+          }
+        }
+      }
+    } catch (err) {
+      console.error("Error processing main column images:", err);
+    }
+  }
+
+  // --- BOTTOM ROW IMAGES - No background, aligned with grid left edge ---
+  if (hasImages && bottomRowImages.length > 0) {
+    // Calculate starting position below the grid
+    const bottomY = puzzleY + puzzleHeight + gap;
+
+    try {
+      // Increased gap between bottom row images
+      const bottomImageGap = 25; // Larger gap for bottom row images
+
+      // Calculate image width based on how many need to fit in the row
+      const imagesPerRow = bottomRowImages.length;
+      const maxRowWidth = neededWidth - 2 * margin;
+      const actualImageWidth = Math.min(
+        imageWidth,
+        (maxRowWidth - (imagesPerRow - 1) * bottomImageGap) / imagesPerRow
+      );
+
+      // Add images to the bottom row
+      for (let i = 0; i < bottomRowImages.length; i++) {
+        const entry = bottomRowImages[i];
+        if (
+          entry &&
+          entry.wordText &&
+          entry.imageUrl &&
+          entry.imageUrl.trim() !== ""
+        ) {
+          // Calculate position in the row with increased gap
+          // Start exactly from the grid's left edge (puzzleX)
+          const xPos = puzzleX + i * (actualImageWidth + bottomImageGap);
+
+          // Create subtle border for each image - no background fill
+          pdf.setDrawColor(210, 210, 230);
+          pdf.setLineWidth(0.5);
+          pdf.roundedRect(
+            xPos,
+            bottomY + 5,
+            actualImageWidth + 10,
+            imageHeight + 10,
+            3,
+            3,
+            "D"
+          );
+
+          // Try to find the image element from the DOM
+          const img = document.querySelector(
+            `[data-word="${entry.wordText.toLowerCase()}"] img`
+          );
+          if (img && img.complete && img.naturalHeight !== 0) {
+            try {
+              // Add image
+              pdf.addImage(
+                img,
+                "JPEG",
+                xPos + 5,
+                bottomY + 10,
+                actualImageWidth,
+                imageHeight
+              );
+            } catch (imgErr) {
+              console.error("Error adding bottom row image:", imgErr);
+            }
+          }
+        }
+      }
+    } catch (err) {
+      console.error("Error processing bottom row images:", err);
+    }
+  }
 
   // --- FOOTER ---
   const today = new Date();
@@ -444,6 +635,7 @@ export function downloadWordSearchAsPDF() {
 
   pdf.save("word-search-puzzle.pdf");
 }
+
 /**
  * Example fallback for retrieving words
  */
