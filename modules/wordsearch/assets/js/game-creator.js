@@ -470,6 +470,14 @@ export function createWordSearchGame({
               window.showAnswers
             );
           } else {
+            const visualClues = document.getElementsByClassName("visual-clue");
+
+            // Loop through the elements
+            for (let i = 0; i < visualClues.length; i++) {
+              const clue = visualClues[i];
+              // Get the data-word attribute and compare (case-insensitive) to guessedWord
+              clue.classList.remove("found");
+            }
             updateWordData();
           }
         }

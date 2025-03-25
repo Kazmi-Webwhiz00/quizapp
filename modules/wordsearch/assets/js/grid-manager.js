@@ -102,10 +102,11 @@ export async function resizeGame(
 
   // Optimized Text Rendering: Enhanced style with better WebGL settings
 
+  console.log("::customStyles", window.customStyles);
   const textStyle = {
-    fontFamily: "Georgia, serif",
+    fontFamily: window.customStyles["fontFamily"] || "rgb(236,216,179)",
     fontSize: `${fontSize}px`,
-    color: "#5c4012",
+    color: window.customStyles["fontColor"],
     fontWeight: "bold",
     stroke: "#ffffff",
     strokeThickness: fontSize > 20 ? 1 : 0.5,
@@ -188,14 +189,17 @@ export async function resizeGame(
       scene.load.start();
     }
 
+    const evenColor = window.customStyles["evenCellBgColor"];
+    const oddColor = window.customStyles["oddCellBgColor"];
+
     const evenGraphics = scene.make.graphics({ x: 0, y: 0, add: false });
-    evenGraphics.fillStyle(0xecd8b3, 1);
+    evenGraphics.fillStyle(evenColor, 1);
     evenGraphics.fillRect(0, 0, cellSize, cellSize);
     evenGraphics.generateTexture("evenCell", cellSize, cellSize);
     evenGraphics.destroy();
 
     const oddGraphics = scene.make.graphics({ x: 0, y: 0, add: false });
-    oddGraphics.fillStyle(0xf5e9d1, 1);
+    oddGraphics.fillStyle(oddColor, 1);
     oddGraphics.fillRect(0, 0, cellSize, cellSize);
     oddGraphics.generateTexture("oddCell", cellSize, cellSize);
     oddGraphics.destroy();
@@ -507,8 +511,10 @@ function createLetterTextsFixedPositioning(
             this.glowSprite.x = this.x;
             this.glowSprite.y = this.y;
           }
+
           // Play sound effect on hover
-          scene.sound.play("letterHover", { volume: 0.5 });
+          window.customStyles["toggleGridLettersSound"] &&
+            scene.sound.play("letterHover", { volume: 0.5 });
 
           // Apply gold shadow effect by showing the glow sprite with gold tint
           this.setShadow(2, 2, "#FF9900", 8, true, true);

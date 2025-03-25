@@ -147,10 +147,13 @@ jQuery(document).ready(function ($) {
 
   $(document).on("wordsearchEntriesAdded", function (event, entries) {
     entries.data.forEach(function (entry) {
-      if (entry.id && !wordEntries.includes(entry)) {
+      if (entry.id && !wordEntries.some((e) => e.id === entry.id)) {
         wordEntries.push(entry);
       }
     });
+    console.log("Updating1...", wordEntries);
+    console.log("Updating...", entries);
+
     $(document).trigger("wordsearchEntriesUpdated", { data: wordEntries });
   });
 
@@ -350,21 +353,6 @@ jQuery(document).ready(function ($) {
       updateCookie();
     }
   });
-  // Delegate removal of word entries to dynamically added elements
-  // $wordsContainer.on("click", ".remove-word", function (e) {
-  //   e.preventDefault();
-  //   if (confirm("Are you sure you want to remove this word?")) {
-  //     $(this).closest(".wordsearch-word").remove();
-  //     // Optionally, update word numbers after removal
-  //     $wordsContainer.children(".wordsearch-word").each(function (index) {
-  //       $(this).attr("data-index", index);
-  //       $(this)
-  //         .find(".word-number")
-  //         .text(index + 1 + ".");
-  //       // Also update the name attributes if needed
-  //     });
-  //   }
-  // });
 
   // Handler for "Clear List" button click
   $("#clear-wordsearch-list-button").on("click", function (e) {

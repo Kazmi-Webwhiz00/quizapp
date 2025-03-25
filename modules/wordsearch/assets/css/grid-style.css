@@ -394,13 +394,23 @@ h3 {
 }
 
 @media (max-width: 600px) {
-  .visual-clues-container {
-    height: 120px;
+  .game-content {
+    flex-direction: column-reverse;
+    align-items: center;
+    gap: 15px;
   }
 
-  .visual-clue {
-    width: 40px;
-    height: 40px;
+  .visual-clues-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    gap: 10px;
+    overflow-x: auto; /* Optional: adds horizontal scroll if content overflows */
   }
 }
 
@@ -1056,7 +1066,7 @@ canvas {
 
 .visual-clue.found img {
   /* Make found word images more vibrant */
-  filter: brightness(1.1) drop-shadow(0 3px 5px rgba(0, 0, 0, 0.2));
+  filter: brightness(1.1) drop-shadow(0 3px 5px rgba(123, 234, 123, 0.9));
 }
 
 /* Floating animation */
@@ -1093,6 +1103,7 @@ canvas {
   .visual-clue {
     width: 45px;
     height: 45px;
+    flex-shrink: 0;
   }
 }
 

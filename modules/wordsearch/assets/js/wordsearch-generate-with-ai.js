@@ -216,7 +216,7 @@ jQuery(document).ready(function ($) {
     const topic = $("#ws-topic").val().trim();
     const age = $("#ws-age").val().trim();
     const number = $("#ws-words").val().trim();
-    const newEntries = parseInt(number, 10);
+    const newEntries = parseInt(number);
 
     if (totalEntries + newEntries > 15) {
       window.showWordLimitModal();
