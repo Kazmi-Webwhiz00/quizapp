@@ -1,11 +1,11 @@
 <div class="kw-settings-section">
-    <h2><?php esc_html_e('WordSearch Settings', 'wp-quiz-plugin'); ?></h2>
+    <h2><?php esc_html_e('WordSearch Image Settings', 'wp-quiz-plugin'); ?></h2>
 
     <?php
     // Default values for Clue Image Settings
     $clue_defaults = [
-        'kw_word_search_image_height' => 100,
-        'kw_word_search_image_width'  => 100,
+        'kw_word_search_image_height' => 120,
+        'kw_word_search_image_width'  => 140,
     ];
     ?>
 

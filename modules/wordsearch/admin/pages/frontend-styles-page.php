@@ -10,23 +10,35 @@ if (!defined('ABSPATH')) {
 function wordsearch_register_frontend_styles_settings() {
     // Register settings with default values
 
-    // Filled Cell Background
-    register_setting('kw_wordsearch_fe_settings', 'kw_grid_bg_color', ['default' => '#808080a1']);
+    register_setting('kw_wordsearch_fe_settings', 'kw_grid_title_label', ['default' => 'Word Search Challenge']); // Default Title Label
+
+    register_setting('kw_wordsearch_fe_settings', 'kw_find_words_label', ['default' => 'Find These Words:']); // Default Find Words Label
+
+    register_setting('kw_wordsearch_fe_settings', 'kw_download_pdf_label', ['default' => 'Download Pdf']);
+
+    register_setting('kw_wordsearch_fe_settings', 'kw_grid_text_sound_setting', ['default' => 0]);
+
+    // Grid Even Cell Background
+    register_setting('kw_wordsearch_fe_settings', 'kw_grid_even_cell_bg_color', ['default' => '0xecd8b3']);
+
+    // Grid Even Cell Background
+    register_setting('kw_wordsearch_fe_settings', 'kw_grid_odd_cell_bg_color', ['default' => '0xf5e9d1']);
+
 
     // Highlight Cell Background
     register_setting('kw_wordsearch_fe_settings', 'kw_highlight_cell_text_color', ['default' => '#fffff']);
 
     // Highlighted Cell Background
-    register_setting('kw_wordsearch_fe_settings', 'kw_wordsearch_line_color', ['default' => 'rgba(0, 123, 255, 0.8)']);
+    register_setting('kw_wordsearch_fe_settings', 'kw_grid_line_color', ['default' => 'rgba(184, 134, 11, 0.6)']);
 
     // Cell Font Color
-    register_setting('kw_wordsearch_fe_settings', 'kw_wordsearch_cell_font_color', ['default' => 'black']);
+    register_setting('kw_wordsearch_fe_settings', 'kw_wordsearch_cell_font_color', ['default' => '#5c4012']);
 
 
 
     // Grid Settings
-    register_setting('kw_wordsearch_fe_settings', 'kw_grid_text_font_color', ['default' => '#000']); // Default black
-    register_setting('kw_wordsearch_fe_settings', 'kw_grid_text_font_family', ['default' => 'Roboto']); // Default font family
+    register_setting('kw_wordsearch_fe_settings', 'kw_grid_text_font_color', ['default' => '#5c4012']); // Default black
+    register_setting('kw_wordsearch_fe_settings', 'kw_grid_text_font_family', ['default' => 'Georgia, serif']); // Default font family
 
     // Wordsearch Image Settings
     // register_setting('kw_wordsearch_fe_settings', 'kw_word_search_image_height', ['default' => '100']); 
@@ -37,6 +49,13 @@ function wordsearch_register_frontend_styles_settings() {
      register_setting('kw_wordsearch_fe_settings', 'kw_wordsearch_success_popup_title', ['default' => __('Success!', 'wp-quiz-plugin')]);
      register_setting('kw_wordsearch_fe_settings', 'kw_wordsearch_success_popup_body_text', ['default' => __('You have successfully completed the wordsearch!', 'wp-quiz-plugin')]);
      register_setting('kw_wordsearch_fe_settings', 'kw_wordsearch_success_popup_button_text', ['default' => __('Close', 'wp-quiz-plugin')]);
+
+     add_settings_section(
+        'kw_wordsearch_puzzle_texts_section',
+        __('Word Search Puzzle Texts', 'wp-quiz-plugin'),
+        'wordsearch_render_wordsearch_puzzle_section',
+        'kw-wordsearch-frontend-styles-page'
+    );
 
      // Add a settings section for Success Popup
      add_settings_section(
@@ -67,6 +86,11 @@ add_action('admin_init', 'wordsearch_register_frontend_styles_settings');
 /**
  * Render Frontend Styles Section
  */
+
+ function wordsearch_render_wordsearch_puzzle_section() {
+    include plugin_dir_path(__FILE__) . '../templates/sections/fe/fe-wordsearch-puzzle-texts-section.php';
+}
+
 function wordsearch_render_frontend_styles_section() {
     include plugin_dir_path(__FILE__) . '../templates/sections/fe/fe-main-ui-settings-section.php';
 }
