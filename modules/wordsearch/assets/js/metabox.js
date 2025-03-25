@@ -151,8 +151,6 @@ jQuery(document).ready(function ($) {
         wordEntries.push(entry);
       }
     });
-    console.log("Updating1...", wordEntries);
-    console.log("Updating...", entries);
 
     $(document).trigger("wordsearchEntriesUpdated", { data: wordEntries });
   });

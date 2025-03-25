@@ -15,7 +15,69 @@ export function renderWordList(wordData) {
         const formattedWord = word.length > 0 ? word.toLowerCase() : "";
         const li = document.createElement("li");
         li.id = `word-${formattedWord}`;
-        li.textContent = formattedWord;
+
+        // Create word text span
+        const wordSpan = document.createElement("span");
+        wordSpan.textContent = formattedWord;
+        wordSpan.classList.add("word-text");
+
+        // Create eye icon container
+        const eyeIconContainer = document.createElement("span");
+        eyeIconContainer.classList.add("eye-icon-container");
+
+        // Create eye icon (using SVG for scalability)
+        const eyeIcon = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "svg"
+        );
+        eyeIcon.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+        eyeIcon.setAttribute("width", "24");
+        eyeIcon.setAttribute("height", "24");
+        eyeIcon.setAttribute("viewBox", "0 0 24 24");
+        eyeIcon.setAttribute("fill", "none");
+        eyeIcon.setAttribute("stroke", "currentColor");
+        eyeIcon.setAttribute("stroke-width", "2");
+        eyeIcon.setAttribute("stroke-linecap", "round");
+        eyeIcon.setAttribute("stroke-linejoin", "round");
+        eyeIcon.classList.add("eye-icon");
+
+        // Create eye path
+        const eyePath = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "path"
+        );
+        eyePath.setAttribute(
+          "d",
+          "M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"
+        );
+
+        // Create eye circle
+        const eyeCircle = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "circle"
+        );
+        eyeCircle.setAttribute("cx", "12");
+        eyeCircle.setAttribute("cy", "12");
+        eyeCircle.setAttribute("r", "3");
+
+        // Assemble eye icon
+        eyeIcon.appendChild(eyePath);
+        eyeIcon.appendChild(eyeCircle);
+        eyeIconContainer.appendChild(eyeIcon);
+
+        // Add click event to toggle word visibility
+        eyeIconContainer.addEventListener("click", (e) => {
+          e.stopPropagation(); // Prevent event bubbling
+
+          // Toggle visibility
+          li.classList.toggle("hidden-word");
+          eyeIconContainer.classList.toggle("eye-closed");
+        });
+
+        // Append elements to list item
+        li.appendChild(wordSpan);
+        li.appendChild(eyeIconContainer);
+
         fragment.appendChild(li);
       });
     });
