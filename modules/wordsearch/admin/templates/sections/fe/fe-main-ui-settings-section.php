@@ -6,12 +6,14 @@ if (!defined('ABSPATH')) {
 
 // Default values for Frontend UI settings
 $default_settings = [
-    'kw_grid_bg_color'             => '#e1f5fe',  // Filled Cell Background
-    'kw_grid_text_font_color'      => '#000',      
-    'kw_grid_text_font_family'      => 'Arial',  
+    'kw_grid_even_cell_bg_color'   => "0xecd8b3",  // Filled Cell Background
+    'kw_grid_odd_cell_bg_color'   => '0xf5e9d1',
+    'kw_grid_text_font_color'      => '#5c4012',      
+    'kw_grid_text_font_family'      => 'Georgia, serif',  
     'kw_highlight_cell_text_color' => '#ffffff',               // Highlight Cell Background
-    'kw_wordsearch_line_color'     => 'rgba(0, 123, 255, 0.8)',  // Highlighted Cell Background
-    'kw_wordsearch_cell_font_color'=> 'black',                 // Cell Font Color
+    'kw_grid_line_color'     => 'rgba(184, 134, 11, 0.6)',  // Highlighted Cell Background
+    'kw_wordsearch_cell_font_color'=> '#5c4012',  
+    'kw_wordsearch_admin_filled_cell_color'  => '#fffff',                        // Cell Font Color
 ];
 
 // Retrieve saved values or use defaults
@@ -27,18 +29,42 @@ foreach ($default_settings as $key => $default_value) {
 
     <!-- Filled Cell Background Color -->
     <div class="kw-settings-field">
-        <label for="kw_grid_bg_color">
-            <?php esc_html_e( 'Grid Text & Background Color', 'wp-quiz-plugin' ); ?>
+        <label for="kw_grid_even_cell_bg_color">
+            <?php esc_html_e( 'Grid Even Cell Background Color', 'wp-quiz-plugin' ); ?>
         </label>
         <input type="text"
-               id="kw_grid_bg_color"
-               name="kw_grid_bg_color"
+               id="kw_grid_even_cell_bg_color"
+               name="kw_grid_even_cell_bg_color"
                class="kw-color-picker wp-color-picker"
-               value="<?php echo esc_attr( $settings['kw_grid_bg_color'] ); ?>"
-               data-default="<?php echo esc_attr( $default_settings['kw_grid_bg_color'] ); ?>">
+               value="<?php echo esc_attr( $settings['kw_grid_even_cell_bg_color'] ); ?>"
+               data-default="<?php echo esc_attr( $default_settings['kw_grid_even_cell_bg_color'] ); ?>">
     </div>
 
-        <!-- Filled Cell Background Color -->
+    <div class="kw-settings-field">
+        <label for="kw_grid_odd_cell_bg_color">
+            <?php esc_html_e( 'Grid Odd Cell Background Color', 'wp-quiz-plugin' ); ?>
+        </label>
+        <input type="text"
+               id="kw_grid_odd_cell_bg_color"
+               name="kw_grid_odd_cell_bg_color"
+               class="kw-color-picker wp-color-picker"
+               value="<?php echo esc_attr( $settings['kw_grid_odd_cell_bg_color'] ); ?>"
+               data-default="<?php echo esc_attr( $default_settings['kw_grid_odd_cell_bg_color'] ); ?>">
+    </div>
+
+    <div class="kw-settings-field">
+        <label for="kw_wordsearch_admin_filled_cell_color">
+            <?php esc_html_e( 'Grid Selected Cell Background Color', 'wp-quiz-plugin' ); ?>
+        </label>
+        <input type="text"
+               id="kw_wordsearch_admin_filled_cell_color"
+               name="kw_wordsearch_admin_filled_cell_color"
+               class="kw-color-picker wp-color-picker"
+               value="<?php echo esc_attr( $settings['kw_wordsearch_admin_filled_cell_color'] ); ?>"
+               data-default="<?php echo esc_attr( $default_settings['kw_wordsearch_admin_filled_cell_color'] ); ?>">
+    </div>
+
+        <!-- Grid Letters Text Color -->
         <div class="kw-settings-field">
         <label for="kw_grid_text_font_color">
             <?php esc_html_e( 'Grid Text Color', 'wp-quiz-plugin' ); ?>
@@ -86,15 +112,15 @@ foreach ($default_settings as $key => $default_value) {
 
     <!-- Highlighted Cell Background Color -->
     <div class="kw-settings-field">
-        <label for="kw_wordsearch_line_color">
+        <label for="kw_grid_line_color">
             <?php esc_html_e( 'Highlighted Line Background Color', 'wp-quiz-plugin' ); ?>
         </label>
         <input type="text"
-               id="kw_wordsearch_line_color"
-               name="kw_wordsearch_line_color"
+               id="kw_grid_line_color"
+               name="kw_grid_line_color"
                class="kw-color-picker wp-color-picker"
-               value="<?php echo esc_attr( $settings['kw_wordsearch_line_color'] ); ?>"
-               data-default="<?php echo esc_attr( $default_settings['kw_wordsearch_line_color'] ); ?>">
+               value="<?php echo esc_attr( $settings['kw_grid_line_color'] ); ?>"
+               data-default="<?php echo esc_attr( $default_settings['kw_grid_line_color'] ); ?>">
     </div>
 
     <!-- Reset Button -->

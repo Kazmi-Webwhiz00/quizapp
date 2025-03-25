@@ -12,12 +12,14 @@ function enqueue_wordsearch_metabox_preview_assets( $hook ) {
     $screen = get_current_screen();
 
         // Fetch the filled cell background color with a default value
-        $grid_bg_color = get_option('kw_grid_bg_color', '#808080a1');
-        $higlightedCellTextColor = get_option('kw_highlight_cell_text_color', '#d4edda');
-        $lineColor = get_option('kw_wordsearch_line_color', 'rgba(0, 123, 255, 0.8)');
-        $gridTextColor = get_option('kw_grid_text_font_color', '#000');
+        $grid_even_cell_bg_color = get_option('kw_grid_even_cell_bg_color', '0xecd8b3');
+        $grid_odd_cell_bg_color = get_option('kw_grid_odd_cell_bg_color', '0xf5e9d1');
+        $higlightedCellTextColor = get_option('kw_highlight_cell_text_color', '#ffffff');
+        $lineColor = get_option('kw_grid_line_color', 'rgba(184, 134, 11, 0.6)');
+        $gridTextColor = get_option('kw_grid_text_font_color', '#5c4012');
         // error_log("color" . print_r($gridTextColor , true));
         $gridTextFontFamily = get_option('kw_grid_text_font_family', 'Roboto');
+        $toggleGridLettersSound = get_option('kw_grid_text_sound_setting', 0);
 
     if ( $screen && $screen->post_type === 'wordsearch' && 
          ( $hook === 'post-new.php' || $hook === 'post.php' ) ) {
@@ -83,9 +85,11 @@ function enqueue_wordsearch_metabox_preview_assets( $hook ) {
       'gridStyles'       => array( 
           'fontColor'              => esc_attr( $gridTextColor ),
           'fontFamily'             => esc_attr( $gridTextFontFamily ),
-          'bgColor'                => esc_attr( $grid_bg_color ),
+          'evenCellBgColor'                => esc_attr( $grid_even_cell_bg_color ),
+          'oddCellBgColor'                => esc_attr( $grid_odd_cell_bg_color  ),
           'higlightedCellTextColor'=> esc_attr( $higlightedCellTextColor ),
           'lineColor'              => esc_attr( $lineColor ),
+          'toggleGridLettersSound'   => esc_attr($toggleGridLettersSound)
       )
   ));
     }
@@ -128,12 +132,17 @@ add_action('add_meta_boxes', 'add_wordsearch_preview_meta_box');
 // Render the preview meta box content.
 function render_wordsearch_preview_meta_box($post) {
 $default_show_answers_label = __('Show Answers', 'wp-quiz-plugin');
+$default_show_words_label = __('Show Words', 'wp-quiz-plugin');
 $show_answer_label = get_option('kw_wordsearch_admin_show_answers_checkbox_label', $default_show_answers_label);
+$show_words_label = get_option('kw_admin_show_words_checkbox_label', $default_show_words_label);
 $default_shuffle_button_label = __('Shuffle', 'wp-quiz-plugin');
 $shuffle_label =  get_option('kw_wordsearch_admin_shuffle_button_label', $default_shuffle_button_label);
 $shuffle_bg_color = get_option('kw_wordsearch_admin_shuffle_button_color', '#0073aa');
 $shuffle_text_color = get_option('kw_wordsearch_admin_shuffle_button_text_color', '#ffffff');
 $default_show_words_label = __('Show Words', 'wp-quiz-plugin');
+$default_download_pdf_label = __('Download Pdf', 'wp-quiz-plugin');
+$downloadPdfLabel = get_option('kw_download_pdf_label', $default_download_pdf_label);
+
 
 global $post;
 $word_entries = get_post_meta( $post->ID, 'word_search_entries', true );
@@ -153,7 +162,7 @@ if ( ! is_array( $word_entries ) ) {
 
     <label class="checkbox-label">
     <input type="checkbox" class="toggle-words-checkbox" id="toggle-words">
-    <?php echo esc_html__($default_show_words_label); ?>
+    <?php echo esc_html__($show_words_label); ?>
     </label>
 
     <button id="shuffleButton" class="shuffle-button" style="background-color: <?php echo esc_attr($shuffle_bg_color); ?>; color: <?php echo esc_attr($shuffle_text_color); ?>;">
@@ -163,7 +172,7 @@ if ( ! is_array( $word_entries ) ) {
     if ($word_entries) {
     ?>
       <button id="downloadButton" class="download-button" style="background-color: <?php echo esc_attr($shuffle_bg_color); ?>; color: <?php echo esc_attr($shuffle_text_color); ?>;">
-        Download Pdf
+      <?php echo esc_html__($downloadPdfLabel); ?>
       </button>
     <?php 
     } 

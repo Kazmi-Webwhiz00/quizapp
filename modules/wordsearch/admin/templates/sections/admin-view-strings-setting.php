@@ -50,6 +50,21 @@ foreach ($default_settings as $key => $values) {
     <h2 class="kw-section-heading"><?php esc_html_e('Admin Strings, Button Colors, and Text Colors', 'wp-quiz-plugin'); ?></h2>
     <hr>
 
+    <!-- Add Words Metabox Label -->
+    <div class="kw-settings-field">
+
+
+    <!-- Preview Full View -->
+    <label for="kw_wordsearch_admin_full_view_container_label" class="kw-label">
+        <?php esc_html_e('Wordsearch Full View Label', 'wp-quiz-plugin'); ?>
+    </label>
+    <input type="text" id="kw_wordsearch_admin_full_view_container_label" name="kw_wordsearch_admin_full_view_container_label" class="regular-text kw-input" 
+        value="<?php echo esc_attr(get_option('kw_wordsearch_admin_full_view_container_label', __('Preview Wordsearch', 'wp-quiz-plugin'))); ?>" 
+        data-default="<?php echo esc_attr(__('Preview Wordsearch', 'wp-quiz-plugin')); ?>">
+    <p class="description"><?php esc_html_e('Set the label for "Wordsearch Full View" container.', 'wp-quiz-plugin'); ?></p>
+
+    </div>
+
     <!-- Add Word -->
     <div class="kw-settings-field">
         <label for="kw_wordsearch_admin_add_word_button_label" class="kw-label">
@@ -120,30 +135,15 @@ foreach ($default_settings as $key => $values) {
         <p class="description"><?php esc_html_e('Set the label for the "Show Answers" checkbox.', 'wp-quiz-plugin'); ?></p>
     </div>
 
-
-
-    <!-- Add Words Metabox Label -->
-<div class="kw-settings-field">
-
-
-    <!-- Preview Full View -->
-    <label for="kw_wordsearch_admin_full_view_container_label" class="kw-label">
-        <?php esc_html_e('Wordsearch Full View Label', 'wp-quiz-plugin'); ?>
-    </label>
-    <input type="text" id="kw_wordsearch_admin_full_view_container_label" name="kw_wordsearch_admin_full_view_container_label" class="regular-text kw-input" 
-        value="<?php echo esc_attr(get_option('kw_wordsearch_admin_full_view_container_label', __('Preview Wordsearch', 'wp-quiz-plugin'))); ?>" 
-        data-default="<?php echo esc_attr(__('Preview Wordsearch', 'wp-quiz-plugin')); ?>">
-    <p class="description"><?php esc_html_e('Set the label for "Wordsearch Full View" container.', 'wp-quiz-plugin'); ?></p>
-
-    <!-- Filled Cell Background Color -->
-    <label for="kw_wordsearch_admin_filled_cell_color" class="kw-label">
-        <?php esc_html_e('Filled Cell Background Color', 'wp-quiz-plugin'); ?>
-    </label>
-    <input type="text" id="kw_wordsearch_admin_filled_cell_color" name="kw_wordsearch_admin_filled_cell_color" class="kw-color-picker wp-color-picker" 
-        value="<?php echo esc_attr(get_option('kw_wordsearch_admin_filled_cell_color', '#e1f5fe')); ?>" 
-        data-default="#e1f5fe">
-    <p class="description"><?php esc_html_e('Select the background color for filled cells in the wordsearch.', 'wp-quiz-plugin'); ?></p>
-</div>
+    <div class="kw-settings-field">
+        <label for="kw_admin_show_words_checkbox_label" class="kw-label">
+            <?php esc_html_e('Show Words Label', 'wp-quiz-plugin'); ?>
+        </label>
+        <input type="text" id="kw_admin_show_words_checkbox_label" name="kw_admin_show_words_checkbox_label" class="regular-text kw-input" 
+            value="<?php echo esc_attr(get_option('kw_admin_show_words_checkbox_label', __('Show Words', 'wp-quiz-plugin'))); ?>" 
+            >
+        <p class="description"><?php esc_html_e('Set the label for the "Show Words" checkbox.', 'wp-quiz-plugin'); ?></p>
+    </div>
 
     
 

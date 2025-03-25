@@ -22,6 +22,10 @@ if (!defined('ABSPATH')) {
         'default' => __('Show Answers', 'wp-quiz-plugin'),
     ]);
 
+    register_setting('kw_wordsearch_admin_view_strings', 'kw_admin_show_words_checkbox_label', [
+        'default' => __('Show Words', 'wp-quiz-plugin'),
+    ]);
+
     register_setting('kw_wordsearch_admin_view_strings', 'kw_wordsearch_admin_add_words_container_label', [
         'default' => __('Add Words', 'wp-quiz-plugin'),
     ]);

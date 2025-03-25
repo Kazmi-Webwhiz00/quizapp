@@ -37,13 +37,18 @@ add_action('admin_enqueue_scripts', 'enqueue_style_script');
 
 function wordsearch_enqueue_assets() {
 
-            // Fetch the filled cell background color with a default value
-        $grid_bg_color = get_option('kw_grid_bg_color', '#808080a1');
-        $higlightedCellTextColor = get_option('kw_highlight_cell_text_color', '#d4edda');
-        $lineColor = get_option('kw_wordsearch_line_color', 'rgba(0, 123, 255, 0.8)');
-        $gridTextColor = get_option('kw_grid_text_font_color', '#000');
+        // Fetch the filled cell background color with a default value
+        $grid_even_cell_bg_color = get_option('kw_grid_even_cell_bg_color', '0xecd8b3');
+        $grid_odd_cell_bg_color = get_option('kw_grid_odd_cell_bg_color', '0xf5e9d1');
+        $higlightedCellTextColor = get_option('kw_highlight_cell_text_color', '#ffffff');
+        $lineColor = get_option('kw_grid_line_color', 'rgba(184, 134, 11, 0.6)');
+        $gridTextColor = get_option('kw_grid_text_font_color', '#5c4012');
         // error_log("color" . print_r($gridTextColor , true));
         $gridTextFontFamily = get_option('kw_grid_text_font_family', 'Roboto');
+        $default_success_popup_label = __('Congratulations', 'wp-quiz-plugin');
+        $success_popup_title = get_option('kw_wordsearch_success_popup_title', $default_success_popup_label);
+        $default_success_body_default_text = __('You have successfully completed the wordsearch!', 'wp-quiz-plugin');
+        $success_popup_body_text = get_option('kw_wordsearch_success_popup_body_text', $default_success_body_default_text);
 
     // Enqueue jQuery if not already loaded.
     wp_enqueue_script( 'jquery' );
@@ -107,11 +112,14 @@ function wordsearch_enqueue_assets() {
             'nonce'   => wp_create_nonce( 'wordsearch_nonce' ),
             'timerValue' => $timer_value,
             'gridStyles'       => array( 
-                'fontColor'         => esc_attr( $gridTextColor ),
-                'fontFamily'        => esc_attr( $gridTextFontFamily ),
-                'bgColor'           => esc_attr( $grid_bg_color ),
+                'fontColor'              => esc_attr( $gridTextColor ),
+                'fontFamily'             => esc_attr( $gridTextFontFamily ),
+                'evenCellBgColor'        => esc_attr( $grid_even_cell_bg_color ),
+                'oddCellBgColor'         => esc_attr( $grid_odd_cell_bg_color  ),
                 'higlightedCellTextColor'=> esc_attr( $higlightedCellTextColor ),
-                'lineColor'         => esc_attr( $lineColor ),
+                'lineColor'              => esc_attr( $lineColor ),
+                'successPopupTitle'    =>  esc_attr( $success_popup_title),
+                'successPopupBodyText' =>   esc_attr( $success_popup_body_text )
             )
 
         ));
@@ -133,8 +141,6 @@ function save_wordsearch_meta_box_data( $post_id ) {
     if ( function_exists( 'wp_doing_ajax' ) && wp_doing_ajax() ) {
         return $post_id;
     }
-
-    error_log("Entered");
 
 
     // Check if nonce is set.

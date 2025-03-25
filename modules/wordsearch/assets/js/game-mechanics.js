@@ -476,9 +476,7 @@ function showTimeUpModal() {
       '<p style="font-size: 1.1rem; margin-bottom: 0.8rem">Your time has expired for this word search puzzle.</p>' +
       '<p style="font-size: 1.1rem">Would you like to start a new game?</p>',
     icon: "warning",
-    showCancelButton: true,
     confirmButtonText: "Play Again",
-    cancelButtonText: "Close",
     didRender: (popup) => {
       const confirmButton = Swal.getConfirmButton();
       if (confirmButton) {
@@ -486,7 +484,6 @@ function showTimeUpModal() {
       }
     },
     confirmButtonColor: "#2ecc71",
-    cancelButtonColor: "#95a5a6",
     allowOutsideClick: false,
     allowEscapeKey: false,
     allowEnterKey: false,
@@ -501,7 +498,6 @@ function showTimeUpModal() {
       container: "wordsearch-modal-container",
       popup: "wordsearch-modal-popup",
       confirmButton: "wordsearch-modal-confirm-btn",
-      cancelButton: "wordsearch-modal-cancel-btn",
     },
     showClass: {
       popup: "animate__animated animate__fadeIn animate__faster",
@@ -677,7 +673,10 @@ export function highlightWord(
 }
 
 export function animateMatch(scene, cells, letterTexts, cellSize) {
-  const higlightedCellTextColor = "#FFFFFF";
+  const higlightedCellTextColor = window.customStyles
+    ? window.customStyles["higlightedCellTextColor"]
+    : "#fff";
+
   cells.forEach(({ row, col }) => {
     const letterObj = letterTexts[row][col];
     scene.tweens.add({

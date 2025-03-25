@@ -44,6 +44,7 @@ jQuery(document).ready(function ($) {
 
   if (window.isAdmin) {
     let cookieData = JSON.parse(frontendData.entries || "[]");
+    window.cookieEntries = cookieData.map((entry) => entry);
     adminEntries = cookieData.map((entry) => entry);
   } else {
     adminEntries = [];
@@ -260,6 +261,7 @@ jQuery(document).ready(function ($) {
 
   // Event listener for word entries updates
   $(document).on("wordsearchEntriesUpdated", function (event, updatedEntries) {
+    // console.log("::updatedEntries", updatedEntries);
     // Avoid unnecessary console logs in production
     // Use a more efficient change detection approach
     let localizedEntriesChanged = false;
@@ -401,7 +403,7 @@ jQuery(document).ready(function ($) {
     }
   }
 
-  if (!window.isAdmin) {
+  if (window.localizedEntries.length > 0 || window.cookieEntries.length > 0) {
     const downloadElement = document.getElementById(
       typeof frontendData !== "undefined"
         ? frontendData.downloadElement

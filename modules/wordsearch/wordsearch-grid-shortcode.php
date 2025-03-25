@@ -17,14 +17,23 @@ $default_success_body_default_text = __('You have successfully completed the wor
 $success_popup_body_text = get_option('kw_wordsearch_success_popup_body_text', $default_success_body_default_text);
 $default_popup_button_text = __('Close', 'wp-quiz-plugin');
 $success_popup_button_text = get_option('kw_wordsearch_success_popup_button_text', $default_popup_button_text);
+$default_grid_title_label = __('Word Search Challenge', 'wp-quiz-plugin');
+$default_find_words_label = __('Find These Words:', 'wp-quiz-plugin');
+$default_download_pdf_label = __('Download Pdf', 'wp-quiz-plugin');
+// Grid Title Label
+$gridTitleLabel = get_option('kw_grid_title_label', $default_grid_title_label);
+// Find Words Label
+$gridFindWordsLabel = get_option('kw_find_words_label', $default_find_words_label);
+// Download Pdf
+$downloadPdfLabel = get_option('kw_download_pdf_label', $default_download_pdf_label);
 
     ?>
 <div class="wordsearch-container">
   <div class="game-header">
     <button id="downloadButton" class="download-button">
-      Download Pdf
+    <?php echo esc_html__($downloadPdfLabel); ?>
     </button>
-    <h2 class="game-title">Word Search Challenge</h2>
+    <h2 class="game-title"><?php echo esc_html__($gridTitleLabel); ?></h2>
     <div class="timer-container">
       <div class="timer-icon">⏱️</div>
       <p id="timerDisplay">00:00</p>
@@ -35,7 +44,7 @@ $success_popup_button_text = get_option('kw_wordsearch_success_popup_button_text
   <div class="game-main-content">
     <!-- Visual clues container now as a separate column -->
     <div class="word-panel">
-        <h3 class="word-panel-title">Find These Words:</h3>
+        <h3 class="word-panel-title"><?php echo esc_html__($gridFindWordsLabel); ?></h3>
         <ul id="wordList"></ul>
       </div>
 
