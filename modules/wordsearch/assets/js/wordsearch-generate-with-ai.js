@@ -55,11 +55,19 @@ jQuery(document).ready(function ($) {
       }
     }
 
-    // Append new entries to the existing ones
-    var combinedEntries = existingEntries.concat(wordEntries);
+    // Filter out wordEntries that already exist in existingEntries based on 'id'
+    wordEntries.forEach(function (wordEntry) {
+      const exists = existingEntries.some(function (existingEntry) {
+        return existingEntry.id === wordEntry.id;
+      });
+
+      if (!exists) {
+        existingEntries.push(wordEntry);
+      }
+    });
 
     // Update the cookie with the combined entries (expires in 1 day)
-    setCookie("wordsearch_entries", JSON.stringify(combinedEntries), 1);
+    setCookie("wordsearch_entries", JSON.stringify(existingEntries), 1);
   }
 
   /**
