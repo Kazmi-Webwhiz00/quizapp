@@ -258,16 +258,19 @@ h3 {
 
 /* Each list item (word) */
 #wordList li {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 5px 10px;
   background: #f8f9fa;
   border-radius: 6px;
-  padding: 0.5rem;
   min-width: 100px;
   font-size: 0.9rem;
   font-weight: 500;
   color: #4a5568;
   text-align: center;
   border: 1px solid #e2e8f0;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
 }
 
 #wordList li:hover {
@@ -308,6 +311,44 @@ h3 {
 
 #wordList li.found {
   animation: foundWord 0.5s ease;
+}
+
+.hidden-word {
+  opacity: 0.3;
+  text-decoration: line-through;
+}
+
+.word-text {
+  margin-right: 10px;
+}
+
+.eye-icon-container {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  border-radius: 50%;
+  transition: background-color 0.3s ease;
+}
+
+.eye-icon {
+  width: 20px;
+  height: 20px;
+  color: #666;
+  transition: color 0.3s ease;
+}
+
+.eye-icon-container:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.eye-icon-container:hover .eye-icon {
+  color: #333;
+}
+
+.eye-icon-container.eye-closed .eye-icon {
+  stroke: red;
 }
 
 @media (max-width: 768px) {
