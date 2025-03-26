@@ -178,6 +178,7 @@ function save_wordsearch_meta_box_data( $post_id ) {
                     'id'       => sanitize_text_field( isset( $entry['id'] ) ? $entry['id'] : '' ),
                     'wordText' => sanitize_text_field( isset( $entry['wordText'] ) ? $entry['wordText'] : '' ),
                     'imageUrl' => esc_url_raw( isset( $entry['imageUrl'] ) ? $entry['imageUrl'] : '' ),
+                    'hidden'   => isset( $entry['hidden'] ) ? (bool) $entry['hidden'] : false,
                 );
             }, $entries );
 
@@ -267,6 +268,7 @@ function render_wordsearch_meta_box($post) {
     wp_nonce_field('wordsearch_meta_box_nonce', 'wordsearch_meta_box_nonce_field');
 
     $word_entries = get_post_meta($post->ID, 'word_search_entries', true);
+    error_log("Values" . print_r($word_entries,true));
 
     if (empty($word_entries) || !is_array($word_entries)) {
         $word_entries = array();

@@ -261,7 +261,6 @@ jQuery(document).ready(function ($) {
 
   // Event listener for word entries updates
   $(document).on("wordsearchEntriesUpdated", function (event, updatedEntries) {
-    // console.log("::updatedEntries", updatedEntries);
     // Avoid unnecessary console logs in production
     // Use a more efficient change detection approach
     let localizedEntriesChanged = false;

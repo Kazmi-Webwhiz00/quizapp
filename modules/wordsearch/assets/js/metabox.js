@@ -138,7 +138,6 @@ jQuery(document).ready(function ($) {
       // $(document).trigger("wordsearchEntriesUpdated", { data: [] });
       return;
     }
-
     // Otherwise, update the cookie with the current wordEntries.
     setCookie("wordsearch_entries", JSON.stringify(wordEntries), 1); // expires in 1 day
     // Trigger the event with the updated entries.
@@ -216,6 +215,7 @@ jQuery(document).ready(function ($) {
         id: uniqueId,
         wordText: "",
         imageUrl: imageUrl,
+        hidden: false,
       });
     }
 
@@ -307,6 +307,7 @@ jQuery(document).ready(function ($) {
           wordText:
             inputValue.length > 15 ? inputValue.substring(0, 15) : inputValue,
           imageUrl: "", // Default value; update as needed
+          hidden: false,
         };
         wordEntries.push(newEntry);
       }
@@ -422,6 +423,7 @@ jQuery(document).ready(function ($) {
               id: uniqueId,
               wordText: "",
               imageUrl: imageUrl,
+              hidden: false,
             });
           }
           updateCookie();

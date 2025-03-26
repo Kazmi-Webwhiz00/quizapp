@@ -102,7 +102,6 @@ export async function resizeGame(
 
   // Optimized Text Rendering: Enhanced style with better WebGL settings
 
-  console.log("::customStyles", window.customStyles);
   const textStyle = {
     fontFamily: window.customStyles["fontFamily"] || "rgb(236,216,179)",
     fontSize: `${fontSize}px`,
@@ -308,7 +307,6 @@ export async function resizeGame(
   }
 
   // Finalize any other cleanup (if necessary)
-  console.log("Resize complete.");
 
   // Debug log
 }

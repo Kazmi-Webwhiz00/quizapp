@@ -147,7 +147,6 @@ jQuery(document).ready(function ($) {
     const existingEntries = $container.find(".add-word-container").length;
     generatedContent.forEach((item, index) => {
       const newIndex = existingEntries + index;
-      console.log("::item", item);
       const uniqueId = item.id
         ? item.id
         : `ws_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
@@ -310,6 +309,10 @@ jQuery(document).ready(function ($) {
               if (!item.imageUrl) {
                 item.imageUrl = "";
               }
+
+              if (!item.hidden) {
+                item.hidden = false;
+              }
               // Push the modified entry to the global wordEntries array
               wordEntries.push(item);
             });
@@ -369,16 +372,6 @@ jQuery(document).ready(function ($) {
   // Comment out non-AI function for saving grid data
 
   function ws_saveWordSearchAjax() {
-    // if (
-    //   typeof wordsearch !== "undefined" &&
-    //   typeof wordsearch.updateHiddenFields === "function"
-    // ) {
-    //   wordsearch.updateHiddenFields();
-    // }
-    console.log("Saving wordsearch data via AJAX");
-    // var rawData = getCookie("wordsearch_entries");
-    // rawData = rawData ? rawData.trim() : "";
-    // word_entries = rawData.length > 0 ? JSON.parse(rawData) : [];
     var word_search_data = [];
     $(".add-word-container").each(function () {
       var $wordDiv = $(this);
@@ -397,12 +390,11 @@ jQuery(document).ready(function ($) {
           wordText: wordText,
           // clue: clue,
           imageUrl: imageUrl,
+          hidden: false,
         });
-        console.log("::Enetered");
       }
     });
 
-    console.log(":entries:", word_search_data);
     const postId = $("#post_ID").val();
     const newUrl =
       window.location.origin +

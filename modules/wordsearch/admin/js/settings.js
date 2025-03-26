@@ -7,7 +7,6 @@ jQuery(document).ready(function ($) {
   function activateTab(tabKey) {
     tabs.removeClass("kw-wordsearch-nav-tab-active");
     panes.hide();
-    console.log("::tabKey", tabKey);
     $(`.kw-wordsearch-nav-tab[data-tab="${tabKey}"]`).addClass(
       "kw-wordsearch-nav-tab-active"
     );
