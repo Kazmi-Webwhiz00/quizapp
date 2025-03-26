@@ -100,6 +100,7 @@ jQuery(document).ready(function ($) {
     const contextPromptTemplate = wpQuizPlugin.wsDefaultContextPrompt;
     const generationPromptTemplate = wpQuizPlugin.wsDefaultGenerationPrompt;
     const returnFormatPrompt = wpQuizPlugin.wsDefaultReturnFormatPrompt;
+    const defaultCategory = wpQuizPlugin.defaultCategory;
 
     // 1) Get selected categories using updated selectors for wordsearch
     const selectedCategories = ws_getSelectedCategories();
@@ -118,7 +119,7 @@ jQuery(document).ready(function ($) {
       topic: topic,
       age: age,
       language: language,
-      categories: selectedCategories,
+      categories: selectedCategories || defaultCategory,
     });
 
     // 4) Combine prompts into the final prompt

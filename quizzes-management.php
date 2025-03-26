@@ -2,7 +2,7 @@
 /*
 Plugin Name: OmniS
 Description: A WordPress plugin to create and manage quizzes with questions and user submissions.
-Version: 5.2.3
+Version: 5.2.5
 Author: Kazmi Webwhiz
 Author URI: https://kazmiwebwhiz.com
 Text Domain: wp-quiz-plugin
@@ -242,6 +242,7 @@ function display_questions_meta_box($post) {
     $textPromptTemplate = get_option('wp_quiz_plugin_text_prompt_template', $defaultTextPrompt);
     $defaultAgePrompt = 'The learners\' age is [age]';
     $learnersAgePromptTemplate = get_option('wp_quiz_plugin_learners_age_prompt_template', $defaultAgePrompt);
+    $default_category_value = get_option('wp_quiz_plugin_category_select_default_prompt', 'Physics');
 
 
     ?>
@@ -909,11 +910,13 @@ function display_questions_meta_box($post) {
                     if (!customPromptTemplate.includes('{questionTemplate}')) {
                         customPromptTemplate += ` {questionTemplate}`;
                     }
-
+                    // Use fallback logic before replacing
+                    let defaultCategoryValue = <?php echo json_encode($default_category_value); ?>;
+                    let categoriesValue = categoriesContext || defaultCategoryValue;
                     // Replace variables in the custom prompt template
                     let finalPrompt = customPromptTemplate
                         .replace(/{learnerAge}/g, learnersAgeContext)
-                        .replace(/{selectedCategories}/g, categoriesContext)
+                        .replace(/{selectedCategories}/g, categoriesValue)
                         .replace(/{userPrompt}/g, userPrompt)
                         .replace(/{selectedCheckboxes}/g, checkboxContext)
                         .replace(/{questionTemplate}/g, questionTemplate)

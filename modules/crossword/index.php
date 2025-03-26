@@ -86,7 +86,7 @@ function load_crossword_assets($hook) {
                 'kw_crossword_return_format_prompt',
                 "\nProvide the output in the following JSON array format, with no additional text:\n\n[\n{ \"word\": \"exampleWord1\", \"clue\": \"Example clue for word 1\" },\n{ \"word\": \"exampleWord2\", \"clue\": \"Example clue for word 2\" },\n...]\n"
             ),
-
+            'defaultCategoryValue' => get_option('kw_crossword_default_category_value', 'Physics'),
             'strings' => array(
                 'errorTitle' => _x('Error', 'crossword_ai', 'wp-quiz-plugin'),
                 'successTitle' => _x('Success', 'crossword_ai', 'wp-quiz-plugin'),

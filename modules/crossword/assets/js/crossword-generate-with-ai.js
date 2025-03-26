@@ -30,6 +30,7 @@ jQuery(document).ready(function ($) {
     const contextPromptTemplate = wpQuizPlugin.defaultContextPrompt;
     const generationPromptTemplate = wpQuizPlugin.defaultGenerationPrompt;
     const returnFormatPrompt = wpQuizPlugin.defaultReturnFormatPrompt;
+    const defaultCategory = wpQuizPlugin.defaultCategoryValue;
 
     // 1) Get selected categories using the updated selectors
     const selectedCategories = getSelectedCategories();
@@ -46,7 +47,7 @@ jQuery(document).ready(function ($) {
       topic: topic,
       age: age,
       language: language,
-      categories: selectedCategories,
+      categories: selectedCategories || defaultCategory,
     });
 
     // 4) Combine prompts into the final prompt

@@ -453,6 +453,7 @@ add_action('save_post_crossword', 'save_crossword_visibility_meta', 10, 2);
 
 // Hook to modify post data before saving
 function wp_crossword_plugin_validate_taxonomies($data, $postarr) {
+    $default_category_value = get_option('kw_crossword_default_category_value', 'Physics');
     // Only apply to 'crossword' post type
     if ($data['post_type'] !== 'crossword') {
         return $data;
@@ -496,58 +497,68 @@ function wp_crossword_plugin_validate_taxonomies($data, $postarr) {
     }
 
     // Initialize error messages array
+    $default = intval($default_category_value);
+
+    // Initialize error messages array
     $error_messages = [];
-
+    
     // Retrieve Selected Terms from $_POST
-    $selected_school    = isset($_POST['selected_school']) ? intval($_POST['selected_school']) : 0;
-    $selected_class     = isset($_POST['selected_class']) ? intval($_POST['selected_class']) : 0;
-    $selected_subject   = isset($_POST['selected_subject']) ? intval($_POST['selected_subject']) : 0;
-
-    // Begin Validation Logic
+    $selected_school  = isset($_POST['selected_school']) ? intval($_POST['selected_school']) : 0;
+    $selected_class   = isset($_POST['selected_class']) ? intval($_POST['selected_class']) : 0;
+    $selected_subject = isset($_POST['selected_subject']) ? intval($_POST['selected_subject']) : 0;
+    
+    // School: If no school is provided, use default
     if (empty($selected_school)) {
-        $error_messages[] = __('Please select a School.', 'wp-quiz-plugin');
-    } else {
-        $class_terms = get_terms([
-            'taxonomy'   => 'crossword_category',
-            'parent'     => $selected_school,
-            'hide_empty' => false,
-        ]);
-
-        if (!is_wp_error($class_terms) && !empty($class_terms)) {
-            if (empty($selected_class)) {
-                $error_messages[] = __('Please select a Class.', 'wp-quiz-plugin');
-            } else {
-                $class_ids = wp_list_pluck($class_terms, 'term_id');
-                if (!in_array($selected_class, $class_ids, true)) {
-                    $error_messages[] = __('Selected Class is invalid for the chosen School.', 'wp-quiz-plugin');
+        $selected_school = $default;
+    }
+    
+    // Get classes under the selected school
+    $class_terms = get_terms([
+        'taxonomy'   => 'crossword_category',
+        'parent'     => $selected_school,
+        'hide_empty' => false,
+    ]);
+    
+    if (!is_wp_error($class_terms) && !empty($class_terms)) {
+    
+        // Class: If no class is provided, use default
+        if (empty($selected_class)) {
+            $selected_class = $default;
+        } else {
+            // Verify that the selected class is a child of the selected school
+            $class_ids = wp_list_pluck($class_terms, 'term_id');
+            if (!in_array($selected_class, $class_ids, true)) {
+                $error_messages[] = __('Selected Class is invalid for the chosen School.', 'wp-quiz-plugin');
+            }
+        }
+    
+        // Only require subject if a user explicitly selects a class (i.e. the class is not the fallback default)
+        if ($selected_class !== $default) {
+            $subject_terms = get_terms([
+                'taxonomy'   => 'crossword_category',
+                'parent'     => $selected_class,
+                'hide_empty' => false,
+            ]);
+    
+            if (!is_wp_error($subject_terms) && !empty($subject_terms)) {
+                if (empty($selected_subject)) {
+                    $error_messages[] = __('Please select a Subject.', 'wp-quiz-plugin');
                 } else {
-                    $subject_terms = get_terms([
-                        'taxonomy'   => 'crossword_category',
-                        'parent'     => $selected_class,
-                        'hide_empty' => false,
-                    ]);
-
-                    if (!is_wp_error($subject_terms) && !empty($subject_terms)) {
-                        if (empty($selected_subject)) {
-                            $error_messages[] = __('Please select a Subject.', 'wp-quiz-plugin');
-                        } else {
-                            $subject_ids = wp_list_pluck($subject_terms, 'term_id');
-                            if (!in_array($selected_subject, $subject_ids, true)) {
-                                $error_messages[] = __('Selected Subject is invalid for the chosen Class.', 'wp-quiz-plugin');
-                            }
-                        }
+                    $subject_ids = wp_list_pluck($subject_terms, 'term_id');
+                    if (!in_array($selected_subject, $subject_ids, true)) {
+                        $error_messages[] = __('Selected Subject is invalid for the chosen Class.', 'wp-quiz-plugin');
                     }
                 }
             }
         }
     }
-
+    
     // If there are errors, handle accordingly
     if (!empty($error_messages)) {
         if ($data['post_status'] === 'publish') {
             $data['post_status'] = 'draft';
         }
-
+    
         set_transient('wp_crossword_plugin_errors_' . $postarr['ID'], $error_messages, 30);
     }
 
