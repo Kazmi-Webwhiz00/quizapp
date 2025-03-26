@@ -325,6 +325,10 @@ function wp_quiz_plugin_strings_text_settings_init() {
             'label' => 'Quiz Category Select School Label Text',
             'default' => __('Select School', 'wp-quiz-plugin'),
         ],
+        'wp_quiz_plugin_category_select_default_prompt' => [
+            'label' => 'Quiz Default Category',
+            'default' => __('Physics', 'wp-quiz-plugin'),
+        ],
         'wp_quiz_plugin_category_select_Subject_text' => [
             'label' => 'Quiz Category Select Subject Label Text',
             'default' => __('----------', 'wp-quiz-plugin'),

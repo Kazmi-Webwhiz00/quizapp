@@ -31,6 +31,7 @@ function render_quiz_category_meta_box($post) {
     $select_category_school_text = get_option('wp_quiz_plugin_category_select_School_text', 'Select School');
     $select_category_class_text = get_option('wp_quiz_plugin_category_select_class_text', 'Select Class');
     $select_category_subject_text = get_option('wp_quiz_plugin_category_select_Subject_text', '----------');
+    $default_category_value = get_option('wp_quiz_plugin_category_select_default_prompt', 'Physics');
 
     // Retrieve associated terms for the quizzes post
     $selected_schools = wp_get_post_terms($post->ID, 'quiz_category', array('fields' => 'ids', 'parent' => 0)); // Top-level (School)
@@ -521,73 +522,77 @@ function wp_quiz_plugin_validate_taxonomies($data, $postarr) {
         return $data;
     }
 
-    // Initialize error messages array
-    $error_messages = array();
+// Initialize error messages array
+$error_messages = array();
 
-    // **Retrieve Selected Terms from $_POST**
-    $selected_school    = isset($_POST['selected_school']) ? intval($_POST['selected_school']) : 0;
-    $selected_class     = isset($_POST['selected_class']) ? intval($_POST['selected_class']) : 0;
-    $selected_subject   = isset($_POST['selected_subject']) ? intval($_POST['selected_subject']) : 0;
+// Assume $default_category_value is defined and contains a valid term ID.
+$default = intval($default_category_value);
 
-    // **Begin Validation Logic**
+// **Retrieve Selected Terms from $_POST**
+$selected_school  = isset($_POST['selected_school']) ? intval($_POST['selected_school']) : 0;
+$selected_class   = isset($_POST['selected_class']) ? intval($_POST['selected_class']) : 0;
+$selected_subject = isset($_POST['selected_subject']) ? intval($_POST['selected_subject']) : 0;
 
-    // Check if a School is selected
-    if (empty($selected_school)) {
-        $error_messages[] = __('Please select a School.', 'wp-quiz-plugin');
+// If no School is selected, assign the default
+if (empty($selected_school)) {
+    $selected_school = $default;
+}
+
+// Get Classes under the selected School
+$class_terms = get_terms(array(
+    'taxonomy'   => 'quiz_category',
+    'parent'     => $selected_school,
+    'hide_empty' => false,
+));
+
+if (!is_wp_error($class_terms) && !empty($class_terms)) {
+
+    // If no Class is selected, assign the default (hidden fallback)
+    if (empty($selected_class)) {
+        $selected_class = $default;
     } else {
-        // Get Classes under the selected School
-        $class_terms = get_terms(array(
-            'taxonomy'   => 'quiz_category',
-            'parent'     => $selected_school,
-            'hide_empty' => false,
-        ));
+        // Verify that the selected Class is indeed a child of the selected School
+        $class_ids = wp_list_pluck($class_terms, 'term_id');
+        if (!in_array($selected_class, $class_ids, true)) {
+            $error_messages[] = __('Selected Class is invalid for the chosen School.', 'wp-quiz-plugin');
+        } else {
+            // Get Subjects under the selected Class
+            $subject_terms = get_terms(array(
+                'taxonomy'   => 'quiz_category',
+                'parent'     => $selected_class,
+                'hide_empty' => false,
+            ));
 
-        if (!is_wp_error($class_terms) && !empty($class_terms)) {
-            // If Classes exist under the School, ensure a Class is selected
-            if (empty($selected_class)) {
-                $error_messages[] = __('Please select a Class.', 'wp-quiz-plugin');
-            } else {
-                // Verify that the selected Class is indeed a child of the selected School
-                $class_ids = wp_list_pluck($class_terms, 'term_id');
-                if (!in_array($selected_class, $class_ids, true)) {
-                    $error_messages[] = __('Selected Class is invalid for the chosen School.', 'wp-quiz-plugin');
+            if (!is_wp_error($subject_terms) && !empty($subject_terms)) {
+                // Since the user explicitly chose a Class (i.e. not the fallback),
+                // ensure that a Subject is provided.
+                if (empty($selected_subject)) {
+                    $error_messages[] = __('Please select a Subject.', 'wp-quiz-plugin');
                 } else {
-                    // Get Subjects under the selected Class
-                    $subject_terms = get_terms(array(
-                        'taxonomy'   => 'quiz_category',
-                        'parent'     => $selected_class,
-                        'hide_empty' => false,
-                    ));
-
-                    if (!is_wp_error($subject_terms) && !empty($subject_terms)) {
-                        // If Subjects exist under the Class, ensure a Subject is selected
-                        if (empty($selected_subject)) {
-                            $error_messages[] = __('Please select a Subject.', 'wp-quiz-plugin');
-                        } else {
-                            // Verify that the selected Subject is indeed a child of the selected Class
-                            $subject_ids = wp_list_pluck($subject_terms, 'term_id');
-                            if (!in_array($selected_subject, $subject_ids, true)) {
-                                $error_messages[] = __('Selected Subject is invalid for the chosen Class.', 'wp-quiz-plugin');
-                            }
-                        }
+                    // Verify that the selected Subject is indeed a child of the selected Class
+                    $subject_ids = wp_list_pluck($subject_terms, 'term_id');
+                    if (!in_array($selected_subject, $subject_ids, true)) {
+                        $error_messages[] = __('Selected Subject is invalid for the chosen Class.', 'wp-quiz-plugin');
                     }
                 }
             }
         }
     }
+}
 
-    // **End Validation Logic**
+// **End Validation Logic**
 
-    // If there are errors, handle accordingly
-    if (!empty($error_messages)) {
-        // Only change the post status if attempting to publish
-        if ($data['post_status'] === 'publish') {
-            $data['post_status'] = 'draft';
-        }
-
-        // Store error messages in a transient for display
-        set_transient('wp_quiz_plugin_errors_' . $postarr['ID'], $error_messages, 30);
+// If there are errors, handle accordingly
+if (!empty($error_messages)) {
+    // Only change the post status if attempting to publish
+    if ($data['post_status'] === 'publish') {
+        $data['post_status'] = 'draft';
     }
+    // Store error messages in a transient for display
+    set_transient('wp_quiz_plugin_errors_' . $postarr['ID'], $error_messages, 30);
+}
+
+
 
     return $data;
 }
