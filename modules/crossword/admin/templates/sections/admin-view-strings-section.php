@@ -33,6 +33,9 @@ if (!defined('ABSPATH')) {
         ]
     ];
 
+    $defaultCategoryValue = __('Physics', 'wp-quiz-plugin');
+    $categoryValue = get_option('kw_crossword_default_category_value',$defaultCategoryValue);
+
 // Retrieve saved values or use defaults
 $settings = [];
 foreach ($default_settings as $key => $values) {
@@ -57,6 +60,12 @@ foreach ($default_settings as $key => $values) {
         </label>
         <input type="text" id="kw_crossword_admin_add_word_button_label" name="kw_crossword_admin_add_word_button_label" class="regular-text kw-input" value="<?php echo esc_attr($settings['add_word']['label']); ?>" data-default="<?php echo esc_attr($default_settings['add_word']['label']); ?>">
         <p class="description"><?php esc_html_e('Set the label for the "Add Word" button.', 'wp-quiz-plugin'); ?></p>
+
+        <label for="kw_crossword_default_category_value" class="kw-label">
+            <?php esc_html_e('Add Default Category Value', 'wp-quiz-plugin'); ?>
+        </label>
+        <input type="text" id="kw_crossword_default_category_value" name="kw_crossword_default_category_value" class="regular-text kw-input" value="<?php echo esc_attr($categoryValue); ?>" data-default="<?php echo esc_attr($defaultCategoryValue); ?>">
+        <p class="description"><?php esc_html_e('Set the default value for category.', 'wp-quiz-plugin'); ?></p>
 
         <label for="kw_crossword_admin_add_word_button_color" class="kw-label">
             <?php esc_html_e('Button Background Color', 'wp-quiz-plugin'); ?>

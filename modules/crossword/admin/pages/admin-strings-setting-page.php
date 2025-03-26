@@ -13,6 +13,9 @@ if (!defined('ABSPATH')) {
     register_setting('kw_crossword_admin_view_strings', 'kw_crossword_admin_add_word_button_label', [
         'default' => __('Add a Word', 'wp-quiz-plugin'),
     ]);
+    register_setting('kw_crossword_admin_view_strings', 'kw_crossword_default_category_value', [
+        'default' => __('Physics', 'wp-quiz-plugin'),
+    ]);
     register_setting('kw_crossword_admin_view_strings', 'kw_crossword_admin_clear_list_button_label', [
         'default' => __('Clear List', 'wp-quiz-plugin'),
     ]);
