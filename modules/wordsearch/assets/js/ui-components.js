@@ -1,31 +1,93 @@
 import { updateWordData } from "./game-mechanics.js";
 import { batchDomUpdates } from "./utils.js";
 
+function getCookie(name) {
+  var nameEQ = name + "=";
+  var ca = document.cookie.split(";");
+  for (var i = 0; i < ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0) === " ") c = c.substring(1, c.length);
+    if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+  }
+  return null;
+}
+
+// Helper functions to set and get cookies
+function setCookie(name, value, days) {
+  var expires = "";
+  if (days) {
+    var date = new Date();
+    date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+    expires = "; expires=" + date.toUTCString();
+  }
+  document.cookie = name + "=" + (value || "") + expires + "; path=/";
+}
+
+// window.cookieEntries = cookieData.map((entry) => entry);
+
+// Utility to save cookieEntries back to cookies/local storage
+function updateCookieEntries(entries) {
+  // Update the cookie with the combined entries (expires in 1 day)
+  setCookie("wordsearch_entries", JSON.stringify(entries), 1);
+}
+
+// Renders the word list with eye toggle feature
 export function renderWordList(wordData) {
+  // Initialize cookieEntries
+  var existingCookie = getCookie("wordsearch_entries");
+  let cookieData = JSON.parse(existingCookie || "[]");
   const listContainer = document.getElementById("wordList");
   if (!listContainer) return;
 
-  listContainer.innerHTML = ""; // Clear any existing content
+  listContainer.innerHTML = "";
+
+  // If wordSearchData is defined, filter out words that are hidden in window.finalEntries.
+  if (typeof wordSearchData !== "undefined") {
+    const wordPanel = document.getElementsByClassName("word-panel");
+    if (!wordPanel) return;
+
+    // Make sure finalEntries is defined and is an array.
+    if (window.finalEntries && Array.isArray(window.finalEntries)) {
+      // Check if every entry in finalEntries has hidden = true.
+      const allHidden = window.finalEntries.every(
+        (entry) => entry.hidden === true
+      );
+      // If all are hidden, hide the panel; otherwise, show it.
+      wordPanel[0].style.display = allHidden ? "none" : "flex";
+    }
+
+    wordData = wordData.filter((word) => {
+      const formattedWord = word.toLowerCase();
+      if (window.finalEntries && Array.isArray(window.finalEntries)) {
+        const entry = window.finalEntries.find(
+          (item) => item.wordText.toLowerCase() === formattedWord
+        );
+        // If a matching entry exists and hidden is true, filter out this word.
+        if (entry && entry.hidden === true) {
+          return false;
+        }
+      }
+      return true;
+    });
+  }
 
   if (wordData.length > 0) {
-    // Create operations array for batch updates
     const operations = [];
+
     wordData.forEach((word) => {
       operations.push((fragment) => {
         const formattedWord = word.length > 0 ? word.toLowerCase() : "";
         const li = document.createElement("li");
         li.id = `word-${formattedWord}`;
 
-        // Create word text span
         const wordSpan = document.createElement("span");
         wordSpan.textContent = formattedWord;
         wordSpan.classList.add("word-text");
 
-        // Create eye icon container
         const eyeIconContainer = document.createElement("span");
         eyeIconContainer.classList.add("eye-icon-container");
 
-        // Create eye icon (using SVG for scalability)
+        // Create SVG icon
         const eyeIcon = document.createElementNS(
           "http://www.w3.org/2000/svg",
           "svg"
@@ -41,7 +103,6 @@ export function renderWordList(wordData) {
         eyeIcon.setAttribute("stroke-linejoin", "round");
         eyeIcon.classList.add("eye-icon");
 
-        // Create eye path
         const eyePath = document.createElementNS(
           "http://www.w3.org/2000/svg",
           "path"
@@ -51,7 +112,6 @@ export function renderWordList(wordData) {
           "M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"
         );
 
-        // Create eye circle
         const eyeCircle = document.createElementNS(
           "http://www.w3.org/2000/svg",
           "circle"
@@ -60,29 +120,73 @@ export function renderWordList(wordData) {
         eyeCircle.setAttribute("cy", "12");
         eyeCircle.setAttribute("r", "3");
 
-        // Assemble eye icon
         eyeIcon.appendChild(eyePath);
         eyeIcon.appendChild(eyeCircle);
         eyeIconContainer.appendChild(eyeIcon);
 
-        // Add click event to toggle word visibility
-        eyeIconContainer.addEventListener("click", (e) => {
-          e.stopPropagation(); // Prevent event bubbling
+        // Determine the initial hidden state from window.finalEntries.
+        let isHidden = false;
+        if (window.finalEntries && Array.isArray(window.finalEntries)) {
+          const matchingEntry = window.finalEntries.find(
+            (item) => item.wordText.toLowerCase() === formattedWord
+          );
+          if (matchingEntry && matchingEntry.hidden === true) {
+            isHidden = true;
+          }
+        }
+        // Store state locally on this element.
+        li.dataset.hidden = isHidden; // stored as string "true" or "false"
 
-          // Toggle visibility
-          li.classList.toggle("hidden-word");
-          eyeIconContainer.classList.toggle("eye-closed");
+        // Apply initial CSS classes based on the hidden state.
+        if (isHidden) {
+          li.classList.add("hidden-word");
+          eyeIconContainer.classList.add("eye-closed");
+        }
+
+        // Click event: toggle the hidden state for this specific word.
+        eyeIconContainer.addEventListener("click", (e) => {
+          e.stopPropagation();
+
+          // Toggle the state stored on this list item.
+          const currentHidden = li.dataset.hidden === "true";
+          const newHidden = !currentHidden;
+          li.dataset.hidden = newHidden;
+
+          // Immediately update UI classes for this word.
+          li.classList.toggle("hidden-word", newHidden);
+          eyeIconContainer.classList.toggle("eye-closed", newHidden);
+
+          // Update only the matching cookieData entry.
+          cookieData = cookieData.map((entry) => {
+            if (entry.wordText.toLowerCase() === formattedWord) {
+              return {
+                ...entry,
+                hidden: newHidden,
+              };
+            }
+            return entry;
+          });
+          updateCookieEntries(cookieData);
+
+          // Update the corresponding entry in window.finalEntries.
+          if (window.finalEntries && Array.isArray(window.finalEntries)) {
+            const index = window.finalEntries.findIndex(
+              (entry) => entry.wordText.toLowerCase() === formattedWord
+            );
+            if (index !== -1) {
+              window.finalEntries[index].hidden = newHidden;
+            }
+          }
         });
 
-        // Append elements to list item
         li.appendChild(wordSpan);
-        li.appendChild(eyeIconContainer);
-
+        if (typeof wordSearchData === "undefined") {
+          li.appendChild(eyeIconContainer);
+        }
         fragment.appendChild(li);
       });
     });
 
-    // Apply all DOM updates at once
     batchDomUpdates(operations, listContainer);
   }
 }

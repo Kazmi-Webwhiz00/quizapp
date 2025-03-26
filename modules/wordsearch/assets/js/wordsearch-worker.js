@@ -306,7 +306,6 @@ function searchLanguage(firstLetter) {
  * Returns the matrix plus the final wordsList
  */
 function generatePuzzleData(settings) {
-  console.log("::settings", settings);
   // 1) Normalize and validate words
   const wordsList = [];
   for (let i = 0; i < settings.words.length; i++) {

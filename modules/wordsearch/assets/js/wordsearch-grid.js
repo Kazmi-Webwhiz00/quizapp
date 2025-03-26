@@ -773,7 +773,6 @@ jQuery(document).ready(function ($) {
           $(checkBoxElement).off("change"); // Remove old handlers
           $(checkBoxElement).on("change", function () {
             showAnswers = $(this).is(":checked");
-            console.log("Show Answers:", showAnswers);
             if (typeof autoSolvePuzzle === "function") {
               autoSolvePuzzle(
                 scene,
