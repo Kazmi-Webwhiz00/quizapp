@@ -61,7 +61,9 @@ function load_wordsearch_assets($hook) {
             'errorMessage' => _x('Could not parse the response. Ensure the AI response follows the expected format.', 'wordsearch_ai_error', 'wp-quiz-plugin'),
             'successMessage' => _x('Generated Content.', 'wordsearch_ai_success', 'wp-quiz-plugin'),
             'numberError' => _x('The number must be between 1 and', 'wordsearch_ai_error', 'wp-quiz-plugin'),
-        )
+        ),
+        'defaultCategory'=> get_option('kw_wordsearch_default_category_value', __('Physics', 'wp-quiz-plugin')),
+
     ]);
 
     // Enqueue SweetAlert2 for alerts

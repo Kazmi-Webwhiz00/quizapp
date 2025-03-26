@@ -430,6 +430,8 @@ add_action('save_post_wordsearch', 'save_wordsearch_visibility_meta', 10, 2);
 // Taxonomy Validation & Error Display
 // -------------------------------------------------------------------
 function wp_wordsearch_plugin_validate_taxonomies($data, $postarr) {
+    $default_category_value = get_option('kw_wordsearch_default_category_value', __('Add your value here.'));
+
     if ($data['post_type'] !== 'wordsearch') {
         return $data;
     }
@@ -462,49 +464,59 @@ function wp_wordsearch_plugin_validate_taxonomies($data, $postarr) {
         return $data;
     }
 
+    $default = intval($default_category_value);
+
     $error_messages = array();
     $selected_school  = isset($_POST['selected_school']) ? intval($_POST['selected_school']) : 0;
     $selected_class   = isset($_POST['selected_class']) ? intval($_POST['selected_class']) : 0;
     $selected_subject = isset($_POST['selected_subject']) ? intval($_POST['selected_subject']) : 0;
-
+    
+    // School: if no school is provided, assign the default value.
     if (empty($selected_school)) {
-        $error_messages[] = __('Please select a School.', 'wp-quiz-plugin');
-    } else {
-        $class_terms = get_terms(array(
-            'taxonomy'   => 'wordsearch_category',
-            'parent'     => $selected_school,
-            'hide_empty' => false,
-        ));
-
-        if (!is_wp_error($class_terms) && !empty($class_terms)) {
-            if (empty($selected_class)) {
-                $error_messages[] = __('Please select a Class.', 'wp-quiz-plugin');
-            } else {
-                $class_ids = wp_list_pluck($class_terms, 'term_id');
-                if (!in_array($selected_class, $class_ids, true)) {
-                    $error_messages[] = __('Selected Class is invalid for the chosen School.', 'wp-quiz-plugin');
+        $selected_school = $default;
+    }
+    
+    // Fetch class terms under the selected school.
+    $class_terms = get_terms(array(
+        'taxonomy'   => 'wordsearch_category',
+        'parent'     => $selected_school,
+        'hide_empty' => false,
+    ));
+    
+    if (!is_wp_error($class_terms) && !empty($class_terms)) {
+    
+        // Class: if no class is provided, assign the default value.
+        if (empty($selected_class)) {
+            $selected_class = $default;
+        } else {
+            // Verify that the selected class is a valid child of the chosen school.
+            $class_ids = wp_list_pluck($class_terms, 'term_id');
+            if (!in_array($selected_class, $class_ids, true)) {
+                $error_messages[] = __('Selected Class is invalid for the chosen School.', 'wp-quiz-plugin');
+            }
+        }
+    
+        // Subject: Only require subject if the user explicitly selected a class.
+        if ($selected_class !== $default) {
+            $subject_terms = get_terms(array(
+                'taxonomy'   => 'wordsearch_category',
+                'parent'     => $selected_class,
+                'hide_empty' => false,
+            ));
+    
+            if (!is_wp_error($subject_terms) && !empty($subject_terms)) {
+                if (empty($selected_subject)) {
+                    $error_messages[] = __('Please select a Subject.', 'wp-quiz-plugin');
                 } else {
-                    $subject_terms = get_terms(array(
-                        'taxonomy'   => 'wordsearch_category',
-                        'parent'     => $selected_class,
-                        'hide_empty' => false,
-                    ));
-
-                    if (!is_wp_error($subject_terms) && !empty($subject_terms)) {
-                        if (empty($selected_subject)) {
-                            $error_messages[] = __('Please select a Subject.', 'wp-quiz-plugin');
-                        } else {
-                            $subject_ids = wp_list_pluck($subject_terms, 'term_id');
-                            if (!in_array($selected_subject, $subject_ids, true)) {
-                                $error_messages[] = __('Selected Subject is invalid for the chosen Class.', 'wp-quiz-plugin');
-                            }
-                        }
+                    $subject_ids = wp_list_pluck($subject_terms, 'term_id');
+                    if (!in_array($selected_subject, $subject_ids, true)) {
+                        $error_messages[] = __('Selected Subject is invalid for the chosen Class.', 'wp-quiz-plugin');
                     }
                 }
             }
         }
     }
-
+    
     if (!empty($error_messages)) {
         if ($data['post_status'] === 'publish') {
             $data['post_status'] = 'draft';

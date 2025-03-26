@@ -50,6 +50,20 @@ foreach ($default_settings as $key => $values) {
     <h2 class="kw-section-heading"><?php esc_html_e('Admin Strings, Button Colors, and Text Colors', 'wp-quiz-plugin'); ?></h2>
     <hr>
 
+    <div class="kw-settings-field">
+
+
+    <!-- Preview Full View -->
+    <label for="kw_wordsearch_default_category_value" class="kw-label">
+        <?php esc_html_e('Set value of default category', 'wp-quiz-plugin'); ?>
+    </label>
+    <input type="text" id="kw_wordsearch_default_category_value" name="kw_wordsearch_default_category_value" class="regular-text kw-input" 
+        value="<?php echo esc_attr(get_option('kw_wordsearch_default_category_value', __('Physics', 'wp-quiz-plugin'))); ?>" 
+        data-default="<?php echo esc_attr(__('Physics', 'wp-quiz-plugin')); ?>">
+    <p class="description"><?php esc_html_e('Set the value for Default Category.', 'wp-quiz-plugin'); ?></p>
+
+    </div>
+
     <!-- Add Words Metabox Label -->
     <div class="kw-settings-field">
 
