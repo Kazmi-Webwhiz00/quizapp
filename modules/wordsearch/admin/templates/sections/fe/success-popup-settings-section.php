@@ -8,13 +8,15 @@ if (!defined('ABSPATH')) {
 $success_defaults = [
     'title' => __('Congratulations', 'wp-quiz-plugin'),
     'body_text' => __('You have successfully completed the wordsearch!', 'wp-quiz-plugin'),
-    'button_text' => __('Close', 'wp-quiz-plugin'),
+    'challenge_text' => __('Ready for another challenge?', 'wp-quiz-plugin'),
+    'button_text'   =>   __('Play Again', 'wp-quiz-plugin'),
 ];
 
 // Retrieve saved values or use defaults
 $success_settings = [
     'title' => get_option('kw_wordsearch_success_popup_title', $success_defaults['title']),
     'body_text' => get_option('kw_wordsearch_success_popup_body_text', $success_defaults['body_text']),
+    'challenge_text' => get_option('kw_wordsearch_success_popup_challenge_text', $success_defaults['challenge_text']),
     'button_text' => get_option('kw_wordsearch_success_popup_button_text', $success_defaults['button_text']),
 ];
 ?>
@@ -54,9 +56,25 @@ $success_settings = [
         <p class="description"><?php esc_html_e('Set the body text for the success popup.', 'wp-quiz-plugin'); ?></p>
     </div>
 
-    <!-- Button Text Field -->
+    <!-- Challenge Text -->
     <div class="kw-settings-field">
-        <label for="kw_wordsearch_success_popup_button_text" class="kw-label">
+        <label for="kw_wordsearch_success_popup_challenge_text" class="kw-label">
+            <?php esc_html_e('Challenge Text', 'wp-quiz-plugin'); ?>
+        </label>
+        <input 
+            type="text" 
+            id="kw_wordsearch_success_popup_challenge_text" 
+            name="kw_wordsearch_success_popup_challenge_text" 
+            class="regular-text kw-input" 
+            value="<?php echo esc_attr($success_settings['challenge_text']); ?>" 
+            data-default="<?php echo esc_attr($success_defaults['challenge_text']); ?>"
+        >
+        <p class="description"><?php esc_html_e('Set the text for playing again.', 'wp-quiz-plugin'); ?></p>
+    </div>
+
+        <!-- Button Text -->
+        <div class="kw-settings-field">
+        <label for="kw_wordsearch_success_popup_challenge_text" class="kw-label">
             <?php esc_html_e('Button Text', 'wp-quiz-plugin'); ?>
         </label>
         <input 
@@ -67,7 +85,7 @@ $success_settings = [
             value="<?php echo esc_attr($success_settings['button_text']); ?>" 
             data-default="<?php echo esc_attr($success_defaults['button_text']); ?>"
         >
-        <p class="description"><?php esc_html_e('Set the text for the button in the success popup.', 'wp-quiz-plugin'); ?></p>
+        <p class="description"><?php esc_html_e('Set the text for playing again button.', 'wp-quiz-plugin'); ?></p>
     </div>
 
     <!-- Reset Button -->

@@ -29,6 +29,8 @@ if (!defined('ABSPATH')) {
     register_setting('kw_wordsearch_admin_view_strings', 'kw_wordsearch_admin_add_words_container_label', [
         'default' => __('Add Words', 'wp-quiz-plugin'),
     ]);
+
+    register_setting('kw_wordsearch_admin_view_strings', 'kw_no_entries_label', ['default' =>  __('No word search entries found', 'wp-quiz-plugin')]);
     
     register_setting('kw_wordsearch_admin_view_strings', 'kw_wordsearch_default_category_value', [
         'default' => __('Physics', 'wp-quiz-plugin'),

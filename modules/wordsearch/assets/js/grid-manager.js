@@ -36,6 +36,27 @@ export function getDynamicCanvasSize(
   };
 }
 
+export function colorToHexInt(color) {
+  // If color is already in hex format
+  if (/^#([A-Fa-f0-9]{6})$/.test(color)) {
+    return "0x" + color.slice(1).toLowerCase();
+  }
+
+  // If color is in rgba() format
+  const rgbaMatch = color.match(
+    /^rgba?\s*\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})/
+  );
+  if (rgbaMatch) {
+    const r = parseInt(rgbaMatch[1], 10).toString(16).padStart(2, "0");
+    const g = parseInt(rgbaMatch[2], 10).toString(16).padStart(2, "0");
+    const b = parseInt(rgbaMatch[3], 10).toString(16).padStart(2, "0");
+    return "0x" + (r + g + b).toLowerCase();
+  }
+
+  // Unknown format
+  throw new Error("Unsupported color format: " + color);
+}
+
 // Helper function to wrap the worker logic in a promise.
 function runResizeWorker({ gridSize, newWidth, newHeight }) {
   return new Promise((resolve, reject) => {
@@ -103,7 +124,7 @@ export async function resizeGame(
   // Optimized Text Rendering: Enhanced style with better WebGL settings
 
   const textStyle = {
-    fontFamily: window.customStyles["fontFamily"] || "rgb(236,216,179)",
+    fontFamily: window.customStyles["fontFamily"],
     fontSize: `${fontSize}px`,
     color: window.customStyles["fontColor"],
     fontWeight: "bold",
@@ -188,8 +209,8 @@ export async function resizeGame(
       scene.load.start();
     }
 
-    const evenColor = window.customStyles["evenCellBgColor"];
-    const oddColor = window.customStyles["oddCellBgColor"];
+    const evenColor = colorToHexInt(window.customStyles["evenCellBgColor"]);
+    const oddColor = colorToHexInt(window.customStyles["oddCellBgColor"]);
 
     const evenGraphics = scene.make.graphics({ x: 0, y: 0, add: false });
     evenGraphics.fillStyle(evenColor, 1);
@@ -550,155 +571,6 @@ function createLetterTextsFixedPositioning(
 
   return letterTexts;
 }
-
-// export function resizeGame(
-//   newWidth,
-//   newHeight,
-//   scene,
-//   letterTexts = [],
-//   gridSize,
-//   gridMatrix
-// ) {
-//   const gameCanvas = scene.sys.game.canvas;
-//   gameCanvas.width = newWidth;
-//   gameCanvas.height = newHeight;
-//   scene.children.removeAll();
-//   const cellSize = Math.min(newWidth, newHeight) / gridSize;
-//   const fontSize = Math.floor(cellSize * 0.5);
-//   // const fontColor = customStyles ? customStyles["fontColor"] : "#000";
-//   // const fontFamily = customStyles ? customStyles["fontFamily"] : "Roboto";
-
-//   // UPDATED: Modified colors to maintain the gold theme but with better contrast
-//   const fontColor = "#473214";
-//   const fontFamily = "Georgia, serif";
-
-//   const finalStyle = {
-//     fontFamily: "Georgia, serif",
-//     fontSize: `${fontSize}px`,
-//     color: "#5c4012",
-//     fontWeight: "bold",
-//     stroke: "#ffffff",
-//     strokeThickness: 0.5,
-//     shadow: {
-//       offsetX: 1,
-//       offsetY: 1,
-//       color: "rgba(0,0,0,0.08)",
-//       blur: 1,
-//       stroke: false,
-//       fill: true,
-//     },
-//   };
-
-//   // NEW: Add subtle gradient background
-//   const backgroundGradient = scene.add.graphics();
-//   backgroundGradient.fillStyle(0xf5e9d1, 1);
-//   backgroundGradient.fillGradientStyle(
-//     0xf5d992,
-//     0xe6ba6c,
-//     0xdca745,
-//     0xc89836,
-//     1,
-//     1,
-//     1,
-//     1
-//   );
-//   backgroundGradient.fillRect(0, 0, newWidth, newHeight);
-
-//   // NEW: Add subtle grid pattern
-//   const gridPattern = scene.add.graphics();
-//   gridPattern.lineStyle(1, 0xd6a651, 0.2);
-
-//   // Draw grid lines
-//   for (let i = 0; i <= gridSize; i++) {
-//     // Horizontal lines
-//     gridPattern.moveTo(0, i * cellSize);
-//     gridPattern.lineTo(newWidth, i * cellSize);
-
-//     // Vertical lines
-//     gridPattern.moveTo(i * cellSize, 0);
-//     gridPattern.lineTo(i * cellSize, newHeight);
-//   }
-
-//   // NEW: Add cell backgrounds with alternating patterns
-//   const cellBackgrounds = scene.add.graphics();
-//   for (let row = 0; row < gridSize; row++) {
-//     for (let col = 0; col < gridSize; col++) {
-//       // Create subtle checkerboard pattern
-//       const isEvenCell = (row + col) % 2 === 0;
-//       cellBackgrounds.fillStyle(isEvenCell ? 0xecd8b3 : 0xf5e9d1, 1);
-
-//       cellBackgrounds.fillRect(
-//         col * cellSize,
-//         row * cellSize,
-//         cellSize,
-//         cellSize
-//       );
-//     }
-//   }
-
-//   // Load sound effects - ADD THIS SECTION
-//   if (!scene.sound.get("letterHover")) {
-//     scene.load.audio("letterHover", "assets/audio/hover.mp3");
-//     scene.load.once("complete", function () {
-//     });
-//     scene.load.start();
-//   }
-
-//   for (let row = 0; row < gridSize; row++) {
-//     // Initialize each row if not already defined
-//     if (!letterTexts[row]) {
-//       letterTexts[row] = [];
-//     }
-//     for (let col = 0; col < gridSize; col++) {
-//       if (letterTexts[row][col]) {
-//         letterTexts[row][col].destroy();
-//       }
-//       // NEW: Add subtle circular highlights behind letters
-//       scene.add.circle(
-//         col * cellSize + cellSize * 0.5,
-//         row * cellSize + cellSize * 0.5,
-//         cellSize * 0.4,
-//         0xffffff,
-//         0.1
-//       );
-
-//       const x = col * cellSize + cellSize * 0.5;
-//       const y = row * cellSize + cellSize * 0.5;
-//       const letterObj = scene.add
-//         .text(x, y, gridMatrix[row][col].letter, finalStyle)
-//         .setOrigin(0.5);
-//       // Add interactive hover effect
-//       // Add interactive hover effect
-//       letterObj.setInteractive();
-//       letterObj.on("pointerover", function () {
-//         this.setScale(1.1);
-//         // Play sound effect on hover - ADD THIS LINE
-//         scene.sound.play("letterHover", { volume: 0.5 });
-//         // Add glow effect - ADD THIS
-//         this.setStroke("#FF9900", 2.5);
-//         this.setShadow(2, 2, "#ffd700", 6, true, true);
-//         this.setColor("#8B4513");
-//       });
-//       letterObj.on("pointerout", function () {
-//         this.setScale(1.0);
-//         this.setStroke("#b8860b", 0.7);
-//         this.setShadow(1, 1, "#ffd700", 2, false, true);
-//         this.setColor("#473214");
-//       });
-//       // Store necessary data
-//       letterTexts[row][col] = letterObj;
-//       // letterObj.setData("layer", "second");
-//       letterObj.setData("row", row);
-//       letterObj.setData("col", col);
-
-//       if (letterTexts[row][col]) {
-//         if (typeof hideLoadingIndicator === "function") {
-//           hideLoadingIndicator();
-//         }
-//       }
-//     }
-//   }
-// }
 
 export function computeEffectiveGridSize(wordData) {
   // Exit early if no words

@@ -21,17 +21,11 @@ if (!defined('ABSPATH')) {
             'color' => '#00796B',
             'text_color' => '#ffffff',
         ],
-        // 'download_pdf' => [
-        //     'label' => __('Download as PDF', 'wp-quiz-plugin'),
-        //     'color' => '#00796B',
-        //     'text_color' => '#ffffff',
-        // ],
-        // 'download_key' => [
-        //     'label' => __('Download Key', 'wp-quiz-plugin'),
-        //     'color' => '#00796B',
-        //     'text_color' => '#ffffff',
-        // ]
     ];
+
+    $default_no_entries_label = __("No word search entries found.", 'wp-quiz-plugin'); 
+    $no_entries_found_label = get_option('kw_no_entries_label',$default_no_entries_label);
+
 
 // Retrieve saved values or use defaults
 $settings = [];
@@ -86,7 +80,7 @@ foreach ($default_settings as $key => $values) {
         </label>
         <input type="text" id="kw_wordsearch_admin_add_word_button_label" name="kw_wordsearch_admin_add_word_button_label" class="regular-text kw-input" value="<?php echo esc_attr($settings['add_word']['label']); ?>" data-default="<?php echo esc_attr($default_settings['add_word']['label']); ?>">
         <p class="description"><?php esc_html_e('Set the label for the "Add Word" button.', 'wp-quiz-plugin'); ?></p>
-
+        <!-- Add Words -->
         <label for="kw_wordsearch_admin_add_words_container_label" class="kw-label">
         <?php esc_html_e('Add Words Metabox Label', 'wp-quiz-plugin'); ?>
     </label>
@@ -94,6 +88,14 @@ foreach ($default_settings as $key => $values) {
         value="<?php echo esc_attr(get_option('kw_wordsearch_admin_add_words_container_label', __('Add Words', 'wp-quiz-plugin'))); ?>" 
         data-default="<?php echo esc_attr(__('Add Words', 'wp-quiz-plugin')); ?>">
     <p class="description"><?php esc_html_e('Set the label for "Add Words" container.', 'wp-quiz-plugin'); ?></p>
+    <!-- No word search entries -->
+    <label for="kw_no_entries_label" class="kw-label">
+        <?php esc_html_e('No word search entries Label', 'wp-quiz-plugin'); ?>
+    </label>
+    <input type="text" id="kw_no_entries_label" name="kw_no_entries_label" class="regular-text kw-input" 
+        value="<?php echo esc_attr($no_entries_found_label); ?>" 
+        data-default="<?php echo esc_attr($default_no_entries_label); ?>">
+    <p class="description"><?php esc_html_e('Set the label for "No word search entries" text.', 'wp-quiz-plugin'); ?></p>
 
         <label for="kw_wordsearch_admin_add_word_button_color" class="kw-label">
             <?php esc_html_e('Button Background Color', 'wp-quiz-plugin'); ?>

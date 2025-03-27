@@ -17,6 +17,7 @@
         'soundSetting'    =>    get_option('kw_grid_text_sound_setting',$default_settings ['soundSetting']),
     ];
 
+
     ?>
 
     <!-- Title Field -->
@@ -76,8 +77,8 @@
             type="checkbox" 
             id="kw_grid_text_sound_setting" 
             name="kw_grid_text_sound_setting" 
-            value="1"
-            <?php checked( $grid_text_settings['soundSetting'], 1 ); ?>
+            value="<?php echo esc_attr($grid_text_settings['soundSetting']); ?>"
+            <?php checked( isset($grid_text_settings['soundSetting']) ? $grid_text_settings['soundSetting'] : 0 ); ?>
             data-default="<?php echo esc_attr($default_settings['soundSetting']); ?>"
         >
         <span class="kw-slider"></span>
@@ -85,6 +86,11 @@
 
     <p class="description"><?php esc_html_e('Toggle the grid text sound to on or off.', 'wp-quiz-plugin'); ?></p>
 </div>
+
+    <!-- Reset Button -->
+    <button type="button" class="button-secondary kw-reset-button">
+        <?php esc_html_e('Reset to Default', 'wp-quiz-plugin'); ?>
+    </button>
 
 </div>
 

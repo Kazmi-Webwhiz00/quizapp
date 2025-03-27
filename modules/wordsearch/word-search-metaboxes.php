@@ -38,17 +38,31 @@ add_action('admin_enqueue_scripts', 'enqueue_style_script');
 function wordsearch_enqueue_assets() {
 
         // Fetch the filled cell background color with a default value
-        $grid_even_cell_bg_color = get_option('kw_grid_even_cell_bg_color', '0xecd8b3');
-        $grid_odd_cell_bg_color = get_option('kw_grid_odd_cell_bg_color', '0xf5e9d1');
+        $grid_even_cell_bg_color = get_option('kw_grid_even_cell_bg_color', '#ecd8b3');
+        $grid_odd_cell_bg_color = get_option('kw_grid_odd_cell_bg_color', '#f5e9d1');
         $higlightedCellTextColor = get_option('kw_highlight_cell_text_color', '#ffffff');
-        $lineColor = get_option('kw_grid_line_color', 'rgba(184, 134, 11, 0.6)');
+        $lineColor = get_option('kw_grid_line_color', '#b8860b99');
         $gridTextColor = get_option('kw_grid_text_font_color', '#5c4012');
         // error_log("color" . print_r($gridTextColor , true));
         $gridTextFontFamily = get_option('kw_grid_text_font_family', 'Roboto');
+
         $default_success_popup_label = __('Congratulations', 'wp-quiz-plugin');
+        $default_success_body_text = __('You have successfully completed the wordsearch!', 'wp-quiz-plugin');
+        $default_popup_challenge_text = __('Ready for another challenge?', 'wp-quiz-plugin');
+        $default_popup_button_text = __('Play Again', 'wp-quiz-plugin');
         $success_popup_title = get_option('kw_wordsearch_success_popup_title', $default_success_popup_label);
-        $default_success_body_default_text = __('You have successfully completed the wordsearch!', 'wp-quiz-plugin');
-        $success_popup_body_text = get_option('kw_wordsearch_success_popup_body_text', $default_success_body_default_text);
+        $success_popup_body_text = get_option('kw_wordsearch_success_popup_body_text', $default_success_body_text);
+        $success_popup_challenge_text = get_option('kw_wordsearch_success_popup_challenge_text', $default_popup_challenge_text);
+        $success_popup_button_text = get_option('kw_wordsearch_success_popup_button_text', $default_popup_button_text);
+        /*  Render Time's up Popup Section */
+        $default_timeup_popup_label = __("Time's Up!", 'wp-quiz-plugin');
+        $default_timeup__body_text = __('Your time has expired for this word search puzzle.', 'wp-quiz-plugin');
+        $default_timeup_challenge_text = __('Would you like to start a new game?', 'wp-quiz-plugin');
+        $default_timeup_button_text = __('Play Again', 'wp-quiz-plugin');
+        $timeup__popup_title = get_option('kw_wordsearch_timeup__popup_title', $default_timeup_popup_label);
+        $timeup__popup_body_text = get_option('kw_wordsearch_timeup__popup_body_text', $default_timeup_body_text);
+        $timeup__popup_challenge_text = get_option('kw_wordsearch_timeup__popup_challenge_text', $default_timeup_challenge_text);
+        $timeup__popup_button_text = get_option('kw_wordsearch_timeup__popup_button_text', $default_timeup_button_text);
 
     // Enqueue jQuery if not already loaded.
     wp_enqueue_script( 'jquery' );
@@ -119,7 +133,14 @@ function wordsearch_enqueue_assets() {
                 'higlightedCellTextColor'=> esc_attr( $higlightedCellTextColor ),
                 'lineColor'              => esc_attr( $lineColor ),
                 'successPopupTitle'    =>  esc_attr( $success_popup_title),
-                'successPopupBodyText' =>   esc_attr( $success_popup_body_text )
+                'successPopupBodyText' =>   esc_attr( $success_popup_body_text ),
+                'successPopupChallengeText'  => esc_attr($success_popup_challenge_text),
+                'successPopupButtonText'    => esc_attr($success_popup_button_text),
+
+                'timeupPopupTitle'         => esc_attr($timeup__popup_title),
+                'timeupPopupBodyText'      => esc_attr( $timeup__popup_body_text),
+                'timeupPopupChallengeText' => esc_attr($timeup__popup_challenge_text),
+                'timeupPopupButtonText'    => esc_attr($timeup__popup_button_text),
             )
 
         ));

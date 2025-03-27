@@ -18,7 +18,6 @@ import {
   updateWordListUI,
   autoSolvePuzzle,
   startGameTimer,
-  showLoadingIndicator,
   updateWordData,
 } from "./game-mechanics.js";
 
@@ -314,12 +313,12 @@ export function createWordSearchGame({
           dynamicCtx.clearRect(0, 0, dynamicCanvas.width, dynamicCanvas.height);
           return;
         }
-
+        const lineColor = window.customStyles["lineColor"];
         // Draw the line
         dynamicCtx.beginPath();
         dynamicCtx.moveTo(startPoint.x, startPoint.y);
         dynamicCtx.lineTo(currentX, currentY);
-        dynamicCtx.strokeStyle = "rgba(184, 134, 11, 0.6)";
+        dynamicCtx.strokeStyle = lineColor;
         dynamicCtx.lineWidth = cellSize * 0.8;
         dynamicCtx.lineCap = "round";
         dynamicCtx.stroke();
@@ -355,12 +354,12 @@ export function createWordSearchGame({
           dynamicCtx.clearRect(0, 0, dynamicCanvas.width, dynamicCanvas.height);
           return;
         }
-
+        const lineColor = window.customStyles["lineColor"];
         // Draw the line
         dynamicCtx.beginPath();
         dynamicCtx.moveTo(startPoint.x, startPoint.y);
         dynamicCtx.lineTo(currentX, currentY);
-        dynamicCtx.strokeStyle = "rgba(184, 134, 11, 0.6)";
+        dynamicCtx.strokeStyle = lineColor;
         dynamicCtx.lineWidth = cellSize * 0.8;
         dynamicCtx.lineCap = "round";
         dynamicCtx.stroke();
