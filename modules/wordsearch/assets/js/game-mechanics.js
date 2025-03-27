@@ -470,13 +470,18 @@ function showTimeUpModal() {
     return;
   }
 
+  const title = window.customStyles["timeupPopupTitle"];
+  const bodyText = window.customStyles["timeupPopupBodyText"];
+  const challengeText = window.customStyles["timeupPopupChallengeText"];
+  const buttonText = window.customStyles["timeupPopupButtonText"];
+
   Swal.fire({
-    title: '<span style="color: #e74c3c">Time\'s Up!</span>',
+    title: `<span style="color: #e74c3c">${title}</span>`,
     html:
-      '<p style="font-size: 1.1rem; margin-bottom: 0.8rem">Your time has expired for this word search puzzle.</p>' +
-      '<p style="font-size: 1.1rem">Would you like to start a new game?</p>',
+      `<p style="font-size: 1.1rem; margin-bottom: 0.8rem">${bodyText}</p>` +
+      `<p style="font-size: 1.1rem">${challengeText}</p>`,
     icon: "warning",
-    confirmButtonText: "Play Again",
+    confirmButtonText: `${buttonText}`,
     didRender: (popup) => {
       const confirmButton = Swal.getConfirmButton();
       if (confirmButton) {

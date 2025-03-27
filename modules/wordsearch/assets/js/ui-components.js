@@ -200,6 +200,8 @@ export function showCompletionMessage() {
 
   const title = window.customStyles["successPopupTitle"];
   const bodyText = window.customStyles["successPopupBodyText"];
+  const challengeText = window.customStyles["successPopupChallengeText"];
+  const buttonText = window.customStyles["successPopupButtonText"];
 
   Swal.fire({
     title: `<div class="wordsearch-modal-title-container">
@@ -210,11 +212,11 @@ export function showCompletionMessage() {
     html: `
       <div class="wordsearch-modal-content">
         <p class="wordsearch-modal-description">${bodyText}</p>
-        <p class="wordsearch-modal-question">Ready for another challenge?</p>
+        <p class="wordsearch-modal-question">${challengeText}</p>
       </div>
     `,
     icon: "success",
-    confirmButtonText: "Play Again",
+    confirmButtonText: `${buttonText}`,
     showCancelButton: false, // Explicitly remove cancel button
     allowOutsideClick: false,
     allowEscapeKey: false,
