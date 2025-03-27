@@ -6,12 +6,12 @@ if (!defined('ABSPATH')) {
 
 // Default values for Frontend UI settings
 $default_settings = [
-    'kw_grid_even_cell_bg_color'   => "0xecd8b3",  // Filled Cell Background
-    'kw_grid_odd_cell_bg_color'   => '0xf5e9d1',
+    'kw_grid_even_cell_bg_color'   => "#ecd8b3",  // Filled Cell Background
+    'kw_grid_odd_cell_bg_color'   => '#f5e9d1',
     'kw_grid_text_font_color'      => '#5c4012',      
     'kw_grid_text_font_family'      => 'Georgia, serif',  
     'kw_highlight_cell_text_color' => '#ffffff',               // Highlight Cell Background
-    'kw_grid_line_color'     => 'rgba(184, 134, 11, 0.6)',  // Highlighted Cell Background
+    'kw_grid_line_color'     => '#b8860b99',  // Highlighted Cell Background
     'kw_wordsearch_cell_font_color'=> '#5c4012',  
     'kw_wordsearch_admin_filled_cell_color'  => '#fffff',                        // Cell Font Color
 ];
@@ -21,6 +21,7 @@ $settings = [];
 foreach ($default_settings as $key => $default_value) {
     $settings[$key] = get_option( $key, $default_value );
 }
+error_log("Color" . print_r($default_settings['kw_grid_even_cell_bg_color'],true));
 ?>
 
 <div class="kw-settings-section">
@@ -74,7 +75,7 @@ foreach ($default_settings as $key => $default_value) {
                name="kw_grid_text_font_color"
                class="kw-color-picker wp-color-picker"
                value="<?php echo esc_attr( $settings['kw_grid_text_font_color'] ); ?>"
-               data-default="<?php echo esc_attr( $default_settings['kw_grid_bg_color'] ); ?>">
+               data-default="<?php echo esc_attr( $default_settings['kw_grid_text_font_color'] ); ?>">
     </div>
 
      <!--Grid Text Font Family -->
@@ -120,7 +121,10 @@ foreach ($default_settings as $key => $default_value) {
                name="kw_grid_line_color"
                class="kw-color-picker wp-color-picker"
                value="<?php echo esc_attr( $settings['kw_grid_line_color'] ); ?>"
-               data-default="<?php echo esc_attr( $default_settings['kw_grid_line_color'] ); ?>">
+               data-default="<?php echo esc_attr( $default_settings['kw_grid_line_color'] ); ?>"
+               data-alpha-enabled="true"
+               data-alpha-color-type="octohex"
+               >
     </div>
 
     <!-- Reset Button -->

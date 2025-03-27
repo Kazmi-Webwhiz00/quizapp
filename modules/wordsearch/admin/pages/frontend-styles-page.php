@@ -19,17 +19,17 @@ function wordsearch_register_frontend_styles_settings() {
     register_setting('kw_wordsearch_fe_settings', 'kw_grid_text_sound_setting', ['default' => 0]);
 
     // Grid Even Cell Background
-    register_setting('kw_wordsearch_fe_settings', 'kw_grid_even_cell_bg_color', ['default' => '0xecd8b3']);
+    register_setting('kw_wordsearch_fe_settings', 'kw_grid_even_cell_bg_color', ['default' => '#ecd8b3']);
 
     // Grid Even Cell Background
-    register_setting('kw_wordsearch_fe_settings', 'kw_grid_odd_cell_bg_color', ['default' => '0xf5e9d1']);
+    register_setting('kw_wordsearch_fe_settings', 'kw_grid_odd_cell_bg_color', ['default' => '#f5e9d1']);
 
 
     // Highlight Cell Background
     register_setting('kw_wordsearch_fe_settings', 'kw_highlight_cell_text_color', ['default' => '#fffff']);
 
     // Highlighted Cell Background
-    register_setting('kw_wordsearch_fe_settings', 'kw_grid_line_color', ['default' => 'rgba(184, 134, 11, 0.6)']);
+    register_setting('kw_wordsearch_fe_settings', 'kw_grid_line_color', ['default' => '#b8860b99']);
 
     // Cell Font Color
     register_setting('kw_wordsearch_fe_settings', 'kw_wordsearch_cell_font_color', ['default' => '#5c4012']);
@@ -48,7 +48,14 @@ function wordsearch_register_frontend_styles_settings() {
      // Success Popup Settings
      register_setting('kw_wordsearch_fe_settings', 'kw_wordsearch_success_popup_title', ['default' => __('Success!', 'wp-quiz-plugin')]);
      register_setting('kw_wordsearch_fe_settings', 'kw_wordsearch_success_popup_body_text', ['default' => __('You have successfully completed the wordsearch!', 'wp-quiz-plugin')]);
-     register_setting('kw_wordsearch_fe_settings', 'kw_wordsearch_success_popup_button_text', ['default' => __('Close', 'wp-quiz-plugin')]);
+     register_setting('kw_wordsearch_fe_settings', 'kw_wordsearch_success_popup_challenge_text', ['default' => __('Ready for another challenge?', 'wp-quiz-plugin')]);
+     register_setting('kw_wordsearch_fe_settings', 'kw_wordsearch_success_popup_button_text', ['default' => __('Play Again', 'wp-quiz-plugin')]);
+
+    // Success Popup Settings
+    register_setting('kw_wordsearch_fe_settings', 'kw_wordsearch_timeup_popup_title', ['default' => __("Time's Up!", 'wp-quiz-plugin')]);
+    register_setting('kw_wordsearch_fe_settings', 'kw_wordsearch_timeup_popup_body_text', ['default' => __('Your time has expired for this word search puzzle.', 'wp-quiz-plugin')]);
+    register_setting('kw_wordsearch_fe_settings', 'kw_wordsearch_timeup_popup_challenge_text', ['default' => __('Would you like to start a new game?', 'wp-quiz-plugin')]);
+    register_setting('kw_wordsearch_fe_settings', 'kw_wordsearch_timeup_popup_button_text', ['default' => __('Play Again', 'wp-quiz-plugin')]);
 
      add_settings_section(
         'kw_wordsearch_puzzle_texts_section',
@@ -64,6 +71,14 @@ function wordsearch_register_frontend_styles_settings() {
          'wordsearch_render_success_popup_section',
          'kw-wordsearch-frontend-styles-page'
      );
+
+          // Add a settings section for Success Popup
+          add_settings_section(
+            'kw_timeup_popup_settings_section',
+            __("Time's up Popup Settings", 'wp-quiz-plugin'),
+            'wordsearch_render_timeup_popup_section',
+            'kw-wordsearch-frontend-styles-page'
+        );
 
     // Add a settings section for Frontend Styles
     add_settings_section(
@@ -109,6 +124,13 @@ function wordsearch_render_settings_section() {
  */
 function wordsearch_render_success_popup_section() {
     include plugin_dir_path(__FILE__) . '../templates/sections/fe/success-popup-settings-section.php';
+}
+
+/**
+ * Render Time's up Popup Section
+ */
+function wordsearch_render_timeup_popup_section(){
+    include plugin_dir_path(__FILE__) . '../templates/sections/fe/timeup-popup-settings-section.php';
 }
 
 /**
