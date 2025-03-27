@@ -23,6 +23,19 @@ jQuery(document).ready(function ($) {
     history.pushState(null, "", `#${tabKey}`);
   });
 
+  $("#kw_grid_text_sound_setting").on("change", function () {
+    // When toggled on, set the value to "1"; if off, set to "0"
+    if ($(this).is(":checked")) {
+      $(this).attr("value", "1");
+      // Optionally update the checked attribute in the DOM as well:
+      $(this).attr("checked", "checked");
+    } else {
+      $(this).attr("value", "0");
+      // Remove the checked attribute so that it’s clear in the DOM:
+      $(this).removeAttr("checked");
+    }
+  });
+
   $(".kw-reset-button").on("click", function () {
     const $parentSection = $(this).closest(".kw-settings-section");
 
@@ -32,6 +45,21 @@ jQuery(document).ready(function ($) {
       .each(function () {
         const defaultValue = $(this).data("default");
         $(this).val(defaultValue);
+
+        const $checkbox = $("#kw_grid_text_sound_setting");
+        const defaultCheckboxValue = $checkbox.data("default").toString(); // "0" or "1"
+
+        // Set the value attribute to the default value
+        $checkbox.attr("value", defaultCheckboxValue);
+
+        // Update the checked state based on the default:
+        if (defaultCheckboxValue === "1") {
+          $checkbox.prop("checked", true);
+          $checkbox.attr("checked", "checked");
+        } else {
+          $checkbox.prop("checked", false);
+          $checkbox.removeAttr("checked");
+        }
 
         // If it's a color picker, update the color
         if ($(this).hasClass("wp-color-picker")) {

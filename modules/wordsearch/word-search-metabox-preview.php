@@ -12,10 +12,10 @@ function enqueue_wordsearch_metabox_preview_assets( $hook ) {
     $screen = get_current_screen();
 
         // Fetch the filled cell background color with a default value
-        $grid_even_cell_bg_color = get_option('kw_grid_even_cell_bg_color', '0xecd8b3');
-        $grid_odd_cell_bg_color = get_option('kw_grid_odd_cell_bg_color', '0xf5e9d1');
+        $grid_even_cell_bg_color = get_option('kw_grid_even_cell_bg_color', '#ecd8b3');
+        $grid_odd_cell_bg_color = get_option('kw_grid_odd_cell_bg_color', '#f5e9d1');
         $higlightedCellTextColor = get_option('kw_highlight_cell_text_color', '#ffffff');
-        $lineColor = get_option('kw_grid_line_color', 'rgba(184, 134, 11, 0.6)');
+        $lineColor = get_option('kw_grid_line_color', '#b8860b99');
         $gridTextColor = get_option('kw_grid_text_font_color', '#5c4012');
         // error_log("color" . print_r($gridTextColor , true));
         $gridTextFontFamily = get_option('kw_grid_text_font_family', 'Roboto');
@@ -142,6 +142,8 @@ $shuffle_text_color = get_option('kw_wordsearch_admin_shuffle_button_text_color'
 $default_show_words_label = __('Show Words', 'wp-quiz-plugin');
 $default_download_pdf_label = __('Download Pdf', 'wp-quiz-plugin');
 $downloadPdfLabel = get_option('kw_download_pdf_label', $default_download_pdf_label);
+$default_no_entries_label = __('Download Pdf', 'wp-quiz-plugin');
+$noEntriesLabel = get_option('kw_no_entries_label', $default_no_entries_label);
 
 
 global $post;
@@ -183,7 +185,7 @@ if ( ! is_array( $word_entries ) ) {
 </div>
       <!-- Empty state message; hidden by default -->
       <div id="wordsearch-empty-box" style="text-align: center; display: none;">
-       <p class="wordsearch-empty-message"> No word search entries found. </p>
+       <p class="wordsearch-empty-message"> <?php echo esc_html__($noEntriesLabel); ?> </p>
 </div>
       <!-- Game preview content is rendered but hidden -->
       <div id="game-preview-content" style="display: none;">
@@ -209,12 +211,15 @@ if ( ! is_array( $word_entries ) ) {
 
           // Checks the cookie and toggles the preview accordingly.
           function checkAndTogglePreview() {
-            // let wordDataAdded = false;
-            // $(document).on("wordsearchEntriesUpdated", function (event, updatedEntries) {
-            //  wordDataAdded = updatedEntries && window.wordData.length > 0 ? true : false;
+
+
+            // document.addEventListener("wordsearchEntriesUpdated", function (event) {
+            //   var updatedEntries = event;
+            //   console.log("::event1",event);
             // });
-            var rawData = getCookie('wordsearch_entries');
-            var entries = rawData ? JSON.parse(rawData) : [];
+            // var rawData = getCookie('wordsearch_entries');
+            // console.log("::event",event,rawData);
+            // var entries = rawData ? JSON.parse(rawData) : [];
             var emptyMsg = document.getElementById('wordsearch-empty-box');
             var gameContent = document.getElementById('game-preview-content');
 
