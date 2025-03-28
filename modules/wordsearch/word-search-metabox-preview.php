@@ -148,7 +148,7 @@ $shuffle_text_color = get_option('kw_wordsearch_admin_shuffle_button_text_color'
 $default_show_words_label = __('Show Words', 'wp-quiz-plugin');
 $default_download_pdf_label = __('Download Pdf', 'wp-quiz-plugin');
 $downloadPdfLabel = get_option('kw_download_pdf_label', $default_download_pdf_label);
-$default_no_entries_label = __('Download Pdf', 'wp-quiz-plugin');
+$default_no_entries_label = __('No word search entries found', 'wp-quiz-plugin');
 $noEntriesLabel = get_option('kw_no_entries_label', $default_no_entries_label);
 
 
