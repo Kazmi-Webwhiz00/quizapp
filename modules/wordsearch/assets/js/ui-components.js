@@ -1,68 +1,78 @@
 import { updateWordData } from "./game-mechanics.js";
 import { batchDomUpdates } from "./utils.js";
 
-function getCookie(name) {
-  var nameEQ = name + "=";
-  var ca = document.cookie.split(";");
-  for (var i = 0; i < ca.length; i++) {
-    var c = ca[i];
-    while (c.charAt(0) === " ") c = c.substring(1, c.length);
-    if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
-  }
-  return null;
-}
-
-// Helper functions to set and get cookies
-function setCookie(name, value, days) {
-  var expires = "";
-  if (days) {
-    var date = new Date();
-    date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
-    expires = "; expires=" + date.toUTCString();
-  }
-  document.cookie = name + "=" + (value || "") + expires + "; path=/";
-}
-
 // window.cookieEntries = cookieData.map((entry) => entry);
 
-// Utility to save cookieEntries back to cookies/local storage
-function updateCookieEntries(entries) {
-  // Update the cookie with the combined entries (expires in 1 day)
-  setCookie("wordsearch_entries", JSON.stringify(entries), 1);
+/**
+ * Updates the word search data by sending the updated finalEntries array
+ * to the custom REST API endpoint.
+ */
+export async function updateWordSearchData(entries) {
+  // Get the post ID from the DOM.
+  const postIdElement = document.getElementById("post_ID");
+  const postId = postIdElement ? postIdElement.value : "";
+
+  // Build the REST API endpoint URL.
+  // In this example, the endpoint is: /wp-json/myplugin/v1/wordsearch/<post_id>
+  const endpoint = `${window.location.origin}/wp-json/myplugin/v1/wordsearch/${postId}`;
+
+  try {
+    const response = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        // If you have a REST API nonce localized (e.g. via wp_localize_script),
+        // pass it here. Otherwise, if the user is logged in, WP will use cookies.
+        "X-WP-Nonce": frontendData.nonce,
+      },
+      credentials: "include",
+      body: JSON.stringify({ updated_word_search_data: entries }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const responseData = await response.json();
+
+    if (responseData.success) {
+      console.log(
+        "Wordsearch updated successfully via REST API.",
+        responseData.data
+      );
+    } else {
+      console.error("Error saving wordsearch:", responseData.data);
+    }
+  } catch (error) {
+    console.error("REST API error (wordsearch):", error);
+  }
 }
 
 // Renders the word list with eye toggle feature
 export function renderWordList(wordData) {
-  // Initialize cookieEntries
-  var existingCookie = getCookie("wordsearch_entries");
-  let cookieData = JSON.parse(existingCookie || "[]");
   const listContainer = document.getElementById("wordList");
   if (!listContainer) return;
-
   listContainer.innerHTML = "";
 
-  // If wordSearchData is defined, filter out words that are hidden in window.finalEntries.
+  // Use window.finalEntries to check hidden status if available.
   if (typeof wordSearchData !== "undefined") {
     const wordPanel = document.getElementsByClassName("word-panel");
     if (!wordPanel) return;
 
-    // Make sure finalEntries is defined and is an array.
     if (window.finalEntries && Array.isArray(window.finalEntries)) {
-      // Check if every entry in finalEntries has hidden = true.
       const allHidden = window.finalEntries.every(
         (entry) => entry.hidden === true
       );
-      // If all are hidden, hide the panel; otherwise, show it.
       wordPanel[0].style.display = allHidden ? "none" : "flex";
     }
 
+    // Filter out words that are marked as hidden in window.finalEntries.
     wordData = wordData.filter((word) => {
       const formattedWord = word.toLowerCase();
       if (window.finalEntries && Array.isArray(window.finalEntries)) {
         const entry = window.finalEntries.find(
           (item) => item.wordText.toLowerCase() === formattedWord
         );
-        // If a matching entry exists and hidden is true, filter out this word.
         if (entry && entry.hidden === true) {
           return false;
         }
@@ -87,7 +97,7 @@ export function renderWordList(wordData) {
         const eyeIconContainer = document.createElement("span");
         eyeIconContainer.classList.add("eye-icon-container");
 
-        // Create SVG icon
+        // Create SVG icon for the eye.
         const eyeIcon = document.createElementNS(
           "http://www.w3.org/2000/svg",
           "svg"
@@ -124,59 +134,44 @@ export function renderWordList(wordData) {
         eyeIcon.appendChild(eyeCircle);
         eyeIconContainer.appendChild(eyeIcon);
 
-        // Determine the initial hidden state from window.finalEntries.
+        // Determine initial hidden state based on window.finalEntries.
         let isHidden = false;
         if (window.finalEntries && Array.isArray(window.finalEntries)) {
           const matchingEntry = window.finalEntries.find(
             (item) => item.wordText.toLowerCase() === formattedWord
           );
-          if (matchingEntry && matchingEntry.hidden === true) {
-            isHidden = true;
+          if (matchingEntry) {
+            isHidden = matchingEntry.hidden;
           }
         }
-        // Store state locally on this element.
-        li.dataset.hidden = isHidden; // stored as string "true" or "false"
+        li.dataset.hidden = isHidden; // stored as "true" or "false"
 
-        // Apply initial CSS classes based on the hidden state.
         if (isHidden) {
           li.classList.add("hidden-word");
           eyeIconContainer.classList.add("eye-closed");
         }
 
-        // Click event: toggle the hidden state for this specific word.
+        // Click event to toggle the hidden state.
         eyeIconContainer.addEventListener("click", (e) => {
           e.stopPropagation();
-
-          // Toggle the state stored on this list item.
           const currentHidden = li.dataset.hidden === "true";
           const newHidden = !currentHidden;
           li.dataset.hidden = newHidden;
-
-          // Immediately update UI classes for this word.
           li.classList.toggle("hidden-word", newHidden);
           eyeIconContainer.classList.toggle("eye-closed", newHidden);
 
-          // Update only the matching cookieData entry.
-          cookieData = cookieData.map((entry) => {
-            if (entry.wordText.toLowerCase() === formattedWord) {
-              return {
-                ...entry,
-                hidden: newHidden,
-              };
-            }
-            return entry;
-          });
-          updateCookieEntries(cookieData);
-
           // Update the corresponding entry in window.finalEntries.
           if (window.finalEntries && Array.isArray(window.finalEntries)) {
-            const index = window.finalEntries.findIndex(
-              (entry) => entry.wordText.toLowerCase() === formattedWord
+            const entry = window.finalEntries.find(
+              (item) => item.wordText.toLowerCase() === formattedWord
             );
-            if (index !== -1) {
-              window.finalEntries[index].hidden = newHidden;
+            if (entry) {
+              entry.hidden = newHidden;
             }
           }
+
+          // Send the updated finalEntries to the server via AJAX.
+          updateWordSearchData(window.finalEntries);
         });
 
         li.appendChild(wordSpan);

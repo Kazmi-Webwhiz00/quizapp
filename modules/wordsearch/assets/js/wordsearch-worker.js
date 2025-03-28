@@ -2,11 +2,10 @@
 self.onmessage = function (e) {
   if (e.data.type === "GENERATE_PUZZLE") {
     const settings = e.data.settings;
-    // We will build the matrix and return it.
-    // Use a helper function that encapsulates your old puzzle-generation logic.
+    // Build the matrix and return it
     const result = generatePuzzleData(settings);
 
-    // Return the fully constructed matrix & derived data back to the main thread
+    // Post the results back
     self.postMessage({
       type: "PUZZLE_READY",
       matrix: result.matrix,
@@ -15,10 +14,16 @@ self.onmessage = function (e) {
   }
 };
 
-// --------------------------------------------------
-// Below: Logic for puzzle generation, extracted
-//        from your original constructor code
-// --------------------------------------------------
+// Keep track of whether we've detected any Polish diacritics
+let puzzleHasPolish = false;
+
+/**
+ * Quick helper: returns true if a string has at least one Polish diacritic:
+ *   ĄąĆćĘęŁłŃńÓóŚśŹźŻż
+ */
+function containsPolishCharacters(str) {
+  return /[ĄąĆćĘęŁłŃńÓóŚśŹźŻż]/.test(str);
+}
 
 // Provide rangeInt, removeDiacritics, and searchLanguage
 // because the worker can’t see them from outside.
@@ -38,6 +43,43 @@ const directionsMap = {
   WN: [1, 1], // Diagonal: top-left to bottom-right
   EN: [1, -1], // Diagonal: top-right to bottom-left
 };
+
+// Polish alphabet (uppercase) for random fill if puzzleHasPolish
+// Standard Polish does not typically use Q, V, X, but adjust if you like.
+const POLISH_ALPHABET = [
+  "A",
+  "Ą",
+  "B",
+  "C",
+  "Ć",
+  "D",
+  "E",
+  "Ę",
+  "F",
+  "G",
+  "H",
+  "I",
+  "J",
+  "K",
+  "L",
+  "Ł",
+  "M",
+  "N",
+  "Ń",
+  "O",
+  "Ó",
+  "P",
+  "R",
+  "S",
+  "Ś",
+  "T",
+  "U",
+  "W",
+  "Y",
+  "Z",
+  "Ź",
+  "Ż",
+];
 
 // Put your removeDiacritics and searchLanguage EXACTLY as they were:
 var defaultDiacriticsRemovalMap = [
@@ -262,6 +304,7 @@ function removeDiacritics(str) {
   }
   return str;
 }
+
 function searchLanguage(firstLetter) {
   let codefirstLetter = firstLetter.charCodeAt();
   var codeLetter = [65, 90];
@@ -270,28 +313,28 @@ function searchLanguage(firstLetter) {
     return (codeLetter = [65, 90]);
   }
   if (codefirstLetter >= 1488 && codefirstLetter <= 1514) {
-    //Hebrew א -> ת
+    // Hebrew
     return (codeLetter = [1488, 1514]);
   }
   if (codefirstLetter >= 913 && codefirstLetter <= 937) {
-    //Greek Α -> Ω
-    return (codeLetter = [913, 929]); //930 is blank
+    // Greek
+    return (codeLetter = [913, 929]); // 930 is blank
   }
   if (codefirstLetter >= 1040 && codefirstLetter <= 1071) {
-    //Cyrillic А -> Я
-    return (codeLetter = [1040, 1071]); //930 is blank
+    // Cyrillic
+    return (codeLetter = [1040, 1071]);
   }
   if (codefirstLetter >= 1569 && codefirstLetter <= 1610) {
-    //Arab
-    return (codeLetter = [1569, 1594]); //Between 1595 and 1600, no letter
+    // Arab
+    return (codeLetter = [1569, 1594]);
   }
   if (codefirstLetter >= 19969 && codefirstLetter <= 40891) {
-    //Chinese
+    // Chinese
     return (codeLetter = [19969, 40891]);
   }
   if (codefirstLetter >= 12354 && codefirstLetter <= 12436) {
-    //Japan Hiragana
-    return (codeLetter = [12388, 12418]); //Only no small letter
+    // Japan Hiragana
+    return (codeLetter = [12388, 12418]);
   }
   console.log("Letter not detected : " + firstLetter + ":" + codefirstLetter);
   return codeLetter;
@@ -306,11 +349,26 @@ function searchLanguage(firstLetter) {
  * Returns the matrix plus the final wordsList
  */
 function generatePuzzleData(settings) {
+  // Reset the puzzleHasPolish flag for each new puzzle
+  puzzleHasPolish = false;
+
   // 1) Normalize and validate words
   const wordsList = [];
   for (let i = 0; i < settings.words.length; i++) {
     wordsList[i] = settings.words[i].trim();
-    settings.words[i] = removeDiacritics(wordsList[i].toUpperCase());
+
+    // ---------- Polish Scenario Logic ----------
+    // If this particular word has Polish diacritics, we skip removing them
+    // and simply uppercase it. Also flag puzzleHasPolish = true.
+    // Otherwise, we do the normal removeDiacritics->uppercase step.
+    if (containsPolishCharacters(wordsList[i])) {
+      puzzleHasPolish = true;
+      settings.words[i] = wordsList[i].toUpperCase();
+    } else {
+      settings.words[i] = removeDiacritics(wordsList[i].toUpperCase());
+    }
+    // -------------------------------------------
+
     if (settings.words[i].length > settings.gridSize) {
       // If any word is longer than the entire grid dimension, bail out
       console.error(`Word "${settings.words[i]}" too long for grid.`);
@@ -323,7 +381,7 @@ function generatePuzzleData(settings) {
 
   // 3) Sort words by length (longest first) – helps placement
   settings.words.sort((a, b) => b.length - a.length);
-  // 4) Systematically place all words via backtracking
+  // 4) Place all words via backtracking
   const allPlaced = placeAllWordsBacktracking(
     matrix,
     settings.words,
@@ -347,7 +405,6 @@ function generatePuzzleData(settings) {
 
 // ---------- Helper Functions (migrated from the original) ---------- //
 
-// Create the 2D matrix filled with "."
 function initMatrix(size) {
   const matrix = [];
   for (let r = 0; r < size; r++) {
@@ -359,26 +416,13 @@ function initMatrix(size) {
   return matrix;
 }
 
-/**
- * Backtracking function that places words in the matrix one by one.
- * @param {Array} matrix - The puzzle grid (2D array of cell objects).
- * @param {Array} words - The array of words to place (already uppercase).
- * @param {Array} directions - The allowed direction codes (e.g., ["W", "N", "WN", "EN"]).
- * @param {number} gridSize - The size of the puzzle grid.
- * @param {number} i - Index of the current word being placed.
- * @returns {boolean} True if all words placed; False if no arrangement found.
- */
 function placeAllWordsBacktracking(matrix, words, directions, gridSize, i) {
-  // Base case: if i == words.length, we've placed them all
   if (i >= words.length) {
     return true;
   }
-
   const word = words[i];
 
-  // Create a copy and shuffle the directions to try different orders
   const shuffledDirections = [...directions];
-
   // Simple shuffle
   for (let j = shuffledDirections.length - 1; j > 0; j--) {
     const k = Math.floor(Math.random() * (j + 1));
@@ -390,14 +434,12 @@ function placeAllWordsBacktracking(matrix, words, directions, gridSize, i) {
 
   // Try each direction systematically
   for (const direction of shuffledDirections) {
-    // Compute valid start positions for this direction
     const startPositions = computeValidStartPositions(
       word,
       direction,
       gridSize
     );
 
-    // Try each start position
     for (const [startRow, startCol] of startPositions) {
       const canPlace = canPlaceWord(
         matrix,
@@ -407,22 +449,18 @@ function placeAllWordsBacktracking(matrix, words, directions, gridSize, i) {
         startCol
       );
       if (canPlace) {
-        // Place it
         placeWord(matrix, word, direction, startRow, startCol);
-        // Recurse for the next word
+        // Recurse
         if (
           placeAllWordsBacktracking(matrix, words, directions, gridSize, i + 1)
         ) {
-          // Success, bubble up
           return true;
         }
-
-        // Otherwise, remove (backtrack) and try another position
+        // Otherwise, backtrack
         removeWord(matrix, word, direction, startRow, startCol);
       }
     }
   }
-  // If none of the directions / positions worked, return false
   return false;
 }
 
@@ -464,10 +502,6 @@ function computeValidStartPositions(word, direction, gridSize) {
   return positions;
 }
 
-/**
- * Checks if `word` can be placed in `matrix` from (row, col) in `direction`
- * without overriding different letters.
- */
 function canPlaceWord(matrix, word, direction, row, col) {
   const [dr, dc] = directionsMap[direction];
   for (let i = 0; i < word.length; i++) {
@@ -503,14 +537,28 @@ function removeWord(matrix, word, direction, row, col) {
 // Fill remaining squares with random letters
 function fillUpFools(matrix, firstWord, gridSize) {
   if (!firstWord) return;
-  const rangeLanguage = searchLanguage(firstWord[0]);
-  for (let r = 0; r < gridSize; r++) {
-    for (let c = 0; c < gridSize; c++) {
-      if (matrix[r][c].letter === ".") {
-        // Fill with random letter from the same language range
-        matrix[r][c].letter = String.fromCharCode(
-          Math.rangeInt(rangeLanguage[0], rangeLanguage[1])
-        );
+
+  // If any puzzle word contained Polish diacritics,
+  // fill empty cells with random letters from the Polish alphabet.
+  if (puzzleHasPolish) {
+    for (let r = 0; r < gridSize; r++) {
+      for (let c = 0; c < gridSize; c++) {
+        if (matrix[r][c].letter === ".") {
+          const randomIndex = Math.rangeInt(0, POLISH_ALPHABET.length - 1);
+          matrix[r][c].letter = POLISH_ALPHABET[randomIndex];
+        }
+      }
+    }
+  } else {
+    // Otherwise, original approach using searchLanguage for the entire puzzle
+    const rangeLanguage = searchLanguage(firstWord[0]);
+    for (let r = 0; r < gridSize; r++) {
+      for (let c = 0; c < gridSize; c++) {
+        if (matrix[r][c].letter === ".") {
+          matrix[r][c].letter = String.fromCharCode(
+            Math.rangeInt(rangeLanguage[0], rangeLanguage[1])
+          );
+        }
       }
     }
   }

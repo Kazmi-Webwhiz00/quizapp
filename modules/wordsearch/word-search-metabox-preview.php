@@ -72,6 +72,10 @@ function enqueue_wordsearch_metabox_preview_assets( $hook ) {
 
     $timer_value = get_post_meta($post->ID, '_wordsearch_timer_value', true);
 
+    wp_localize_script('wordsearch-generate-with-ai', 'wordsearchScriptVar', array(
+      'ajaxUrl' => admin_url('admin-ajax.php'),
+      'nonce'   => wp_create_nonce('wordsearch_ajax_nonce'),
+  ));
 
     wp_localize_script( 'wordsearch-grid', 'frontendData', array(
       'url' => plugin_dir_url( __FILE__ ),
@@ -82,6 +86,8 @@ function enqueue_wordsearch_metabox_preview_assets( $hook ) {
       'checkBoxElement'  => 'toggle-checkbox',
       'toogleWordsBox'  => 'toggle-words-checkbox',
       'timerValue' => $timer_value,
+      'ajaxUrl' => admin_url('admin-ajax.php'),
+      'nonce'   => wp_create_nonce('wp_rest'),
       'gridStyles'       => array( 
           'fontColor'              => esc_attr( $gridTextColor ),
           'fontFamily'             => esc_attr( $gridTextFontFamily ),
@@ -194,62 +200,52 @@ if ( ! is_array( $word_entries ) ) {
     </div>
 
     <script>
-      (function(){
+(function(){
 
-          // Helper: Retrieve a cookie by name.
-          function getCookie(name) {
-            var nameEQ = name + "=";
-            var ca = document.cookie.split(";");
-            for (var i = 0; i < ca.length; i++) {
-              var c = ca[i].trim();
-              if (c.indexOf(nameEQ) === 0) {
-                return c.substring(nameEQ.length, c.length);
-              }
-            }
-            return null;
-          }
+// Global variable for storing updated entries.
+var updatedEntries = [];
 
-          // Checks the cookie and toggles the preview accordingly.
-          function checkAndTogglePreview() {
+// Event listener for the custom event.
+document.addEventListener("entriesUpdated", function (event) {
+  // Update the outer variable (do not re-declare it).
+  updatedEntries = event.detail;
+  console.log("::event1", event);
+  // Immediately re-check the preview whenever the event fires.
+  checkAndTogglePreview();
+});
 
+// Checks the cookie and toggles the preview accordingly.
+function checkAndTogglePreview() {
+  var emptyMsg = document.getElementById('wordsearch-empty-box');
+  var gameContent = document.getElementById('game-preview-content');
 
-            // document.addEventListener("wordsearchEntriesUpdated", function (event) {
-            //   var updatedEntries = event;
-            //   console.log("::event1",event);
-            // });
-            // var rawData = getCookie('wordsearch_entries');
-            // console.log("::event",event,rawData);
-            // var entries = rawData ? JSON.parse(rawData) : [];
-            var emptyMsg = document.getElementById('wordsearch-empty-box');
-            var gameContent = document.getElementById('game-preview-content');
+  console.log("::updatedEntries~length",updatedEntries.length);
+  const wordDataAdded = updatedEntries && updatedEntries.length > 0;
 
-            const wordDataAdded = window.wordData && window.wordData.length > 0 ? true : false;
-
-            if (entries.length > 0 || wordDataAdded) {
-
-              // If entries exist, show game content and hide the empty message.
-              gameContent.style.display = 'block';
-              emptyMsg.style.display = 'none';
-                  // Restart the timer if it's not running.
+  if (wordDataAdded) {
+    // If entries exist, show game content and hide the empty message.
+    gameContent.style.display = 'block';
+    emptyMsg.style.display = 'none';
+    // Restart the timer if it's not running.
     if (typeof window.startWordsearchGridTimer === 'function') {
       window.startWordsearchGridTimer();
     }
-            } else {
-              // If no entries, hide game content and show the empty message.
-              gameContent.style.display = 'none';
-              emptyMsg.style.display = 'block';
-              // Also stop the timer in wordsearch-grid.js if it's running.
-              if (typeof window.stopWordsearchGridTimer === 'function') {
-                      window.stopWordsearchGridTimer();
-                  }
-            }
-          }
+  } else {
+    // If no entries, hide game content and show the empty message.
+    gameContent.style.display = 'none';
+    emptyMsg.style.display = 'block';
+    // Also stop the timer in wordsearch-grid.js if it's running.
+    if (typeof window.stopWordsearchGridTimer === 'function') {
+      window.stopWordsearchGridTimer();
+    }
+  }
+}
 
-          // Run check on page load.
-          checkAndTogglePreview();
-          // Optionally re-check every second to reflect runtime changes.
-          setInterval(checkAndTogglePreview, 1000);
-      })();
+// Run check on page load.
+checkAndTogglePreview();
+
+// Removed setInterval since the custom event now triggers checkAndTogglePreview directly.
+})();
     </script>
     <?php
 }
