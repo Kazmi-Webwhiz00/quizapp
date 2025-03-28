@@ -5,71 +5,6 @@ jQuery(document).ready(function ($) {
   // Global array to hold all word entry objects (if not defined already)
   var wordEntries = [];
 
-  function getCookie(name) {
-    var nameEQ = name + "=";
-    var ca = document.cookie.split(";");
-    for (var i = 0; i < ca.length; i++) {
-      var c = ca[i];
-      while (c.charAt(0) === " ") c = c.substring(1, c.length);
-      if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
-    }
-    return null;
-  }
-
-  // Helper functions to set and get cookies
-  function setCookie(name, value, days) {
-    var expires = "";
-    if (days) {
-      var date = new Date();
-      date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
-      expires = "; expires=" + date.toUTCString();
-    }
-    document.cookie = name + "=" + (value || "") + expires + "; path=/";
-  }
-
-  function updateCookie() {
-    // Check if there is at least one entry with a non-empty wordText
-    if (
-      !wordEntries ||
-      !wordEntries.length ||
-      !wordEntries.some(function (entry) {
-        return entry.wordText && entry.wordText.trim().length > 0;
-      })
-    ) {
-      // No valid entries: clear the cookie.
-      setCookie("wordsearch_entries", "", 1);
-      return;
-    }
-
-    // Retrieve existing cookie entries
-    var existingCookie = getCookie("wordsearch_entries");
-    var existingEntries = [];
-    if (existingCookie) {
-      try {
-        existingEntries = JSON.parse(existingCookie);
-        if (!Array.isArray(existingEntries)) {
-          existingEntries = [];
-        }
-      } catch (e) {
-        existingEntries = [];
-      }
-    }
-
-    // Filter out wordEntries that already exist in existingEntries based on 'id'
-    wordEntries.forEach(function (wordEntry) {
-      const exists = existingEntries.some(function (existingEntry) {
-        return existingEntry.id === wordEntry.id;
-      });
-
-      if (!exists) {
-        existingEntries.push(wordEntry);
-      }
-    });
-
-    // Update the cookie with the combined entries (expires in 1 day)
-    setCookie("wordsearch_entries", JSON.stringify(existingEntries), 1);
-  }
-
   /**
    * Replaces placeholders in a string using an object of key-value pairs.
    *
@@ -159,7 +94,7 @@ jQuery(document).ready(function ($) {
         .replace(/{{number}}/g, newIndex + 1)
         .replace('value=""', `value="${item.wordText}"`)
         // .replace('value=""', `value="${item.clue}"`)
-        .replace('value=""', `value="${uniqueId}"`);
+        .replace('value="{{uniqueId}}"', `value=${uniqueId}`);
       let $entry = $(entryHtml);
       $entry.attr("data-unique-id", uniqueId);
       $entry.find("input[name^='wordsearch_words']").each(function () {
@@ -317,7 +252,6 @@ jQuery(document).ready(function ($) {
               // Push the modified entry to the global wordEntries array
               wordEntries.push(item);
             });
-            updateCookie();
 
             // Update the cookie with the new entries
             // Commented out UI update related to word entry rendering
