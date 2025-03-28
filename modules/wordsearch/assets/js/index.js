@@ -233,32 +233,6 @@ jQuery(document).ready(function ($) {
     $(".visual-clues-container").append($clue);
   }
 
-  function checkCollision($element, allElements) {
-    const rect1 = $element[0].getBoundingClientRect();
-
-    let collides = false;
-    allElements.each(function () {
-      if (this === $element[0]) return; // Skip self
-
-      const rect2 = this.getBoundingClientRect();
-
-      // Simple collision detection
-      if (
-        !(
-          rect1.right < rect2.left ||
-          rect1.left > rect2.right ||
-          rect1.bottom < rect2.top ||
-          rect1.top > rect2.bottom
-        )
-      ) {
-        collides = true;
-        return false; // Break loop
-      }
-    });
-
-    return collides;
-  }
-
   // Event listener for word entries updates
   $(document).on("wordsearchEntriesUpdated", function (event, updatedEntries) {
     // Avoid unnecessary console logs in production

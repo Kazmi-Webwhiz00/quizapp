@@ -1,124 +1,35 @@
 jQuery(document).ready(function ($) {
-  // Cache selectors for performance
-  var $wordsContainer = $("#wordsearch-words-container");
+  // Cache selectors for performance.
+  var wordsContainer = $("#wordsearch-words-container");
   var template = $("#wordsearch-word-template").html();
-  // Global array to hold all word entry objects
+  // Global array to hold all word entry objects.
   var wordEntries = [];
-  // Debounce timer variable (placed in an appropriate scope)
+  // Debounce timer variable.
   let debounceTimer;
   let totalEntries = 0;
-  var savedEntries = entries;
 
-  // When the document receives the custom event, update the metabox accordingly.
-
+  // Assume a global variable "entries" exists from the database.
   var savedEntries = entries; // entries from the database
+  const savedEvent = new CustomEvent("entriesUpdated", {
+    detail: savedEntries,
+  });
+  document.dispatchEvent(savedEvent);
 
-  /**
-   * Merges savedEntries with cookieEntries so that:
-   * - Any cookie entry whose id does not exist in savedEntries is dropped.
-   * - For entries that exist in both, the cookie version is used (preserving any local extra info).
-   * - Any savedEntry missing in the cookie is added.
-   */
-  function mergeSavedEntriesIntoCookie(savedEntries, cookieEntries) {
-    // Create a map for cookieEntries keyed by id.
-    const cookieMap = new Map();
-    cookieEntries.forEach((entry) => {
-      if (entry.id) {
-        cookieMap.set(entry.id, entry);
-      }
-    });
-
-    // Build the merged array solely from the savedEntries.
-    // For each saved entry, if there is a matching cookie entry, use that; otherwise, use the saved entry.
-    const mergedEntries = savedEntries.map((entry) => {
-      if (entry.id && cookieMap.has(entry.id)) {
-        return cookieMap.get(entry.id);
-      }
-      return entry;
-    });
-
-    return mergedEntries;
-  }
-
-  function syncSavedEntriesWithCookie(savedEntries) {
-    // If there are no saved entries, clear the cookie.
-    if (savedEntries.length === 0) {
-      setCookie("wordsearch_entries", "", -1);
-      return;
-    }
-
-    // Retrieve cookie data for wordsearch_entries.
-    const cookieDataStr = getCookie("wordsearch_entries");
-    let cookieEntries = cookieDataStr ? JSON.parse(cookieDataStr) : [];
-
-    // Merge the database saved entries with the cookie entries.
-    const mergedEntries = mergeSavedEntriesIntoCookie(
-      savedEntries,
-      cookieEntries
-    );
-
-    // If there is any difference, update the cookie.
-    if (JSON.stringify(mergedEntries) !== JSON.stringify(cookieEntries)) {
-      setCookie("wordsearch_entries", JSON.stringify(mergedEntries), 1);
-      return mergedEntries;
-    } else {
-      return cookieEntries;
-    }
-  }
-
-  const updatedCookieEntries = syncSavedEntriesWithCookie(savedEntries);
-
-  // Helper functions to set and get cookies
-  function setCookie(name, value, days) {
-    var expires = "";
-    if (days) {
-      var date = new Date();
-      date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
-      expires = "; expires=" + date.toUTCString();
-    }
-    document.cookie = name + "=" + (value || "") + expires + "; path=/";
-  }
-
-  function getCookie(name) {
-    var nameEQ = name + "=";
-    var ca = document.cookie.split(";");
-    for (var i = 0; i < ca.length; i++) {
-      var c = ca[i];
-      while (c.charAt(0) === " ") c = c.substring(1, c.length);
-      if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
-    }
-    return null;
-  }
-
-  // On page load, try to get stored data from cookie "wordsearch_entries"
-  var rawData = getCookie("wordsearch_entries");
-
-  if (rawData) {
-    rawData = rawData.trim();
-    try {
-      // Only parse if the string starts with '[' or '{'
-      if (rawData.charAt(0) === "[" || rawData.charAt(0) === "{") {
-        wordEntries = JSON.parse(rawData);
-      } else {
-        wordEntries = [];
-      }
-    } catch (e) {
-      console.error("JSON parse error, defaulting to empty array:", e);
-      wordEntries = [];
-    }
-  } else {
-    wordEntries = [];
+  // On page load, if savedEntries exists, assign it to wordEntries and trigger update.
+  if (savedEntries && savedEntries.length > 0) {
+    wordEntries = savedEntries;
+    $(document).trigger("wordsearchEntriesUpdated", { data: wordEntries });
   }
 
   var id = 0;
 
-  // Function to generate a unique ID (using current timestamp and a random number)
+  // Function to generate a unique ID (using current timestamp and a random number).
   function generateUniqueId() {
     return "ws_" + Date.now() + "_" + Math.floor(Math.random() * 1000);
   }
 
-  // Instead of updating a hidden field, update the cookie with the current wordEntries array
-  function updateCookie() {
+  // Instead of updating a cookie, we trigger the event with the current wordEntries array.
+  function updateEntries() {
     // Proceed only if every entry has a valid non-empty wordText.
     const allEntriesValid = wordEntries.every(
       (entry) => entry.wordText && entry.wordText.trim().length > 0
@@ -134,51 +45,65 @@ jQuery(document).ready(function ($) {
 
     // If no valid entries exist, clear the cookie and trigger the event with an empty array.
     if (!validWordEntries.length) {
-      setCookie("wordsearch_entries", "", 1);
+      // Create a new event with an empty array.
+      const emptyEvent = new CustomEvent("entriesUpdated", {
+        detail: [],
+      });
+      document.dispatchEvent(emptyEvent);
       // $(document).trigger("wordsearchEntriesUpdated", { data: [] });
       return;
     }
-    // Otherwise, update the cookie with the current wordEntries.
-    setCookie("wordsearch_entries", JSON.stringify(wordEntries), 1); // expires in 1 day
-    // Trigger the event with the updated entries.
+
+    const updateEvent = new CustomEvent("entriesUpdated", {
+      detail: wordEntries,
+    });
+    document.dispatchEvent(updateEvent);
+
     $(document).trigger("wordsearchEntriesUpdated", { data: wordEntries });
   }
 
-  $(document).on("wordsearchEntriesAdded", function (event, entries) {
-    entries.data.forEach(function (entry) {
+  // When data comes in from a "wordsearchEntriesAdded" event, compare with wordEntries.
+  $(document).on("wordsearchEntriesAdded", function (event, entriesData) {
+    entriesData.data.forEach(function (entry) {
       if (entry.id && !wordEntries.some((e) => e.id === entry.id)) {
         wordEntries.push(entry);
       }
     });
 
+    const updateEvent = new CustomEvent("entriesUpdated", {
+      detail: wordEntries,
+    });
+    document.dispatchEvent(updateEvent);
+
     $(document).trigger("wordsearchEntriesUpdated", { data: wordEntries });
   });
 
-  // Function to add a new word entry using the template
+  // Function to add a new word entry using the template and update wordEntries.
   function addNewWordEntry() {
-    // Get the current number of word entries in the container
-    var index = $wordsContainer.children(".add-word-container").length;
-
-    // Use the index for the display number (instead of a separate counter)
+    var index = wordsContainer.children(".add-word-container").length;
     var number = index + 1;
-
-    // Generate a new unique ID for this entry
     var uniqueId = generateUniqueId();
-
-    // Update the id variable with the new uniqueId
     id = uniqueId;
-
-    // Replace placeholders in the template with actual values
+    // Replace placeholders in the template with actual values.
     var newEntryHtml = template
       .replace(/{{index}}/g, index)
       .replace(/{{uniqueId}}/g, uniqueId)
       .replace(/{{number}}/g, number);
+    wordsContainer.append(newEntryHtml);
 
-    // Append the new entry HTML to the container
-    $wordsContainer.append(newEntryHtml);
+    // Add a new (empty) entry to the global wordEntries array.
+    wordEntries.push({
+      id: uniqueId,
+      wordText: "",
+      imageUrl: "",
+      hidden: false,
+    });
+
+    // Trigger the event with the updated entries.
+    updateEntries();
   }
 
-  // Handler for "Add Word" button click
+  // Handler for "Add Word" button click.
   $("#add-wordsearch-button").on("click", function (e) {
     e.preventDefault();
     totalEntries = totalEntries + 1;
@@ -189,28 +114,19 @@ jQuery(document).ready(function ($) {
     addNewWordEntry();
   });
 
-  // Listen for click events on the save image button
+  // Listen for click events on the save image button.
   $(document).on("click", ".save-image-btn", function () {
-    // Get the unique id from the closest container
     const uniqueId = $(this).closest(".add-word-container").data("unique-id");
-    // Call the save function to update the imageUrl for this entry
     saveEntryImage(uniqueId);
   });
 
   function saveEntryImage(uniqueId) {
-    // Find the image preview element by its unique class name
     const $imagePreview = $(".wordsearch-image-preview-" + uniqueId);
-    // Get the image URL from its child (assumes the image element is an <img>)
     const imageUrl = $imagePreview.children("img").attr("src") || "";
-
-    // Look for the entry in the wordEntries array
     let entry = wordEntries.find((item) => item.id === uniqueId);
-
     if (entry) {
-      // Update the imageUrl property
       entry.imageUrl = imageUrl;
     } else {
-      // Optionally, if no entry exists yet, create one with an empty wordText
       wordEntries.push({
         id: uniqueId,
         wordText: "",
@@ -218,15 +134,10 @@ jQuery(document).ready(function ($) {
         hidden: false,
       });
     }
-
-    // Update the cookie after saving
-    updateCookie();
+    updateEntries();
   }
 
-  // Update array when text changes.
-  // Debounce timer variable (ensure it's in an appropriate scope)
-
-  // Listen to input events on any element with the class "word-input"
+  // Listen to input events on any element with the class "word-input".
   $(document).on("input", ".word-input", function () {
     const that = this;
     clearTimeout(debounceTimer);
@@ -247,7 +158,7 @@ jQuery(document).ready(function ($) {
         wordEntries.splice(index, 1);
       }
       // Update the cookie with the current wordEntries array (which may now be empty)
-      updateCookie();
+      updateEntries();
       return; // Exit immediately.
     }
 
@@ -286,7 +197,7 @@ jQuery(document).ready(function ($) {
         }
 
         // Update the cookie to remove the invalid entry.
-        updateCookie();
+        updateEntries();
         return; // Exit to avoid further processing.
       }
 
@@ -313,57 +224,51 @@ jQuery(document).ready(function ($) {
       }
 
       // Update the cookie with the current wordEntries array
-      updateCookie();
+      updateEntries();
     }, 1000); // 1 second debounce delay
   });
 
-  // Remove an entry.
-  // Remove an entry.
-  $wordsContainer.on("click", ".remove-word", function () {
+  // Remove an entry when the remove button is clicked.
+  wordsContainer.on("click", ".remove-word", function () {
     var $wordDiv = $(this).closest(".add-word-container");
     var uniqueId = $wordDiv.data("unique-id");
 
     // Remove the element from the DOM.
     $wordDiv.remove();
 
-    // After removal, update the indices of remaining elements
-    $wordsContainer.children(".add-word-container").each(function (index) {
+    // Update the indices of remaining elements.
+    wordsContainer.children(".add-word-container").each(function (index) {
       $(this).attr("data-index", index);
       $(this)
         .find(".word-number")
         .text(index + 1 + ".");
-      // Also update the name attributes if needed
     });
 
-    // If you need to keep entryNumber in sync, reset it to the actual count
-    entryNumber = $wordsContainer.children(".add-word-container").length;
-
+    entryNumber = wordsContainer.children(".add-word-container").length;
     // Filter the array to remove the object with the matching id.
     wordEntries = wordEntries.filter(function (item) {
       return item.id !== uniqueId;
     });
 
-    // Update the cookie with the new array.
-    if (wordEntries.length === 0) {
-      // Delete the cookie by setting it with an expired date.
-      setCookie("wordsearch_entries", "", -1);
-      $(document).trigger("wordsearchEntriesUpdated", { data: [] });
-    } else {
-      updateCookie();
-    }
+    // Trigger the update event with the new array.
+    updateEntries();
   });
 
-  // Handler for "Clear List" button click
+  // Handler for "Clear List" button click.
   $("#clear-wordsearch-list-button").on("click", function (e) {
     e.preventDefault();
     if (confirm("Are you sure you want to clear the list?")) {
-      $wordsContainer.empty();
+      wordsContainer.empty();
       wordEntries = [];
-      // Delete the cookie by setting it with an expired date.
-      setCookie("wordsearch_entries", "", -1);
+      const event = new CustomEvent("entriesUpdated", {
+        detail: [],
+      });
+      document.dispatchEvent(event);
       $(document).trigger("wordsearchEntriesUpdated", { data: [] });
     }
   });
+
+  // Function to handle image upload.
   function handleImageUpload(
     buttonSelector,
     itemSelector,
@@ -380,7 +285,7 @@ jQuery(document).ready(function ($) {
         .media({
           title: "Select Image",
           button: { text: "Use this image" },
-          multiple: false, // Single image upload
+          multiple: false,
         })
         .on("select", function () {
           const attachment = customUploader
@@ -391,11 +296,10 @@ jQuery(document).ready(function ($) {
           const imageUrl = attachment.url;
           item.find(".wordsearch-image-url").val(imageUrl);
 
-          // Set the image URL in the hidden input field
           const inputField = item.find(inputSelector);
           if (inputField.length === 0) {
             item.append(
-              `<input type="hidden" class="searchword-image-url" name="crossword_words[${item.data(
+              `<input type="hidden" class="wordsearch-image-url" name="wordsearch_words[${item.data(
                 "index"
               )}][image]" value="${imageUrl}">`
             );
@@ -403,7 +307,6 @@ jQuery(document).ready(function ($) {
             inputField.val(imageUrl);
           }
 
-          // Display the uploaded image in the word section
           const preview = item.find(previewSelector);
           const imageHtml = `<img src="${imageUrl}" style="max-width: 70px; max-height: 70px; border-radius: 5%; padding-left: 10px;" />`;
           if (preview.length === 0) {
@@ -426,19 +329,17 @@ jQuery(document).ready(function ($) {
               hidden: false,
             });
           }
-          updateCookie();
+          updateEntries();
         })
         .open();
     });
   }
 
-  // Apply the image upload function for crossword items
+  // Apply the image upload handler.
   handleImageUpload(
     ".upload-word-image-btn",
     ".add-word-container",
     ".wordsearch-image-url",
     ".wordsearch-image-preview"
   );
-
-  // (Optional) You can also add image upload handlers here if required.
 });
