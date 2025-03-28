@@ -6,7 +6,7 @@ if (!defined('ABSPATH')) {
 
 // Default values for prompts
 $default_context_prompt = 'Avoid using the following words:[existing_words]';
-$default_generation_prompt = 'Generate a wordsearch with [number] words on the topic [topic] suitable for users aged [age] and from the following categories: [categories]. The wordsearch should be created in the [language] language.';
+$default_generation_prompt = 'Generate a wordsearch with [number] words on the topic [topic] suitable for users aged [age] and from the following categories: [categories]. The wordsearch should be created in the [language] language. Avoid any additional formatting such as markdown code blocks or triple backticks; provide only raw JSON output.';
 $default_return_format_prompt = "\nProvide the output in the following JSON array format, with no additional text:\n\n[\n{ \"wordText\": \"exampleWord1\", \"clue\": \"Example clue for word 1\" },\n{ \"wordText\": \"exampleWord2\", \"clue\": \"Example clue for word 2\" },\n...]\n";
 
 // Get saved values or use defaults

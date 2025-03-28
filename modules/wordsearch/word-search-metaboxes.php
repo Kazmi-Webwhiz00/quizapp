@@ -159,11 +159,10 @@ add_action( 'wp_enqueue_scripts', 'wordsearch_enqueue_assets' );
 
 // Save the meta box data.
 function save_wordsearch_meta_box_data( $post_id ) {
+    // Bail out for AJAX requests.
     if ( function_exists( 'wp_doing_ajax' ) && wp_doing_ajax() ) {
         return $post_id;
     }
-
-
     // Check if nonce is set.
     if ( ! isset( $_POST['wordsearch_meta_box_nonce_field'] ) ) {
         return $post_id;
@@ -185,32 +184,65 @@ function save_wordsearch_meta_box_data( $post_id ) {
         return $post_id;
     }
     
-
-    // Process the cookie data for word entries.
-    if ( isset( $_COOKIE['wordsearch_entries'] ) && ! empty( $_COOKIE['wordsearch_entries'] ) ) {
-        $raw_data = wp_unslash( $_COOKIE['wordsearch_entries'] );
-        $entries  = json_decode( $raw_data, true );
-
-        // Check if JSON decoded correctly and is an array.
-        if ( json_last_error() === JSON_ERROR_NONE && is_array( $entries ) ) {
-            // Sanitize each entry before saving.
-            $sanitized_entries = array_map( function( $entry ) {
-                return array(
-                    'id'       => sanitize_text_field( isset( $entry['id'] ) ? $entry['id'] : '' ),
-                    'wordText' => sanitize_text_field( isset( $entry['wordText'] ) ? $entry['wordText'] : '' ),
-                    'imageUrl' => esc_url_raw( isset( $entry['imageUrl'] ) ? $entry['imageUrl'] : '' ),
-                    'hidden'   => isset( $entry['hidden'] ) ? (bool) $entry['hidden'] : false,
-                );
-            }, $entries );
-
-            // Update the post meta with the new array (even if it is reduced in size).
-            update_post_meta( $post_id, 'word_search_entries', $sanitized_entries );
-        } else {
-            // If JSON decoding fails, delete the meta.
-            delete_post_meta( $post_id, 'word_search_entries' );
+    if ( isset( $_POST['wordsearch_words'] ) && is_array( $_POST['wordsearch_words'] ) ) {
+        
+        // Retrieve existing entries (for reference only).
+        $existing_entries = get_post_meta( $post_id, 'word_search_entries', true );
+        if ( ! is_array( $existing_entries ) ) {
+            $existing_entries = array();
         }
+        
+        // Build a lookup of existing entries keyed by normalized unique ID.
+        $existing_lookup = array();
+        foreach ( $existing_entries as $ex_entry ) {
+            if ( isset( $ex_entry['id'] ) ) {
+                $normalized = strtolower( trim( $ex_entry['id'] ) );
+                $existing_lookup[ $normalized ] = $ex_entry;
+            }
+        }
+        
+        // Build updated entries solely from POST data.
+        $updated_entries = array();
+        foreach ( $_POST['wordsearch_words'] as $entry ) {
+            // Only process if the word is non-empty.
+            if ( ! empty( trim( $entry['word'] ) ) ) {
+                $word = sanitize_text_field( $entry['word'] );
+                $image_url = esc_url_raw( isset( $entry['image'] ) ? $entry['image'] : '' );
+                // Use provided uniqueId or generate one using md5 of word and image.
+                if ( ! empty( $entry['uniqueId'] ) ) {
+                    $unique_id = sanitize_text_field( $entry['uniqueId'] );
+                } else {
+                    $unique_id = md5( $word . $image_url );
+                }
+                $normalized_unique_id = strtolower( trim( $unique_id ) );
+                
+                // Check if this entry already exists in the DB.
+                if ( isset( $existing_lookup[ $normalized_unique_id ] ) ) {
+                    $existing_entry = $existing_lookup[ $normalized_unique_id ];
+                    // Update the image URL if a new one is provided.
+                    if ( ! empty( $image_url ) && ( empty( $existing_entry['imageUrl'] ) || $existing_entry['imageUrl'] !== $image_url ) ) {
+                        $existing_entry['imageUrl'] = $image_url;
+                    }
+                    // Also update word text in case it changed.
+                    $existing_entry['wordText'] = $word;
+                    $updated_entries[] = $existing_entry;
+                } else {
+                    // New entry.
+                    error_log("Adding new entry with ID: " . $normalized_unique_id);
+                    $updated_entries[] = array(
+                        'id'       => $normalized_unique_id,
+                        'wordText' => $word,
+                        'imageUrl' => $image_url,
+                        'hidden'   => false,
+                    );
+                }
+            }
+        }
+        
+        error_log("Final updated entries: " . print_r($updated_entries, true));
+        update_post_meta( $post_id, 'word_search_entries', $updated_entries );
     } else {
-        // If the cookie is not set or is empty, delete the meta.
+        // If POST data is not set or empty, delete the meta.
         delete_post_meta( $post_id, 'word_search_entries' );
     }
 }
@@ -281,6 +313,79 @@ function save_wordsearch_ajax_handler() {
 add_action('wp_ajax_save_wordsearch_ajax', 'save_wordsearch_ajax_handler');
 
 
+// Register REST route when the REST API initializes.
+add_action('rest_api_init', 'myplugin_register_wordsearch_routes');
+
+function myplugin_register_wordsearch_routes() {
+    register_rest_route(
+        'myplugin/v1',
+        '/wordsearch/(?P<post_id>\d+)',
+        array(
+            'methods'  => 'POST',
+            'callback' => 'myplugin_save_wordsearch_rest_callback',
+            'permission_callback' => 'myplugin_wordsearch_permissions_check',
+        )
+    );
+}
+
+/**
+ * Check if the current user can edit the specified post.
+ */
+function myplugin_wordsearch_permissions_check($request) {
+    $post_id = (int) $request->get_param('post_id');
+    return current_user_can('edit_post', $post_id);
+}
+
+/**
+ * Callback function to save the word search entries.
+ */
+function myplugin_save_wordsearch_rest_callback($request) {
+    // 1. Get the post ID from the route.
+    $post_id = (int) $request->get_param('post_id');
+
+    // 2. Retrieve the updated data from the JSON request body.
+    $raw_data = $request->get_param('updated_word_search_data');
+    if ( ! is_array($raw_data) ) {
+        return new WP_Error(
+            'invalid_data',
+            'No valid word search data received.',
+            array('status' => 400)
+        );
+    }
+
+    // 3. Process the array similar to your original logic.
+    $entries = array();
+    foreach ($raw_data as $entry) {
+        $word_text = isset($entry['wordText']) ? trim($entry['wordText']) : '';
+        if (!empty($word_text)) {
+            $entries[] = array(
+                'id'       => sanitize_text_field(isset($entry['id']) ? $entry['id'] : uniqid('ws_', true)),
+                'wordText' => sanitize_text_field($word_text),
+                'hidden'   => isset($entry['hidden']) ? (bool) $entry['hidden'] : false,
+                'imageUrl' => isset($entry['imageUrl']) ? esc_url($entry['imageUrl']) : '',
+            );
+        }
+    }
+
+    if (!empty($entries)) {
+        update_post_meta($post_id, 'word_search_entries', $entries);
+    } else {
+        delete_post_meta($post_id, 'word_search_entries');
+    }
+
+    // Log for debugging.
+    error_log("Wordsearch data saved successfully via REST API for post {$post_id}");
+    $updatedData = get_post_meta($post_id, 'word_search_entries', true);
+    error_log("Data: " . print_r($updatedData, true));
+
+    return array(
+        'success' => true,
+        'message' => 'Word Search Entries saved successfully via REST API.',
+        'data'    => $updatedData
+    );
+}
+
+
 
 
 // Render the meta box content.
@@ -317,7 +422,7 @@ $clear_list_text_color = get_option('kw_wordsearch_admin_clear_list_button_text_
                 foreach ( $word_entries as $index => $entry ) :
                     $uniqueId = isset( $entry['id'] ) ? esc_attr( $entry['id'] ) : uniqid();
             ?>
-            <div class="add-word-container" data-index="<?php echo esc_attr( $index ); ?>" data-unique-id="<?php echo $uniqueId; ?>">
+            <div class="add-word-container" name ="add-word-container" data-index="<?php echo esc_attr( $index ); ?>" data-unique-id="<?php echo $uniqueId; ?>">
                 <span class="word-number"><?php echo esc_html( $index + 1 ); ?>.</span>
                 <div class="kw-wordsearch-words-container">
                     <input type="text" 
@@ -326,7 +431,7 @@ $clear_list_text_color = get_option('kw_wordsearch_admin_clear_list_button_text_
                            placeholder="<?php esc_attr_e('Word', 'wp-quiz-plugin'); ?>" 
                            value="<?php echo esc_attr( isset( $entry['wordText'] ) ? $entry['wordText'] : '' ); ?>" />
                     <input type="hidden" 
-                           name="wordsearch_words[<?php echo esc_attr( $index ); ?>][id]" 
+                           name="wordsearch_words[<?php echo esc_attr( $index ); ?>][uniqueId]" 
                            value="<?php echo $uniqueId; ?>" />
                     <div class="actions">
                         <div class="wordsearch-image-preview wordsearch-image-preview-<?php echo $uniqueId; ?>">
@@ -392,7 +497,7 @@ $entry_count = is_array($word_entries) ? count($word_entries) : 0;
 
     
 <script type="text/template" id="wordsearch-word-template">
-  <div class="add-word-container" data-index="{{index}}" data-unique-id="{{uniqueId}}">
+  <div class="add-word-container" name ="add-word-container" data-index="{{index}}" data-unique-id="{{uniqueId}}">
     <span class="word-number">{{number}}.</span>
     <div class="kw-wordsearch-words-container">
       <input type="text" 
@@ -400,7 +505,7 @@ $entry_count = is_array($word_entries) ? count($word_entries) : 0;
              name="wordsearch_words[{{index}}][word]" 
              placeholder="<?php esc_attr_e('Word', 'wp-quiz-plugin'); ?>" 
              value="" />
-             <input type="hidden" name="wordsearch_words[{{index}}][uniqueId]" value="" />
+             <input type="hidden" name="wordsearch_words[{{index}}][uniqueId]" value="{{uniqueId}}" />
       <!-- <input type="hidden" id="word_search_entries" name="word_search_entries" /> -->
       <div class="actions">
         <div class="wordsearch-image-preview wordsearch-image-preview-{{uniqueId}}">
@@ -424,5 +529,4 @@ $entry_count = is_array($word_entries) ? count($word_entries) : 0;
 
     <?php
 }
-
 
