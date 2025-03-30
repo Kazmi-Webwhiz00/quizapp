@@ -107,7 +107,8 @@ jQuery(document).ready(function ($) {
   $("#add-wordsearch-button").on("click", function (e) {
     e.preventDefault();
     totalEntries = totalEntries + 1;
-    if (totalEntries > 15) {
+    window.totalEntries += totalEntries;
+    if (totalEntries > 15 || window.totalEntries > 15) {
       window.showWordLimitModal();
       return;
     }

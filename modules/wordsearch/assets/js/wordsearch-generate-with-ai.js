@@ -161,12 +161,6 @@ jQuery(document).ready(function ($) {
     const number = $("#ws-words").val().trim();
     const newEntries = parseInt(number);
 
-    if (totalEntries + newEntries > 15) {
-      window.showWordLimitModal();
-      return;
-    }
-
-    totalEntries += newEntries;
     const language = $("#ws-language").val().trim();
     const maxNumberOfWords = parseInt(wpQuizPlugin.wsMaxNumberOfWords);
     if (number < 1 || number > maxNumberOfWords) {
@@ -177,6 +171,14 @@ jQuery(document).ready(function ($) {
       );
       return;
     }
+
+    if (totalEntries + newEntries > 15 || window.totalEntries > 15) {
+      window.showWordLimitModal();
+      return;
+    }
+
+    totalEntries += newEntries;
+    window.totalEntries += totalEntries;
     console.log(ws_generatePrompt(number, topic, age, language));
     const data = {
       model: wpQuizPlugin.wsModel,
