@@ -18,6 +18,7 @@ jQuery(document).ready(function ($) {
   window.gameInstance = null;
   window.previousFinalEntriesStr = JSON.stringify([]);
   window.finalEntries = [];
+  window.totalEntries = 0;
   window.letterTexts = [];
   window.cookieEntries = [];
   let adminEntries = [];
@@ -53,6 +54,10 @@ jQuery(document).ready(function ($) {
   window.customStyles = window.isAdmin
     ? frontendData["gridStyles"]
     : wordSearchData["gridStyles"];
+
+  window.pdfText = window.isAdmin
+    ? frontendData["pdfText"]
+    : wordSearchData["pdfText"];
 
   const rawData = window.isAdmin ? frontendData.entries : [];
   if (rawData) {
@@ -340,7 +345,7 @@ jQuery(document).ready(function ($) {
           if (window.gameInstance) {
             const scene = window.gameInstance.scene.scenes[0];
             if (scene && scene.letterTexts && scene.letterTexts.length > 0) {
-              updateGridBasedOnWords(merged, scene, scene.letterTexts);
+              // updateGridBasedOnWords(merged, scene, scene.letterTexts);
             } else {
               // Use requestAnimationFrame instead of setTimeout for better performance
               requestAnimationFrame(() => {
@@ -349,7 +354,7 @@ jQuery(document).ready(function ($) {
                   scene.letterTexts &&
                   scene.letterTexts.length > 0
                 ) {
-                  updateGridBasedOnWords(merged, scene, scene.letterTexts);
+                  // updateGridBasedOnWords(merged, scene, scene.letterTexts);
                 }
               });
             }
@@ -383,7 +388,7 @@ jQuery(document).ready(function ($) {
         : wordSearchData.downloadElement
     );
     if (downloadElement) {
-      downloadElement.style.display = "block";
+      downloadElement.style.display = "flex";
       downloadElement.addEventListener("click", function (event) {
         downloadElement.style.padding = "10px 20px";
         downloadElement.style.backgroundColor = "#f5d992";
@@ -407,4 +412,38 @@ jQuery(document).ready(function ($) {
       });
     }
   }
+
+  // Get the initial sound setting from WordPress options
+  const soundElement = window.customStyles["toggleSound"];
+
+  // Toggle sound function
+  let soundEnabled = true;
+  window.soundEnabled = soundEnabled;
+
+  // Set initial UI state
+  $("#soundOnIcon").show();
+  $("#soundOffIcon").hide();
+
+  // Toggle sound function
+  $(`#${soundElement}`).on("click", function (event) {
+    console.log(":: Sound toggle button clicked");
+    event.preventDefault();
+
+    // Toggle the sound state
+    soundEnabled = !soundEnabled;
+    window.soundEnabled = soundEnabled;
+
+    // Update the UI based on the new state
+    if (soundEnabled) {
+      $("#soundOnIcon").show();
+      $("#soundOffIcon").hide();
+      console.log("Sound is now enabled");
+      // Your code for when sound is on
+    } else {
+      $("#soundOnIcon").hide();
+      $("#soundOffIcon").show();
+      console.log("Sound is now disabled");
+      // Your code for when sound is off
+    }
+  });
 });

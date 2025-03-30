@@ -228,9 +228,6 @@ export function createWordSearchGame({
         window.gridMatrix = gridMatrix;
         scene.gridMatrix = gridMatrix;
 
-        // Trigger a custom event once the gridMatrix is ready:
-        console.time("::updateGridSize");
-
         updateGridSize(
           mergedPuzzleOptions.gridSize,
           scene,
@@ -283,47 +280,6 @@ export function createWordSearchGame({
         }
       });
 
-      scene.input.on("pointermove", (pointer) => {
-        if (!isDrawing || !startPoint) return;
-
-        const dynamicCtx = dynamicCanvas.getContext("2d");
-        dynamicCtx.clearRect(0, 0, dynamicCanvas.width, dynamicCanvas.height);
-        const currentX = Phaser.Math.Clamp(pointer.x, 0, dynamicCanvas.width);
-        const currentY = Phaser.Math.Clamp(pointer.y, 0, dynamicCanvas.height);
-        const tolerance = 30;
-
-        // let newSize = computeEffectiveGridSize(window.wordData);
-        // const { width: newWidth, height: newHeight } = getDynamicCanvasSize(
-        //   (containerId = "game-container"),
-        //   newSize,
-        //   newSize < 10 ? 800 : 10000
-        // );
-        // const cellSize = Math.min(newWidth, newHeight) / newSize;
-
-        // Restriction logic example:
-        if (currentY < startPoint.y - tolerance) {
-          dynamicCtx.clearRect(0, 0, dynamicCanvas.width, dynamicCanvas.height);
-          return;
-        }
-
-        if (
-          Math.abs(currentY - startPoint.y) < tolerance &&
-          currentX < startPoint.x
-        ) {
-          dynamicCtx.clearRect(0, 0, dynamicCanvas.width, dynamicCanvas.height);
-          return;
-        }
-        const lineColor = window.customStyles["lineColor"];
-        // Draw the line
-        dynamicCtx.beginPath();
-        dynamicCtx.moveTo(startPoint.x, startPoint.y);
-        dynamicCtx.lineTo(currentX, currentY);
-        dynamicCtx.strokeStyle = lineColor;
-        dynamicCtx.lineWidth = cellSize * 0.8;
-        dynamicCtx.lineCap = "round";
-        dynamicCtx.stroke();
-      });
-
       const throttledPointerMove = throttle((pointer) => {
         if (!isDrawing || !startPoint) return;
 
@@ -333,16 +289,18 @@ export function createWordSearchGame({
         const currentY = Phaser.Math.Clamp(pointer.y, 0, dynamicCanvas.height);
         const tolerance = 30;
 
-        // let newSize = computeEffectiveGridSize(window.wordData);
-        // const { width: newWidth, height: newHeight } = getDynamicCanvasSize(
-        //   (containerId = "game-container"),
-        //   newSize,
-        //   newSize < 10 ? 800 : 10000
-        // );
-        // const cellSize = Math.min(newWidth, newHeight) / newSize;
-
         // Restriction logic example:
         if (currentY < startPoint.y - tolerance) {
+          dynamicCtx.clearRect(0, 0, dynamicCanvas.width, dynamicCanvas.height);
+          return;
+        }
+
+        // Here we consider the right 25% of the grid as the restricted area.
+        const rightSideThreshold = dynamicCanvas.width * 0.75;
+
+        // If the starting point is in the right side and the pointer moves leftwards...
+        if (startPoint.x > rightSideThreshold && currentX < startPoint.x) {
+          // ... then clear the drawing and stop further processing.
           dynamicCtx.clearRect(0, 0, dynamicCanvas.width, dynamicCanvas.height);
           return;
         }
@@ -536,10 +494,17 @@ export function createWordSearchGame({
   }
   // Create a debounced version of your resize callback.
   const debouncedResizeHandler = debouncedResize((entries) => {
-    for (let entry of entries) {
+    if (entries.length > 0) {
+      // Use only the first entry, ignoring the rest
+      const entry = entries[0];
       const newWidth = entry.contentRect.width;
-      window.newWidth = newWidth;
       const newHeight = entry.contentRect.height;
+
+      if (newWidth === window.newWidth && newHeight === window.newHeight) {
+        return; // Skip if nothing has changed
+      }
+
+      window.newWidth = newWidth;
       window.newHeight = newHeight;
       let effectiveGridSize = computeEffectiveGridSize(window.wordData);
 
@@ -554,14 +519,16 @@ export function createWordSearchGame({
             window.gameInstance.scene.scenes[0]
           ) {
             const scene = window.gameInstance.scene.scenes[0];
-            // Force update true => triggers resizeGame in updateGridSize
-            updateGridSize(
-              effectiveGridSize,
-              scene,
-              scene.letterTexts,
-              window.gridMatrix,
-              true
-            );
+            if (window.wordData.length > 0 && window.gridMatrix) {
+              // Force update true => triggers resizeGame in updateGridSize
+              updateGridSize(
+                effectiveGridSize,
+                scene,
+                scene.letterTexts,
+                window.gridMatrix,
+                true
+              );
+            }
           }
         }
       }

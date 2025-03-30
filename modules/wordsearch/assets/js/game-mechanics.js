@@ -283,22 +283,6 @@ export function waitForWordSearch(wordData, retries = 5) {
       effectiveGridSize = longestLength + 2;
     }
 
-    // Create a new WordSearch instance to generate the grid matrix
-    // const tempDiv = document.createElement("div");
-    // const ws = new WordSearch(tempDiv, {
-    //   gridSize: effectiveGridSize,
-    //   words: wordData,
-    //   orientations: ["horizontal", "vertical", "diagonal"],
-    //   maxAttempts: 20,
-    //   preferOverlap: true,
-    //   fillBlanks: true,
-    // });
-
-    // // Important: Store the matrix globally and log it for debugging
-    // window.gridMatrix = ws.matrix;
-
-    // tempDiv.remove();
-
     // Clean up old game instance
     if (window.gameInstance) {
       window.gameInstance.destroy(true);
