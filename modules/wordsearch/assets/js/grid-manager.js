@@ -124,7 +124,8 @@ export async function resizeGame(
   // Optimized Text Rendering: Enhanced style with better WebGL settings
 
   const textStyle = {
-    fontFamily: window.customStyles["fontFamily"],
+    fontFamily:
+      window.customStyles["fontFamily"] || "Helvetica, Arial, sans-serif",
     fontSize: `${fontSize}px`,
     color: window.customStyles["fontColor"],
     fontWeight: "bold",
@@ -195,11 +196,12 @@ export async function resizeGame(
 
   // Create cell textures once - recreate if cell size changed
   const cellTextureKey = `cell_${cellSize.toFixed(2)}`;
+  scene.cellTextureKey = cellTextureKey;
   if (!scene.textures.exists(cellTextureKey + "_even")) {
-    // Remove old cell textures if they exist
-    if (scene.textures.exists("evenCell")) {
-      scene.textures.remove("evenCell");
-      scene.textures.remove("oddCell");
+    // Remove old dynamic textures if they exist
+    if (scene.textures.exists(cellTextureKey + "_even")) {
+      scene.textures.remove(cellTextureKey + "_even");
+      scene.textures.remove(cellTextureKey + "_odd");
     }
 
     // Load sound effects - ADD THIS SECTION
@@ -209,19 +211,21 @@ export async function resizeGame(
       scene.load.start();
     }
 
-    const evenColor = colorToHexInt(window.customStyles["evenCellBgColor"]);
-    const oddColor = colorToHexInt(window.customStyles["oddCellBgColor"]);
+    const evenColor =
+      colorToHexInt(window.customStyles["evenCellBgColor"]) || 0xf0f0f0;
+    const oddColor =
+      colorToHexInt(window.customStyles["oddCellBgColor"]) || 0xe0e0e0;
 
     const evenGraphics = scene.make.graphics({ x: 0, y: 0, add: false });
     evenGraphics.fillStyle(evenColor, 1);
     evenGraphics.fillRect(0, 0, cellSize, cellSize);
-    evenGraphics.generateTexture("evenCell", cellSize, cellSize);
+    evenGraphics.generateTexture(cellTextureKey + "_even", cellSize, cellSize);
     evenGraphics.destroy();
 
     const oddGraphics = scene.make.graphics({ x: 0, y: 0, add: false });
     oddGraphics.fillStyle(oddColor, 1);
     oddGraphics.fillRect(0, 0, cellSize, cellSize);
-    oddGraphics.generateTexture("oddCell", cellSize, cellSize);
+    oddGraphics.generateTexture(cellTextureKey + "_odd", cellSize, cellSize);
     oddGraphics.destroy();
   }
 
@@ -241,7 +245,9 @@ export async function resizeGame(
   for (let row = 0; row < gridSize; row++) {
     for (let col = 0; col < gridSize; col++) {
       const isEvenCell = (row + col) % 2 === 0;
-      const textureKey = isEvenCell ? "evenCell" : "oddCell";
+      const textureKey = isEvenCell
+        ? cellTextureKey + "_even"
+        : cellTextureKey + "_odd";
 
       // Create new sprite
       const cellSprite = scene.add.sprite(
@@ -422,7 +428,7 @@ function createLetterTextsFixedPositioning(
         // Create a glow sprite that will serve as our shadow effect
         const glowSprite = scene.add.sprite(x, y, textureToUse);
         glowSprite.setOrigin(0.5, 0.5);
-        glowSprite.setTint(0xff5f00); // Vibrant orange-coral instead of 0xffd700
+        glowSprite.setTint(0x0077cc); // Vibrant orange-coral instead of 0xffd700
         glowSprite.setScale(1.2);
         glowSprite.setAlpha(0);
         glowSprite.setBlendMode(Phaser.BlendModes.ADD); // Add blend mode for glow effect
@@ -462,9 +468,11 @@ function createLetterTextsFixedPositioning(
 
         // Add required methods for compatibility
         letterObj.setColor = function (color) {
+          let colorInt = colorToHexInt(color);
           // Convert color to tint
           const colorNum = Phaser.Display.Color.HexStringToColor(color).color;
-          this.setTint(colorNum);
+
+          this.setTint(colorInt);
           return this;
         };
 
@@ -521,39 +529,136 @@ function createLetterTextsFixedPositioning(
         // Add interactive behavior
         letterObj.setInteractive();
 
-        // Use optimized event handlers
-        letterObj.on("pointerover", function () {
-          this.setScale(1.1);
-          // Update glow sprite scale to match
-          if (this.glowSprite) {
-            this.glowSprite.setScale(1.1 * 1.2); // Keep the glow slightly larger
-            this.glowSprite.x = this.x;
-            this.glowSprite.y = this.y;
+        // Define style configuration objects for hover and normal states.
+        // Define style configuration objects for hover and normal states.
+        const hoverStyle = {
+          scale: 1.05,
+          glow: {
+            alpha: 0.3,
+            tint: 0xffd700, // Rich gold
+            scale: 1.25,
+          },
+          stroke: { color: 0xe6b422, thickness: 1.8 }, // Warmer gold for stroke
+          shadow: {
+            offsetX: 2,
+            offsetY: 2,
+            color: 0xd4af37, // Classic gold
+            blur: 5,
+            stroke: true,
+            fill: true,
+          },
+          tint: 0x2a1a08, // Deep brown tint
+          setColor: 0x2a1a08, // Deep brown text color
+          circle: { visible: true, alpha: 0.75 },
+        };
+
+        const normalStyle = {
+          scale: 1.0,
+          glow: {
+            alpha: 0,
+          },
+          stroke: { color: 0x8b5a2b, thickness: 0.5 }, // Subtle bronze
+          shadow: {
+            offsetX: 1,
+            offsetY: 1,
+            color: 0x8b5a2b, // Bronze shadow
+            blur: 1,
+            stroke: false,
+            fill: true,
+          },
+          tint: null,
+          setColor: 0x473214, // Medium-dark brown
+          circle: { visible: false },
+        };
+
+        // Helper function to convert numeric hex to string hex (if needed)
+        function convertHex(hex) {
+          if (typeof hex === "number") {
+            return "#" + hex.toString(16).padStart(6, "0").toUpperCase();
+          }
+          return hex;
+        }
+
+        // Helper function to apply a style configuration to a letter.
+        function applyLetterStyle(letter, style, circleSprite) {
+          // Apply scale.
+          letter.setScale(style.scale);
+
+          // Apply glow properties if a glow sprite exists.
+          if (letter.glowSprite) {
+            letter.glowSprite.setAlpha(style.glow.alpha);
+            if (style.glow.tint !== undefined) {
+              letter.glowSprite.setTint(style.glow.tint);
+            }
+            if (style.glow.scale !== undefined) {
+              letter.glowSprite.setScale(style.glow.scale);
+            }
+            letter.glowSprite.x = letter.x;
+            letter.glowSprite.y = letter.y;
           }
 
-          // Play sound effect on hover
-          window.customStyles["toggleGridLettersSound"] &&
+          // Apply stroke.
+          if (style.stroke) {
+            letter.setStroke(
+              "#" + style.stroke.color.toString(16).toUpperCase(),
+              style.stroke.thickness
+            );
+          }
+
+          // Apply shadow.
+          if (style.shadow) {
+            letter.setShadow(
+              style.shadow.offsetX,
+              style.shadow.offsetY,
+              "#" + style.shadow.color.toString(16).toUpperCase(),
+              style.shadow.blur,
+              style.shadow.stroke,
+              style.shadow.fill
+            );
+          }
+
+          // Apply tint.
+          if (style.tint !== null && style.tint !== undefined) {
+            letter.setTint(style.tint);
+          } else {
+            letter.clearTint();
+          }
+
+          // Apply custom setColor if available.
+          if (letter.setColor && style.setColor !== undefined) {
+            letter.setColor(convertHex(style.setColor));
+          }
+
+          // Apply circle settings.
+          if (circleSprite) {
+            circleSprite.setVisible(style.circle.visible);
+            if (style.circle.alpha !== undefined) {
+              circleSprite.setAlpha(style.circle.alpha);
+            }
+          }
+        }
+
+        letterObj.on("pointerover", function () {
+          // Slightly scale up.
+          applyLetterStyle(this, hoverStyle, circleSprite);
+
+          // Play sound effect if enabled.
+          if (
+            window.customStyles["toggleGridLettersSound"] ||
+            window.soundEnabled
+          ) {
             scene.sound.play("letterHover", { volume: 0.5 });
-
-          // Apply gold shadow effect by showing the glow sprite with gold tint
-          this.setShadow(2, 2, "#FF9900", 8, true, true);
-
-          // Change letter color
-          if (this.setColor) this.setColor("#8B4513");
-
-          // Find and show the corresponding circle
-          circleSprite.setVisible(true);
+          }
         });
 
         letterObj.on("pointerout", function () {
-          this.setScale(1.0);
-          // Hide the shadow by setting shadowFill to false
-          this.setShadow(1, 1, "#FF9900", 0, false, true);
+          // Reset style.
+          applyLetterStyle(this, normalStyle, circleSprite);
+          if (this.glowSprite) {
+            this.glowSprite.setAlpha(0);
+          }
+          this.clearTint();
 
-          // Reset letter color
-          if (this.setColor) this.setColor("#473214");
-
-          // Hide the circle
           circleSprite.setVisible(false);
         });
 
@@ -570,6 +675,56 @@ function createLetterTextsFixedPositioning(
   }
 
   return letterTexts;
+}
+
+function preloadLetterTextures(scene, fontSize) {
+  return new Promise((resolve) => {
+    const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    let texturesCreated = 0;
+    const totalTextures = alphabet.length;
+
+    alphabet.split("").forEach((letter) => {
+      const textureKey = `letter_${letter}_${fontSize}`;
+      // If texture already exists, skip creation
+      if (scene.textures.exists(textureKey)) {
+        texturesCreated++;
+        if (texturesCreated === totalTextures) {
+          resolve();
+        }
+        return;
+      }
+      // Create the letter texture
+      const tempText = scene.add.text(0, 0, letter, {
+        fontFamily: window.customStyles["fontFamily"],
+        fontSize: `${fontSize}px`,
+        color: window.customStyles["fontColor"],
+        fontWeight: "bold",
+        stroke: "#ffffff",
+        strokeThickness: fontSize > 20 ? 1 : 0.5,
+        shadow: {
+          offsetX: 1,
+          offsetY: 1,
+          color: "rgba(0,0,0,0.08)",
+          blur: fontSize > 20 ? 2 : 1,
+          stroke: false,
+          fill: true,
+        },
+        resolution: 2,
+        padding: { x: 1, y: 1 },
+      });
+      const textWidth = tempText.width;
+      const textHeight = tempText.height;
+      const rt = scene.add.renderTexture(0, 0, textWidth + 4, textHeight + 4);
+      rt.draw(tempText, 2, 2);
+      rt.saveTexture(textureKey);
+      rt.destroy();
+      tempText.destroy();
+      texturesCreated++;
+      if (texturesCreated === totalTextures) {
+        resolve();
+      }
+    });
+  });
 }
 
 export function computeEffectiveGridSize(wordData) {
