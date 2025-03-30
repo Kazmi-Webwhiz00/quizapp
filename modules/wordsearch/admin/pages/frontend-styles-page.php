@@ -57,7 +57,11 @@ function wordsearch_register_frontend_styles_settings() {
     register_setting('kw_wordsearch_fe_settings', 'kw_wordsearch_timeup_popup_challenge_text', ['default' => __('Would you like to start a new game?', 'wp-quiz-plugin')]);
     register_setting('kw_wordsearch_fe_settings', 'kw_wordsearch_timeup_popup_button_text', ['default' => __('Play Again', 'wp-quiz-plugin')]);
 
-     add_settings_section(
+     // Success Popup Settings
+     register_setting('kw_wordsearch_fe_settings', 'kw_wordsearch_entry_limit_popup_title', ['default' => __("Entry Limit Reached", 'wp-quiz-plugin')]);
+     register_setting('kw_wordsearch_fe_settings', 'kw_wordsearch_entry_limit_popup_body_text', ['default' => __('You cannot add more than 15 entries to the word search.', 'wp-quiz-plugin')]);
+    
+    add_settings_section(
         'kw_wordsearch_puzzle_texts_section',
         __('Word Search Puzzle Texts', 'wp-quiz-plugin'),
         'wordsearch_render_wordsearch_puzzle_section',
@@ -79,6 +83,14 @@ function wordsearch_register_frontend_styles_settings() {
             'wordsearch_render_timeup_popup_section',
             'kw-wordsearch-frontend-styles-page'
         );
+
+                  // Add a settings section for Success Popup
+                  add_settings_section(
+                    'kw_entry_limit_popup_settings_section',
+                    __("Entries limit Popup Settings", 'wp-quiz-plugin'),
+                    'wordsearch_render_entry_limit_popup_section',
+                    'kw-wordsearch-frontend-styles-page'
+                );
 
     // Add a settings section for Frontend Styles
     add_settings_section(
@@ -131,6 +143,10 @@ function wordsearch_render_success_popup_section() {
  */
 function wordsearch_render_timeup_popup_section(){
     include plugin_dir_path(__FILE__) . '../templates/sections/fe/timeup-popup-settings-section.php';
+}
+
+function wordsearch_render_entry_limit_popup_section(){
+    include plugin_dir_path(__FILE__) . '../templates/sections/fe/entry-limit-popup-settings-section.php';
 }
 
 /**

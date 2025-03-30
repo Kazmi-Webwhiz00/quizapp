@@ -257,7 +257,21 @@ function hexToRgbArray(hex) {
 }
 
 function getTextureFillColor(texture) {
-  const canvas = texture.getSourceImage();
+  let source = texture.getSourceImage();
+  let canvas;
+
+  // Check if the source is already a canvas element
+  if (source instanceof HTMLCanvasElement) {
+    canvas = source;
+  } else {
+    // Create an offscreen canvas and draw the image on it
+    canvas = document.createElement("canvas");
+    canvas.width = source.width;
+    canvas.height = source.height;
+    const offscreenCtx = canvas.getContext("2d");
+    offscreenCtx.drawImage(source, 0, 0);
+  }
+
   const ctx = canvas.getContext("2d");
   const pixelData = ctx.getImageData(0, 0, 1, 1).data;
   return [pixelData[0], pixelData[1], pixelData[2]];
@@ -291,8 +305,9 @@ export function downloadWordSearchAsPDF() {
   const gridSize = gridMatrix.length;
 
   // Cell textures
-  const evenTexture = scene.textures.get("evenCell");
-  const oddTexture = scene.textures.get("oddCell");
+  const cellTextureKey = scene.cellTextureKey;
+  const evenTexture = scene.textures.get(cellTextureKey + "_even");
+  const oddTexture = scene.textures.get(cellTextureKey + "_odd");
   const evenRgb = getTextureFillColor(evenTexture);
   const oddRgb = getTextureFillColor(oddTexture);
   const borderRgb = hexToRgbArray(gameColors.cellBorder);
@@ -422,15 +437,27 @@ export function downloadWordSearchAsPDF() {
 
   // Now puzzleWidth, puzzleHeight, maxImgWidth, maxImgHeight are final
 
+  const headerImage = window.isAdmin
+    ? frontendData.url + "assets/images/logo.png"
+    : wordSearchData.url + "assets/images/logo.png";
+
   // ----------------------------
   // 7) Draw Header
   // ----------------------------
   const headerHeight = 80;
-  pdf.setFillColor(...hexToRgbArray(gameColors.header));
-  pdf.rect(0, 0, pageWidth, headerHeight, "F");
+  // pdf.setFillColor(...hexToRgbArray(gameColors.header));
+  // pdf.rect(0, 0, pageWidth, headerHeight, "F");
+  // Add the header image in top right corner
+  const imageWidth = pageWidth * 0.15; // 15% of page width
+  const imageHeight = headerHeight * 0.75; // 75% of header height
+  const imageX = pageWidth - marginRight - imageWidth; // Position at top right with margin
+  const imageY = headerHeight - imageHeight; // Small margin from the top
+
+  // Add the logo image
+  pdf.addImage(headerImage, "PNG", imageX, imageY, imageWidth, imageHeight);
   pdf.setFontSize(22);
-  pdf.setTextColor(255, 255, 255);
-  const titleText = "WORD SEARCH PUZZLE";
+  pdf.setTextColor(0, 0, 0);
+  const titleText = window.pdfText.postTitle || "Word Search Puzzle";
   const titleW = pdf.getTextWidth(titleText);
   pdf.text(titleText, (pageWidth - titleW) / 2, headerHeight / 2 + 8);
   pdf.setDrawColor(...hexToRgbArray(gameColors.accent));
@@ -472,7 +499,9 @@ export function downloadWordSearchAsPDF() {
   // ----------------------------
   // 9) Puzzle
   // ----------------------------
-  const puzzleX = marginLeft;
+  const puzzleX = hasImages
+    ? marginLeft
+    : marginLeft + (contentWidth - puzzleWidth) / 2;
   const puzzleY = Math.max(
     currentY,
     marginTop + headerHeight + wordsAreaHeight + 40

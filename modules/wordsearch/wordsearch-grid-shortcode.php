@@ -26,19 +26,44 @@ $gridTitleLabel = get_option('kw_grid_title_label', $default_grid_title_label);
 $gridFindWordsLabel = get_option('kw_find_words_label', $default_find_words_label);
 // Download Pdf
 $downloadPdfLabel = get_option('kw_download_pdf_label', $default_download_pdf_label);
+$soundEnabled = get_option('kw_grid_text_sound_setting', 'true') ;
 
     ?>
 <div class="wordsearch-container">
-  <div class="game-header">
-    <button id="downloadButton" class="download-button">
-    <?php echo esc_html__($downloadPdfLabel); ?>
-    </button>
-    <h2 class="game-title"><?php echo esc_html__($gridTitleLabel); ?></h2>
-    <div class="timer-container">
-      <div class="timer-icon">⏱️</div>
-      <p id="timerDisplay">00:00</p>
+<div class="game-header">
+  <div class="game-controls">
+
+    <div class="control-button timer-container">
+      <div class="button-icon timer-icon">⏱️</div>
+      <p id="timerDisplay" class="button-text">00:00</p>
     </div>
+    
+<!-- Replace the emoji sound icons with SVG speaker icons -->
+<button id="soundToggleButton" class="control-button sound-toggle" aria-label="Toggle Sound" title="Toggle Sound">
+  <span id="soundOnIcon" class="button-icon sound-icon">
+    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+      <path d="M15 8a5 5 0 0 1 0 8"></path>
+      <path d="M18 5a10 10 0 0 1 0 14"></path>
+    </svg>
+  </span>
+  <span id="soundOffIcon" class="button-icon sound-icon" style="display: none;">
+    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+      <line x1="23" y1="9" x2="17" y2="15"></line>
+      <line x1="17" y1="9" x2="23" y2="15"></line>
+    </svg>
+  </span>
+</button>
+
   </div>
+  
+  <h2 class="game-title"><?php echo esc_html__($gridTitleLabel); ?></h2>
+  <button id="downloadButton" class="control-button download-button">
+      <span class="button-icon">📥</span>
+      <span class="button-text"><?php echo esc_html__($downloadPdfLabel); ?></span>
+    </button>
+</div>
   
   <!-- Add theme-container to wrap game content and image clues -->
   <div class="game-main-content">

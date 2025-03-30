@@ -115,6 +115,7 @@ function wordsearch_enqueue_assets() {
             $word_entries = []; // Ensure it's always an array.
         }
         $timer_value = get_post_meta($post->ID, '_wordsearch_timer_value', true);
+        $title = get_the_title( $post->ID );
 
         // Localize the data: Pass the word entries and a nonce to your JS file.
         wp_localize_script( 'wordsearch-grid', 'wordSearchData', array(
@@ -141,7 +142,10 @@ function wordsearch_enqueue_assets() {
                 'timeupPopupBodyText'      => esc_attr( $timeup__popup_body_text),
                 'timeupPopupChallengeText' => esc_attr($timeup__popup_challenge_text),
                 'timeupPopupButtonText'    => esc_attr($timeup__popup_button_text),
-            )
+            ),
+            'pdfText'   => array(
+                'postTitle' => $title,
+            ),
 
         ));
 

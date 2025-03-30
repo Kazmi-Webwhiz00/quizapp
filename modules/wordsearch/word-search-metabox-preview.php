@@ -69,8 +69,8 @@ function enqueue_wordsearch_metabox_preview_assets( $hook ) {
         if ( ! is_array( $word_entries ) ) {
             $word_entries = []; // Ensure it's always an array.
         }
-
     $timer_value = get_post_meta($post->ID, '_wordsearch_timer_value', true);
+    $title = get_the_title( $post->ID );
 
     wp_localize_script('wordsearch-generate-with-ai', 'wordsearchScriptVar', array(
       'ajaxUrl' => admin_url('admin-ajax.php'),
@@ -85,7 +85,7 @@ function enqueue_wordsearch_metabox_preview_assets( $hook ) {
       'downloadElement'   => 'downloadButton',
       'checkBoxElement'  => 'toggle-checkbox',
       'toogleWordsBox'  => 'toggle-words-checkbox',
-      'timerValue' => $timer_value,
+      'timerValue' => esc_attr($timer_value),
       'ajaxUrl' => admin_url('admin-ajax.php'),
       'nonce'   => wp_create_nonce('wp_rest'),
       'gridStyles'       => array( 
@@ -95,8 +95,12 @@ function enqueue_wordsearch_metabox_preview_assets( $hook ) {
           'oddCellBgColor'                => esc_attr( $grid_odd_cell_bg_color  ),
           'higlightedCellTextColor'=> esc_attr( $higlightedCellTextColor ),
           'lineColor'              => esc_attr( $lineColor ),
-          'toggleGridLettersSound'   => esc_attr($toggleGridLettersSound)
-      )
+          'toggleGridLettersSound'   => esc_attr($toggleGridLettersSound),
+          'toggleSound'     => 'soundToggleButton',
+      ),
+      'pdfText'   => array(
+          'postTitle' => $title,
+      ),
   ));
     }
 }
@@ -234,7 +238,6 @@ function checkAndTogglePreview() {
     // If no entries, hide game content and show the empty message.
     gameContent.style.display = 'none';
     emptyMsg.style.display = 'block';
-    // Also stop the timer in wordsearch-grid.js if it's running.
     if (typeof window.stopWordsearchGridTimer === 'function') {
       window.stopWordsearchGridTimer();
     }
