@@ -27,6 +27,8 @@ $gridFindWordsLabel = get_option('kw_find_words_label', $default_find_words_labe
 // Download Pdf
 $downloadPdfLabel = get_option('kw_download_pdf_label', $default_download_pdf_label);
 $soundEnabled = get_option('kw_grid_text_sound_setting', 'true') ;
+// Show or hide Images Label
+$showImagesLabel = __('Show Images', 'wp-quiz-plugin');
 
     ?>
 <div class="wordsearch-container">
@@ -59,6 +61,7 @@ $soundEnabled = get_option('kw_grid_text_sound_setting', 'true') ;
   </div>
   
   <h2 class="game-title"><?php echo esc_html__($gridTitleLabel); ?></h2>
+
   <button id="downloadButton" class="control-button download-button">
       <span class="button-icon">📥</span>
       <span class="button-text"><?php echo esc_html__($downloadPdfLabel); ?></span>
@@ -68,19 +71,38 @@ $soundEnabled = get_option('kw_grid_text_sound_setting', 'true') ;
   <!-- Add theme-container to wrap game content and image clues -->
   <div class="game-main-content">
     <!-- Visual clues container now as a separate column -->
+
     <div class="word-panel">
+      <div class="word-panel-header">
+      <button class="mobile-sidebar-toggle">
+      <span class="button-icon">🖼️</span>
+      <span class="button-text"><?php echo esc_html__($showImagesLabel); ?></span>
+    </button>
         <h3 class="word-panel-title"><?php echo esc_html__($gridFindWordsLabel); ?></h3>
+        </div>
         <ul id="wordList"></ul>
       </div>
 
-    
+
+      <div class="game-content-wrapper">
     <div class="game-content">
       <div id="game-container"></div>
-      <div class="visual-clues-container">
+       <!-- Desktop Clues Container: Shown on large screens only -->
+  <div class="visual-clues-container" id="desktopCluesContainer">
       <!-- Images will be dynamically inserted here via JavaScript -->
     </div>
     </div>
+      <!-- Mobile Sidebar: Holds clue images for small screens -->
+      <div class="sidebar-panel" id="sidebarPanel">
+    <!-- Close button inside the mobile sidebar -->
+    <!-- <button class="close-sidebar-button">✖</button> -->
+    <div class="visual-clues-container" id="mobileCluesContainer">
+
+    </div>
   </div>
+  </div>
+  </div>
+
   
   <div id="completionBanner">Well Done!</div>
 </div>

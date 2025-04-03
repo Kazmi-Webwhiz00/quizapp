@@ -63,6 +63,12 @@ function wordsearch_enqueue_assets() {
         $timeup__popup_body_text = get_option('kw_wordsearch_timeup__popup_body_text', $default_timeup_body_text);
         $timeup__popup_challenge_text = get_option('kw_wordsearch_timeup__popup_challenge_text', $default_timeup_challenge_text);
         $timeup__popup_button_text = get_option('kw_wordsearch_timeup__popup_button_text', $default_timeup_button_text);
+        // Find Words Label
+        $default_find_words_label = __('Find These Words:', 'wp-quiz-plugin');
+        $gridFindWordsLabel = get_option('kw_find_words_label', $default_find_words_label);
+        $showImagesLabel = __('Show Images', 'wp-quiz-plugin');
+        $hideImagesLabel = __('Hide Images', 'wp-quiz-plugin');
+        
 
     // Enqueue jQuery if not already loaded.
     wp_enqueue_script( 'jquery' );
@@ -126,6 +132,8 @@ function wordsearch_enqueue_assets() {
             'maximunGridSize' => 10,
             'nonce'   => wp_create_nonce( 'wordsearch_nonce' ),
             'timerValue' => $timer_value,
+            'showImagesLabel' => esc_html__($showImagesLabel),
+            'hideImagesLabel' => esc_html__($hideImagesLabel),
             'gridStyles'       => array( 
                 'fontColor'              => esc_attr( $gridTextColor ),
                 'fontFamily'             => esc_attr( $gridTextFontFamily ),
@@ -145,6 +153,7 @@ function wordsearch_enqueue_assets() {
             ),
             'pdfText'   => array(
                 'postTitle' => $title,
+                'findWordsLabel' => $gridFindWordsLabel,
             ),
 
         ));
