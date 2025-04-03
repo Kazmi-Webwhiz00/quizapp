@@ -2,6 +2,10 @@
 self.onmessage = function (e) {
   if (e.data.type === "GENERATE_PUZZLE") {
     const settings = e.data.settings;
+    const allowedDirections = ["W", "N", "WN"];
+    settings.directions = settings.directions.filter((d) =>
+      allowedDirections.includes(d)
+    );
     // Build the matrix and return it
     const result = generatePuzzleData(settings);
 
