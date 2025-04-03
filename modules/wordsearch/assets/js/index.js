@@ -33,6 +33,7 @@ jQuery(document).ready(function ($) {
   window.showWordsElement = null;
   window.newGridSize = 0;
   window.isAdmin = typeof wordSearchData === "undefined";
+  let hasImageEntry = false;
 
   window.gamerTimerValue = window.isAdmin
     ? frontendData.timerValue
@@ -58,6 +59,14 @@ jQuery(document).ready(function ($) {
   window.pdfText = window.isAdmin
     ? frontendData["pdfText"]
     : wordSearchData["pdfText"];
+
+  let showImagesLabel = window.isAdmin
+    ? frontendData["showImagesLabel"]
+    : wordSearchData["showImagesLabel"];
+
+  let hideImagesLabel = window.isAdmin
+    ? frontendData["hideImagesLabel"]
+    : wordSearchData["hideImagesLabel"];
 
   const rawData = window.isAdmin ? frontendData.entries : [];
   if (rawData) {
@@ -164,10 +173,12 @@ jQuery(document).ready(function ($) {
   // Function to handle adding and updating visual clues
   function updateVisualClues(entries) {
     // Clear previous clues by emptying the container and ensure it's visible.
-    const $container = $(".visual-clues-container");
-    const hasImageEntry = entries.some((entry) => entry.imageUrl !== "");
+    const $container = $("#desktopCluesContainer");
+    hasImageEntry = entries.some((entry) => entry.imageUrl !== "");
     if (hasImageEntry) {
-      $container.empty().css("display", "block");
+      if (window.innerWidth > 1100) {
+        $container.empty().css("display", "block");
+      }
     }
 
     // Only proceed if entries exist.
@@ -418,6 +429,7 @@ jQuery(document).ready(function ($) {
 
   // Toggle sound function
   let soundEnabled = true;
+  let sideBarOpened = false;
   window.soundEnabled = soundEnabled;
 
   // Set initial UI state
@@ -445,5 +457,55 @@ jQuery(document).ready(function ($) {
       console.log("Sound is now disabled");
       // Your code for when sound is off
     }
+  });
+
+  $(document).ready(function () {
+    // Update visibility of mobile clues toggle and desktop clues container based on screen width.
+    function updateClueButtonVisibility() {
+      if (window.innerWidth < 1100) {
+        if (hasImageEntry) {
+          $(".mobile-sidebar-toggle").show();
+          // Set button text based on sidebar state.
+        }
+        $("#desktopCluesContainer").css("display", "none");
+      } else {
+        $(".mobile-sidebar-toggle").hide();
+        if (hasImageEntry) {
+          $("#desktopCluesContainer").css("display", "block");
+        }
+        // Ensure the mobile sidebar is closed on larger screens.
+        $("#sidebarPanel").removeClass("show-sidebar");
+      }
+    }
+
+    // Toggle the mobile sidebar (only applicable when screen width is less than 768px).
+    function toggleSidebar() {
+      if (window.innerWidth < 1100) {
+        if ($("#sidebarPanel").hasClass("show-sidebar")) {
+          $(".mobile-sidebar-toggle .button-text").text(showImagesLabel);
+        } else {
+          $(".mobile-sidebar-toggle .button-text").text(hideImagesLabel);
+        }
+        // Hide the desktop container and show the mobile container within the sidebar.
+        $("#desktopCluesContainer").css("display", "none");
+        $("#mobileCluesContainer").css("display", "block");
+        $("#sidebarPanel").toggleClass("show-sidebar");
+      }
+    }
+
+    // Run on page load and whenever the window is resized.
+    updateClueButtonVisibility();
+    $(window).on("resize", updateClueButtonVisibility);
+
+    // Bind click events for toggling the sidebar.
+    $(".mobile-sidebar-toggle").on("click", function (event) {
+      event.preventDefault();
+      toggleSidebar();
+    });
+
+    $(".close-sidebar-button").on("click", function (event) {
+      event.preventDefault();
+      $("#sidebarPanel").removeClass("show-sidebar");
+    });
   });
 });

@@ -20,6 +20,12 @@ function enqueue_wordsearch_metabox_preview_assets( $hook ) {
         // error_log("color" . print_r($gridTextColor , true));
         $gridTextFontFamily = get_option('kw_grid_text_font_family', 'Roboto');
         $toggleGridLettersSound = get_option('kw_grid_text_sound_setting', 0);
+        // Find Words Label
+        $default_find_words_label = __('Find These Words:', 'wp-quiz-plugin');
+        $gridFindWordsLabel = get_option('kw_find_words_label', $default_find_words_label);
+        $showImagesLabel = __('Show Images', 'wp-quiz-plugin');
+        $hideImagesLabel = __('Hide Images', 'wp-quiz-plugin');
+
 
     if ( $screen && $screen->post_type === 'wordsearch' && 
          ( $hook === 'post-new.php' || $hook === 'post.php' ) ) {
@@ -35,7 +41,7 @@ function enqueue_wordsearch_metabox_preview_assets( $hook ) {
         '1.0',
         "screen"
     );
-        
+ 
         // Enqueue Phaser from a CDN.
         wp_enqueue_script( 'phaser', plugin_dir_url(__FILE__) . './assets/js/phaser.js', array(), null, true );
         
@@ -88,6 +94,8 @@ function enqueue_wordsearch_metabox_preview_assets( $hook ) {
       'timerValue' => esc_attr($timer_value),
       'ajaxUrl' => admin_url('admin-ajax.php'),
       'nonce'   => wp_create_nonce('wp_rest'),
+      'showImagesLabel' => esc_html__($showImagesLabel),
+      'hideImagesLabel' => esc_html__($hideImagesLabel),
       'gridStyles'       => array( 
           'fontColor'              => esc_attr( $gridTextColor ),
           'fontFamily'             => esc_attr( $gridTextFontFamily ),
@@ -99,8 +107,9 @@ function enqueue_wordsearch_metabox_preview_assets( $hook ) {
           'toggleSound'     => 'soundToggleButton',
       ),
       'pdfText'   => array(
-          'postTitle' => $title,
-      ),
+        'postTitle' => $title,
+        'findWordsLabel' => $gridFindWordsLabel,
+    ),
   ));
     }
 }
@@ -152,7 +161,7 @@ $shuffle_text_color = get_option('kw_wordsearch_admin_shuffle_button_text_color'
 $default_show_words_label = __('Show Words', 'wp-quiz-plugin');
 $default_download_pdf_label = __('Download Pdf', 'wp-quiz-plugin');
 $downloadPdfLabel = get_option('kw_download_pdf_label', $default_download_pdf_label);
-$default_no_entries_label = __('Download Pdf', 'wp-quiz-plugin');
+$default_no_entries_label = __('No word search entries found.', 'wp-quiz-plugin');
 $noEntriesLabel = get_option('kw_no_entries_label', $default_no_entries_label);
 
 
@@ -167,12 +176,12 @@ if ( ! is_array( $word_entries ) ) {
     ?>
     <div id="wordsearch-preview-container">
     <div class="button-checkbox-container">
-    <label class="checkbox-label">
+    <label class="wordsearch-checkbox-label">
     <input type="checkbox" class="toggle-checkbox" id="toggle-answers">
     <?php echo esc_html__($show_answer_label); ?>
     </label>
 
-    <label class="checkbox-label">
+    <label class="wordsearch-checkbox-label">
     <input type="checkbox" class="toggle-words-checkbox" id="toggle-words">
     <?php echo esc_html__($show_words_label); ?>
     </label>
@@ -223,7 +232,6 @@ function checkAndTogglePreview() {
   var emptyMsg = document.getElementById('wordsearch-empty-box');
   var gameContent = document.getElementById('game-preview-content');
 
-  console.log("::updatedEntries~length",updatedEntries.length);
   const wordDataAdded = updatedEntries && updatedEntries.length > 0;
 
   if (wordDataAdded) {
