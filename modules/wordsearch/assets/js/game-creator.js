@@ -32,6 +32,7 @@ export function createWordSearchGame({
 }) {
   let dynamicCanvas, persistentCanvas;
   let cellSize;
+  let gridMatrixReturned = false; // Flag to check if gridMatrix is returned
   const container = document.getElementById(
     containerId ? containerId : "game-container"
   );
@@ -79,13 +80,17 @@ export function createWordSearchGame({
 
   function initializeGame(newWidth) {
     if (window.gameInstance) return;
-    console.time("::createWordSearchGame");
+
+    // 1. Disconnect the resize observer while building the grid
+    resizeObserver.disconnect();
+    resizeImageListing.disconnect();
+
     // Set the container's width dynamically
     let effectiveGridSize = computeEffectiveGridSize(window.wordData);
 
     const defaultPuzzleOpts = {
       gridSize: effectiveGridSize,
-      directions: ["W", "N", "WN", "EN"],
+      directions: ["W", "N", "WN"],
       orientations: ["horizontal", "vertical", "diagonal"],
       words: window.wordData,
       preferOverlap: true,
@@ -222,11 +227,11 @@ export function createWordSearchGame({
       // const cellSize = Math.min(dynamicWidth, dynamicHeight) / gridSize;
       window.letterTexts = [];
 
-      console.time("::gridMatrix");
       ws.getMatrix().then((gridMatrix) => {
         // Place code that depends on gridMatrix here.
         window.gridMatrix = gridMatrix;
         scene.gridMatrix = gridMatrix;
+        gridMatrixReturned = true;
 
         updateGridSize(
           mergedPuzzleOptions.gridSize,
@@ -235,6 +240,9 @@ export function createWordSearchGame({
           window.gridMatrix,
           true
         );
+        // 3. Reconnect the resize observers
+        resizeObserver.observe(container);
+        resizeImageListing.observe(container);
       });
 
       if (!window.isAdmin) {
@@ -489,7 +497,7 @@ export function createWordSearchGame({
     function update() {
       // Any real-time updates or animations
     }
-    console.timeEnd("::createWordSearchGame");
+    gridMatrixReturned = false;
     return phaserGame;
   }
   // Create a debounced version of your resize callback.
@@ -533,9 +541,28 @@ export function createWordSearchGame({
         }
       }
     }
-  }, 300);
+  }, 100);
 
-  // Create and attach the resize observer with the debounced handler.
+  const resizeImageListingHandler = (entries) => {
+    if (entries.length > 0) {
+      // Use only the first entry, ignoring the rest
+      const entry = entries[0];
+      const newHeight = entry.contentRect.height;
+
+      // Get the visual clues container and adjust its height based on the new height
+      const cluesContainer = document.getElementsByClassName(
+        "visual-clues-container"
+      )[0];
+      if (cluesContainer && gridMatrixReturned) {
+        cluesContainer.style.height = newHeight + "px";
+      }
+    }
+  };
+
+  // Create and attach the resize observers based on the container we selected
   const resizeObserver = new ResizeObserver(debouncedResizeHandler);
   resizeObserver.observe(container);
+
+  const resizeImageListing = new ResizeObserver(resizeImageListingHandler);
+  resizeImageListing.observe(container);
 }
