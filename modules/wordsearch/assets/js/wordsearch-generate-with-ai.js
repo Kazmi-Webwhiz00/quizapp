@@ -163,7 +163,7 @@ jQuery(document).ready(function ($) {
 
     const language = $("#ws-language").val().trim();
     const maxNumberOfWords = parseInt(wpQuizPlugin.wsMaxNumberOfWords);
-    if (number < 1 || number > maxNumberOfWords) {
+    if (newEntries < 1 || newEntries > maxNumberOfWords) {
       Swal.fire(
         wpQuizPlugin.wsStrings.errorTitle,
         `${wpQuizPlugin.wsStrings.numberError} ${wpQuizPlugin.wsMaxNumberOfWords}`,

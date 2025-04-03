@@ -103,9 +103,7 @@ function enqueue_wordsearch_metabox_preview_assets( $hook ) {
           'oddCellBgColor'                => esc_attr( $grid_odd_cell_bg_color  ),
           'higlightedCellTextColor'=> esc_attr( $higlightedCellTextColor ),
           'lineColor'              => esc_attr( $lineColor ),
-          'toggleGridLettersSound'   => esc_attr($toggleGridLettersSound),
-          'toggleSound'     => 'soundToggleButton',
-      ),
+          'toggleGridLettersSound'   => esc_attr($toggleGridLettersSound),      ),
       'pdfText'   => array(
         'postTitle' => $title,
         'findWordsLabel' => $gridFindWordsLabel,

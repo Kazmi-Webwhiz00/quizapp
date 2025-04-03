@@ -424,12 +424,8 @@ jQuery(document).ready(function ($) {
     }
   }
 
-  // Get the initial sound setting from WordPress options
-  const soundElement = window.customStyles["toggleSound"];
-
   // Toggle sound function
   let soundEnabled = true;
-  let sideBarOpened = false;
   window.soundEnabled = soundEnabled;
 
   // Set initial UI state
@@ -437,9 +433,10 @@ jQuery(document).ready(function ($) {
   $("#soundOffIcon").hide();
 
   // Toggle sound function
-  $(`#${soundElement}`).on("click", function (event) {
-    console.log(":: Sound toggle button clicked");
+  $("#kwGridSoundButton").on("click", function (event) {
+    event.stopPropagation();
     event.preventDefault();
+    console.log(":: Sound toggle button clicked");
 
     // Toggle the sound state
     soundEnabled = !soundEnabled;

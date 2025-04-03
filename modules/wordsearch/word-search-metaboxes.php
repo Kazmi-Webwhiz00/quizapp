@@ -63,6 +63,7 @@ function wordsearch_enqueue_assets() {
         $timeup__popup_body_text = get_option('kw_wordsearch_timeup__popup_body_text', $default_timeup_body_text);
         $timeup__popup_challenge_text = get_option('kw_wordsearch_timeup__popup_challenge_text', $default_timeup_challenge_text);
         $timeup__popup_button_text = get_option('kw_wordsearch_timeup__popup_button_text', $default_timeup_button_text);
+        $toggleGridLettersSound = get_option('kw_grid_text_sound_setting', 0);
         // Find Words Label
         $default_find_words_label = __('Find These Words:', 'wp-quiz-plugin');
         $gridFindWordsLabel = get_option('kw_find_words_label', $default_find_words_label);
@@ -145,6 +146,7 @@ function wordsearch_enqueue_assets() {
                 'successPopupBodyText' =>   esc_attr( $success_popup_body_text ),
                 'successPopupChallengeText'  => esc_attr($success_popup_challenge_text),
                 'successPopupButtonText'    => esc_attr($success_popup_button_text),
+                'toggleGridLettersSound'   => esc_attr($toggleGridLettersSound),
 
                 'timeupPopupTitle'         => esc_attr($timeup__popup_title),
                 'timeupPopupBodyText'      => esc_attr( $timeup__popup_body_text),
