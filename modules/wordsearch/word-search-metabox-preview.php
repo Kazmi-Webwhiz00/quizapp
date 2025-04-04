@@ -203,9 +203,10 @@ if ( ! is_array( $word_entries ) ) {
     <?php 
     if ($word_entries) {
     ?>
-      <button id="downloadButton" class="kw-grid-download-button" style="background-color: <?php echo esc_attr($shuffle_bg_color); ?>; color: <?php echo esc_attr($shuffle_text_color); ?>;">
-      <?php echo esc_html__($downloadPdfLabel); ?>
-      </button>
+      <button id="downloadButton" class="control-button kw-grid-download-button">
+      <span class="button-icon">📥</span>
+      <span class="button-text"><?php echo esc_html__($downloadPdfLabel); ?></span>
+    </button>
     <?php 
     } 
     ?>

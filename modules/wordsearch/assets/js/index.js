@@ -68,6 +68,14 @@ jQuery(document).ready(function ($) {
     ? frontendData["hideImagesLabel"]
     : wordSearchData["hideImagesLabel"];
 
+  let downloadPdfLabel = window.isAdmin
+    ? frontendData["downloadPdfLabel"]
+    : wordSearchData["downloadPdfLabel"];
+
+  let downloadingPdfLabel = window.isAdmin
+    ? frontendData["downloadingButtonLabel"]
+    : wordSearchData["downloadingButtonLabel"];
+
   const rawData = window.isAdmin ? frontendData.entries : [];
   if (rawData) {
     try {
@@ -398,13 +406,14 @@ jQuery(document).ready(function ($) {
         ? frontendData.downloadElement
         : wordSearchData.downloadElement
     );
+
     if (downloadElement) {
       downloadElement.style.display = "flex";
+      const buttonText = downloadElement.querySelector(".button-text");
       downloadElement.addEventListener("click", function (event) {
         event.preventDefault();
-
         // Change the button text to "Downloading"
-        downloadElement.textContent = frontendData.downloadingButtonLabel;
+        buttonText.textContent = downloadingPdfLabel;
 
         // Set the download button styling while downloading
         downloadElement.classList.remove("kw-grid-download-button");
@@ -412,7 +421,7 @@ jQuery(document).ready(function ($) {
 
         // Start the PDF download process
         downloadWordSearchAsPDF(() => {
-          downloadElement.textContent = frontendData.downloadPdfLabel;
+          buttonText.textContent = downloadPdfLabel;
           downloadElement.classList.remove("container-download-button");
           downloadElement.classList.add("kw-grid-download-button");
           // Optionally reset any other styles if needed.
