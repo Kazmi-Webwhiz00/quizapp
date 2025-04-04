@@ -21,6 +21,13 @@ if (!defined('ABSPATH')) {
             'color' => '#00796B',
             'text_color' => '#ffffff',
         ],
+        // Add default for Show Words
+    'show_answers' => [
+        'label'      => __('Show Answers', 'wp-quiz-plugin'),
+    ],
+    'show_words' => [
+        'label'      => __('Show Words', 'wp-quiz-plugin'),
+    ],
     ];
 
     $default_no_entries_label = __("No word search entries found.", 'wp-quiz-plugin'); 
@@ -108,7 +115,7 @@ foreach ($default_settings as $key => $values) {
         </label>
         <input type="text" id="kw_wordsearch_admin_add_word_button_text_color" name="kw_wordsearch_admin_add_word_button_text_color" class="kw-color-picker wp-color-picker" value="<?php echo esc_attr($settings['add_word']['text_color']); ?>" data-default="<?php echo esc_attr($default_settings['add_word']['text_color']); ?>">
         <p class="description"><?php esc_html_e('Select the text color for the "Add Word" button.', 'wp-quiz-plugin'); ?></p>
-        <button type="button" class="button-secondary kw-reset-button" data-label-default="<?php echo esc_js($default_settings['add_word']['label']); ?>" data-color-default="<?php echo esc_js($default_settings['add_word']['color']); ?>" data-text-color-default="<?php echo esc_js($default_settings['add_word']['text_color']); ?>">
+        <button type="button" class="button-secondary kw-reset-button" id="kw-reset-add-word">
             <?php esc_html_e('Reset to Default', 'wp-quiz-plugin'); ?>
         </button>
     </div>
@@ -134,7 +141,7 @@ foreach ($default_settings as $key => $values) {
         </label>
         <input type="text" id="kw_wordsearch_admin_<?php echo esc_attr($key); ?>_button_text_color" name="kw_wordsearch_admin_<?php echo esc_attr($key); ?>_button_text_color" class="kw-color-picker wp-color-picker" value="<?php echo esc_attr($settings[$key]['text_color']); ?>" data-default="<?php echo esc_attr($default_settings[$key]['text_color']); ?>">
         <p class="description"><?php esc_html_e("Select the text color for the \"$key\" button.", 'wp-quiz-plugin'); ?></p>
-        <button type="button" class="button-secondary kw-reset-button" data-label-default="<?php echo esc_js($default_settings[$key]['label']); ?>" data-color-default="<?php echo esc_js($default_settings[$key]['color']); ?>" data-text-color-default="<?php echo esc_js($default_settings[$key]['text_color']); ?>">
+        <button type="button" class="button-secondary kw-reset-button" id="kw-reset-clear-shuffle">
             <?php esc_html_e('Reset to Default', 'wp-quiz-plugin'); ?>
         </button>
     </div>
@@ -146,19 +153,20 @@ foreach ($default_settings as $key => $values) {
             <?php esc_html_e('Show Answers Checkbox Label', 'wp-quiz-plugin'); ?>
         </label>
         <input type="text" id="kw_wordsearch_admin_show_answers_checkbox_label" name="kw_wordsearch_admin_show_answers_checkbox_label" class="regular-text kw-input" 
-            value="<?php echo esc_attr(get_option('kw_wordsearch_admin_show_answers_checkbox_label', __('Show Answers', 'wp-quiz-plugin'))); ?>" 
+            value="<?php echo esc_attr(get_option('kw_wordsearch_admin_show_answers_checkbox_label', __('Show Answers', 'wp-quiz-plugin'))); ?>" data-default="<?php echo esc_attr($default_settings['show_answers']['label']); ?>"
             >
         <p class="description"><?php esc_html_e('Set the label for the "Show Answers" checkbox.', 'wp-quiz-plugin'); ?></p>
-    </div>
 
-    <div class="kw-settings-field">
         <label for="kw_admin_show_words_checkbox_label" class="kw-label">
             <?php esc_html_e('Show Words Label', 'wp-quiz-plugin'); ?>
         </label>
         <input type="text" id="kw_admin_show_words_checkbox_label" name="kw_admin_show_words_checkbox_label" class="regular-text kw-input" 
-            value="<?php echo esc_attr(get_option('kw_admin_show_words_checkbox_label', __('Show Words', 'wp-quiz-plugin'))); ?>" 
+            value="<?php echo esc_attr(get_option('kw_admin_show_words_checkbox_label', __('Show Words', 'wp-quiz-plugin'))); ?>" data-default="<?php echo esc_attr($default_settings['show_words']['label']); ?>"
             >
         <p class="description"><?php esc_html_e('Set the label for the "Show Words" checkbox.', 'wp-quiz-plugin'); ?></p>
+    <button type="button" class="button-secondary kw-reset-button" id="kw-reset-show-words">
+        <?php esc_html_e('Reset to Default', 'wp-quiz-plugin'); ?>
+</button>
     </div>
 
     

@@ -101,7 +101,7 @@ if (!defined('ABSPATH')) {
             'default' => '16', // Default background color
         ]);
 
-    // Add a settings section for Admin Strings
+    // Register the Admin Strings Section
     add_settings_section(
         'kw_wordsearch_admin_strings_section',
         null,
@@ -109,8 +109,9 @@ if (!defined('ABSPATH')) {
         'kw-wordsearch-admin-strings-settings-page'
     );
 
+    // Register the Action Buttons Section with a unique ID
     add_settings_section(
-        'kw_wordsearch_admin_strings_section',
+        'kw_wordsearch_admin_action_buttons_section',
         __('Word Search Action Buttons', 'wp-quiz-plugin'),
         'wordsearch_render_action_buttons_section',
         'kw-wordsearch-admin-strings-settings-page'
