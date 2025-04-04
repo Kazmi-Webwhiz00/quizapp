@@ -64,6 +64,10 @@ function wordsearch_enqueue_assets() {
         $timeup__popup_challenge_text = get_option('kw_wordsearch_timeup__popup_challenge_text', $default_timeup_challenge_text);
         $timeup__popup_button_text = get_option('kw_wordsearch_timeup__popup_button_text', $default_timeup_button_text);
         $toggleGridLettersSound = get_option('kw_grid_text_sound_setting', 0);
+        // Download Button Label
+        $default_download_pdf_label = __('Download Pdf', 'wp-quiz-plugin');
+        $default_downloading_button_label = __('Downloading...', 'wp-quiz-plugin');
+        $downloadPdfLabel = get_option('kw_download_pdf_label', $default_download_pdf_label);
         // Find Words Label
         $default_find_words_label = __('Find These Words:', 'wp-quiz-plugin');
         $gridFindWordsLabel = get_option('kw_find_words_label', $default_find_words_label);
@@ -140,6 +144,8 @@ function wordsearch_enqueue_assets() {
             'timerValue' => $timer_value,
             'showImagesLabel' => esc_html__($showImagesLabel),
             'hideImagesLabel' => esc_html__($hideImagesLabel),
+            'downloadPdfLabel' => esc_html__($downloadPdfLabel),
+            'downloadingButtonLabel' => esc_html__($default_downloading_button_label),
             'gridStyles'       => array( 
                 'fontColor'              => esc_attr( $gridTextColor ),
                 'fontFamily'             => esc_attr( $gridTextFontFamily ),
