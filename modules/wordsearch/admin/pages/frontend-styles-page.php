@@ -52,7 +52,7 @@ function wordsearch_register_frontend_styles_settings() {
      register_setting('kw_wordsearch_fe_settings', 'kw_wordsearch_success_popup_button_text', ['default' => __('Play Again', 'wp-quiz-plugin')]);
     
      // Wordsearch Words List Settings
-     register_setting('kw_wordsearch_fe_settings', 'kw_wordsearch_word_font_size', ['default' => '14.4px']); // Default font size
+     register_setting('kw_wordsearch_fe_settings', 'kw_wordsearch_word_font_size', ['default' => 14.4]); // Default font size
      register_setting('kw_wordsearch_fe_settings', 'kw_wordsearch_word_font_color', ['default' => '#4a5568']); // Default font color
 
     // Success Popup Settings

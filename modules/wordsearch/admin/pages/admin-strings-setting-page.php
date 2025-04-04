@@ -64,11 +64,55 @@ if (!defined('ABSPATH')) {
         'default' => '#0073aa', // Default background color
     ]);
 
+    // Open in New Tab Button Settings
+    register_setting('kw_wordsearch_admin_view_strings', 'wordsearch_open_tab_button_label', [
+        'default' => __('Open in New Tab', 'wp-quiz-plugin'), // Default button label
+    ]);
+
+    register_setting('kw_wordsearch_admin_view_strings', 'wordsearch_open_tab_button_color', [
+        'default' => '#007BFF', // Default background color
+    ]);
+
+    register_setting('kw_wordsearch_admin_view_strings', 'wordsearch_open_tab_button_font_size', [
+        'default' => '16', // Default background color
+    ]);
+
+        //Copy url button settings
+        register_setting('kw_wordsearch_admin_view_strings', 'wordsearch_copy_url_button_label', [
+            'default' =>  __('Copy URL to Clipboard', 'wp-quiz-plugin'), // Default button label
+        ]);
+    
+        register_setting('kw_wordsearch_admin_view_strings', 'wordsearch_copy_url_button_color', [
+            'default' => '#007BFF', // Default background color
+        ]);
+    
+        register_setting('kw_wordsearch_admin_view_strings', 'wordsearch_copy_url_button_font_size', [
+            'default' => '16', // Default background color
+        ]);
+
+        //Email button settings
+        register_setting('kw_wordsearch_admin_view_strings', 'wordsearch_share_email_button_label', [
+            'default' => __('Share via Email', 'wp-quiz-plugin'), // Default button label
+        ]);
+        register_setting('kw_wordsearch_admin_view_strings', 'wordsearch_share_email_button_color', [
+            'default' => '#007BFF', // Default background color
+        ]);
+        register_setting('kw_wordsearch_admin_view_strings', 'wordsearch_share_email_button_font_size', [
+            'default' => '16', // Default background color
+        ]);
+
     // Add a settings section for Admin Strings
     add_settings_section(
         'kw_wordsearch_admin_strings_section',
         null,
         'wordsearch_render_admin_strings_section',
+        'kw-wordsearch-admin-strings-settings-page'
+    );
+
+    add_settings_section(
+        'kw_wordsearch_admin_strings_section',
+        __('Word Search Action Buttons', 'wp-quiz-plugin'),
+        'wordsearch_render_action_buttons_section',
         'kw-wordsearch-admin-strings-settings-page'
     );
 }
@@ -97,4 +141,11 @@ function ws_render_admin_strings_settings_page() {
  */
 function wordsearch_render_admin_strings_section() {
     include plugin_dir_path(__FILE__) . '/../templates/sections/admin-view-strings-setting.php';
+}
+
+/**
+ * Render the Action Buttons Section
+ */
+function wordsearch_render_action_buttons_section() {
+    include plugin_dir_path(__FILE__) . '/../templates/sections/admin-action-buttons-setting.php';
 }

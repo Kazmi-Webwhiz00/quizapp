@@ -29,7 +29,7 @@ function enqueue_wordsearch_metabox_preview_assets( $hook ) {
         $default_downloading_button_label = __('Downloading...', 'wp-quiz-plugin');
         $downloadPdfLabel = get_option('kw_download_pdf_label', $default_download_pdf_label);
         // Words List Text Settings
-        $default_word_text_font_size = '14.4px';
+        $default_word_text_font_size = 14.4;
         $default_word_text_font_color = '#4a5568';
         $wordListTextFontSize = get_option('kw_wordsearch_word_font_size', $default_word_text_font_size);
         $wordListTextFontColor = get_option('kw_wordsearch_word_font_color', $default_word_text_font_color);

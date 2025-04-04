@@ -74,7 +74,7 @@ function wordsearch_enqueue_assets() {
         $showImagesLabel = __('Show Images', 'wp-quiz-plugin');
         $hideImagesLabel = __('Hide Images', 'wp-quiz-plugin');
         // Word List Text Settings
-        $default_word_text_font_size = '14.4px';
+        $default_word_text_font_size = 14.4;
         $default_word_text_font_color = '#4a5568';
         $wordListTextFontSize = get_option('kw_wordsearch_word_font_size', $default_word_text_font_size);
         $wordListTextFontColor = get_option('kw_wordsearch_word_font_color', $default_word_text_font_color);

@@ -4,7 +4,7 @@
     <?php
     // Default values for Clue Image Settings
     $default_settings = [
-        'fontSize'     => "14.4px",
+        'fontSize'     => 14.4,
         'fontColor'   => "#4a5568",
     ];
 
@@ -22,7 +22,7 @@
             <?php esc_html_e('Font Size', 'wp-quiz-plugin'); ?>
         </label>
         <input 
-            type="text" 
+            type="number" 
             id="kw_wordsearch_word_font_size" 
             name="kw_wordsearch_word_font_size" 
             class="regular-text kw-input" 

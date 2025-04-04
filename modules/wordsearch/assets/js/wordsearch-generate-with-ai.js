@@ -359,16 +359,22 @@ jQuery(document).ready(function ($) {
     });
 
     const postId = $("#post_ID").val();
-    const baseUrl = `${window.location.origin}/wp-admin/post.php?post=${postId}&action=edit`;
+    let baseUrl = "";
 
-    // If the URL contains the reload parameter, wait before cleaning up the URL.
-    if (window.location.href.includes("wp-post-new-reload=true")) {
-      setTimeout(function () {
-        window.history.replaceState(null, "", baseUrl);
-      }, 1000); // Adjust the delay as needed
+    // Split the pathname to extract the subdirectory (assumes it's the first segment)
+    const pathSegments = window.location.pathname.split("/").filter(Boolean);
+    const subdirectory = pathSegments[0] || ""; // "stateduntimed"
+
+    // Build the base URL using the subdirectory
+
+    if (subdirectory !== "wp-admin") {
+      baseUrl = `${window.location.origin}/${subdirectory}/wp-admin/post.php?post=${postId}&action=edit`;
     } else {
-      window.history.replaceState(null, "", baseUrl);
+      baseUrl = `${window.location.origin}/wp-admin/post.php?post=${postId}&action=edit`;
     }
+
+    window.history.replaceState(null, "", baseUrl);
+
     $.ajax({
       url: wordsearchScriptVar.ajaxUrl,
       type: "POST",
