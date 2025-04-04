@@ -92,6 +92,8 @@ export function renderWordList(wordData) {
 
         const wordSpan = document.createElement("span");
         wordSpan.textContent = formattedWord;
+        wordSpan.style.fontSize = window.customStyles["wordListTextFontSize"];
+        wordSpan.style.color = window.customStyles["wordListTextFontColor"];
         wordSpan.classList.add("word-text");
 
         const eyeIconContainer = document.createElement("span");

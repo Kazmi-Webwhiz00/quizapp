@@ -288,6 +288,39 @@ export function createWordSearchGame({
         }
       });
 
+      function ensureColorTransparency(color, defaultAlpha = "99") {
+        // Return empty string or invalid values as is
+        if (!color || typeof color !== "string") {
+          return color;
+        }
+
+        // Remove # if present
+        const hexColor = color.startsWith("#") ? color.substring(1) : color;
+
+        // Check if it's already a hex with alpha (8 characters)
+        if (hexColor.length === 8) {
+          return `#${hexColor}`;
+        }
+
+        // Check if it's a standard hex color (6 characters)
+        if (hexColor.length === 6) {
+          return `#${hexColor}${defaultAlpha}`;
+        }
+
+        // For 3-character hex shorthand
+        if (hexColor.length === 3) {
+          // Expand shorthand and add alpha
+          const expanded = hexColor
+            .split("")
+            .map((char) => char + char)
+            .join("");
+          return `#${expanded}${defaultAlpha}`;
+        }
+
+        // Return original if format is unrecognized
+        return color;
+      }
+
       const throttledPointerMove = throttle((pointer) => {
         if (!isDrawing || !startPoint) return;
 
@@ -320,12 +353,14 @@ export function createWordSearchGame({
           dynamicCtx.clearRect(0, 0, dynamicCanvas.width, dynamicCanvas.height);
           return;
         }
+        // Usage example
         const lineColor = window.customStyles["lineColor"];
+        const lineColorWithTransparency = ensureColorTransparency(lineColor);
         // Draw the line
         dynamicCtx.beginPath();
         dynamicCtx.moveTo(startPoint.x, startPoint.y);
         dynamicCtx.lineTo(currentX, currentY);
-        dynamicCtx.strokeStyle = lineColor;
+        dynamicCtx.strokeStyle = lineColorWithTransparency;
         dynamicCtx.lineWidth = cellSize * 0.8;
         dynamicCtx.lineCap = "round";
         dynamicCtx.stroke();
@@ -339,14 +374,6 @@ export function createWordSearchGame({
 
         const dynamicCtx = dynamicCanvas.getContext("2d");
         dynamicCtx.clearRect(0, 0, dynamicCanvas.width, dynamicCanvas.height);
-
-        // let newSize = computeEffectiveGridSize(window.wordData);
-        // const { width: newWidth, height: newHeight } = getDynamicCanvasSize(
-        //   (containerId = "game-container"),
-        //   newSize,
-        //   newSize < 10 ? 800 : 10000
-        // );
-        // const cellSize = Math.min(newWidth, newHeight) / newSize;
 
         const finalX = Phaser.Math.Clamp(
           scene.input.activePointer.x + 8,
