@@ -401,25 +401,22 @@ jQuery(document).ready(function ($) {
     if (downloadElement) {
       downloadElement.style.display = "flex";
       downloadElement.addEventListener("click", function (event) {
-        downloadElement.style.padding = "10px 20px";
-        downloadElement.style.backgroundColor = "#f5d992";
-        downloadElement.style.border = "2px solid #c89836";
-        downloadElement.style.borderRadius = "4px";
-        downloadElement.style.color = "#473214";
-        downloadElement.style.fontWeight = "bold";
-        downloadElement.style.cursor = "pointer";
-        downloadElement.style.fontFamily = "Georgia, serif";
-        downloadElement.style.boxShadow = "0 2px 4px rgba(0,0,0,0.2)";
         event.preventDefault();
-        // Add hover effect
-        downloadElement.onmouseover = function () {
-          this.style.backgroundColor = "#e6ba6c";
-        };
-        downloadElement.onmouseout = function () {
-          this.style.backgroundColor = "#f5d992";
-        };
 
-        downloadWordSearchAsPDF();
+        // Change the button text to "Downloading"
+        downloadElement.textContent = frontendData.downloadingButtonLabel;
+
+        // Set the download button styling while downloading
+        downloadElement.classList.remove("kw-grid-download-button");
+        downloadElement.classList.add("container-download-button");
+
+        // Start the PDF download process
+        downloadWordSearchAsPDF(() => {
+          downloadElement.textContent = frontendData.downloadPdfLabel;
+          downloadElement.classList.remove("container-download-button");
+          downloadElement.classList.add("kw-grid-download-button");
+          // Optionally reset any other styles if needed.
+        });
       });
     }
   }

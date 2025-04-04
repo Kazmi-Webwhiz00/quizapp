@@ -1,5 +1,26 @@
 jQuery(document).ready(function ($) {
-  $(".kw-color-picker").wpColorPicker();
+  $(".kw-color-picker").wpColorPicker({
+    change: function (event, ui) {
+      var hexColor = ui.color.toString();
+
+      // Try to get the color2name function:
+      var color2nameFn =
+        window.color2name &&
+        typeof window.color2name === "object" &&
+        typeof window.color2name.default === "function"
+          ? window.color2name.default
+          : window.color2name;
+
+      if (typeof color2nameFn === "function") {
+        var colorName = color2nameFn(hexColor);
+        console.log("Selected color:", hexColor, "->", colorName);
+      } else {
+        console.error(
+          "color2name function is not defined properly. Make sure the color-2-name script is loaded correctly."
+        );
+      }
+    },
+  });
   const tabs = $(".kw-wordsearch-nav-tab");
   const panes = $(".kw-wordsearch-tab-pane");
 
@@ -105,6 +126,24 @@ jQuery(document).ready(function ($) {
       $(this)
         .closest(".shortcode-box")
         .find("#quiz-copy-message")
+        .fadeIn(200)
+        .delay(1000)
+        .fadeOut(200);
+    }
+  });
+
+  // Copy to clipboard function for Crossword Shortcode
+  $(document).on("click", "#crossword-copy-button", function () {
+    // Find the sibling input field with ID 'crossword-copy-input' within the same container
+    var $input = $(this)
+      .closest(".shortcode-box")
+      .find("#crossword-copy-input");
+    $input.focus().select();
+    if (document.execCommand("copy")) {
+      // Show the copy message within the same '.shortcode-box'
+      $(this)
+        .closest(".shortcode-box")
+        .find("#crossword-copy-message")
         .fadeIn(200)
         .delay(1000)
         .fadeOut(200);

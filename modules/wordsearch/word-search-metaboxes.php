@@ -69,6 +69,11 @@ function wordsearch_enqueue_assets() {
         $gridFindWordsLabel = get_option('kw_find_words_label', $default_find_words_label);
         $showImagesLabel = __('Show Images', 'wp-quiz-plugin');
         $hideImagesLabel = __('Hide Images', 'wp-quiz-plugin');
+        // Word List Text Settings
+        $default_word_text_font_size = '14.4px';
+        $default_word_text_font_color = '#4a5568';
+        $wordListTextFontSize = get_option('kw_wordsearch_word_font_size', $default_word_text_font_size);
+        $wordListTextFontColor = get_option('kw_wordsearch_word_font_color', $default_word_text_font_color);
         
 
     // Enqueue jQuery if not already loaded.
@@ -152,6 +157,9 @@ function wordsearch_enqueue_assets() {
                 'timeupPopupBodyText'      => esc_attr( $timeup__popup_body_text),
                 'timeupPopupChallengeText' => esc_attr($timeup__popup_challenge_text),
                 'timeupPopupButtonText'    => esc_attr($timeup__popup_button_text),
+                // Word List Text Settings
+                'wordListTextFontSize'     => esc_attr($wordListTextFontSize),
+                'wordListTextFontColor'    => esc_attr($wordListTextFontColor),
             ),
             'pdfText'   => array(
                 'postTitle' => $title,

@@ -370,11 +370,10 @@ add_action('wp_ajax_fetch_wordsearch_subjects', 'fetch_wordsearch_subjects');
 // Wordsearch Visibility Meta Box
 // -------------------------------------------------------------------
 function wordsearch_visibility_meta_box() {
-    $meta_label = _x('Wordsearch Visibility','wordsearch', 'wp-quiz-plugin');
 
     add_meta_box(
         'wordsearch_visibility_meta_box',
-        $meta_label,
+        esc_html_x('Wordsearch Visibility','wordsearch', 'wp-quiz-plugin'),
         'render_wordsearch_visibility_meta_box',
         'wordsearch',
         'side',

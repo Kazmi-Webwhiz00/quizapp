@@ -50,6 +50,10 @@ function wordsearch_register_frontend_styles_settings() {
      register_setting('kw_wordsearch_fe_settings', 'kw_wordsearch_success_popup_body_text', ['default' => __('You have successfully completed the wordsearch!', 'wp-quiz-plugin')]);
      register_setting('kw_wordsearch_fe_settings', 'kw_wordsearch_success_popup_challenge_text', ['default' => __('Ready for another challenge?', 'wp-quiz-plugin')]);
      register_setting('kw_wordsearch_fe_settings', 'kw_wordsearch_success_popup_button_text', ['default' => __('Play Again', 'wp-quiz-plugin')]);
+    
+     // Wordsearch Words List Settings
+     register_setting('kw_wordsearch_fe_settings', 'kw_wordsearch_word_font_size', ['default' => '14.4px']); // Default font size
+     register_setting('kw_wordsearch_fe_settings', 'kw_wordsearch_word_font_color', ['default' => '#4a5568']); // Default font color
 
     // Success Popup Settings
     register_setting('kw_wordsearch_fe_settings', 'kw_wordsearch_timeup_popup_title', ['default' => __("Time's Up!", 'wp-quiz-plugin')]);
@@ -65,6 +69,13 @@ function wordsearch_register_frontend_styles_settings() {
         'kw_wordsearch_puzzle_texts_section',
         __('Word Search Puzzle Texts', 'wp-quiz-plugin'),
         'wordsearch_render_wordsearch_puzzle_section',
+        'kw-wordsearch-frontend-styles-page'
+    );
+
+    add_settings_section(
+        'kw_wordsearch_words_list_texts_section',
+        __('Word Search Words List Texts', 'wp-quiz-plugin'),
+        'wordsearch_render_words_list_text_section',
         'kw-wordsearch-frontend-styles-page'
     );
 
@@ -116,6 +127,10 @@ add_action('admin_init', 'wordsearch_register_frontend_styles_settings');
 
  function wordsearch_render_wordsearch_puzzle_section() {
     include plugin_dir_path(__FILE__) . '../templates/sections/fe/fe-wordsearch-puzzle-texts-section.php';
+}
+
+function wordsearch_render_words_list_text_section() {
+    include plugin_dir_path(__FILE__) . '../templates/sections/fe/fe-wordsearch-words-list-texts-section.php';
 }
 
 function wordsearch_render_frontend_styles_section() {

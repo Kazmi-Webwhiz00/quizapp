@@ -1,6 +1,6 @@
 jQuery(document).ready(function ($) {
-  console.log("is admin (wordsearch) is ", wpQuizPlugin.isAdmin);
-  let totalEntries = 0;
+  console.log("is admin (wordsearch) is ", wordsearchScriptVar.isAdmin);
+  const MAX_ENTRIES = 15;
 
   // Global array to hold all word entry objects (if not defined already)
   var wordEntries = [];
@@ -32,10 +32,11 @@ jQuery(document).ready(function ($) {
    */
   function ws_generatePrompt(number, topic, age, language) {
     // Retrieve localized default prompts
-    const contextPromptTemplate = wpQuizPlugin.wsDefaultContextPrompt;
-    const generationPromptTemplate = wpQuizPlugin.wsDefaultGenerationPrompt;
-    const returnFormatPrompt = wpQuizPlugin.wsDefaultReturnFormatPrompt;
-    const defaultCategory = wpQuizPlugin.defaultCategory;
+    const contextPromptTemplate = wordsearchScriptVar.wsDefaultContextPrompt;
+    const generationPromptTemplate =
+      wordsearchScriptVar.wsDefaultGenerationPrompt;
+    const returnFormatPrompt = wordsearchScriptVar.wsDefaultReturnFormatPrompt;
+    const defaultCategory = wordsearchScriptVar.defaultCategory;
 
     // 1) Get selected categories using updated selectors for wordsearch
     const selectedCategories = ws_getSelectedCategories();
@@ -162,34 +163,55 @@ jQuery(document).ready(function ($) {
     const newEntries = parseInt(number);
 
     const language = $("#ws-language").val().trim();
-    const maxNumberOfWords = parseInt(wpQuizPlugin.wsMaxNumberOfWords);
+    const maxNumberOfWords = parseInt(wordsearchScriptVar.wsMaxNumberOfWords);
     if (newEntries < 1 || newEntries > maxNumberOfWords) {
       Swal.fire(
-        wpQuizPlugin.wsStrings.errorTitle,
-        `${wpQuizPlugin.wsStrings.numberError} ${wpQuizPlugin.wsMaxNumberOfWords}`,
+        wordsearchScriptVar.wsStrings.errorTitle,
+        `${wordsearchScriptVar.wsStrings.numberError} ${wordsearchScriptVar.wsMaxNumberOfWords}`,
         "warning"
       );
       return;
     }
 
-    if (totalEntries + newEntries > 15 || window.totalEntries > 15) {
-      window.showWordLimitModal();
+    // Check if adding new entries would exceed the maximum limit
+    if (window.totalEntries + newEntries > MAX_ENTRIES) {
+      Swal.fire({
+        title: wordsearchScriptVar.entryLimitTitle,
+        text: wordsearchScriptVar.entryLimitBodyText,
+        icon: "error",
+        confirmButtonText: "OK",
+        confirmButtonColor: "#3085d6", // Professional blue color
+        customClass: {
+          container: "my-swal-container",
+          popup: "my-swal-popup",
+          title: "my-swal-title",
+          content: "my-swal-content",
+          confirmButton: "my-swal-confirm-btn",
+        },
+        showClass: {
+          popup: "animate__animated animate__fadeIn faster", // Smooth fade-in animation
+        },
+        hideClass: {
+          popup: "animate__animated animate__fadeOut faster", // Smooth fade-out animation
+        },
+      });
+
       return;
     }
 
-    totalEntries += newEntries;
-    window.totalEntries += totalEntries;
+    // Update the global total entries
+    window.totalEntries += newEntries;
     console.log(ws_generatePrompt(number, topic, age, language));
     const data = {
-      model: wpQuizPlugin.wsModel,
+      model: wordsearchScriptVar.wsModel,
       messages: [
         {
           role: "user",
           content: ws_generatePrompt(number, topic, age, language),
         },
       ],
-      max_tokens: parseInt(wpQuizPlugin.wsMaxTokens),
-      temperature: parseFloat(wpQuizPlugin.wsTemperature),
+      max_tokens: parseInt(wordsearchScriptVar.wsMaxTokens),
+      temperature: parseFloat(wordsearchScriptVar.wsTemperature),
     };
 
     // Function to send the request with retry logic
@@ -199,18 +221,18 @@ jQuery(document).ready(function ($) {
         url: "https://api.openai.com/v1/chat/completions",
         method: "POST",
         headers: {
-          Authorization: "Bearer " + wpQuizPlugin.wsApiKey,
+          Authorization: "Bearer " + wordsearchScriptVar.wsApiKey,
           "Content-Type": "application/json",
         },
         data: JSON.stringify(data),
         beforeSend: function () {
           $(".kw-loading").show();
           console.log("Sending request to OpenAI (wordsearch)...", data);
-          if (wpQuizPlugin.isAdmin) {
+          if (wordsearchScriptVar.isAdmin) {
             showAdminPrompt(data.messages[0].content);
           }
           $(generateButtonId)
-            .text(wpQuizPlugin.wsGeneratingText)
+            .text(wordsearchScriptVar.wsGeneratingText)
             .prop("disabled", true);
         },
         success: function (response) {
@@ -267,8 +289,8 @@ jQuery(document).ready(function ($) {
             ws_saveWordSearchAjax();
             $(".kw-loading").hide();
             Swal.fire(
-              wpQuizPlugin.wsStrings.successTitle,
-              wpQuizPlugin.wsStrings.successMessage,
+              wordsearchScriptVar.wsStrings.successTitle,
+              wordsearchScriptVar.wsStrings.successMessage,
               "success"
             );
             $.fn.highlightPublishButton();
@@ -276,13 +298,13 @@ jQuery(document).ready(function ($) {
             console.error("Error parsing response (wordsearch):", error);
             $(".kw-loading").hide();
             Swal.fire(
-              wpQuizPlugin.wsStrings.errorTitle,
-              wpQuizPlugin.wsStrings.errorMessage,
+              wordsearchScriptVar.wsStrings.errorTitle,
+              wordsearchScriptVar.wsStrings.errorMessage,
               "error"
             );
           }
           $(generateButtonId)
-            .text(wpQuizPlugin.wsGenerateWithAiText)
+            .text(wordsearchScriptVar.wsGenerateWithAiText)
             .prop("disabled", false);
         },
         error: function (xhr, status, error) {
@@ -293,9 +315,13 @@ jQuery(document).ready(function ($) {
           } else {
             let errorMsg = "Failed to generate wordsearch. ";
             errorMsg += xhr.responseJSON?.error?.message || "Error: " + error;
-            Swal.fire(wpQuizPlugin.wsStrings.errorTitle, errorMsg, "error");
+            Swal.fire(
+              wordsearchScriptVar.wsStrings.errorTitle,
+              errorMsg,
+              "error"
+            );
             $(generateButtonId)
-              .text(wpQuizPlugin.wsGenerateWithAiText)
+              .text(wordsearchScriptVar.wsGenerateWithAiText)
               .prop("disabled", false);
           }
         },
