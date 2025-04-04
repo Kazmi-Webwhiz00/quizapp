@@ -25,6 +25,14 @@ function enqueue_wordsearch_metabox_preview_assets( $hook ) {
         $gridFindWordsLabel = get_option('kw_find_words_label', $default_find_words_label);
         $showImagesLabel = __('Show Images', 'wp-quiz-plugin');
         $hideImagesLabel = __('Hide Images', 'wp-quiz-plugin');
+        $default_download_pdf_label = __('Download Pdf', 'wp-quiz-plugin');
+        $default_downloading_button_label = __('Downloading...', 'wp-quiz-plugin');
+        $downloadPdfLabel = get_option('kw_download_pdf_label', $default_download_pdf_label);
+        // Words List Text Settings
+        $default_word_text_font_size = '14.4px';
+        $default_word_text_font_color = '#4a5568';
+        $wordListTextFontSize = get_option('kw_wordsearch_word_font_size', $default_word_text_font_size);
+        $wordListTextFontColor = get_option('kw_wordsearch_word_font_color', $default_word_text_font_color);
 
 
     if ( $screen && $screen->post_type === 'wordsearch' && 
@@ -96,6 +104,8 @@ function enqueue_wordsearch_metabox_preview_assets( $hook ) {
       'nonce'   => wp_create_nonce('wp_rest'),
       'showImagesLabel' => esc_html__($showImagesLabel),
       'hideImagesLabel' => esc_html__($hideImagesLabel),
+      'downloadPdfLabel' => esc_html__($downloadPdfLabel),
+      'downloadingButtonLabel' => esc_html__($default_downloading_button_label),
       'gridStyles'       => array( 
           'fontColor'              => esc_attr( $gridTextColor ),
           'fontFamily'             => esc_attr( $gridTextFontFamily ),
@@ -103,7 +113,10 @@ function enqueue_wordsearch_metabox_preview_assets( $hook ) {
           'oddCellBgColor'                => esc_attr( $grid_odd_cell_bg_color  ),
           'higlightedCellTextColor'=> esc_attr( $higlightedCellTextColor ),
           'lineColor'              => esc_attr( $lineColor ),
-          'toggleGridLettersSound'   => esc_attr($toggleGridLettersSound),      ),
+          'toggleGridLettersSound'   => esc_attr($toggleGridLettersSound),
+          'wordListTextFontSize'   => esc_attr($wordListTextFontSize),
+          'wordListTextFontColor'  => esc_attr($wordListTextFontColor),
+        ),
       'pdfText'   => array(
         'postTitle' => $title,
         'findWordsLabel' => $gridFindWordsLabel,
@@ -190,7 +203,7 @@ if ( ! is_array( $word_entries ) ) {
     <?php 
     if ($word_entries) {
     ?>
-      <button id="downloadButton" class="download-button" style="background-color: <?php echo esc_attr($shuffle_bg_color); ?>; color: <?php echo esc_attr($shuffle_text_color); ?>;">
+      <button id="downloadButton" class="kw-grid-download-button" style="background-color: <?php echo esc_attr($shuffle_bg_color); ?>; color: <?php echo esc_attr($shuffle_text_color); ?>;">
       <?php echo esc_html__($downloadPdfLabel); ?>
       </button>
     <?php 
