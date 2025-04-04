@@ -5,7 +5,8 @@ include_once plugin_dir_path(__FILE__) . '/word-search-metabox-preview.php';
 include_once plugin_dir_path(__FILE__) . '/word-search-timer-metabox.php';
 include_once plugin_dir_path(__FILE__) . '/word-search-metabox-ai.php';
 include_once plugin_dir_path(__FILE__) . '/admin/admin-settings.php';
-
+include_once plugin_dir_path(__FILE__) . '/word-search-description.php';
+include_once plugin_dir_path(__FILE__) . '/word-search-feature-buttons.php';
 
 function load_wordsearch_assets($hook) {
     // Get the current screen information

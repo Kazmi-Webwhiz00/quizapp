@@ -111,7 +111,8 @@ function ws_admin_enqueue_assets($hook) {
         'nonce'   => wp_create_nonce('kw-wordsearch-nonce'),
     ));
 
-    // wp_enqueue_style('wp-color-picker')      
+    // wp_enqueue_style('wp-color-picker');
+    // wp_enqueue_script('kw-color-picker-script', plugins_url('/js/color-picker.js', __FILE__), ['wp-color-picker'], false, true);   
 }
 add_action('admin_enqueue_scripts', 'ws_admin_enqueue_assets');
 ?>
