@@ -22,17 +22,22 @@ function load_wordsearch_assets($hook) {
 
     wp_enqueue_script('wordsearch-generate-with-ai', plugin_dir_url(__FILE__) . 'assets/js/wordsearch-generate-with-ai.js', array('jquery'), null, true);
 
-    wp_localize_script('wordsearch-generate-with-ai', 'wordsearchScriptVar', array(
-        'ajaxUrl' => admin_url('admin-ajax.php'),
-        'nonce'   => wp_create_nonce('wordsearch_ajax_nonce'),
-    ));
-
     // Enqueue the AI-specific JavaScript file for Wordsearch
 
     // Localize variables for use in the Wordsearch AI JavaScript
     $ws_button_label = get_option('kw_generate_with_ai_button_label_ws', __('Generate with AI', 'wp-quiz-plugin'));
+    $default_entry_limit_popup_label = __("Entry Limit Reached", 'wp-quiz-plugin');
+    $default_entry_limit__body_text = __('You cannot add more than 15 entries to the word search.', 'wp-quiz-plugin');
+    $entry_limit__popup_title = get_option('kw_wordsearch_entry_limit_popup_title', $default_entry_limit_popup_label);
+    $entry_limit__popup_body_text = get_option('kw_wordsearch_entry_limit_popup_body_text', $default_entry_limit__body_text);
 
-    wp_localize_script('wordsearch-generate-with-ai', 'wpQuizPlugin', [
+    wp_localize_script('wordsearch-generate-with-ai', 'wordsearchScriptVar', [        
+        'ajaxUrl' => admin_url('admin-ajax.php'),
+        'nonce'   => wp_create_nonce('wordsearch_ajax_nonce'),
+
+        'entryLimitTitle' => $entry_limit__popup_title,
+        'entryLimitBodyText' => $entry_limit__popup_body_text,
+
         // Wordsearch GPT API settings
         'isAdmin' => current_user_can('manage_options'),
         'wsApiKey' => get_option('kw_wordsearch_openai_api_key'),

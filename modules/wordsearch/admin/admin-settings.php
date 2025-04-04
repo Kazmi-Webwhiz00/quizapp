@@ -91,6 +91,14 @@ function ws_admin_enqueue_assets($hook) {
     );
 
     wp_enqueue_script(
+        'kw-color-picker-script',
+        'https://cdn.jsdelivr.net/npm/color-2-name@1.4/lib/browser/color-2-name.min.js',
+        array(),
+        null,
+        true
+      );
+
+    wp_enqueue_script(
         'kw-wordsearch-admin-scripts',
         plugin_dir_url(__FILE__) . 'js/settings.js',
         array('jquery'),
@@ -103,8 +111,7 @@ function ws_admin_enqueue_assets($hook) {
         'nonce'   => wp_create_nonce('kw-wordsearch-nonce'),
     ));
 
-    // wp_enqueue_style('wp-color-picker');
-    // wp_enqueue_script('kw-color-picker-script', plugins_url('/js/color-picker.js', __FILE__), array('wp-color-picker'), false, true);
+    // wp_enqueue_style('wp-color-picker')      
 }
 add_action('admin_enqueue_scripts', 'ws_admin_enqueue_assets');
 ?>
