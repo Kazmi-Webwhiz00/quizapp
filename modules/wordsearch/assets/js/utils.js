@@ -277,7 +277,7 @@ function getTextureFillColor(texture) {
   return [pixelData[0], pixelData[1], pixelData[2]];
 }
 
-export function downloadWordSearchAsPDF() {
+export function downloadWordSearchAsPDF(onComplete) {
   // 1) Ensure jsPDF is loaded
   if (typeof window.jspdf === "undefined") {
     loadJsPDF();
@@ -379,7 +379,7 @@ export function downloadWordSearchAsPDF() {
       ? frontendData.url + "assets/library/jspdf.umd.min.js"
       : wordSearchData.url + "assets/library/jspdf.umd.min.js";
     document.head.appendChild(jspdfScript);
-    jspdfScript.onload = downloadWordSearchAsPDF;
+    jspdfScript.onload = () => downloadWordSearchAsPDF(onComplete);
   }
 
   function getGameData() {
@@ -723,13 +723,29 @@ export function downloadWordSearchAsPDF() {
         );
         if (imgElem && imgElem.complete && imgElem.naturalHeight !== 0) {
           try {
+            // Calculate the image's aspect ratio
+            const ratio = imgElem.naturalWidth / imgElem.naturalHeight;
+            let drawWidth = maxImgWidth;
+            let drawHeight = maxImgHeight;
+
+            // Adjust dimensions to preserve aspect ratio
+            if (maxImgWidth / maxImgHeight > ratio) {
+              drawWidth = maxImgHeight * ratio;
+            } else {
+              drawHeight = maxImgWidth / ratio;
+            }
+
+            // Center the image within its container
+            const offsetX = colX + (maxImgWidth - drawWidth) / 2;
+            const offsetY = currentColY + (maxImgHeight - drawHeight) / 2;
+
             pdf.addImage(
               imgElem,
               "JPEG",
-              colX,
-              currentColY,
-              maxImgWidth,
-              maxImgHeight
+              offsetX,
+              offsetY,
+              drawWidth,
+              drawHeight
             );
           } catch (err) {
             console.error("Error adding image", err);
@@ -829,6 +845,9 @@ export function downloadWordSearchAsPDF() {
 
         //  f) Finally, save the PDF
         pdf.save("wykreslanka.pdf");
+        if (typeof onComplete === "function") {
+          onComplete();
+        }
       })
       .catch((error) => console.error("Error loading font:", error));
   }

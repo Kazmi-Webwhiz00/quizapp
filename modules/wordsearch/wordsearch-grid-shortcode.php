@@ -19,12 +19,12 @@ $default_popup_button_text = __('Play Again', 'wp-quiz-plugin');
 $success_popup_button_text = get_option('kw_wordsearch_success_popup_button_text', $default_popup_button_text);
 $default_grid_title_label = __('Word Search Challenge', 'wp-quiz-plugin');
 $default_find_words_label = __('Find These Words:', 'wp-quiz-plugin');
-$default_download_pdf_label = __('Download Pdf', 'wp-quiz-plugin');
 // Grid Title Label
 $gridTitleLabel = get_option('kw_grid_title_label', $default_grid_title_label);
 // Find Words Label
 $gridFindWordsLabel = get_option('kw_find_words_label', $default_find_words_label);
 // Download Pdf
+$default_download_pdf_label = __('Download Pdf', 'wp-quiz-plugin');
 $downloadPdfLabel = get_option('kw_download_pdf_label', $default_download_pdf_label);
 $soundEnabled = get_option('kw_grid_text_sound_setting', 'true') ;
 // Show or hide Images Label
@@ -62,7 +62,7 @@ $showImagesLabel = __('Show Images', 'wp-quiz-plugin');
   
   <h2 class="game-title"><?php echo esc_html__($gridTitleLabel); ?></h2>
 
-  <button id="downloadButton" class="control-button download-button">
+  <button id="downloadButton" class="control-button kw-grid-download-button">
       <span class="button-icon">📥</span>
       <span class="button-text"><?php echo esc_html__($downloadPdfLabel); ?></span>
     </button>
@@ -121,7 +121,7 @@ $showImagesLabel = __('Show Images', 'wp-quiz-plugin');
 <!-- This will be shown/hidden programmatically -->
 <div class="grid-loading-indicator" style="display: none;">
   <div class="grid-loading-spinner"></div>
-  <div style="color: #473214; font-weight: bold;" class="renderingPara">Rendering grid...</div>
+  <div style="color: #473214; font-weight: bold;" class="renderingPara"><?php echo esc_html__('Rendering grid...', 'wp-quiz-plugin');?></div>
 </div>
 
 <?php

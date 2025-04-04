@@ -51,7 +51,7 @@ add_action('admin_enqueue_scripts', 'wordsearch_timer_admin_enqueue_scripts');
 function wordsearch_timer_register_meta_boxes() {
     add_meta_box(
         'wordsearch-timer',
-        esc_html__('Word Search Timer', 'wordsearch'),
+        esc_html__('Word Search Timer', 'wp-quiz-plugin'),
         'wordsearch_timer_display_callback',
         'wordsearch', // Change this to your actual post type
         'side',
@@ -114,7 +114,7 @@ function wordsearch_timer_display_callback($post) {
         <p>
             <label for="wordsearch-timer-enabled">
                 <input type="checkbox" id="wordsearch-timer-enabled" name="wordsearch_timer_enabled" value="1" <?php checked($timer_enabled, 1); ?>>
-                <?php _e('Enable Timer', 'wordsearch'); ?>
+                <?php echo esc_html__('Enable Timer', 'wp-quiz-plugin'); ?>
             </label>
         </p>
         
