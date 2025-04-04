@@ -408,7 +408,7 @@ export function downloadWordSearchAsPDF(onComplete) {
   }
 
   function getWordList(gameInstance) {
-    const words = gameInstance.words || window.wordData || getWordsList();
+    const words = getWordsList() || gameInstance.words || window.wordData;
     return { words, wordCount: words.length };
   }
 
@@ -497,7 +497,7 @@ export function downloadWordSearchAsPDF(onComplete) {
   function getImagesLayout(imageCount, hasImages, imageColumns) {
     let maxImgWidth = imageCount > 10 ? 100 : 140;
     let maxImgHeight = imageCount > 10 ? 80 : 100;
-    const imagesGapY = 10;
+    const imagesGapY = 15;
     const imagesGapX = 15;
     const imagesListingWidth =
       imageColumns.length > 0
@@ -862,10 +862,23 @@ export function downloadWordSearchAsPDF(onComplete) {
  */
 function getWordsList() {
   const gameScene = window.gameInstance.scene.scenes[0];
-
   // If you have a global window.wordData, use it
-  if (window.wordData && window.wordData.length) {
-    return window.wordData;
+  if (window.wordData && window.wordData.length && window.finalEntries.length) {
+    let wordData = window.wordData;
+    // Filter out words that are marked as hidden
+    wordData = wordData.filter((word) => {
+      const formattedWord = word.toLowerCase();
+      if (window.finalEntries && Array.isArray(window.finalEntries)) {
+        const entry = window.finalEntries.find(
+          (item) => item.wordText.toLowerCase() === formattedWord
+        );
+        if (entry && entry.hidden === true) {
+          return false;
+        }
+      }
+      return true;
+    });
+    return wordData;
   }
 
   // Try different possible locations in the game scene
