@@ -22,18 +22,31 @@ add_action('add_meta_boxes', 'add_wordsearch_meta_box');
 
 // Enqueue the JavaSwordsearch-image-previewipt file for the meta box.
 function enqueue_style_script( $hook ) {
+    // Entry Limit Popup
+    $default_entry_limit_popup_title     = __( "Entry Limit Reached", 'wp-quiz-plugin' );
+    $default_entry_limit_popup_body_text = __( "You cannot add more than 15 entries to the word search.", 'wp-quiz-plugin' );
+    $entry_limit_popup_title             = get_option( 'kw_wordsearch_entry_limit_popup_title', $default_entry_limit_popup_title );
+    $entry_limit_popup_body_text         = get_option( 'kw_wordsearch_entry_limit_popup_body_text', $default_entry_limit_popup_body_text );
+    
     $screen = get_current_screen();
-    if ( $screen && $screen->post_type === 'wordsearch' && ($hook === 'post-new.php' || $hook === 'post.php') ) {
-        wp_enqueue_script('jquery');
-    // Enqueue jQuery UI Dialog script.
-    wp_enqueue_script('jquery-ui-dialog');
-    // Optionally, enqueue a jQuery UI theme CSS.
-    wp_enqueue_style('jquery-ui-css', 'https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css');
-        wp_enqueue_script('custom-admin-js', plugin_dir_url(__FILE__) . '/assets/js/metabox.js', ['jquery'], null, true);
-        wp_enqueue_style('custom-admin-css', plugin_dir_url(__FILE__) . '/assets/css/style.css');
+    if ( $screen && $screen->post_type === 'wordsearch' && ( $hook === 'post-new.php' || $hook === 'post.php' ) ) {
+        wp_enqueue_script( 'jquery' );
+        // Enqueue jQuery UI Dialog script.
+        wp_enqueue_script( 'jquery-ui-dialog' );
+        // Optionally, enqueue a jQuery UI theme CSS.
+        wp_enqueue_style( 'jquery-ui-css', 'https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css' );
+        wp_enqueue_script( 'custom-admin-js', plugin_dir_url( __FILE__ ) . '/assets/js/metabox.js', array( 'jquery' ), null, true );
+        wp_enqueue_style( 'custom-admin-css', plugin_dir_url( __FILE__ ) . '/assets/css/style.css' );
+
+        // Localize the data: Pass the word entries and a nonce to your JS file.
+        wp_localize_script( 'custom-admin-js', 'entryLimit', array(
+            'entryLimitTitle'    => $entry_limit_popup_title,
+            'entryLimitBodyText' => $entry_limit_popup_body_text,
+        ) );
     }
 }
-add_action('admin_enqueue_scripts', 'enqueue_style_script');
+add_action( 'admin_enqueue_scripts', 'enqueue_style_script' );
+
 
 function wordsearch_enqueue_assets() {
 

@@ -12,7 +12,7 @@ function wordsearch_custom_meta_box() {
     if ($post && $post->post_type === 'wordsearch' && $post->post_status === 'publish') {
         add_meta_box(
             'wordsearch_action_buttons_meta_box', // Updated ID for uniqueness
-            __('Wordsearch Actions','wp-quiz-plugin'),                    // Title
+            esc_html__('Wordsearch Actions','wp-quiz-plugin'),                    // Title
             'wordsearch_meta_box_callback',       // Callback function
             'wordsearch',                         // Post type
             'normal',                          // Context

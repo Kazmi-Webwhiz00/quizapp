@@ -242,7 +242,7 @@ jQuery(document).ready(function ($) {
     // Create visual clue element
     const $clue = $("<div></div>")
       .addClass("visual-clue")
-      .attr("data-word", word.toLowerCase())
+      .attr("data-word", word.toUpperCase())
       .css({
         top: position.top + "px",
         left: position.left + "px",
@@ -431,35 +431,26 @@ jQuery(document).ready(function ($) {
   }
 
   // Toggle sound function
-  let soundEnabled = true;
+  // Initialization
+  let soundEnabled = window.customStyles.toggleGridLettersSound;
   window.soundEnabled = soundEnabled;
-
-  // Set initial UI state
-  $("#soundOnIcon").show();
-  $("#soundOffIcon").hide();
+  if (soundEnabled) {
+    $("#soundOnIcon").show();
+    $("#soundOffIcon").hide();
+  } else {
+    $("#soundOnIcon").hide();
+    $("#soundOffIcon").show();
+  }
 
   // Toggle sound function
   $("#kwGridSoundButton").on("click", function (event) {
     event.stopPropagation();
     event.preventDefault();
-    console.log(":: Sound toggle button clicked");
-
-    // Toggle the sound state
     soundEnabled = !soundEnabled;
     window.soundEnabled = soundEnabled;
-
-    // Update the UI based on the new state
-    if (soundEnabled) {
-      $("#soundOnIcon").show();
-      $("#soundOffIcon").hide();
-      console.log("Sound is now enabled");
-      // Your code for when sound is on
-    } else {
-      $("#soundOnIcon").hide();
-      $("#soundOffIcon").show();
-      console.log("Sound is now disabled");
-      // Your code for when sound is off
-    }
+    $("#soundOnIcon").toggle(soundEnabled);
+    $("#soundOffIcon").toggle(!soundEnabled);
+    console.log("Sound is now " + window.soundEnabled);
   });
 
   $(document).ready(function () {

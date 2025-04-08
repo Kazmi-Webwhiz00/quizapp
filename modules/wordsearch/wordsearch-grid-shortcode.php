@@ -29,6 +29,7 @@ $downloadPdfLabel = get_option('kw_download_pdf_label', $default_download_pdf_la
 $soundEnabled = get_option('kw_grid_text_sound_setting', 'true') ;
 // Show or hide Images Label
 $showImagesLabel = __('Show Images', 'wp-quiz-plugin');
+$title = get_the_title( $post->ID );
 
     ?>
 <div class="wordsearch-container">
@@ -60,7 +61,7 @@ $showImagesLabel = __('Show Images', 'wp-quiz-plugin');
 
   </div>
   
-  <h2 class="game-title"><?php echo esc_html__($gridTitleLabel); ?></h2>
+  <h2 class="game-title"><?php echo esc_html( $title ?: $gridTitleLabel ); ?></h2>
 
   <button id="downloadButton" class="control-button kw-grid-download-button">
       <span class="button-icon">📥</span>

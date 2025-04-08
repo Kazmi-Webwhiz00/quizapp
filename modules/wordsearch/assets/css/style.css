@@ -12,6 +12,8 @@
 }
 
 .word-number {
+  display: inline-block;
+  width: 20px;
   margin-right: 10px;
   font-weight: bold;
 }
@@ -55,7 +57,7 @@
   display: flex;
   align-items: center;
   padding: 20px;
-  gap: 20px;
+  gap: 50px;
 }
 
 #add-wordsearch-button,

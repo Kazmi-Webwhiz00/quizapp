@@ -302,6 +302,7 @@ jQuery(document).ready(function ($) {
               wordsearchScriptVar.wsStrings.errorMessage,
               "error"
             );
+            window.totalEntries -= newEntries; // Decrement total entries on error
           }
           $(generateButtonId)
             .text(wordsearchScriptVar.wsGenerateWithAiText)
