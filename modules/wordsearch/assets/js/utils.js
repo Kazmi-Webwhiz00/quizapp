@@ -308,7 +308,6 @@ export function downloadWordSearchAsPDF(onComplete) {
   // 10) Images layout parameters
   let { maxImgWidth, maxImgHeight, imagesGapY, imagesGapX, puzzleImagesGap } =
     getImagesLayout(imageCount, hasImages, imageColumns);
-
   // 7) Create PDF and get page dimensions
   const pdf = createPDF();
   const {
@@ -394,18 +393,8 @@ export function downloadWordSearchAsPDF(onComplete) {
       leftoverHeight,
     }));
 
-  console.log("::maxImgWidth", maxImgWidth, maxImgHeight);
-
-  // 13) Draw Header (independent of font)
-  const headerHeight = drawHeader(
-    pdf,
-    pageWidth,
-    marginRight,
-    marginLeft,
-    gameColors
-  );
-
-  // 14) Now load the font and then continue drawing everything else
+  // 13) Instead of drawing header immediately,
+  // we now load the font and continue (which will then draw header with correct font)
   loadFontAndContinue(pdf);
 
   // ------------------------- Helper Functions -------------------------
@@ -623,38 +612,93 @@ export function downloadWordSearchAsPDF(onComplete) {
     };
   }
 
-  function drawHeader(pdf, pageWidth, marginRight, marginLeft, gameColors) {
-    const headerImageUrl = window.isAdmin
-      ? frontendData.url + "assets/images/LOGO-Edu.png"
-      : wordSearchData.url + "assets/images/LOGO-Edu.png";
-
+  // UPDATED: drawHeader is now used inside loadFontAndContinue so that it gets the proper font.
+  function drawHeader(
+    pdf,
+    pageWidth,
+    marginRight,
+    marginLeft,
+    gameColors,
+    logoBase64
+  ) {
     const headerHeight = 80;
     const maxImageWidth = pageWidth * 0.15;
     const maxImageHeight = headerHeight * 0.75;
 
-    const img = new Image();
-    img.src = headerImageUrl;
+    // Get image properties from the Base64 image to preserve aspect ratio.
+    const props = pdf.getImageProperties(logoBase64);
+    const aspectRatio = props.width / props.height;
 
-    img.onload = function () {
-      const aspectRatio = img.width / img.height;
-      let displayWidth = maxImageWidth;
-      let displayHeight = displayWidth / aspectRatio;
+    // const img = new Image();
+    // img.src = headerImageUrl;
 
-      if (displayHeight > maxImageHeight) {
-        displayHeight = maxImageHeight;
-        displayWidth = displayHeight * aspectRatio;
-      }
+    // img.onload = function () {
+    let displayWidth = maxImageWidth;
+    let displayHeight = displayWidth / aspectRatio;
 
-      const imageX = pageWidth - marginRight - displayWidth;
-      const imageY = headerHeight - displayHeight;
-      pdf.addImage(img, "PNG", imageX, imageY, displayWidth, displayHeight);
-    };
+    if (displayHeight > maxImageHeight) {
+      displayHeight = maxImageHeight;
+      displayWidth = displayHeight * aspectRatio;
+    }
 
-    pdf.setFontSize(22);
+    const imageX = pageWidth - marginRight - displayWidth;
+    const imageY = headerHeight - displayHeight;
+    pdf.addImage(
+      logoBase64,
+      "PNG",
+      imageX,
+      imageY,
+      displayWidth,
+      displayHeight
+    );
+    // };
+
+    // Set header font to NotoSans which contains polski alphabets.
+    pdf.setFont("NotoSans", "normal");
+    let fontSize = 22;
+    pdf.setFontSize(fontSize);
     pdf.setTextColor(0, 0, 0);
     const titleText = window.pdfText?.postTitle || "Word Search Puzzle";
-    const titleW = pdf.getTextWidth(titleText);
-    pdf.text(titleText, (pageWidth - titleW) / 2, headerHeight / 2 + 15);
+    // Set a fixed width for the text to avoid overlapping with the logo.
+    // 1) Split text for the given width (so we know how many lines).
+    const titleAreaWidth = pageWidth - marginRight - marginLeft - maxImageWidth;
+    const titleLines = pdf.splitTextToSize(titleText, titleAreaWidth);
+
+    // 2) Calculate line-height-based total block height.
+
+    const lineHeightFactor = pdf.getLineHeightFactor(); // default ~1.15
+    let lineHeight = fontSize * lineHeightFactor;
+    let totalBlockHeight = lineHeight * titleLines.length;
+
+    // 3) Check if the text block is taller than the header. If so, scale it down.
+    const availableHeight = headerHeight - 10; // some padding from the line below
+    if (totalBlockHeight > availableHeight) {
+      // Find a scale factor so the entire block fits in 'availableHeight'
+      const scaleFactor = availableHeight / totalBlockHeight;
+      fontSize = fontSize * scaleFactor; // reduce the font
+      pdf.setFontSize(fontSize);
+
+      // Recompute lineHeight / totalBlockHeight
+      lineHeight = fontSize * lineHeightFactor;
+      totalBlockHeight = lineHeight * titleLines.length;
+    }
+
+    // 4) Center the text block vertically in the header.
+    //    Middle of header: headerHeight / 2
+    //    If we’re drawing text from the top-left of each line, we need to shift
+    //    downward by about one lineHeight for correct baseline positioning.
+    const headerCenterY = headerHeight / 2;
+    const topOfTextY = headerCenterY - totalBlockHeight / 2;
+    // For the baseline, we'll add lineHeight to the first line's Y:
+    let textStartY = topOfTextY + lineHeight;
+    // centerX is then the midpoint of the title area.
+    const centerX = marginLeft + titleAreaWidth / 2;
+    // 5) Draw the text lines, centered horizontally, with baseline in mind.
+    pdf.text(titleLines, centerX, textStartY, {
+      align: "center",
+      baseline: "alphabetic", // default is 'alphabetic' in jsPDF
+      lineHeightFactor: lineHeightFactor,
+    });
 
     pdf.setDrawColor(...hexToRgbArray(gameColors.accent));
     pdf.setLineWidth(2);
@@ -724,7 +768,7 @@ export function downloadWordSearchAsPDF(onComplete) {
     });
 
     // Update currentY after the final row
-    currentY = yPos + currentRowMaxHeight + 30; //
+    currentY = yPos + currentRowMaxHeight + 30;
     return currentY;
   }
 
@@ -884,32 +928,52 @@ export function downloadWordSearchAsPDF(onComplete) {
     });
   }
 
-  function loadFontAndContinue(pdf) {
-    const fontUrl = window.isAdmin
-      ? frontendData.url + "assets/fonts/NotoSans-Regular.ttf"
-      : wordSearchData.url + "assets/fonts/NotoSans-Regular.ttf";
-
-    fetch(fontUrl)
+  // Helper function to load a URL as a Base64 encoded string.
+  function loadResourceAsBase64(url) {
+    return fetch(url)
       .then((res) => res.blob())
       .then(
         (blob) =>
           new Promise((resolve, reject) => {
             const reader = new FileReader();
-            reader.onloadend = () => {
-              const base64String = reader.result.split(",")[1];
-              resolve(base64String);
-            };
+            reader.onloadend = () => resolve(reader.result);
             reader.onerror = reject;
             reader.readAsDataURL(blob);
           })
-      )
-      .then((fontData) => {
-        // Register font
-        pdf.addFileToVFS("NotoSans-Regular.ttf", fontData);
+      );
+  }
+
+  // UPDATED: loadFontAndContinue now loads the font then draws the header
+  // and proceeds with drawing the rest of the content.
+  function loadFontAndContinue(pdf) {
+    const fontUrl = window.isAdmin
+      ? frontendData.url + "assets/fonts/NotoSans-Regular.ttf"
+      : wordSearchData.url + "assets/fonts/NotoSans-Regular.ttf";
+
+    const logoUrl = window.isAdmin
+      ? frontendData.url + "assets/images/LOGO-Edu.png"
+      : wordSearchData.url + "assets/images/LOGO-Edu.png";
+
+    // Load both the font and the logo image.
+    Promise.all([loadResourceAsBase64(fontUrl), loadResourceAsBase64(logoUrl)])
+      .then(([fontBase64, logoBase64]) => {
+        // Register the font in the PDF.
+        // Remove the "data:..." header before adding to VFS.
+        pdf.addFileToVFS("NotoSans-Regular.ttf", fontBase64.split(",")[1]);
         pdf.addFont("NotoSans-Regular.ttf", "NotoSans", "normal");
         pdf.setFont("NotoSans", "normal");
 
-        // a) Draw the word list
+        // a) Draw the header using the loaded font so that it can handle polski alphabets.
+        const headerHeight = drawHeader(
+          pdf,
+          pageWidth,
+          marginRight,
+          marginLeft,
+          gameColors,
+          logoBase64
+        );
+
+        // b) Now draw the word list
         let currentY = marginTop + headerHeight;
         currentY = drawWordList(
           pdf,
@@ -921,14 +985,14 @@ export function downloadWordSearchAsPDF(onComplete) {
           currentY
         );
 
-        // b) Position puzzle (below word list)
+        // c) Position puzzle (below word list)
         const puzzleY = currentY;
         // If we have images, puzzle is left; if not, center puzzle horizontally
         const puzzleX = hasImages
           ? marginLeft
           : marginLeft + (contentWidth - puzzleWidth) / 2;
 
-        // c) Draw puzzle background and grid
+        // d) Draw puzzle background and grid
         drawPuzzleBackgroundAndGrid(
           pdf,
           puzzleX,
@@ -941,7 +1005,7 @@ export function downloadWordSearchAsPDF(onComplete) {
           borderRgb
         );
 
-        // d) Draw puzzle letters
+        // e) Draw puzzle letters
         drawPuzzleLetters(
           pdf,
           gridMatrix,
@@ -953,7 +1017,7 @@ export function downloadWordSearchAsPDF(onComplete) {
           textRgb
         );
 
-        // e) Draw images
+        // f) Draw images
         drawImages(
           pdf,
           hasImages,
@@ -968,7 +1032,7 @@ export function downloadWordSearchAsPDF(onComplete) {
           puzzleImagesGap
         );
 
-        // f) Save the PDF
+        // g) Save the PDF
         pdf.save("wykreslanka.pdf");
         if (typeof onComplete === "function") {
           onComplete();
