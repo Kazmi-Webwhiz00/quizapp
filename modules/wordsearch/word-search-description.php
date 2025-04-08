@@ -3,7 +3,7 @@
 function add_wordsearch_description_meta_box() {
     add_meta_box(
         'wordsearh_description_meta_box',
-        __('WordSearch Description', 'wp-quiz-plugin'),
+        esc_html__('WordSearch Description', 'wp-quiz-plugin'),
         'display_wordsearch_description_meta_box',
         'wordsearch',
         'normal',

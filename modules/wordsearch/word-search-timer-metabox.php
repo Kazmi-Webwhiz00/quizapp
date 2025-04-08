@@ -119,33 +119,33 @@ function wordsearch_timer_display_callback($post) {
         </p>
         
         <div class="timer-fields" <?php echo $timer_enabled ? '' : 'style="display: none;"'; ?>>
-            <p class="timer-heading"><?php _e('Set Time Limit:', 'wordsearch'); ?></p>
+            <p class="timer-heading"><?php echo esc_html__('Set Time Limit:', 'wp-quiz-plugin'); ?></p>
             
             <div class="timer-inputs">
                 <div class="time-field">
-                    <label for="wordsearch-timer-hours"><?php _e('Hours', 'wordsearch'); ?></label>
+                    <label for="wordsearch-timer-hours"><?php echo esc_html__('Hours', 'wp-quiz-plugin'); ?></label>
                     <input type="number" id="wordsearch-timer-hours" name="wordsearch_timer_hours" min="0" max="99" value="<?php echo esc_attr($hours); ?>" class="small-text">
                 </div>
                 
                 <div class="time-field">
-                    <label for="wordsearch-timer-minutes"><?php _e('Minutes', 'wordsearch'); ?></label>
+                    <label for="wordsearch-timer-minutes"><?php echo esc_html__('Minutes', 'wp-quiz-plugin'); ?></label>
                     <input type="number" id="wordsearch-timer-minutes" name="wordsearch_timer_minutes" min="0" max="59" value="<?php echo esc_attr($minutes); ?>" class="small-text">
                 </div>
                 
                 <div class="time-field">
-                    <label for="wordsearch-timer-seconds"><?php _e('Seconds', 'wordsearch'); ?></label>
+                    <label for="wordsearch-timer-seconds"><?php echo esc_html__('Seconds', 'wp-quiz-plugin'); ?></label>
                     <input type="number" id="wordsearch-timer-seconds" name="wordsearch_timer_seconds" min="0" max="59" value="<?php echo esc_attr($seconds); ?>" class="small-text">
                 </div>
             </div>
             
             <p class="timer-message">
                 <span class="timer-preview">
-                    <?php _e('Preview:', 'wordsearch'); ?> <span id="timer-preview-value">00:00:00</span>
+                    <?php echo esc_html__('Preview:', 'wp-quiz-plugin'); ?> <span id="timer-preview-value">00:00:00</span>
                 </span>
             </p>
             
             <p class="timer-description">
-                <?php _e('The timer will start when the player begins the word search game.', 'wordsearch'); ?>
+                <?php echo esc_html__('The timer will start when the player begins the word search game.', 'wp-quiz-plugin'); ?>
             </p>
         </div>
     </div>
