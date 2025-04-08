@@ -688,7 +688,7 @@ export function animateMatch(scene, cells, letterTexts, cellSize) {
 }
 
 export function updateWordListUI(foundWord, foundWordsCount, wordList) {
-  foundWord = foundWord ? foundWord.toLowerCase() : "";
+  foundWord = foundWord ? foundWord.toUpperCase() : "";
   const foundItem = document.getElementById(`word-${foundWord}`);
   if (foundItem) {
     foundItem.classList.add("found");
@@ -746,8 +746,8 @@ export function autoSolvePuzzle(
               const clue = visualClues[i];
               // Get the data-word attribute and compare (case-insensitive) to guessedWord
               if (
-                clue.getAttribute("data-word").toLowerCase() ===
-                word.toLowerCase()
+                clue.getAttribute("data-word").toUpperCase() ===
+                word.toUpperCase()
               ) {
                 clue.classList.add("found");
               }

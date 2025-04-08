@@ -68,10 +68,10 @@ export function renderWordList(wordData) {
 
     // Filter out words that are marked as hidden in window.finalEntries.
     wordData = wordData.filter((word) => {
-      const formattedWord = word.toLowerCase();
+      const formattedWord = word.toUpperCase();
       if (window.finalEntries && Array.isArray(window.finalEntries)) {
         const entry = window.finalEntries.find(
-          (item) => item.wordText.toLowerCase() === formattedWord
+          (item) => item.wordText.toUpperCase() === formattedWord
         );
         if (entry && entry.hidden === true) {
           return false;
@@ -86,7 +86,7 @@ export function renderWordList(wordData) {
 
     wordData.forEach((word) => {
       operations.push((fragment) => {
-        const formattedWord = word.length > 0 ? word.toLowerCase() : "";
+        const formattedWord = word.length > 0 ? word.toUpperCase() : "";
         const li = document.createElement("li");
         li.id = `word-${formattedWord}`;
 
@@ -141,7 +141,7 @@ export function renderWordList(wordData) {
         let isHidden = false;
         if (window.finalEntries && Array.isArray(window.finalEntries)) {
           const matchingEntry = window.finalEntries.find(
-            (item) => item.wordText.toLowerCase() === formattedWord
+            (item) => item.wordText.toUpperCase() === formattedWord
           );
           if (matchingEntry) {
             isHidden = matchingEntry.hidden;
@@ -166,7 +166,7 @@ export function renderWordList(wordData) {
           // Update the corresponding entry in window.finalEntries.
           if (window.finalEntries && Array.isArray(window.finalEntries)) {
             const entry = window.finalEntries.find(
-              (item) => item.wordText.toLowerCase() === formattedWord
+              (item) => item.wordText.toUpperCase() === formattedWord
             );
             if (entry) {
               entry.hidden = newHidden;

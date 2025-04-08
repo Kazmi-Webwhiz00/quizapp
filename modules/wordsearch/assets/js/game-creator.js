@@ -411,8 +411,8 @@ export function createWordSearchGame({
             const clue = visualClues[i];
             // Get the data-word attribute and compare (case-insensitive) to guessedWord
             if (
-              clue.getAttribute("data-word").toLowerCase() ===
-              guessedWord.toLowerCase()
+              clue.getAttribute("data-word").toUpperCase() ===
+              guessedWord.toUpperCase()
             ) {
               clue.classList.add("found");
             }
