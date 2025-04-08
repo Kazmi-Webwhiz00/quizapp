@@ -643,10 +643,7 @@ function createLetterTextsFixedPositioning(
           applyLetterStyle(this, hoverStyle, circleSprite);
 
           // Play sound effect if enabled.
-          if (
-            window.customStyles["toggleGridLettersSound"] ||
-            window.soundEnabled
-          ) {
+          if (window.soundEnabled) {
             scene.sound.play("letterHover", { volume: 0.5 });
           }
         });

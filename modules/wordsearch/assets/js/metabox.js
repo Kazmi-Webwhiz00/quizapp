@@ -109,7 +109,26 @@ jQuery(document).ready(function ($) {
     totalEntries = totalEntries + 1;
     window.totalEntries += totalEntries;
     if (totalEntries > 15 || window.totalEntries > 15) {
-      window.showWordLimitModal();
+      Swal.fire({
+        title: entryLimit.entryLimitTitle,
+        text: entryLimit.entryLimitBodyText,
+        icon: "error",
+        confirmButtonText: "OK",
+        confirmButtonColor: "#3085d6", // Professional blue color
+        customClass: {
+          container: "my-swal-container",
+          popup: "my-swal-popup",
+          title: "my-swal-title",
+          content: "my-swal-content",
+          confirmButton: "my-swal-confirm-btn",
+        },
+        showClass: {
+          popup: "animate__animated animate__fadeIn faster", // Smooth fade-in animation
+        },
+        hideClass: {
+          popup: "animate__animated animate__fadeOut faster", // Smooth fade-out animation
+        },
+      });
       return;
     }
     addNewWordEntry();
