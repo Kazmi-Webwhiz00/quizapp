@@ -452,6 +452,7 @@ export function createWordSearchGame({
         function checkboxChangeHandler(e) {
           window.showAnswers = e.target.checked; // Equivalent to $(this).is(":checked")
           if (window.showAnswers) {
+            resetPuzzleState();
             autoSolvePuzzle(
               scene,
               window.gridMatrix,
@@ -492,15 +493,17 @@ export function createWordSearchGame({
           }
         }
 
-        // If there is at least one element, handle it
         if (elements.length > 0) {
-          window.checkBoxElement = elements; // This is a collection of DOM elements
+          window.checkBoxElement = elements;
 
           // Remove any existing "change" event listener and add the new one
           Array.from(window.checkBoxElement).forEach(function (element) {
             element.removeEventListener("change", checkboxChangeHandler);
             element.addEventListener("change", checkboxChangeHandler);
           });
+
+          // Set the flag so that this code doesn't run again.
+          window.checkboxListenerInitialized = true;
         }
         if (showWordselements.length > 0) {
           window.showWordsElement = showWordselements;
@@ -512,6 +515,25 @@ export function createWordSearchGame({
         }
       } else {
       }
+    }
+
+    function resetPuzzleState() {
+      // Clear the global foundWords, if you want to re-run everything.
+      window.foundWords = [];
+
+      // Optionally, restore the original grid state.
+      // For example, reset letter colors, remove highlights, and so on.
+      scene.children.list.forEach((obj) => {
+        if (obj.type === "Text") {
+          // Reset to default color, e.g. black
+          obj.setColor("#000");
+        }
+      });
+
+      // Clear the persistent canvas (if needed)
+      persistentCanvas
+        .getContext("2d")
+        .clearRect(0, 0, persistentCanvas.width, persistentCanvas.height);
     }
 
     // Modified updateGridSize function
