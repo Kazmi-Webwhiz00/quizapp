@@ -711,7 +711,6 @@ export function autoSolvePuzzle(
   showAnswers
 ) {
   if (!showAnswers && !window.isAdmin) return;
-
   // Directions to check
   const SOLVER_DIRECTIONS = [
     { deltaRow: 0, deltaCol: 1 }, // horizontal
@@ -723,11 +722,8 @@ export function autoSolvePuzzle(
   // For each word in the list
   wordData.forEach((word) => {
     let found = false;
-
-    // If we find it, we highlight & skip further searching
     for (let row = 0; row < window.gridMatrix.length && !found; row++) {
       for (let col = 0; col < window.gridMatrix[row].length && !found; col++) {
-        // Try each direction
         for (const dir of SOLVER_DIRECTIONS) {
           const matchedCells = checkWordInDirection(
             window.gridMatrix,
@@ -738,13 +734,10 @@ export function autoSolvePuzzle(
             dir.deltaCol
           );
           if (matchedCells) {
-            let foundWordsCount = window.foundWords.length + 1;
+            window.foundWords.push(word);
             const visualClues = document.getElementsByClassName("visual-clue");
-
-            // Loop through the elements
             for (let i = 0; i < visualClues.length; i++) {
               const clue = visualClues[i];
-              // Get the data-word attribute and compare (case-insensitive) to guessedWord
               if (
                 clue.getAttribute("data-word").toUpperCase() ===
                 word.toUpperCase()
@@ -752,7 +745,6 @@ export function autoSolvePuzzle(
                 clue.classList.add("found");
               }
             }
-            // Found the word! highlight it
             highlightWord(
               scene,
               matchedCells,
@@ -763,8 +755,7 @@ export function autoSolvePuzzle(
               gridSize
             );
             animateMatch(scene, matchedCells, window.letterTexts, cellSize);
-
-            updateWordListUI(word, foundWordsCount, wordData);
+            updateWordListUI(word, window.foundWords.length, wordData);
             found = true;
             break;
           }

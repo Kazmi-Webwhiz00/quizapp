@@ -95,17 +95,35 @@ export function getCellsInLine(r1, c1, r2, c2) {
   return cells;
 }
 
-export function getRandomTransparentColor() {
-  // Enhanced color palette - warm, vibrant colors that complement the gold theme
-  const colorPalette = [
-    "hsla(28, 90%, 50%, 0.4)", // Orange
-    "hsla(350, 90%, 55%, 0.4)", // Red
-    "hsla(190, 90%, 50%, 0.4)", // Teal
-    "hsla(120, 70%, 45%, 0.4)", // Green
-    "hsla(270, 80%, 55%, 0.4)", // Purple
-  ];
+// Original color palette defined as a constant.
+const originalColorPalette = [
+  "rgba(255, 153, 0, 0.4)", // Orange
+  "rgba(255, 51, 51, 0.4)", // Red
+  "rgba(0, 204, 204, 0.4)", // Teal
+  "rgba(0, 153, 0, 0.4)", // Green
+  "rgba(153, 102, 255, 0.4)", // Purple
+  "rgba(102, 204, 255, 0.4)", // Light Blue
+  "rgba(204, 102, 255, 0.4)", // Violet
+  "rgba(255, 102, 102, 0.4)", // Soft Red
+  "rgba(255, 204, 0, 0.4)", // Golden Yellow
+  "rgba(102, 255, 102, 0.4)", // Light Green
+];
 
-  return colorPalette[Math.floor(Math.random() * colorPalette.length)];
+// Maintain a persistent copy that will be mutated.
+let availableColorPalette = [...originalColorPalette];
+
+export function getRandomTransparentColor() {
+  // If all colors have been used, reset the available colors.
+  if (availableColorPalette.length === 0) {
+    availableColorPalette = [...originalColorPalette];
+  }
+
+  // Randomly select an index from the available palette.
+  const randomIndex = Math.floor(Math.random() * availableColorPalette.length);
+
+  // Remove and return the chosen color (ensuring uniqueness until depletion).
+  const [uniqueColor] = availableColorPalette.splice(randomIndex, 1);
+  return uniqueColor;
 }
 
 export function throttle(func, limit) {

@@ -6,7 +6,7 @@ jQuery(document).ready(function ($) {
   var wordEntries = [];
   // Debounce timer variable.
   let debounceTimer;
-  let totalEntries = 0;
+  window.totalEntries = 0;
 
   // Assume a global variable "entries" exists from the database.
   var savedEntries = entries; // entries from the database
@@ -17,6 +17,7 @@ jQuery(document).ready(function ($) {
 
   // On page load, if savedEntries exists, assign it to wordEntries and trigger update.
   if (savedEntries && savedEntries.length > 0) {
+    window.totalEntries = (window.totalEntries || 0) + savedEntries.length;
     wordEntries = savedEntries;
     $(document).trigger("wordsearchEntriesUpdated", { data: wordEntries });
   }
@@ -70,10 +71,10 @@ jQuery(document).ready(function ($) {
       }
     });
 
-    const updateEvent = new CustomEvent("entriesUpdated", {
+    const addEvent = new CustomEvent("entriesUpdated", {
       detail: wordEntries,
     });
-    document.dispatchEvent(updateEvent);
+    document.dispatchEvent(addEvent);
 
     $(document).trigger("wordsearchEntriesUpdated", { data: wordEntries });
   });
@@ -106,9 +107,7 @@ jQuery(document).ready(function ($) {
   // Handler for "Add Word" button click.
   $("#add-wordsearch-button").on("click", function (e) {
     e.preventDefault();
-    totalEntries = totalEntries + 1;
-    window.totalEntries += totalEntries;
-    if (totalEntries > 15 || window.totalEntries > 15) {
+    if (window.totalEntries + 1 > 15) {
       Swal.fire({
         title: entryLimit.entryLimitTitle,
         text: entryLimit.entryLimitBodyText,
@@ -131,6 +130,7 @@ jQuery(document).ready(function ($) {
       });
       return;
     }
+    window.totalEntries++;
     addNewWordEntry();
   });
 
@@ -250,6 +250,7 @@ jQuery(document).ready(function ($) {
 
   // Remove an entry when the remove button is clicked.
   wordsContainer.on("click", ".remove-word", function () {
+    window.totalEntries = window.totalEntries - 1;
     var $wordDiv = $(this).closest(".add-word-container");
     var uniqueId = $wordDiv.data("unique-id");
 
@@ -280,6 +281,7 @@ jQuery(document).ready(function ($) {
     if (confirm("Are you sure you want to clear the list?")) {
       wordsContainer.empty();
       wordEntries = [];
+      window.totalEntries = 0;
       const event = new CustomEvent("entriesUpdated", {
         detail: [],
       });
