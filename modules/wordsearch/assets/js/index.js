@@ -18,7 +18,6 @@ jQuery(document).ready(function ($) {
   window.gameInstance = null;
   window.previousFinalEntriesStr = JSON.stringify([]);
   window.finalEntries = [];
-  window.totalEntries = 0;
   window.letterTexts = [];
   window.cookieEntries = [];
   let adminEntries = [];
@@ -317,8 +316,17 @@ jQuery(document).ready(function ($) {
       if (typeof frontendData !== "undefined" && frontendData.entries) {
         // Merge new entries with the existing cookie entries.
 
-        if (JSON.stringify(newCookieEntries) !== JSON.stringify(adminEntries)) {
-          adminEntries = newCookieEntries.map((entry) => entry);
+        const entriesDiffer =
+          JSON.stringify(newCookieEntries) !== JSON.stringify(adminEntries) ||
+          newCookieEntries.some((newEntry, index) => {
+            // Use optional chaining and trim to handle potential undefined values and whitespace differences.
+            const newText = newEntry.wordText?.trim() || "";
+            const oldText = adminEntries[index]?.wordText?.trim() || "";
+            return newText !== oldText;
+          });
+
+        if (entriesDiffer) {
+          adminEntries = newCookieEntries.map((entry) => ({ ...entry }));
           cookieEntriesChanged = true;
         }
       } else {

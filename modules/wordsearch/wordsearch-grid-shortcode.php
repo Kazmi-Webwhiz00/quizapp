@@ -29,7 +29,8 @@ $downloadPdfLabel = get_option('kw_download_pdf_label', $default_download_pdf_la
 $soundEnabled = get_option('kw_grid_text_sound_setting', 'true') ;
 // Show or hide Images Label
 $showImagesLabel = __('Show Images', 'wp-quiz-plugin');
-$title = get_the_title( $post->ID );
+global $post;
+$title = get_the_title( $post );
 
     ?>
 <div class="wordsearch-container">
@@ -60,8 +61,14 @@ $title = get_the_title( $post->ID );
 </button>
 
   </div>
+  <?php
   
-  <h2 class="game-title"><?php echo esc_html( $title ?: $gridTitleLabel ); ?></h2>
+  // Check if the title is empty or "Auto Draft" and then assign $gridTitleLabel instead.
+  if ( empty( $title ) || 'Auto Draft' === $title ) {
+    $title = $gridTitleLabel;
+  }
+  ?>
+<h2 class="game-title"><?php echo esc_html( $title ); ?></h2>
 
   <button id="downloadButton" class="control-button kw-grid-download-button">
       <span class="button-icon">📥</span>
