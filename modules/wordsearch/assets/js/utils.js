@@ -321,12 +321,13 @@ export function downloadWordSearchAsPDF(onComplete) {
   const { words, wordCount } = getWordList(gameInstance);
 
   // 6) Images processing
-  const { validImages, imageCount, hasImages, imageColumns } = getImagesData();
+  const { validImages, imageCount, hasImages } = getImagesData();
 
-  // 10) Images layout parameters
+  // 7) Get images layout parameters
   let { maxImgWidth, maxImgHeight, imagesGapY, imagesGapX, puzzleImagesGap } =
-    getImagesLayout(imageCount, hasImages, imageColumns);
-  // 7) Create PDF and get page dimensions
+    getImagesLayout(imageCount, hasImages);
+
+  // Create PDF and get page dimensions
   const pdf = createPDF();
   const {
     pageWidth,
@@ -339,31 +340,7 @@ export function downloadWordSearchAsPDF(onComplete) {
     contentHeight,
   } = getPageDimensions(pdf);
 
-  // Compute the maximum number of images that can fit in a column based on the current maxImgHeight.
-  let dynamicImagesPerColumn = Math.floor(
-    contentHeight / (maxImgHeight + imagesGapY)
-  );
-
-  // If there are more than 13 images, cap images per column at 8 and adjust maxImgHeight so images fit.
-  if (imageCount > 13) {
-    dynamicImagesPerColumn = Math.min(dynamicImagesPerColumn, 8);
-    maxImgHeight =
-      (contentHeight - (dynamicImagesPerColumn - 1) * imagesGapY) /
-      dynamicImagesPerColumn;
-  }
-
-  // Ensure at least one image per column.
-  const imagesPerColumn =
-    dynamicImagesPerColumn > 0 ? dynamicImagesPerColumn : 1;
-
-  // Distribute the valid images into columns.
-  for (let i = 0; i < Math.ceil(imageCount / imagesPerColumn); i++) {
-    const start = i * imagesPerColumn;
-    const end = Math.min(start + imagesPerColumn, imageCount);
-    imageColumns.push(validImages.slice(start, end));
-  }
-
-  // 8) Decide puzzle cell size and calculate dimensions
+  // 8) Calculate puzzle dimensions
   const {
     baseCellSize,
     puzzleWidth: initialPuzzleWidth,
@@ -376,7 +353,6 @@ export function downloadWordSearchAsPDF(onComplete) {
   const wordBoxGap = 10;
   const horizontalPadding = 6;
   const verticalPadding = 4;
-
   const wordsAreaHeight = calculateWordsAreaHeight(
     pdf,
     words,
@@ -385,18 +361,38 @@ export function downloadWordSearchAsPDF(onComplete) {
     wordBoxGap,
     horizontalPadding,
     verticalPadding,
-    40 // extra top padding for the "Find the Words" label, etc.
+    40
   );
 
-  // 11) Figure out how much vertical space is left after the word list + header
-  //     so we can scale puzzle+images to fit below that area.
-  const headerBuffer = 40; // Some extra buffer below the word list
-  // We'll figure out puzzle+images scaling based on leftover vertical space:
+  // 10) Calculate leftover vertical space (after header and word list)
+  const headerBuffer = 40;
   const leftoverHeight = contentHeight - (wordsAreaHeight + headerBuffer);
 
-  // 12) Scale puzzle and images if needed
-  ({ puzzleWidth, puzzleHeight, maxImgWidth, maxImgHeight } =
-    fitPuzzleAndImagesOnPage({
+  // 11) Decide layout mode:
+  // Use side-by-side layout if 12 or fewer images; if more than 12 images, use below-grid mode.
+  const MAX_COLUMN_IMAGES = 12;
+  const useBelowGrid = hasImages && imageCount > MAX_COLUMN_IMAGES;
+  let placeImagesBelow = false;
+  let scaledData = {};
+  let imageColumnsSet = null;
+
+  if (!useBelowGrid) {
+    // --- SIDE-BY-SIDE LAYOUT ---
+    // Determine dynamic images per column based on available vertical space.
+    let dynamicImagesPerColumn = Math.floor(
+      contentHeight / (maxImgHeight + imagesGapY)
+    );
+    if (dynamicImagesPerColumn < 1) dynamicImagesPerColumn = 1;
+    const imagesPerColumn = dynamicImagesPerColumn;
+    let imageColumns = [];
+    for (let i = 0; i < Math.ceil(imageCount / imagesPerColumn); i++) {
+      const start = i * imagesPerColumn;
+      const end = Math.min(start + imagesPerColumn, imageCount);
+      imageColumns.push(validImages.slice(start, end));
+    }
+    imageColumnsSet = imageColumns;
+
+    scaledData = fitPuzzleAndImagesOnPage({
       puzzleWidth,
       puzzleHeight,
       baseCellSize,
@@ -404,18 +400,55 @@ export function downloadWordSearchAsPDF(onComplete) {
       puzzleImagesGap,
       maxImgWidth,
       maxImgHeight,
-      imageColumns,
+      imageColumns: imageColumns,
       imagesGapX,
       imagesGapY,
       contentWidth,
       leftoverHeight,
-    }));
+    });
 
-  // 13) Instead of drawing header immediately,
-  // we now load the font and continue (which will then draw header with correct font)
+    // Update dimensions using side-by-side scaling.
+    puzzleWidth = scaledData.puzzleWidth;
+    puzzleHeight = scaledData.puzzleHeight;
+    maxImgWidth = scaledData.maxImgWidth;
+    maxImgHeight = scaledData.maxImgHeight;
+    puzzleImagesGap = scaledData.puzzleImagesGap;
+    imagesGapX = scaledData.imagesGapX;
+    imagesGapY = scaledData.imagesGapY;
+    placeImagesBelow = scaledData.placeImagesBelow; // should be false
+  } else {
+    // --- BELOW-THE-GRID LAYOUT ---
+    // Distribute images into exactly 3 columns with 6 images each.
+    // If there are more than 18 images, only the first 18 are used for this page.
+    imageColumnsSet = distributeImagesBelowGrid(validImages, 6, 3);
+    // Fit puzzle and images below the grid so that images span the full content width.
+    scaledData = fitPuzzleAndImagesBelow({
+      puzzleWidth,
+      puzzleHeight,
+      maxImgWidth,
+      maxImgHeight,
+      imagesGapX,
+      imagesGapY,
+      gapBelowPuzzle: 20, // vertical gap between grid and images
+      imageColumns: imageColumnsSet,
+      contentWidth,
+      leftoverHeight,
+    });
+    // Update dimensions using below-grid scaling.
+    puzzleWidth = scaledData.puzzleWidth;
+    puzzleHeight = scaledData.puzzleHeight;
+    maxImgWidth = scaledData.maxImgWidth;
+    maxImgHeight = scaledData.maxImgHeight;
+    imagesGapX = scaledData.imagesGapX;
+    imagesGapY = scaledData.imagesGapY;
+    var gapBelowPuzzle = scaledData.gapBelowPuzzle; // vertical gap between grid and images
+    placeImagesBelow = scaledData.placeImagesBelow; // should be true
+  }
+
+  // 12) Load font (and logo) then continue with drawing everything.
   loadFontAndContinue(pdf);
 
-  // ------------------------- Helper Functions -------------------------
+  // ----------------------- Helper Functions -----------------------------
 
   function loadJsPDF() {
     const jspdfScript = document.createElement("script");
@@ -463,10 +496,7 @@ export function downloadWordSearchAsPDF(onComplete) {
     );
     const imageCount = validImages.length;
     const hasImages = imageCount > 0;
-    // imageColumns will be calculated later once pdf is initialized
-    const imageColumns = [];
-
-    return { validImages, imageCount, hasImages, imageColumns };
+    return { validImages, imageCount, hasImages };
   }
 
   function createPDF() {
@@ -474,12 +504,12 @@ export function downloadWordSearchAsPDF(onComplete) {
   }
 
   function getPageDimensions(pdf) {
-    const pageWidth = pdf.internal.pageSize.getWidth(); // ~595 pt
-    const pageHeight = pdf.internal.pageSize.getHeight(); // ~842 pt
-    const marginLeft = 50;
-    const marginRight = 50;
-    const marginTop = 60;
-    const marginBottom = 30;
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    const marginLeft = 50,
+      marginRight = 50,
+      marginTop = 60,
+      marginBottom = 30;
     const contentWidth = pageWidth - marginLeft - marginRight;
     const contentHeight = pageHeight - marginTop - marginBottom;
     return {
@@ -496,21 +526,11 @@ export function downloadWordSearchAsPDF(onComplete) {
 
   function calculatePuzzleDimensions(wordCount, gridSize) {
     let baseCellSize;
-    if (wordCount <= 10) {
-      baseCellSize = 40;
-    } else if (wordCount <= 20) {
-      baseCellSize = 35;
-    } else if (wordCount <= 30) {
-      baseCellSize = 30;
-    } else {
-      baseCellSize = 25;
-    }
-
-    // If the grid is very large, cap the cell size further
-    if (gridSize > 15) {
-      baseCellSize = Math.min(baseCellSize, 25);
-    }
-
+    if (wordCount <= 10) baseCellSize = 40;
+    else if (wordCount <= 20) baseCellSize = 35;
+    else if (wordCount <= 30) baseCellSize = 30;
+    else baseCellSize = 25;
+    if (gridSize > 15) baseCellSize = Math.min(baseCellSize, 25);
     const puzzleWidth = gridSize * baseCellSize;
     const puzzleHeight = gridSize * baseCellSize;
     return { baseCellSize, puzzleWidth, puzzleHeight };
@@ -528,46 +548,34 @@ export function downloadWordSearchAsPDF(onComplete) {
   ) {
     const pageWidth = pdf.internal.pageSize.getWidth();
     const availableWidth = pageWidth - marginLeft - marginRight;
-
     let rows = [];
-    let currentRowWidth = 0;
-    let currentRowMaxHeight = 0;
-
+    let currentRowWidth = 0,
+      currentRowMaxHeight = 0;
     words.forEach((word) => {
       const text = word.toUpperCase();
       const { w: textWidth, h: textHeight } = pdf.getTextDimensions(text);
-      // Each box is as large as the text plus padding
       const boxWidth = textWidth + horizontalPadding * 2;
       const boxHeight = textHeight + verticalPadding * 2;
-
-      // If it doesn't fit on the current row, move to next row
       if (currentRowWidth + boxWidth > availableWidth) {
         rows.push(currentRowMaxHeight);
-        currentRowWidth = boxWidth + wordBoxGap; // start a new row
+        currentRowWidth = boxWidth + wordBoxGap;
         currentRowMaxHeight = boxHeight;
       } else {
         currentRowWidth += boxWidth + wordBoxGap;
         currentRowMaxHeight = Math.max(currentRowMaxHeight, boxHeight);
       }
     });
-
-    // Push the last row if there was at least one box
-    if (currentRowWidth > 0) {
-      rows.push(currentRowMaxHeight);
-    }
-
-    // Sum all row heights plus vertical gaps
+    if (currentRowWidth > 0) rows.push(currentRowMaxHeight);
     const totalGap = (rows.length - 1) * wordBoxGap;
     const totalRowsHeight = rows.reduce((sum, h) => sum + h, 0);
     return totalRowsHeight + totalGap + topPadding;
   }
 
-  function getImagesLayout(imageCount, hasImages, imageColumns) {
+  function getImagesLayout(imageCount, hasImages) {
     let maxImgWidth = imageCount > 10 ? 100 : 140;
     let maxImgHeight = imageCount > 10 ? 80 : 100;
-    const imagesGapY = 15;
-    const imagesGapX = 15;
-    // Gap between puzzle and first column of images
+    const imagesGapY = 15,
+      imagesGapX = 15;
     const puzzleImagesGap = hasImages ? 20 : 0;
     return {
       maxImgWidth,
@@ -590,27 +598,20 @@ export function downloadWordSearchAsPDF(onComplete) {
     imagesGapX,
     imagesGapY,
     contentWidth,
-    contentHeight,
+    leftoverHeight,
     minCellSizeThreshold = 20,
   }) {
-    // 1) Calculate total images listing width
-    const imagesListingWidth = imageColumns.length
-      ? imageColumns.length * maxImgWidth +
-        (imageColumns.length - 1) * imagesGapX
+    // SIDE-BY-SIDE LAYOUT
+    const numColumns = imageColumns.length;
+    const imagesListingWidth = numColumns
+      ? numColumns * maxImgWidth + (numColumns - 1) * imagesGapX
       : 0;
-
-    // 2) Combined bounding width = puzzle + gap + images
     const boundingWidth =
       puzzleWidth +
       (imagesListingWidth ? puzzleImagesGap : 0) +
       imagesListingWidth;
-
-    // 3) Determine horizontal scale so boundingWidth doesn’t exceed contentWidth.
-    // Also, prevent any upscale by clamping the scale to 1.
     let scale = boundingWidth > contentWidth ? contentWidth / boundingWidth : 1;
     scale = Math.min(scale, 1);
-
-    // 4) Apply uniform scale to puzzle dimensions, image dimensions, and gaps
     puzzleWidth *= scale;
     puzzleHeight *= scale;
     maxImgWidth *= scale;
@@ -618,7 +619,6 @@ export function downloadWordSearchAsPDF(onComplete) {
     puzzleImagesGap *= scale;
     imagesGapX *= scale;
     imagesGapY *= scale;
-
     return {
       puzzleWidth,
       puzzleHeight,
@@ -627,10 +627,179 @@ export function downloadWordSearchAsPDF(onComplete) {
       puzzleImagesGap,
       imagesGapX,
       imagesGapY,
+      placeImagesBelow: false,
     };
   }
 
-  // UPDATED: drawHeader is now used inside loadFontAndContinue so that it gets the proper font.
+  let imagesX = marginLeft;
+
+  function fitPuzzleAndImagesBelow({
+    puzzleWidth,
+    puzzleHeight,
+    maxImgWidth,
+    maxImgHeight,
+    imagesGapX,
+    imagesGapY,
+    gapBelowPuzzle,
+    imageColumns,
+    contentWidth,
+    leftoverHeight,
+  }) {
+    // First, scale puzzle horizontally if needed.
+    let scale = 1;
+    if (puzzleWidth > contentWidth) {
+      scale = contentWidth / puzzleWidth;
+    }
+    puzzleWidth *= scale;
+    puzzleHeight *= scale;
+
+    // For images below, span the full available width.
+    const imagesSideMargin = 0;
+    const availableImagesWidth = contentWidth - imagesSideMargin * 2;
+    const numColumns = imageColumns.length; // Should be 3.
+    if (numColumns > 1) {
+      maxImgWidth =
+        (availableImagesWidth - (numColumns - 1) * imagesGapX) / numColumns;
+    } else {
+      maxImgWidth = Math.min(availableImagesWidth, maxImgWidth);
+    }
+
+    // Calculate images listing height.
+    let imagesListingHeight = calculateImagesListingHeight(
+      imageColumns,
+      maxImgHeight,
+      imagesGapY
+    );
+
+    // Total required height = puzzle + gap + images.
+    let totalRequiredHeight =
+      puzzleHeight + gapBelowPuzzle + imagesListingHeight;
+    if (totalRequiredHeight > leftoverHeight) {
+      const verticalScale = leftoverHeight / totalRequiredHeight;
+      puzzleWidth *= verticalScale;
+      puzzleHeight *= verticalScale;
+      maxImgWidth *= verticalScale;
+      maxImgHeight *= verticalScale;
+      gapBelowPuzzle *= verticalScale;
+      imagesGapY *= verticalScale;
+    }
+    return {
+      puzzleWidth,
+      puzzleHeight,
+      maxImgWidth,
+      maxImgHeight,
+      gapBelowPuzzle,
+      imagesGapX,
+      imagesGapY,
+      placeImagesBelow: true,
+    };
+  }
+
+  function loadFontAndContinue(pdf) {
+    const fontUrl = window.isAdmin
+      ? frontendData.url + "assets/fonts/NotoSans-Regular.ttf"
+      : wordSearchData.url + "assets/fonts/NotoSans-Regular.ttf";
+    const logoUrl = window.isAdmin
+      ? frontendData.url + "assets/images/LOGO-Edu.png"
+      : wordSearchData.url + "assets/images/LOGO-Edu.png";
+    Promise.all([loadResourceAsBase64(fontUrl), loadResourceAsBase64(logoUrl)])
+      .then(([fontBase64, logoBase64]) => {
+        pdf.addFileToVFS("NotoSans-Regular.ttf", fontBase64.split(",")[1]);
+        pdf.addFont("NotoSans-Regular.ttf", "NotoSans", "normal");
+        pdf.setFont("NotoSans", "normal");
+
+        // Draw header.
+        const headerHeight = drawHeader(
+          pdf,
+          pageWidth,
+          marginRight,
+          marginLeft,
+          gameColors,
+          logoBase64
+        );
+        // Introduce shift-up to move word list, grid, images upward
+        const shiftUp = 20; // Adjust this value as needed
+        let currentY = marginTop + headerHeight - shiftUp;
+        // Draw word list.
+        currentY = drawWordList(
+          pdf,
+          words,
+          wordBoxGap,
+          horizontalPadding,
+          verticalPadding,
+          marginLeft,
+          currentY
+        );
+
+        // Position puzzle.
+        let puzzleX;
+        if (!placeImagesBelow) {
+          puzzleX = marginLeft;
+        } else {
+          puzzleX = marginLeft + (contentWidth - puzzleWidth) / 2;
+        }
+        const puzzleY = currentY;
+        drawPuzzleBackgroundAndGrid(
+          pdf,
+          puzzleX,
+          puzzleY,
+          puzzleWidth,
+          puzzleHeight,
+          gridSize,
+          evenRgb,
+          oddRgb,
+          borderRgb
+        );
+        drawPuzzleLetters(
+          pdf,
+          gridMatrix,
+          puzzleX,
+          puzzleY,
+          puzzleWidth,
+          puzzleHeight,
+          gridSize,
+          textRgb
+        );
+
+        let imagesY;
+        if (!placeImagesBelow) {
+          imagesX = puzzleX + puzzleWidth + puzzleImagesGap;
+          imagesY = puzzleY;
+          drawImages(
+            pdf,
+            hasImages,
+            imageColumnsSet,
+            imagesX,
+            imagesY,
+            maxImgWidth,
+            maxImgHeight,
+            imagesGapX,
+            imagesGapY,
+            placeImagesBelow
+          );
+        } else {
+          imagesX = marginLeft; // imagesSideMargin.
+          imagesY = puzzleY + puzzleHeight + scaledData.gapBelowPuzzle;
+          drawImagesBelowGrid(
+            pdf,
+            imageColumnsSet,
+            imagesX,
+            imagesY,
+            maxImgHeight,
+            imagesGapX,
+            imagesGapY,
+            contentWidth
+          );
+        }
+
+        pdf.save("wykreslanka.pdf");
+        if (typeof onComplete === "function") {
+          onComplete();
+        }
+      })
+      .catch((error) => console.error("Error loading font:", error));
+  }
+
   function drawHeader(
     pdf,
     pageWidth,
@@ -642,23 +811,14 @@ export function downloadWordSearchAsPDF(onComplete) {
     const headerHeight = 80;
     const maxImageWidth = pageWidth * 0.15;
     const maxImageHeight = headerHeight * 0.75;
-
-    // Get image properties from the Base64 image to preserve aspect ratio.
     const props = pdf.getImageProperties(logoBase64);
     const aspectRatio = props.width / props.height;
-
-    // const img = new Image();
-    // img.src = headerImageUrl;
-
-    // img.onload = function () {
     let displayWidth = maxImageWidth;
     let displayHeight = displayWidth / aspectRatio;
-
     if (displayHeight > maxImageHeight) {
       displayHeight = maxImageHeight;
       displayWidth = displayHeight * aspectRatio;
     }
-
     const imageX = pageWidth - marginRight - displayWidth;
     const imageY = headerHeight - displayHeight;
     pdf.addImage(
@@ -669,55 +829,34 @@ export function downloadWordSearchAsPDF(onComplete) {
       displayWidth,
       displayHeight
     );
-    // };
 
-    // Set header font to NotoSans which contains polski alphabets.
     pdf.setFont("NotoSans", "normal");
     let fontSize = 22;
     pdf.setFontSize(fontSize);
     pdf.setTextColor(0, 0, 0);
     const titleText = window.pdfText?.postTitle || "Word Search Puzzle";
-    // Set a fixed width for the text to avoid overlapping with the logo.
-    // 1) Split text for the given width (so we know how many lines).
     const titleAreaWidth = pageWidth - marginRight - marginLeft - maxImageWidth;
     const titleLines = pdf.splitTextToSize(titleText, titleAreaWidth);
-
-    // 2) Calculate line-height-based total block height.
-
-    const lineHeightFactor = pdf.getLineHeightFactor(); // default ~1.15
+    const lineHeightFactor = pdf.getLineHeightFactor();
     let lineHeight = fontSize * lineHeightFactor;
     let totalBlockHeight = lineHeight * titleLines.length;
-
-    // 3) Check if the text block is taller than the header. If so, scale it down.
-    const availableHeight = headerHeight - 10; // some padding from the line below
+    const availableHeight = headerHeight - 10;
     if (totalBlockHeight > availableHeight) {
-      // Find a scale factor so the entire block fits in 'availableHeight'
       const scaleFactor = availableHeight / totalBlockHeight;
-      fontSize = fontSize * scaleFactor; // reduce the font
+      fontSize = fontSize * scaleFactor;
       pdf.setFontSize(fontSize);
-
-      // Recompute lineHeight / totalBlockHeight
       lineHeight = fontSize * lineHeightFactor;
       totalBlockHeight = lineHeight * titleLines.length;
     }
-
-    // 4) Center the text block vertically in the header.
-    //    Middle of header: headerHeight / 2
-    //    If we’re drawing text from the top-left of each line, we need to shift
-    //    downward by about one lineHeight for correct baseline positioning.
     const headerCenterY = headerHeight / 2;
     const topOfTextY = headerCenterY - totalBlockHeight / 2;
-    // For the baseline, we'll add lineHeight to the first line's Y:
     let textStartY = topOfTextY + lineHeight;
-    // centerX is then the midpoint of the title area.
-    const centerX = marginLeft + titleAreaWidth / 2;
-    // 5) Draw the text lines, centered horizontally, with baseline in mind.
+    const centerX = marginLeft + marginRight / 2 + titleAreaWidth / 2;
     pdf.text(titleLines, centerX, textStartY, {
       align: "center",
-      baseline: "alphabetic", // default is 'alphabetic' in jsPDF
-      lineHeightFactor: lineHeightFactor,
+      baseline: "alphabetic",
+      lineHeightFactor,
     });
-
     pdf.setDrawColor(...hexToRgbArray(gameColors.accent));
     pdf.setLineWidth(2);
     pdf.line(
@@ -726,7 +865,6 @@ export function downloadWordSearchAsPDF(onComplete) {
       pageWidth - marginRight,
       headerHeight + 10
     );
-
     return headerHeight;
   }
 
@@ -739,53 +877,38 @@ export function downloadWordSearchAsPDF(onComplete) {
     marginLeft,
     currentY
   ) {
-    // (Optional) Title text
     pdf.setFontSize(14);
     pdf.setTextColor(60, 60, 60);
     const findWordsLabel = window.pdfText?.findWordsLabel || "Find the Words:";
     pdf.text(findWordsLabel, marginLeft, currentY + 20);
     currentY += 40;
-
     const marginRight = 20;
     const pageWidth = pdf.internal.pageSize.getWidth();
     const availableWidth = pageWidth - marginLeft - marginRight;
-
     let xPos = marginLeft;
     let yPos = currentY;
     let currentRowMaxHeight = 0;
-
-    // Draw each word with dynamic box
     words.forEach((word) => {
       const text = word.toUpperCase();
       const { w: textWidth, h: textHeight } = pdf.getTextDimensions(text);
       const boxWidth = textWidth + horizontalPadding * 2;
       const boxHeight = textHeight + verticalPadding * 2;
-
-      // If we exceed available width, wrap to next row
       if (xPos + boxWidth > marginLeft + availableWidth) {
         xPos = marginLeft;
         yPos += currentRowMaxHeight + wordBoxGap;
         currentRowMaxHeight = 0;
       }
-
-      // Draw the box
       pdf.setLineWidth(0.75);
       pdf.setDrawColor(100, 100, 100);
       pdf.roundedRect(xPos, yPos, boxWidth, boxHeight, 3, 3, "D");
-
-      // Place text in the center
       pdf.setFontSize(11);
       pdf.setTextColor(0, 0, 0);
       const textX = xPos + boxWidth / 2;
       const textY = yPos + boxHeight / 2;
       pdf.text(text, textX, textY, { align: "center", baseline: "middle" });
-
-      // Advance to the right
       xPos += boxWidth + wordBoxGap;
       currentRowMaxHeight = Math.max(currentRowMaxHeight, boxHeight);
     });
-
-    // Update currentY after the final row
     currentY = yPos + currentRowMaxHeight + 30;
     return currentY;
   }
@@ -811,10 +934,8 @@ export function downloadWordSearchAsPDF(onComplete) {
       3,
       "F"
     );
-
     const cellW = puzzleWidth / gridSize;
     const cellH = puzzleHeight / gridSize;
-
     for (let r = 0; r < gridSize; r++) {
       for (let c = 0; c < gridSize; c++) {
         const isEven = (r + c) % 2 === 0;
@@ -822,18 +943,15 @@ export function downloadWordSearchAsPDF(onComplete) {
         pdf.rect(puzzleX + c * cellW, puzzleY + r * cellH, cellW, cellH, "F");
       }
     }
-
     pdf.setDrawColor(...borderRgb);
     pdf.setLineWidth(0.5);
     for (let i = 0; i <= gridSize; i++) {
-      // vertical lines
       pdf.line(
         puzzleX + i * cellW,
         puzzleY,
         puzzleX + i * cellW,
         puzzleY + puzzleHeight
       );
-      // horizontal lines
       pdf.line(
         puzzleX,
         puzzleY + i * cellH,
@@ -855,10 +973,8 @@ export function downloadWordSearchAsPDF(onComplete) {
   ) {
     pdf.setTextColor(...textRgb);
     pdf.setFont("NotoSans", "normal");
-
     const cellH = puzzleHeight / gridSize;
     pdf.setFontSize(cellH * 0.6);
-
     for (let r = 0; r < gridSize; r++) {
       for (let c = 0; c < gridSize; c++) {
         let letter = gridMatrix[r][c]?.letter || "";
@@ -878,75 +994,149 @@ export function downloadWordSearchAsPDF(onComplete) {
     pdf,
     hasImages,
     imageColumns,
-    puzzleX,
-    puzzleWidth,
-    puzzleY,
+    startX,
+    startY,
     maxImgWidth,
     maxImgHeight,
     imagesGapX,
     imagesGapY,
-    puzzleImagesGap
+    placeImagesBelow
   ) {
     if (!hasImages || !imageColumns.length) return;
-    const imagesX = puzzleX + puzzleWidth + puzzleImagesGap;
-    const imagesY = puzzleY;
+    if (!placeImagesBelow) {
+      // SIDE-BY-SIDE layout
+      imageColumns.forEach((colImgs, colIndex) => {
+        const colX = imagesX + colIndex * (maxImgWidth + imagesGapX);
+        let currentColY = startY;
+        colImgs.forEach((entry) => {
+          pdf.setDrawColor(210, 210, 230);
+          pdf.setLineWidth(0.5);
+          pdf.roundedRect(
+            colX,
+            currentColY,
+            maxImgWidth,
+            maxImgHeight,
+            3,
+            3,
+            "D"
+          );
+          const imgElem = document.querySelector(
+            `[data-word="${entry.wordText?.toUpperCase()}"] img`
+          );
+          if (imgElem && imgElem.complete && imgElem.naturalHeight !== 0) {
+            try {
+              const ratio = imgElem.naturalWidth / imgElem.naturalHeight;
+              let drawWidth = maxImgWidth;
+              let drawHeight = maxImgHeight;
+              if (maxImgWidth / maxImgHeight > ratio) {
+                drawWidth = maxImgHeight * ratio;
+              } else {
+                drawHeight = maxImgWidth / ratio;
+              }
+              const offsetX = colX + (maxImgWidth - drawWidth) / 2;
+              const offsetY = currentColY + (maxImgHeight - drawHeight) / 2;
+              pdf.addImage(
+                imgElem,
+                "JPEG",
+                offsetX,
+                offsetY,
+                drawWidth,
+                drawHeight
+              );
+            } catch (err) {
+              console.error("Error adding image", err);
+            }
+          }
+          currentColY += maxImgHeight + imagesGapY;
+        });
+      });
+    }
+  }
 
-    imageColumns.forEach((colImgs, colIndex) => {
-      const colX = imagesX + colIndex * (maxImgWidth + imagesGapX);
-      let currentColY = imagesY;
+  function drawImagesBelowGrid(
+    pdf,
+    columns,
+    startX,
+    startY,
+    baseMaxImgHeight,
+    imagesGapX,
+    imagesGapY,
+    contentWidth
+  ) {
+    // Determine the maximum number of rows (based on the column with the most images)
+    const maxRows = Math.max(...columns.map((col) => col.length));
+    let currentY = startY;
 
-      colImgs.forEach((entry) => {
-        pdf.setDrawColor(210, 210, 230);
-        pdf.setLineWidth(0.5);
-        pdf.roundedRect(
-          colX,
-          currentColY,
-          maxImgWidth,
-          maxImgHeight,
-          3,
-          3,
-          "D"
-        );
+    // Loop over each row index.
+    for (let row = 0; row < maxRows; row++) {
+      // Gather images present in the current row.
+      const rowImages = [];
+      for (let col = 0; col < columns.length; col++) {
+        if (columns[col][row]) {
+          rowImages.push(columns[col][row]);
+        }
+      }
+      if (rowImages.length === 0) break; // no images in this row, exit loop.
 
-        // Try to find the loaded <img> from the DOM
+      // For full rows (i.e. rows with images count equal to columns.length), use the standard gap.
+      // For the last (incomplete) row:
+      // - If it contains exactly one image, no gap is used.
+      // - Otherwise, use the provided imagesGapX.
+      let gapX = imagesGapX;
+      if (row === maxRows - 1 && rowImages.length === 1) {
+        gapX = 0;
+      }
+
+      // Compute the cell width. The available width is reduced by the total horizontal gaps.
+      const totalGaps = (rowImages.length - 1) * gapX;
+      const cellWidth = (contentWidth - totalGaps) / rowImages.length;
+
+      let currentX = startX;
+      // Process each image in the current row.
+      for (let i = 0; i < rowImages.length; i++) {
+        const entry = rowImages[i];
         const imgElem = document.querySelector(
           `[data-word="${entry.wordText?.toUpperCase()}"] img`
         );
         if (imgElem && imgElem.complete && imgElem.naturalHeight !== 0) {
           try {
             const ratio = imgElem.naturalWidth / imgElem.naturalHeight;
-            let drawWidth = maxImgWidth;
-            let drawHeight = maxImgHeight;
+            const availableWidth = cellWidth;
+            const availableHeight = baseMaxImgHeight;
+            let drawWidth, drawHeight;
 
-            // Preserve aspect ratio
-            if (maxImgWidth / maxImgHeight > ratio) {
-              drawWidth = maxImgHeight * ratio;
+            // Scale the image while preserving its aspect ratio.
+            if (availableWidth / availableHeight > ratio) {
+              drawWidth = availableHeight * ratio;
+              drawHeight = availableHeight;
             } else {
-              drawHeight = maxImgWidth / ratio;
+              drawWidth = availableWidth;
+              drawHeight = availableWidth / ratio;
             }
 
-            // Center the image within its container
-            const offsetX = colX + (maxImgWidth - drawWidth) / 2;
-            const offsetY = currentColY + (maxImgHeight - drawHeight) / 2;
+            // Center the image within its cell horizontally and vertically.
+            const xPos = currentX + (cellWidth - drawWidth) / 2;
+            const yPos = currentY + (baseMaxImgHeight - drawHeight) / 2;
 
-            pdf.addImage(
-              imgElem,
-              "JPEG",
-              offsetX,
-              offsetY,
-              drawWidth,
-              drawHeight
-            );
+            // Draw the border exactly around the image.
+            pdf.setDrawColor(210, 210, 230);
+            pdf.setLineWidth(0.5);
+            pdf.roundedRect(xPos, yPos, drawWidth, drawHeight, 3, 3, "D");
+
+            // Draw the image.
+            pdf.addImage(imgElem, "JPEG", xPos, yPos, drawWidth, drawHeight);
           } catch (err) {
             console.error("Error adding image", err);
           }
         }
-        currentColY += maxImgHeight + imagesGapY;
-      });
-    });
+        // Advance the horizontal position for the next image.
+        currentX += cellWidth + gapX;
+      }
+      // Move down to the next row.
+      currentY += baseMaxImgHeight + imagesGapY;
+    }
   }
 
-  // Helper function to load a URL as a Base64 encoded string.
   function loadResourceAsBase64(url) {
     return fetch(url)
       .then((res) => res.blob())
@@ -961,107 +1151,36 @@ export function downloadWordSearchAsPDF(onComplete) {
       );
   }
 
-  // UPDATED: loadFontAndContinue now loads the font then draws the header
-  // and proceeds with drawing the rest of the content.
-  function loadFontAndContinue(pdf) {
-    const fontUrl = window.isAdmin
-      ? frontendData.url + "assets/fonts/NotoSans-Regular.ttf"
-      : wordSearchData.url + "assets/fonts/NotoSans-Regular.ttf";
-
-    const logoUrl = window.isAdmin
-      ? frontendData.url + "assets/images/LOGO-Edu.png"
-      : wordSearchData.url + "assets/images/LOGO-Edu.png";
-
-    // Load both the font and the logo image.
-    Promise.all([loadResourceAsBase64(fontUrl), loadResourceAsBase64(logoUrl)])
-      .then(([fontBase64, logoBase64]) => {
-        // Register the font in the PDF.
-        // Remove the "data:..." header before adding to VFS.
-        pdf.addFileToVFS("NotoSans-Regular.ttf", fontBase64.split(",")[1]);
-        pdf.addFont("NotoSans-Regular.ttf", "NotoSans", "normal");
-        pdf.setFont("NotoSans", "normal");
-
-        // a) Draw the header using the loaded font so that it can handle polski alphabets.
-        const headerHeight = drawHeader(
-          pdf,
-          pageWidth,
-          marginRight,
-          marginLeft,
-          gameColors,
-          logoBase64
-        );
-
-        // b) Now draw the word list
-        let currentY = marginTop + headerHeight;
-        currentY = drawWordList(
-          pdf,
-          words,
-          wordBoxGap,
-          horizontalPadding,
-          verticalPadding,
-          marginLeft,
-          currentY
-        );
-
-        // c) Position puzzle (below word list)
-        const puzzleY = currentY;
-        // If we have images, puzzle is left; if not, center puzzle horizontally
-        const puzzleX = hasImages
-          ? marginLeft
-          : marginLeft + (contentWidth - puzzleWidth) / 2;
-
-        // d) Draw puzzle background and grid
-        drawPuzzleBackgroundAndGrid(
-          pdf,
-          puzzleX,
-          puzzleY,
-          puzzleWidth,
-          puzzleHeight,
-          gridSize,
-          evenRgb,
-          oddRgb,
-          borderRgb
-        );
-
-        // e) Draw puzzle letters
-        drawPuzzleLetters(
-          pdf,
-          gridMatrix,
-          puzzleX,
-          puzzleY,
-          puzzleWidth,
-          puzzleHeight,
-          gridSize,
-          textRgb
-        );
-
-        // f) Draw images
-        drawImages(
-          pdf,
-          hasImages,
-          imageColumns,
-          puzzleX,
-          puzzleWidth,
-          puzzleY,
-          maxImgWidth,
-          maxImgHeight,
-          imagesGapX,
-          imagesGapY,
-          puzzleImagesGap
-        );
-
-        // g) Save the PDF
-        pdf.save("wykreslanka.pdf");
-        if (typeof onComplete === "function") {
-          onComplete();
-        }
-      })
-      .catch((error) => console.error("Error loading font:", error));
+  function cleanLetter(letter) {
+    return letter.replace(/[\u0000-\u001F\u007F-\u009F]/g, "");
   }
 
-  function cleanLetter(letter) {
-    // Remove any weird control characters
-    return letter.replace(/[\u0000-\u001F\u007F-\u009F]/g, "");
+  function calculateImagesListingHeight(
+    imageColumns,
+    maxImgHeight,
+    imagesGapY
+  ) {
+    let maxColumnHeight = 0;
+    imageColumns.forEach((col) => {
+      if (col.length > 0) {
+        const colHeight =
+          col.length * maxImgHeight + (col.length - 1) * imagesGapY;
+        if (colHeight > maxColumnHeight) maxColumnHeight = colHeight;
+      }
+    });
+    return maxColumnHeight;
+  }
+
+  function distributeImagesBelowGrid(validImages, maxColumns, maxRows) {
+    // Create exactly maxColumns empty arrays.
+    const columns = Array.from({ length: maxColumns }, () => []);
+    const maxImages = maxColumns * maxRows; // Maximum images to render.
+    for (let i = 0; i < validImages.length && i < maxImages; i++) {
+      // Round-robin assignment: place each image in one of the maxColumns columns.
+      const colIndex = i % maxColumns;
+      columns[colIndex].push(validImages[i]);
+    }
+    return columns;
   }
 }
 
