@@ -68,7 +68,7 @@ foreach ($default_settings as $key => $values) {
 <input type="hidden" id="crossword-data" name="crossword_data" value="<?php echo $grid_data ? esc_attr($grid_data) : ''; ?>">
 
 <!-- Crossword Container -->
-<div id="crossword-container">
+<div id="crossword-container" class="preview-container">
     <!-- Crossword Grid Container -->
     <div id="crossword-grid">
         <?php esc_html_e('Please add some words to generate the crossword.', 'wp-quiz-plugin'); ?>
