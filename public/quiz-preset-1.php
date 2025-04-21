@@ -57,35 +57,28 @@ function wp_quiz_render_ui($quiz_id, $questions, $background_color, $button_back
                     ansfontSize: '<?php echo $answer_font_size; ?>'
                 };
 
-                const userName = sessionStorage.getItem('userName');
-                if (userName) {
-                    loadQuestion();
-                } else {
-                    showUserNamePrompt();
-                }
+                loadQuestion();
 
-                function showUserNamePrompt() {
+                function promptForUserName() {
                     const userNameHTML = `
-                        <div class="pf_user-name-prompt" style="background-color: ${styles.backgroundColor}; padding: 10px; border-radius: 5px;">
-                            <label for="pf_user-name-input"><?php echo esc_attr__('Please enter your name:', 'wp-quiz-plugin'); ?></label>
-                            <input type="text" id="pf_user-name-input" name="user-name" placeholder="<?php echo esc_attr__('Your name here', 'wp-quiz-plugin'); ?>" style="margin: 10px 0;" autocomplete="off">
-                            <button id="pf_submit-name-btn" class="pf_button pf_button-primary" style="background-color: ${styles.buttonBackgroundColor} !important; color: ${styles.buttonTextColor} !important;"><?php echo esc_attr__('Submit', 'wp-quiz-plugin'); ?></button>
-                        </div>
+                    <div class="pf_user-name-prompt" style="background-color: ${styles.backgroundColor} !important; padding: 10px !important; border-radius: 5px !important; width: 350px; max-width: 400px; margin: 0 auto;">
+                        <label for="pf_user-name-input"><?php echo esc_attr__('Please enter your name:', 'wp-quiz-plugin'); ?></label>
+                        <input type="text" id="pf_user-name-input" name="user-name" placeholder="<?php echo esc_attr__('Your name here', 'wp-quiz-plugin'); ?>" style="margin: 10px 0 !important;" autocomplete="off">
+                        <button id="pf_submit-name-btn" class="pf_button pf_button-primary" style="background-color: ${styles.buttonBackgroundColor} !important; color: ${styles.buttonTextColor} !important;"><?php echo esc_attr__('Submit', 'wp-quiz-plugin'); ?></button>
+                    </div>
                     `;
-                    $('#pf_question-container').html(userNameHTML);
-                    $('#pf_next-question-btn').hide();
-
-                    $('#pf_submit-name-btn').on('click', function() {
+                    $('#pf_quiz-container').html(userNameHTML);
+                        $('#pf_submit-name-btn').on('click', function() {
                         const userName = $('#pf_user-name-input').val().trim();
                         if (userName) {
-                            sessionStorage.setItem('userName', userName);
-                            $('#pf_next-question-btn').show();
-                            loadQuestion();
+                        sessionStorage.setItem('userName', userName);
+                        displayReportCard();
                         } else {
                             alert("Please enter your name.");
                         }
-                    });
-                }
+            });
+            }
+
 
                 function loadQuestion() {
                     const question = questions[questionIndex];
@@ -155,18 +148,28 @@ function wp_quiz_render_ui($quiz_id, $questions, $background_color, $button_back
 
                 $('#pf_next-question-btn').on('click', function() {
                     const question = questions[questionIndex];
-                    if (!answerSubmitted) {
-                        if (question.QuestionType === 'Text') {
-                            handleTextAnswer(question);
-                        } else {
-                            handleMCQAnswer();
-                        }
-                        $('#pf_next-question-btn').text(questionIndex < totalQuestions - 1 ? '<?php echo __('Next Question', 'wp-quiz-plugin'); ?>' : '<?php echo __('Submit Quiz', 'wp-quiz-plugin'); ?>');
-                        answerSubmitted = true;
-                    } else {
-                        questionIndex < totalQuestions - 1 ? loadQuestion(++questionIndex) : displayReportCard();
-                    }
-                });
+                   if (!answerSubmitted) {
+                       if (question.QuestionType === 'Text') {
+                           handleTextAnswer(question);
+                       } else {
+                           handleMCQAnswer();
+                       }
+                       $('#pf_next-question-btn').text(questionIndex < totalQuestions - 1 ? '<?php echo __('Next Question', 'wp-quiz-plugin'); ?>' : '<?php echo __('Submit Quiz', 'wp-quiz-plugin'); ?>');
+                       answerSubmitted = true;
+                   } else {
+                       if (questionIndex < totalQuestions - 1) {
+                           loadQuestion(++questionIndex);
+                       } else {
+                           // Before displaying the report card, ensure we have a user name.
+                           const userName = sessionStorage.getItem('userName');
+                           if (!userName) {
+                               promptForUserName();
+                           } else {
+                               displayReportCard();
+                           }
+                       }
+                   }
+               });
 
                 $('#pf_back-question-btn').on('click', function() {
                     if (questionIndex > 0) {
@@ -323,7 +326,7 @@ function wp_quiz_render_ui($quiz_id, $questions, $background_color, $button_back
                         score: scorePercentage,
                         answersData
                     };
-                    
+
                     $.ajax({
                         url: quiz_ajax_obj.ajax_url,
                         method: 'POST',

@@ -47,6 +47,7 @@
 /* Main crossword container for grid and clues */
 #crossword-container {
   display: flex;
+  flex-direction: column;
   gap: 40px;
   max-width: 100%;
   background-color: #f9f9f9;
@@ -57,12 +58,17 @@
 
 /* Crossword grid wrapper styling */
 #crossword-grid {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   background-color: #ffffff;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   width: 100%;
-  max-width: 800px;
+  /* max-width: 800px; */
+  box-sizing: border-box;
+  max-height: max-content;
 }
 
 /* Crossword table and cell styling */
@@ -119,12 +125,17 @@
 /* Clues container styling */
 #clues-container {
   width: 100%;
-  max-width: 350px;
+  /* max-width: 350px; */
+  max-width: 100%;
   padding: 10px;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  justify-content: space-around;
   gap: 10px;
-  justify-content: start;
+}
+
+.clueHeading {
+  display: none;
 }
 
 /* Clues header styling */

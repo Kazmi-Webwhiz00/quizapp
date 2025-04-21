@@ -1,0 +1,3101 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: OmniS\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-04-06 11:18+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: \n"
+"Language: \n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.7.1; wp-6.7.2\n"
+"X-Domain: wp-quiz-plugin"
+
+#: modules/crossword/admin/templates/sections/fe/fe-main-ui-settings-section.php:176
+msgid " Background Color"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/admin-view-strings-setting.php:128
+#: modules/crossword/admin/templates/sections/admin-view-strings-section.php:90
+msgid " Button Label"
+msgstr ""
+
+#: modules/crossword/admin/templates/sections/fe/fe-main-ui-settings-section.php:129
+msgid " Settings"
+msgstr ""
+
+#: quizzes-admin.php:334 kw-quiz-post-and-taxonomies.php:82
+#: kw-quiz-post-and-taxonomies.php:92 kw-quiz-post-and-taxonomies.php:103
+#: kw-quiz-post-and-taxonomies.php:144 kw-quiz-post-and-taxonomies.php:191
+#: kw-quiz-post-and-taxonomies.php:196 kw-quiz-post-and-taxonomies.php:214
+#: kw-quiz-post-and-taxonomies.php:219
+#: modules/crossword/custom-post-type-registration.php:229
+#: modules/crossword/custom-post-type-registration.php:239
+#: modules/crossword/custom-post-type-registration.php:250
+#: modules/crossword/custom-post-type-registration.php:300
+#: modules/crossword/custom-post-type-registration.php:319
+#: modules/crossword/custom-post-type-registration.php:350
+#: modules/wordsearch/backend/wordsearch-cpt.php:258
+#: modules/wordsearch/backend/wordsearch-cpt.php:270
+#: modules/wordsearch/backend/wordsearch-cpt.php:287
+#: modules/wordsearch/backend/wordsearch-cpt.php:341
+#: modules/wordsearch/backend/wordsearch-cpt.php:360
+msgid "----------"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/ai/prompt-customization-section.php:55
+#: modules/crossword/admin/templates/sections/ai/prompt-customization-section.php:57
+msgid "[age]:"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/ai/prompt-customization-section.php:57
+#: modules/crossword/admin/templates/sections/ai/prompt-customization-section.php:59
+msgid "[categories]:"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/ai/prompt-customization-section.php:56
+#: modules/crossword/admin/templates/sections/ai/prompt-customization-section.php:58
+msgid "[language]:"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/ai/prompt-customization-section.php:53
+#: modules/crossword/admin/templates/sections/ai/prompt-customization-section.php:55
+msgid "[number]:"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/ai/prompt-customization-section.php:54
+#: modules/crossword/admin/templates/sections/ai/prompt-customization-section.php:56
+msgid "[topic]:"
+msgstr ""
+
+#: kw-quiz-post-and-taxonomies.php:361
+#: modules/crossword/custom-post-type-registration.php:163
+#: modules/wordsearch/backend/wordsearch-cpt.php:190
+msgid "__"
+msgstr ""
+
+#. Description of the plugin
+msgid ""
+"A WordPress plugin to create and manage quizzes with questions and user "
+"submissions."
+msgstr ""
+
+#: modules/crossword/index.php:48 modules/crossword/index.php:123
+#: modules/crossword/admin/pages/admin-strings-setting-page.php:35
+msgid "Across"
+msgstr ""
+
+#: modules/crossword/admin/templates/sections/admin-view-strings-section.php:128
+msgid "Across Label"
+msgstr ""
+
+#: quizzes-admin.php:57
+msgid "Action Buttons Settings"
+msgstr ""
+
+#: quizzes-admin.php:366
+msgid "Actual Answer"
+msgstr ""
+
+#: modules/wordsearch/word-search-metaboxes.php:435
+#: modules/crossword/templates/crossword-words-clues.php:12
+#: modules/wordsearch/admin/pages/admin-strings-setting-page.php:13
+#: modules/crossword/admin/pages/admin-strings-setting-page.php:14
+#: modules/wordsearch/admin/templates/sections/admin-view-strings-setting.php:10
+#: modules/crossword/admin/templates/sections/admin-view-strings-section.php:10
+msgid "Add a Word"
+msgstr ""
+
+#: quizzes-admin.php:99
+msgid "Add Checkbox"
+msgstr ""
+
+#: modules/crossword/admin/templates/sections/admin-view-strings-section.php:65
+msgid "Add Default Category Value"
+msgstr ""
+
+#: quizzes-admin.php:306 kw-quiz-post-and-taxonomies.php:374
+#: modules/crossword/custom-post-type-registration.php:10
+#: modules/wordsearch/backend/wordsearch-cpt.php:38
+msgid "Add New"
+msgstr ""
+
+#: kw-quiz-post-and-taxonomies.php:265
+#: modules/crossword/custom-post-type-registration.php:74
+#: modules/wordsearch/backend/wordsearch-cpt.php:102
+msgid "Add New Category"
+msgstr ""
+
+#: modules/crossword/custom-post-type-registration.php:11
+msgid "Add New Crossword"
+msgstr ""
+
+#: modules/crossword/custom-post-type-registration.php:44
+msgid "Add New Crossword Category"
+msgstr ""
+
+#: quizzes-management.php:210 quizzes-admin.php:286
+msgid "Add New Option"
+msgstr ""
+
+#: quizzes-management.php:207 quizzes-admin.php:274
+msgid "Add New Question"
+msgstr ""
+
+#: quizzes-management.php:208 quizzes-admin.php:278
+msgid "Add New Question With AI"
+msgstr ""
+
+#: kw-quiz-post-and-taxonomies.php:386
+msgid "Add New Quiz"
+msgstr ""
+
+#: modules/wordsearch/backend/wordsearch-cpt.php:39
+msgid "Add New Wordsearch"
+msgstr ""
+
+#: modules/wordsearch/backend/wordsearch-cpt.php:73
+msgid "Add New Wordsearch Category"
+msgstr ""
+
+#: quizzes-management.php:277 quizzes-admin.php:1433
+msgid "Add Question"
+msgstr ""
+
+#: quizzes-management.php:267
+msgid "Add Question with AI"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/admin-view-strings-setting.php:86
+#: modules/crossword/admin/templates/sections/admin-view-strings-section.php:59
+msgid "Add Word Button Label"
+msgstr ""
+
+#: modules/wordsearch/word-search-metaboxes.php:11
+#: modules/wordsearch/admin/pages/admin-strings-setting-page.php:30
+#: modules/wordsearch/admin/templates/sections/admin-view-strings-setting.php:95
+#: modules/wordsearch/admin/templates/sections/admin-view-strings-setting.php:96
+msgid "Add Words"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/admin-view-strings-setting.php:92
+msgid "Add Words Metabox Label"
+msgstr ""
+
+#: quizzes-admin.php:1100
+msgid "Adjust the settings to customize the appearance of the button."
+msgstr ""
+
+#: custom-meta-boxes/quiz_seo_text_admin_settings.php:19
+msgid "Admin Only Message"
+msgstr ""
+
+#: modules/wordsearch/admin/pages/admin-strings-setting-page.php:128
+#: modules/crossword/admin/pages/admin-strings-setting-page.php:102
+msgid "Admin Strings Settings"
+msgstr ""
+
+#: quizzes-admin.php:53 modules/wordsearch/admin/admin-settings.php:38
+#: modules/crossword/admin/admin-settings.php:38
+msgid "Admin Strings Text"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/admin-view-strings-setting.php:51
+#: modules/crossword/admin/templates/sections/admin-view-strings-section.php:53
+msgid "Admin Strings, Button Colors, and Text Colors"
+msgstr ""
+
+#: quizzes-admin.php:51
+msgid "Admin Style Settings"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/slugurl-section.php:13
+#: modules/crossword/admin/templates/sections/slugurl-section.php:13
+#, php-format
+msgid ""
+"After changing the slug, go to <strong><a href=\"%s\" target=\"_blank\">"
+"Settings > Permalinks</a></strong> and click \"Save Changes\" to update."
+msgstr ""
+
+#: modules/wordsearch/templates/generate-with-ai.php:18
+#: modules/crossword/templates/generate-with-ai.php:18
+msgid "Age"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/ai/ai-box-settings-section.php:21
+#: modules/crossword/admin/templates/sections/ai/ai-box-settings-section.php:21
+msgid "AI Box Settings"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/ai/ai-box-settings-section.php:27
+#: modules/crossword/admin/templates/sections/ai/ai-box-settings-section.php:27
+msgid "AI Box Title"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/ai/ai-box-settings-section.php:38
+#: modules/crossword/admin/templates/sections/ai/ai-box-settings-section.php:38
+msgid "AI Button Label"
+msgstr ""
+
+#: quizzes-admin.php:106
+msgid "AI Prompt Template Settings"
+msgstr ""
+
+#: modules/wordsearch/admin/admin-settings.php:37
+#: modules/crossword/admin/admin-settings.php:37
+#: modules/wordsearch/admin/pages/ai-settings-page.php:67
+#: modules/crossword/admin/pages/ai-settings-page.php:67
+msgid "AI Settings"
+msgstr ""
+
+#: modules/crossword/custom-post-type-registration.php:39
+#: modules/crossword/custom-post-type-registration.php:69
+msgid "All Crossword Categories"
+msgstr ""
+
+#: kw-quiz-post-and-taxonomies.php:260
+msgid "All Quiz Categories"
+msgstr ""
+
+#: quizzes-admin.php:302 kw-quiz-post-and-taxonomies.php:373
+msgid "All Quizzes"
+msgstr ""
+
+#: modules/wordsearch/backend/wordsearch-cpt.php:68
+#: modules/wordsearch/backend/wordsearch-cpt.php:97
+msgid "All Wordsearch Categories"
+msgstr ""
+
+#: quizzes-admin.php:568
+msgid "Answer Background Color"
+msgstr ""
+
+#: quizzes-admin.php:566
+msgid "Answer Font Color"
+msgstr ""
+
+#: quizzes-admin.php:567
+msgid "Answer Font Family"
+msgstr ""
+
+#: quizzes-admin.php:565
+msgid "Answer Font Size"
+msgstr ""
+
+#: quiz-template-download.php:235
+msgid "Answer Key"
+msgstr ""
+
+#: quizzes-admin.php:430
+msgid "Answer Key PDF Title"
+msgstr ""
+
+#: quizzes-admin.php:1020
+msgid "Answer Text Color:"
+msgstr ""
+
+#: quiz-template-download.php:192
+msgid "Answer:"
+msgstr ""
+
+#: quizzes-admin.php:1311
+msgid "Answers Style Settings"
+msgstr ""
+
+#: modules/crossword/public/crossword-fe-index.php:59
+#: modules/crossword/admin/pages/frontend-styles-page.php:87
+#: modules/crossword/admin/templates/sections/fe/failure-popup-settings-section.php:9
+msgid "Are you Sure ?"
+msgstr ""
+
+#: quizzes-management.php:1187
+msgid "Are you sure you want to delete the question?"
+msgstr ""
+
+#: wp_quiz_plugin_action_buttons_settings.php:135
+msgid "Are you sure you want to reset to default settings?"
+msgstr ""
+
+#: kw-author-name-admin-view.php:14
+msgid "Author Name"
+msgstr ""
+
+#: modules/crossword/public/crossword-fe-index.php:51
+msgid "Awesome!"
+msgstr ""
+
+#: public/quiz-preset-1.php:30 public/quiz-preset-2.php:37
+msgid "Back"
+msgstr ""
+
+#: quizzes-admin.php:1465
+#: modules/crossword/admin/templates/sections/fe/fe-main-ui-settings-section.php:92
+msgid "Background Color"
+msgstr ""
+
+#: modules/wordsearch/admin/pages/docs-page.php:9
+msgid ""
+"Below are the available shortcodes for the Quiz ,Crossword and Wordsearch "
+"modules. Click \"Copy\" to copy the shortcode to your clipboard."
+msgstr ""
+
+#: admin-docs.php:142 modules/crossword/admin/pages/docs-page.php:9
+msgid ""
+"Below are the available shortcodes for the Quiz and Crossword modules. Click "
+"\"Copy\" to copy the shortcode to your clipboard."
+msgstr ""
+
+#: wp_quiz_plugin_action_buttons_settings.php:119
+msgid "Best regards,"
+msgstr ""
+
+#: modules/crossword/admin/templates/sections/fe/fe-clue-settings-section.php:52
+msgid "Body Text Settings"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/admin-view-strings-setting.php:108
+#: modules/wordsearch/admin/templates/sections/admin-view-strings-setting.php:134
+#: modules/crossword/admin/templates/sections/admin-view-strings-section.php:71
+#: modules/crossword/admin/templates/sections/admin-view-strings-section.php:96
+msgid "Button Background Color"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/ai/ai-box-settings-section.php:49
+#: modules/crossword/admin/templates/sections/fe/success-popup-settings-section.php:80
+#: modules/crossword/admin/templates/sections/ai/ai-box-settings-section.php:49
+msgid "Button Color"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/fe/success-popup-settings-section.php:78
+#: modules/wordsearch/admin/templates/sections/fe/timeup-popup-settings-section.php:78
+#: modules/crossword/admin/templates/sections/fe/success-popup-settings-section.php:64
+#: modules/crossword/admin/templates/sections/fe/failure-popup-settings-section.php:60
+msgid "Button Text"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/admin-view-strings-setting.php:114
+#: modules/wordsearch/admin/templates/sections/admin-view-strings-setting.php:140
+#: modules/crossword/admin/templates/sections/admin-view-strings-section.php:77
+#: modules/crossword/admin/templates/sections/admin-view-strings-section.php:102
+#: modules/crossword/admin/templates/sections/fe/success-popup-settings-section.php:92
+msgid "Button Text Color"
+msgstr ""
+
+#: quizzes-management.php:661 quizzes-management.php:685
+#: quizzes-management.php:704 quizzes-management.php:734
+msgid "Cancel"
+msgstr ""
+
+#: kw-quiz-post-and-taxonomies.php:289 kw-quiz-post-and-taxonomies.php:308
+#: modules/crossword/custom-post-type-registration.php:97
+#: modules/crossword/custom-post-type-registration.php:116
+#: modules/crossword/custom-post-type-registration.php:143
+#: modules/wordsearch/backend/wordsearch-cpt.php:124
+#: modules/wordsearch/backend/wordsearch-cpt.php:143
+#: modules/wordsearch/backend/wordsearch-cpt.php:170
+msgid "Category Type"
+msgstr ""
+
+#: modules/crossword/admin/templates/sections/fe/fe-main-ui-settings-section.php:170
+msgid "Cell and Clue Settings"
+msgstr ""
+
+#: modules/crossword/admin/templates/sections/fe/fe-main-ui-settings-section.php:225
+msgid "Cell Border Color"
+msgstr ""
+
+#: modules/crossword/admin/templates/sections/fe/fe-main-ui-settings-section.php:201
+msgid "Cell Font Color"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/fe/success-popup-settings-section.php:62
+#: modules/wordsearch/admin/templates/sections/fe/timeup-popup-settings-section.php:62
+msgid "Challenge Text"
+msgstr ""
+
+#: quizzes-admin.php:845
+msgid "Change Image"
+msgstr ""
+
+#: public/quiz-preset-1.php:262 public/quiz-preset-2.php:275
+msgid "Check Answer"
+msgstr ""
+
+#: modules/crossword/admin/pages/frontend-styles-page.php:30
+#: modules/crossword/admin/templates/sections/fe/fe-main-ui-settings-section.php:24
+msgid "Check Crossword"
+msgstr ""
+
+#: quizzes-admin.php:77
+msgid "Checkbox Settings"
+msgstr ""
+
+#: quizzes-management.php:682
+msgid "Choose a number of questions..."
+msgstr ""
+
+#: quizzes-management.php:658
+msgid "Choose a question type..."
+msgstr ""
+
+#: quizzes-admin.php:1014
+msgid "Choose the font for quiz answers."
+msgstr ""
+
+#: quizzes-admin.php:972
+msgid "Choose the font for quiz questions."
+msgstr ""
+
+#: kw-quiz-post-and-taxonomies.php:294 kw-quiz-post-and-taxonomies.php:315
+#: kw-quiz-post-and-taxonomies.php:358
+#: modules/crossword/custom-post-type-registration.php:102
+#: modules/crossword/custom-post-type-registration.php:123
+#: modules/crossword/custom-post-type-registration.php:160
+#: modules/wordsearch/backend/wordsearch-cpt.php:129
+#: modules/wordsearch/backend/wordsearch-cpt.php:150
+#: modules/wordsearch/backend/wordsearch-cpt.php:187
+msgid "Class"
+msgstr ""
+
+#: modules/wordsearch/word-search-metaboxes.php:440
+#: modules/crossword/templates/crossword-words-clues.php:17
+#: modules/wordsearch/admin/pages/admin-strings-setting-page.php:16
+#: modules/crossword/admin/pages/admin-strings-setting-page.php:20
+#: modules/wordsearch/admin/templates/sections/admin-view-strings-setting.php:15
+#: modules/crossword/admin/templates/sections/admin-view-strings-section.php:15
+msgid "Clear List"
+msgstr ""
+
+#: quizzes-management.php:212 quizzes-admin.php:294
+msgid "Click to Add Answer"
+msgstr ""
+
+#: modules/crossword/admin/pages/frontend-styles-page.php:82
+#: modules/crossword/admin/templates/sections/fe/success-popup-settings-section.php:11
+msgid "Close"
+msgstr ""
+
+#: modules/crossword/templates/crossword-words-clues.php:73
+msgid "Clue"
+msgstr ""
+
+#: modules/crossword/admin/templates/sections/fe/fe-main-ui-settings-section.php:213
+msgid "Clue Font Color"
+msgstr ""
+
+#: modules/crossword/admin/templates/sections/fe/fe-clue-settings-section.php:78
+msgid "Clue Image Settings"
+msgstr ""
+
+#: modules/crossword/admin/templates/sections/fe/fe-clue-settings-section.php:20
+msgid "Clue Title Settings"
+msgstr ""
+
+#: modules/crossword/admin/templates/sections/fe/fe-clue-settings-section.php:2
+msgid "Clues Settings"
+msgstr ""
+
+#: quizzes-admin.php:740
+msgid "Comma-separated list of numbers for questions dropdown:"
+msgstr ""
+
+#: modules/wordsearch/wordsearch-grid-shortcode.php:14
+#: modules/wordsearch/word-search-metaboxes.php:49
+#: modules/wordsearch/admin/templates/sections/fe/success-popup-settings-section.php:9
+msgid "Congratulations"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/ai/prompt-customization-section.php:34
+#: modules/crossword/admin/templates/sections/ai/prompt-customization-section.php:36
+msgid "Context Prompt"
+msgstr ""
+
+#: kw-quiz-features-buttons.php:73
+#: modules/wordsearch/word-search-feature-buttons.php:72
+#: modules/crossword/custom-metaboxes/kw-crossword-features-buttons.php:72
+msgid "Copied to clipboard!"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/admin-action-buttons-setting.php:78
+msgid "Copy Url Action Button"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/admin-action-buttons-setting.php:82
+msgid "Copy URL label"
+msgstr ""
+
+#: wp_quiz_plugin_action_buttons_settings.php:17
+#: wp_quiz_plugin_action_buttons_settings.php:140
+#: kw-quiz-features-buttons.php:35
+#: modules/wordsearch/word-search-feature-buttons.php:35
+#: modules/crossword/custom-metaboxes/kw-crossword-features-buttons.php:36
+#: modules/wordsearch/admin/pages/admin-strings-setting-page.php:82
+#: modules/wordsearch/admin/templates/sections/admin-action-buttons-setting.php:8
+msgid "Copy URL to Clipboard"
+msgstr ""
+
+#: quiz-template-download.php:236
+msgid "Correct Answer"
+msgstr ""
+
+#: quizzes-admin.php:432
+msgid "Correct Answer Header Text"
+msgstr ""
+
+#: public/quiz-preset-1.php:192 public/quiz-preset-2.php:207
+msgid "Correct answer!"
+msgstr ""
+
+#: public/quiz-preset-1.php:341 public/quiz-preset-2.php:355
+msgid "Correct Answers:"
+msgstr ""
+
+#: quizzes-management.php:808
+msgid ""
+"Could not parse the response. Ensure the AI response follows the expected "
+"format."
+msgstr ""
+
+#: modules/crossword/custom-post-type-registration.php:8
+msgid "Crossword"
+msgstr ""
+
+#: modules/crossword/custom-post-type-registration.php:174
+msgctxt "crossword"
+msgid "Crossword Category"
+msgstr ""
+
+#: modules/crossword/custom-post-type-registration.php:387
+msgctxt "crossword"
+msgid "Crossword Visibility"
+msgstr ""
+
+#: modules/crossword/templates/generate-with-ai.php:14
+msgctxt "crossword"
+msgid "Generating Crosswords..."
+msgstr ""
+
+#: modules/crossword/custom-post-type-registration.php:419
+msgctxt "crossword"
+msgid "Private"
+msgstr ""
+
+#: modules/crossword/custom-post-type-registration.php:414
+msgctxt "crossword"
+msgid "Public"
+msgstr ""
+
+#: modules/crossword/custom-post-type-registration.php:194
+msgctxt "crossword"
+msgid "Select Class"
+msgstr ""
+
+#: modules/crossword/custom-post-type-registration.php:193
+msgctxt "crossword"
+msgid "Select School"
+msgstr ""
+
+#: modules/crossword/custom-post-type-registration.php:195
+msgctxt "crossword"
+msgid "Select Subject"
+msgstr ""
+
+#. Unique ID for the meta box
+#: modules/crossword/custom-metaboxes/kw-crossword-features-buttons.php:15
+msgid "Crossword Actions"
+msgstr ""
+
+#: modules/crossword/custom-post-type-registration.php:46
+#: modules/crossword/custom-post-type-registration.php:76
+msgid "Crossword Categories"
+msgstr ""
+
+#: modules/crossword/crossword-settings.php:171
+msgid "crossword Description"
+msgstr ""
+
+#: modules/crossword/crossword-settings.php:21
+#: modules/crossword/admin/pages/admin-strings-setting-page.php:45
+#: modules/crossword/admin/templates/sections/admin-view-strings-section.php:155
+#: modules/crossword/admin/templates/sections/admin-view-strings-section.php:156
+msgid "Crossword Full View"
+msgstr ""
+
+#: modules/crossword/admin/templates/sections/admin-view-strings-section.php:152
+msgid "Crossword Full View Label"
+msgstr ""
+
+#: admin-docs.php:31
+msgid "Crossword Module"
+msgstr ""
+
+#: admin-docs.php:173
+msgid "Crossword Module Documentation"
+msgstr ""
+
+#: admin-docs.php:153 modules/wordsearch/admin/pages/docs-page.php:36
+#: modules/crossword/admin/pages/docs-page.php:36
+msgid "Crossword Module Shortcode"
+msgstr ""
+
+#: modules/crossword/admin/admin-settings.php:44
+msgid "Crossword Settings"
+msgstr ""
+
+#: modules/crossword/public/crossword-fe-index.php:73
+msgctxt "crossword-frontend"
+msgid ""
+"Are you sure you want to reveal the correct answers? This will show all "
+"solutions and disable further input."
+msgstr ""
+
+#: modules/crossword/public/crossword-fe-index.php:75
+msgctxt "crossword-frontend"
+msgid "No, Keep Playing"
+msgstr ""
+
+#: modules/crossword/public/crossword-fe-index.php:72
+msgctxt "crossword-frontend"
+msgid "Reveal Crossword?"
+msgstr ""
+
+#: modules/crossword/public/crossword-fe-index.php:74
+msgctxt "crossword-frontend"
+msgid "Yes, Reveal"
+msgstr ""
+
+#: modules/crossword/crossword-download.php:152
+msgctxt "crossword-pdf"
+msgid "Across"
+msgstr ""
+
+#: modules/crossword/crossword-download.php:160
+msgctxt "crossword-pdf"
+msgid "Down"
+msgstr ""
+
+#: modules/crossword/crossword-download.php:164
+msgctxt "crossword-pdf"
+msgid "game"
+msgstr ""
+
+#: modules/crossword/crossword-download.php:164
+msgctxt "crossword-pdf"
+msgid "keys"
+msgstr ""
+
+#: modules/crossword/index.php:91
+msgctxt "crossword_ai"
+msgid "Error"
+msgstr ""
+
+#: modules/crossword/index.php:92
+msgctxt "crossword_ai"
+msgid "Success"
+msgstr ""
+
+#: modules/crossword/index.php:93
+msgctxt "crossword_ai_error"
+msgid ""
+"Could not parse the response. Ensure the AI response follows the expected "
+"format."
+msgstr ""
+
+#: modules/crossword/index.php:95
+msgctxt "crossword_ai_error"
+msgid "The number must be between 1 and"
+msgstr ""
+
+#: modules/crossword/index.php:94
+msgctxt "crossword_ai_success"
+msgid "Generated Content."
+msgstr ""
+
+#: modules/crossword/index.php:29
+msgctxt "crossword_pdf_error"
+msgid "An error occurred while generating the PDF."
+msgstr ""
+
+#: modules/crossword/index.php:30
+msgctxt "crossword_pdf_success"
+msgid "PDF generated successfully."
+msgstr ""
+
+#: modules/crossword/custom-post-type-registration.php:7
+#: modules/crossword/custom-post-type-registration.php:9
+msgid "Crosswords"
+msgstr ""
+
+#: modules/crossword/custom-post-type-registration.php:22
+msgid "Crosswords custom post type."
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/slugurl-section.php:2
+#: modules/crossword/admin/templates/sections/slugurl-section.php:2
+msgid "Custom  Slug Settings"
+msgstr ""
+
+#: quizzes-admin.php:136
+msgid "Custom AI Prompt Template"
+msgstr ""
+
+#: kw-quiz-post-and-taxonomies.php:409
+msgid "Custom Post Type for Quizzes"
+msgstr ""
+
+#. Section ID
+#: modules/wordsearch/admin/pages/general-settings.php:29
+#: modules/crossword/admin/pages/general-settings.php:29
+msgid "Custom Slug Settings"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/slugurl-section.php:20
+#: modules/crossword/admin/templates/sections/slugurl-section.php:20
+msgid "Custom URL Slug"
+msgstr ""
+
+#: quizzes-admin.php:713
+msgid "Custom URL Slug for Quizzes:"
+msgstr ""
+
+#: quizzes-admin.php:257
+msgid "Customize Button and Placeholder Texts"
+msgstr ""
+
+#: custom-meta-boxes/quiz_seo_text_admin_settings.php:12
+msgid "Customize Meta Box and Messages"
+msgstr ""
+
+#: quizzes-admin.php:418
+msgid "Customize PDF Strings Texts"
+msgstr ""
+
+#: quizzes-admin.php:537
+msgid "Customize PDF Style Settings"
+msgstr ""
+
+#: quizzes-admin.php:1773
+msgid ""
+"Customize the prompt template for MCQ questions. Use variables like [Your "
+"question text], [Option A], [Correct Answer]."
+msgstr ""
+
+#: quizzes-admin.php:1818
+msgid "Customize the prompt template for Text answer questions."
+msgstr ""
+
+#: quizzes-admin.php:1801
+msgid "Customize the prompt template for True/False questions."
+msgstr ""
+
+#: quizzes-admin.php:1784
+msgid ""
+"Customize the template for the learners' age prompt. Use [age] as a "
+"placeholder, which will be replaced with the actual learners' age. This "
+"template will automatically get appended."
+msgstr ""
+
+#: quizzes-admin.php:428
+msgid "Date Field Text"
+msgstr ""
+
+#: quizzes-admin.php:143
+msgid "Define your custom prompt here..."
+msgstr ""
+
+#: custom-meta-boxes/quiz_seo_text_admin_settings.php:20
+msgid "Disabled Field Message"
+msgstr ""
+
+#: admin-docs.php:13 modules/wordsearch/admin/admin-settings.php:35
+#: modules/crossword/admin/admin-settings.php:35
+msgid "Docs"
+msgstr ""
+
+#: admin-docs.php:12
+msgid "Documentation"
+msgstr ""
+
+#: modules/crossword/index.php:49 modules/crossword/index.php:124
+#: modules/crossword/admin/pages/admin-strings-setting-page.php:38
+msgid "Down"
+msgstr ""
+
+#: modules/crossword/admin/templates/sections/admin-view-strings-section.php:136
+msgid "Down Label"
+msgstr ""
+
+#: modules/crossword/public/crossword-fe-index.php:26
+#: modules/crossword/admin/pages/frontend-styles-page.php:20
+#: modules/crossword/admin/templates/sections/fe/fe-main-ui-settings-section.php:16
+msgid "Download"
+msgstr ""
+
+#: quizzes-admin.php:270 quizzes-admin.php:1431
+#: kw-questions-metabox-header.php:34 kw-questions-metabox-header.php:56
+msgid "Download Answer Key"
+msgstr ""
+
+#: modules/crossword/index.php:142
+#: modules/crossword/templates/crossword-preview-meta-box.php:13
+#: modules/crossword/admin/pages/admin-strings-setting-page.php:26
+#: modules/crossword/admin/templates/sections/admin-view-strings-section.php:25
+msgid "Download as PDF"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/fe/fe-wordsearch-puzzle-texts-section.php:57
+msgid "Download button Text"
+msgstr ""
+
+#: modules/crossword/index.php:143
+#: modules/crossword/templates/crossword-preview-meta-box.php:18
+#: modules/crossword/admin/pages/admin-strings-setting-page.php:29
+#: modules/crossword/admin/templates/sections/admin-view-strings-section.php:30
+msgid "Download Key"
+msgstr ""
+
+#: quizzes-admin.php:1430
+msgid "Download PDF"
+msgstr ""
+
+#: modules/wordsearch/wordsearch-grid-shortcode.php:27
+#: modules/wordsearch/word-search-metabox-preview.php:28
+#: modules/wordsearch/word-search-metabox-preview.php:173
+#: modules/wordsearch/word-search-metaboxes.php:68
+msgid "Download Pdf"
+msgstr ""
+
+#: quizzes-admin.php:266 kw-questions-metabox-header.php:33
+#: kw-questions-metabox-header.php:45
+msgid "Download Quiz"
+msgstr ""
+
+#: public/quiz-preset-1.php:346 public/quiz-preset-2.php:360
+msgid "Download Result as PDF"
+msgstr ""
+
+#: modules/wordsearch/word-search-metabox-preview.php:29
+#: modules/wordsearch/word-search-metaboxes.php:69
+#: modules/crossword/index.php:152
+#: modules/crossword/public/crossword-fe-index.php:27
+#: modules/crossword/admin/pages/frontend-styles-page.php:21
+#: modules/crossword/admin/templates/sections/fe/fe-main-ui-settings-section.php:17
+msgid "Downloading..."
+msgstr ""
+
+#: kw-quiz-post-and-taxonomies.php:263
+#: modules/crossword/custom-post-type-registration.php:72
+#: modules/wordsearch/backend/wordsearch-cpt.php:100
+msgid "Edit Category"
+msgstr ""
+
+#: modules/crossword/custom-post-type-registration.php:12
+msgid "Edit Crossword"
+msgstr ""
+
+#: modules/crossword/custom-post-type-registration.php:42
+msgid "Edit Crossword Category"
+msgstr ""
+
+#: kw-quiz-post-and-taxonomies.php:389
+msgid "Edit Quiz"
+msgstr ""
+
+#: modules/wordsearch/backend/wordsearch-cpt.php:40
+msgid "Edit Wordsearch"
+msgstr ""
+
+#: modules/wordsearch/backend/wordsearch-cpt.php:71
+msgid "Edit Wordsearch Category"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/fe/fe-wordsearch-puzzle-texts-section.php:72
+msgid "Enable Grid Text Sound"
+msgstr ""
+
+#: modules/crossword/admin/pages/frontend-styles-page.php:37
+#: modules/crossword/admin/templates/sections/fe/fe-main-ui-settings-section.php:31
+msgid "Enable Live Word Check"
+msgstr ""
+
+#: modules/wordsearch/word-search-timer-metabox.php:117
+msgid "Enable Timer"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/ai/prompt-customization-section.php:59
+#: modules/crossword/admin/templates/sections/ai/prompt-customization-section.php:61
+msgid ""
+"Ensure the placeholders are used correctly to guide the generation process "
+"effectively."
+msgstr ""
+
+#: quizzes-admin.php:92
+msgid "Enter checkbox value"
+msgstr ""
+
+#: quizzes-management.php:699
+msgid "Enter Learners Age"
+msgstr ""
+
+#: quizzes-admin.php:743
+msgid ""
+"Enter numbers separated by commas (e.g., \"1, 5, 10\") to define the options "
+"for the number of questions users can select."
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/ai/open-ai-settings-section.php:21
+#: modules/crossword/admin/templates/sections/ai/open-ai-settings-section.php:21
+msgid "Enter your OpenAI API key."
+msgstr ""
+
+#: quizzes-management.php:715 quizzes-management.php:720
+msgid "Enter your prompt below:"
+msgstr ""
+
+#: quizzes-management.php:718
+msgid "Enter your prompt for ChatGPT:"
+msgstr ""
+
+#: modules/wordsearch/admin/pages/frontend-styles-page.php:101
+msgid "Entries limit Popup Settings"
+msgstr ""
+
+#: modules/wordsearch/index.php:30
+#: modules/wordsearch/admin/pages/frontend-styles-page.php:65
+#: modules/wordsearch/assets/templates/wordsearch-limit-modal.php:2
+#: modules/wordsearch/admin/templates/sections/fe/entry-limit-popup-settings-section.php:9
+msgid "Entry Limit Reached"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/fe/entry-limit-popup-settings-section.php:21
+msgid "Entry Limit Settings"
+msgstr ""
+
+#: quizzes-management.php:807 quizzes-management.php:825
+msgid "Error"
+msgstr ""
+
+#: quizzes-management.php:823
+msgid "Error: "
+msgstr ""
+
+#: quizzes-management.php:822
+msgid "Failed to generate question."
+msgstr ""
+
+#: modules/crossword/admin/pages/frontend-styles-page.php:102
+#: modules/crossword/admin/templates/sections/fe/failure-popup-settings-section.php:23
+msgid "Failure Popup Settings"
+msgstr ""
+
+#: kw-save-quiz-aut.php:28 quizzes-management.php:476
+#: quizzes-management.php:1261 quizzes-management.php:1421
+msgid "False"
+msgstr ""
+
+#: modules/crossword/public/crossword-fe-index.php:93
+msgctxt "FE-crossword_pdf_error"
+msgid "An error occurred while generating the PDF."
+msgstr ""
+
+#: modules/crossword/public/crossword-fe-index.php:94
+msgctxt "FE-crossword_pdf_success"
+msgid "PDF generated successfully."
+msgstr ""
+
+#: kw-quiz-post-and-taxonomies.php:396
+msgid "Featured Image"
+msgstr ""
+
+#: modules/crossword/admin/templates/sections/admin-view-strings-section.php:161
+msgid "Filled Cell Background Color"
+msgstr ""
+
+#: kw-quiz-post-and-taxonomies.php:404
+msgid "Filter quizzes list"
+msgstr ""
+
+#: modules/wordsearch/wordsearch-grid-shortcode.php:21
+#: modules/wordsearch/word-search-metabox-preview.php:24
+#: modules/wordsearch/word-search-metaboxes.php:72
+msgid "Find These Words:"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/fe/fe-wordsearch-puzzle-texts-section.php:42
+msgid "Find Words Label"
+msgstr ""
+
+#: quizzes-admin.php:1292 quizzes-admin.php:1328
+#: modules/wordsearch/admin/templates/sections/admin-action-buttons-setting.php:63
+#: modules/wordsearch/admin/templates/sections/admin-action-buttons-setting.php:112
+#: modules/wordsearch/admin/templates/sections/admin-action-buttons-setting.php:161
+#: modules/wordsearch/admin/templates/sections/fe/fe-wordsearch-words-list-texts-section.php:38
+#: modules/crossword/admin/templates/sections/fe/fe-clue-settings-section.php:22
+#: modules/crossword/admin/templates/sections/fe/fe-clue-settings-section.php:54
+msgid "Font Color"
+msgstr ""
+
+#: quizzes-admin.php:1276 quizzes-admin.php:1319
+#: modules/crossword/admin/templates/sections/fe/fe-main-ui-settings-section.php:110
+#: modules/crossword/admin/templates/sections/fe/fe-clue-settings-section.php:32
+#: modules/crossword/admin/templates/sections/fe/fe-clue-settings-section.php:64
+msgid "Font Family"
+msgstr ""
+
+#: quizzes-admin.php:1284 quizzes-admin.php:1337
+#: modules/wordsearch/admin/templates/sections/admin-action-buttons-setting.php:48
+#: modules/wordsearch/admin/templates/sections/admin-action-buttons-setting.php:97
+#: modules/wordsearch/admin/templates/sections/admin-action-buttons-setting.php:146
+#: modules/wordsearch/admin/templates/sections/fe/fe-wordsearch-words-list-texts-section.php:22
+msgid "Font Size"
+msgstr ""
+
+#: quizzes-admin.php:1477
+#: modules/crossword/admin/templates/sections/fe/fe-main-ui-settings-section.php:104
+#: modules/crossword/admin/templates/sections/fe/fe-clue-settings-section.php:27
+#: modules/crossword/admin/templates/sections/fe/fe-clue-settings-section.php:59
+msgid "Font Size (px)"
+msgstr ""
+
+#: quizzes-admin.php:1028
+msgid "Font Size for Answers:"
+msgstr ""
+
+#: quizzes-admin.php:987
+msgid "Font Size for Questions:"
+msgstr ""
+
+#: public/public-functions.php:112
+msgctxt "For Report Card PDF"
+msgid "Correct Answer:"
+msgstr ""
+
+#: public/public-functions.php:98
+msgctxt "For Report Card PDF"
+msgid "Correct Answers: "
+msgstr ""
+
+#: public/public-functions.php:105
+msgctxt "For Report Card PDF"
+msgid "Details:"
+msgstr ""
+
+#: public/public-functions.php:99
+msgctxt "For Report Card PDF"
+msgid "Incorrect Answers: "
+msgstr ""
+
+#: public/public-functions.php:109
+msgctxt "For Report Card PDF"
+msgid "Question: "
+msgstr ""
+
+#: public/public-functions.php:92
+msgctxt "For Report Card PDF"
+msgid "Quiz Report Card"
+msgstr ""
+
+#: public/public-functions.php:100
+msgctxt "For Report Card PDF"
+msgid "Score: "
+msgstr ""
+
+#: public/public-functions.php:96
+msgctxt "For Report Card PDF"
+msgid "Student Name: "
+msgstr ""
+
+#: public/public-functions.php:97
+msgctxt "For Report Card PDF"
+msgid "Total Questions: "
+msgstr ""
+
+#: public/public-functions.php:113
+msgctxt "For Report Card PDF"
+msgid "Your Answer:"
+msgstr ""
+
+#: quizzes-admin.php:52
+msgid "Frontend Style Settings"
+msgstr ""
+
+#: modules/wordsearch/admin/admin-settings.php:39
+#: modules/crossword/admin/admin-settings.php:39
+#: modules/wordsearch/admin/pages/frontend-styles-page.php:109
+#: modules/wordsearch/admin/pages/frontend-styles-page.php:173
+#: modules/crossword/admin/pages/frontend-styles-page.php:110
+#: modules/crossword/admin/pages/frontend-styles-page.php:161
+msgid "Frontend Styles"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/fe/fe-main-ui-settings-section.php:28
+#: modules/crossword/admin/templates/sections/fe/fe-main-ui-settings-section.php:85
+msgid "Frontend UI Settings"
+msgstr ""
+
+#: admin-docs.php:29
+msgid "General"
+msgstr ""
+
+#: admin-docs.php:138 modules/wordsearch/admin/pages/docs-page.php:5
+#: modules/crossword/admin/pages/docs-page.php:5
+msgid "General Information"
+msgstr ""
+
+#: quizzes-admin.php:49 modules/wordsearch/admin/admin-settings.php:36
+#: modules/crossword/admin/admin-settings.php:36
+#: modules/wordsearch/admin/pages/general-settings.php:46
+#: modules/crossword/admin/pages/general-settings.php:46
+msgid "General Settings"
+msgstr ""
+
+#: quizzes-management.php:733
+msgid "Generate"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/ai/prompt-customization-section.php:63
+#: modules/crossword/admin/templates/sections/ai/prompt-customization-section.php:65
+msgid "Generate Prompt"
+msgstr ""
+
+#: quizzes-admin.php:1432 modules/wordsearch/index.php:29
+#: modules/wordsearch/word-search-metabox-ai.php:8
+#: modules/crossword/index.php:60 modules/crossword/crossword-settings.php:38
+#: modules/wordsearch/templates/generate-with-ai.php:8
+#: modules/crossword/templates/generate-with-ai.php:8
+#: modules/wordsearch/admin/pages/ai-settings-page.php:42
+#: modules/wordsearch/admin/pages/ai-settings-page.php:45
+#: modules/crossword/admin/pages/ai-settings-page.php:42
+#: modules/crossword/admin/pages/ai-settings-page.php:45
+#: modules/wordsearch/admin/templates/sections/ai/ai-box-settings-section.php:9
+#: modules/wordsearch/admin/templates/sections/ai/ai-box-settings-section.php:10
+#: modules/crossword/admin/templates/sections/ai/ai-box-settings-section.php:9
+#: modules/crossword/admin/templates/sections/ai/ai-box-settings-section.php:10
+msgid "Generate with AI"
+msgstr ""
+
+#: quizzes-management.php:813 quizzes-management.php:831
+msgid "Generate with ChatGPT"
+msgstr ""
+
+#: quizzes-admin.php:436
+msgid "Generated By Text"
+msgstr ""
+
+#: quiz-template-download.php:238
+msgid "Generated by WP Quiz Plugin"
+msgstr ""
+
+#: quizzes-management.php:252
+msgid "Generating Quiz..."
+msgstr ""
+
+#: quizzes-management.php:794 modules/wordsearch/index.php:52
+#: modules/crossword/index.php:76
+msgid "Generating..."
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/ai/open-ai-settings-section.php:28
+#: modules/crossword/admin/templates/sections/ai/open-ai-settings-section.php:28
+msgid "GPT-3.5 Turbo"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/ai/open-ai-settings-section.php:31
+#: modules/crossword/admin/templates/sections/ai/open-ai-settings-section.php:31
+msgid "GPT-4"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/ai/open-ai-settings-section.php:30
+#: modules/crossword/admin/templates/sections/ai/open-ai-settings-section.php:30
+msgid "GPT-4.0"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/ai/open-ai-settings-section.php:29
+#: modules/crossword/admin/templates/sections/ai/open-ai-settings-section.php:29
+msgid "GPT-4.0 Mini"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/fe/fe-main-ui-settings-section.php:34
+msgid "Grid Even Cell Background Color"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/fe/fe-main-ui-settings-section.php:46
+msgid "Grid Odd Cell Background Color"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/fe/fe-main-ui-settings-section.php:58
+msgid "Grid Selected Cell Background Color"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/fe/fe-main-ui-settings-section.php:71
+msgid "Grid Text Color"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/fe/fe-main-ui-settings-section.php:83
+msgid "Grid Text Font Family"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/fe/fe-wordsearch-puzzle-texts-section.php:2
+msgid "Grid Text Settings"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/fe/fe-wordsearch-puzzle-texts-section.php:26
+msgid "Grid Title"
+msgstr ""
+
+#: quizzes-admin.php:556
+msgid "Header Font Color"
+msgstr ""
+
+#: quizzes-admin.php:557
+msgid "Header Font Family"
+msgstr ""
+
+#: quizzes-admin.php:555
+msgid "Header Font Size"
+msgstr ""
+
+#: quizzes-admin.php:354
+msgid "Height:"
+msgstr ""
+
+#: wp_quiz_plugin_action_buttons_settings.php:117
+msgid "Hello,"
+msgstr ""
+
+#: modules/crossword/custom-metaboxes/kw-crossword-features-buttons.php:44
+msgid "Hello,\\n\\nCheck out this new quiz:\\n\\n[URL]\\n\\nBest regards,"
+msgstr ""
+
+#: wp_quiz_plugin_action_buttons_settings.php:40
+#: wp_quiz_plugin_action_buttons_settings.php:147
+#: kw-quiz-features-buttons.php:43
+msgid ""
+"Hello,\\n\\nPlease attempt this quiz on time. Here is the quiz link:"
+"\\n\\n[URL]\\n\\nBest regards,"
+msgstr ""
+
+#: modules/wordsearch/word-search-metabox-preview.php:27
+#: modules/wordsearch/word-search-metaboxes.php:75
+msgid "Hide Images"
+msgstr ""
+
+#: modules/crossword/admin/templates/sections/fe/fe-main-ui-settings-section.php:189
+msgid "Highlight Cell Background Color"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/fe/fe-main-ui-settings-section.php:104
+msgid "Highlight Cell Text Color"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/fe/fe-main-ui-settings-section.php:117
+msgid "Highlighted Line Background Color"
+msgstr ""
+
+#: modules/wordsearch/word-search-timer-metabox.php:126
+msgid "Hours"
+msgstr ""
+
+#: quizzes-admin.php:110
+msgid "How to Use Variables in Your Prompt Template:"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://kazmiwebwhiz.com"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/fe/fe-clue-settings-section.php:16
+#: modules/crossword/admin/templates/sections/fe/fe-clue-settings-section.php:80
+msgid "Image Height (px)"
+msgstr ""
+
+#: quizzes-management.php:213 quizzes-admin.php:358
+msgid "Image Height Setting Notification Text"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/fe/fe-clue-settings-section.php:14
+msgid "Image Settings"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/fe/fe-clue-settings-section.php:21
+#: modules/crossword/admin/templates/sections/fe/fe-clue-settings-section.php:85
+msgid "Image Width (px)"
+msgstr ""
+
+#: public/quiz-preset-1.php:203 public/quiz-preset-1.php:288
+#: public/quiz-preset-2.php:217 public/quiz-preset-2.php:301
+msgid "Incorrect answer. The correct answer is:"
+msgstr ""
+
+#: public/quiz-preset-1.php:342 public/quiz-preset-2.php:356
+msgid "Incorrect Answers:"
+msgstr ""
+
+#: kw-quiz-post-and-taxonomies.php:400
+msgid "Insert into quiz"
+msgstr ""
+
+#: quiz-template-download.php:169 quiz-template-download.php:312
+msgid "Invalid answer format."
+msgstr ""
+
+#: modules/crossword/crossword-settings.php:224
+msgid "Invalid crossword ID."
+msgstr ""
+
+#: quiz-template-download.php:19 quiz-template-download.php:217
+#: modules/crossword/crossword-download.php:12
+msgid "Invalid request."
+msgstr ""
+
+#. Author of the plugin
+msgid "Kazmi Webwhiz"
+msgstr ""
+
+#: modules/crossword/index.php:127
+msgid ""
+"Keep adding new words! The following words can't be included in the "
+"crossword puzzle because they do not have enough letters in common with "
+"other words:"
+msgstr ""
+
+#: modules/wordsearch/templates/generate-with-ai.php:19
+#: modules/crossword/templates/generate-with-ai.php:19
+msgid "Language"
+msgstr ""
+
+#: quizzes-submissions.php:69
+msgid "Learner Name"
+msgstr ""
+
+#: quizzes-management.php:707
+msgid "Learners age is required!"
+msgstr ""
+
+#: quizzes-admin.php:1758
+msgid "Learners' Age Prompt Template"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/ai/ai-box-settings-section.php:60
+#: modules/crossword/admin/templates/sections/ai/ai-box-settings-section.php:60
+msgid "Max Limit"
+msgstr ""
+
+#: quizzes-admin.php:900
+#: modules/wordsearch/admin/templates/sections/ai/open-ai-settings-section.php:38
+#: modules/crossword/admin/templates/sections/ai/open-ai-settings-section.php:38
+msgid "Max Tokens"
+msgstr ""
+
+#: quizzes-management.php:430
+msgctxt "MCQ Hover"
+msgid "Correct Answer"
+msgstr ""
+
+#: quizzes-management.php:432
+msgctxt "MCQ Hover"
+msgid "Incorrect Answer"
+msgstr ""
+
+#: quizzes-admin.php:1731
+msgid "MCQ Prompt Template"
+msgstr ""
+
+#: custom-meta-boxes/quiz_seo_text_admin_settings.php:18
+msgid "Meta Box Title"
+msgstr ""
+
+#: modules/wordsearch/word-search-timer-metabox.php:131
+msgid "Minutes"
+msgstr ""
+
+#: quizzes-management.php:378 quizzes-management.php:654
+#: quizzes-management.php:1154
+msgid "Multiple Choice"
+msgstr ""
+
+#: kw-quiz-post-and-taxonomies.php:266
+#: modules/crossword/custom-post-type-registration.php:75
+#: modules/wordsearch/backend/wordsearch-cpt.php:103
+msgid "New Category Name"
+msgstr ""
+
+#: modules/crossword/custom-post-type-registration.php:13
+msgid "New Crossword"
+msgstr ""
+
+#: modules/crossword/custom-post-type-registration.php:45
+msgid "New Crossword Category Name"
+msgstr ""
+
+#: quizzes-management.php:1141
+msgid "New Question"
+msgstr ""
+
+#: kw-quiz-post-and-taxonomies.php:388
+msgid "New Quiz"
+msgstr ""
+
+#: wp_quiz_plugin_action_buttons_settings.php:37
+#: wp_quiz_plugin_action_buttons_settings.php:146
+#: kw-quiz-features-buttons.php:42
+msgid "New Quiz Assessment Available"
+msgstr ""
+
+#: modules/crossword/custom-metaboxes/kw-crossword-features-buttons.php:43
+msgid "New Quiz Available"
+msgstr ""
+
+#: modules/wordsearch/backend/wordsearch-cpt.php:41
+msgid "New Wordsearch"
+msgstr ""
+
+#: modules/wordsearch/backend/wordsearch-cpt.php:74
+msgid "New Wordsearch Category Name"
+msgstr ""
+
+#: quizzes-management.php:660 quizzes-management.php:684
+#: quizzes-management.php:703
+msgid "Next"
+msgstr ""
+
+#: public/quiz-preset-1.php:164 public/quiz-preset-1.php:277
+#: public/quiz-preset-1.php:292 public/quiz-preset-2.php:179
+#: public/quiz-preset-2.php:290 public/quiz-preset-2.php:305
+msgid "Next Question"
+msgstr ""
+
+#: modules/crossword/custom-post-type-registration.php:16
+msgid "No crosswords found"
+msgstr ""
+
+#: modules/crossword/custom-post-type-registration.php:17
+msgid "No crosswords found in Trash"
+msgstr ""
+
+#: quiz-template-download.php:48 quiz-template-download.php:231
+msgid "No questions found for this quiz."
+msgstr ""
+
+#: quizzes-submissions.php:93
+msgid "No submissions found."
+msgstr ""
+
+#: modules/wordsearch/admin/pages/admin-strings-setting-page.php:33
+msgid "No word search entries found"
+msgstr ""
+
+#: modules/wordsearch/word-search-metabox-preview.php:175
+#: modules/wordsearch/admin/templates/sections/admin-view-strings-setting.php:33
+msgid "No word search entries found."
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/admin-view-strings-setting.php:100
+msgid "No word search entries Label"
+msgstr ""
+
+#: modules/wordsearch/backend/wordsearch-cpt.php:44
+msgid "No wordsearches found"
+msgstr ""
+
+#: modules/wordsearch/backend/wordsearch-cpt.php:45
+msgid "No wordsearches found in Trash"
+msgstr ""
+
+#: modules/crossword/public/crossword-fe-index.php:60
+#: modules/crossword/admin/pages/frontend-styles-page.php:88
+#: modules/crossword/admin/templates/sections/fe/failure-popup-settings-section.php:10
+msgid "Not all words are typed !"
+msgstr ""
+
+#: kw-quiz-post-and-taxonomies.php:394
+msgid "Not found"
+msgstr ""
+
+#: kw-quiz-post-and-taxonomies.php:395
+msgid "Not found in Trash"
+msgstr ""
+
+#: wp_quiz_plugin_action_buttons_settings.php:116
+#: modules/wordsearch/admin/templates/sections/slugurl-section.php:9
+#: modules/crossword/admin/templates/sections/slugurl-section.php:9
+#: modules/wordsearch/admin/templates/sections/ai/prompt-customization-section.php:26
+#: modules/wordsearch/admin/templates/sections/ai/prompt-customization-section.php:50
+#: modules/wordsearch/admin/templates/sections/ai/prompt-customization-section.php:79
+#: modules/crossword/admin/templates/sections/ai/prompt-customization-section.php:28
+#: modules/crossword/admin/templates/sections/ai/prompt-customization-section.php:52
+#: modules/crossword/admin/templates/sections/ai/prompt-customization-section.php:81
+msgid "Note:"
+msgstr ""
+
+#: quizzes-admin.php:318 quiz-notificaions.php:37
+msgid "Notifications"
+msgstr ""
+
+#: modules/wordsearch/templates/generate-with-ai.php:20
+#: modules/crossword/templates/generate-with-ai.php:20
+msgid "Number"
+msgstr ""
+
+#. Name of the plugin
+msgid "OmniS"
+msgstr ""
+
+#: custom-meta-boxes/quiz_seo_text_admin_settings.php:32
+#: custom-meta-boxes/quiz_seo_text_admin_settings.php:38
+#: custom-meta-boxes/quiz_seo_text.php:31
+#: modules/crossword/custom-metaboxes/crossword_seo_text.php:33
+msgid "Only administrators can edit this SEO text."
+msgstr ""
+
+#: modules/crossword/custom-metaboxes/crossword_seo_text.php:32
+msgid ""
+"Only administrators can edit this SEO text. Shortcode: [crossword_seo_text]"
+msgstr ""
+
+#: custom-meta-boxes/quiz_seo_text.php:30
+msgid "Only administrators can edit this SEO text. Shortcode: [quiz_seo_text]"
+msgstr ""
+
+#: wp_quiz_plugin_action_buttons_settings.php:6
+#: wp_quiz_plugin_action_buttons_settings.php:137
+#: kw-quiz-features-buttons.php:31
+#: modules/wordsearch/word-search-feature-buttons.php:31
+#: modules/crossword/custom-metaboxes/kw-crossword-features-buttons.php:32
+#: modules/wordsearch/admin/pages/admin-strings-setting-page.php:69
+#: modules/wordsearch/admin/templates/sections/admin-action-buttons-setting.php:7
+msgid "Open in New Tab"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/admin-action-buttons-setting.php:2
+msgid "Open In New Tab Action Button"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/admin-action-buttons-setting.php:32
+msgid "Open In New Tab label"
+msgstr ""
+
+#: quizzes-management.php:656 quizzes-management.php:1156
+msgid "Open Text"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/ai/open-ai-settings-section.php:19
+#: modules/crossword/admin/templates/sections/ai/open-ai-settings-section.php:19
+msgid "OpenAI API Key"
+msgstr ""
+
+#: quizzes-admin.php:883
+#: modules/wordsearch/admin/templates/sections/ai/open-ai-settings-section.php:15
+#: modules/crossword/admin/templates/sections/ai/open-ai-settings-section.php:15
+msgid "OpenAI API Settings"
+msgstr ""
+
+#: quizzes-admin.php:891
+#: modules/wordsearch/admin/templates/sections/ai/open-ai-settings-section.php:26
+#: modules/crossword/admin/templates/sections/ai/open-ai-settings-section.php:26
+msgid "OpenAI Model"
+msgstr ""
+
+#: kw-quiz-post-and-taxonomies.php:261
+#: modules/crossword/custom-post-type-registration.php:70
+#: modules/wordsearch/backend/wordsearch-cpt.php:98
+msgid "Parent Category"
+msgstr ""
+
+#: kw-quiz-post-and-taxonomies.php:262
+#: modules/crossword/custom-post-type-registration.php:71
+#: modules/wordsearch/backend/wordsearch-cpt.php:99
+msgid "Parent Category:"
+msgstr ""
+
+#: modules/crossword/custom-post-type-registration.php:40
+msgid "Parent Crossword Category"
+msgstr ""
+
+#: modules/crossword/custom-post-type-registration.php:41
+msgid "Parent Crossword Category:"
+msgstr ""
+
+#: kw-quiz-post-and-taxonomies.php:384
+msgid "Parent Quiz:"
+msgstr ""
+
+#: modules/wordsearch/backend/wordsearch-cpt.php:69
+msgid "Parent Wordsearch Category"
+msgstr ""
+
+#: modules/wordsearch/backend/wordsearch-cpt.php:70
+msgid "Parent Wordsearch Category:"
+msgstr ""
+
+#: quizzes-admin.php:54
+msgid "PDF Strings Text"
+msgstr ""
+
+#: quizzes-admin.php:55
+msgid "PDF Style Settings"
+msgstr ""
+
+#: quizzes-admin.php:330 modules/wordsearch/index.php:71
+#: modules/wordsearch/admin/pages/admin-strings-setting-page.php:36
+#: modules/crossword/admin/pages/admin-strings-setting-page.php:17
+#: modules/wordsearch/admin/templates/sections/admin-view-strings-setting.php:62
+#: modules/wordsearch/admin/templates/sections/admin-view-strings-setting.php:63
+#: modules/crossword/admin/templates/sections/admin-view-strings-section.php:36
+msgid "Physics"
+msgstr ""
+
+#: modules/wordsearch/wordsearch-grid-shortcode.php:18
+#: modules/wordsearch/word-search-metaboxes.php:52
+#: modules/wordsearch/word-search-metaboxes.php:61
+#: modules/wordsearch/admin/pages/frontend-styles-page.php:52
+#: modules/wordsearch/admin/pages/frontend-styles-page.php:62
+#: modules/wordsearch/admin/templates/sections/fe/success-popup-settings-section.php:12
+#: modules/wordsearch/admin/templates/sections/fe/timeup-popup-settings-section.php:12
+msgid "Play Again"
+msgstr ""
+
+#: modules/crossword/index.php:126
+#: modules/crossword/templates/crossword-preview-meta-box.php:74
+msgid "Please add some words to generate the crossword."
+msgstr ""
+
+#: wp_quiz_plugin_action_buttons_settings.php:118
+msgid "Please attempt this quiz on time: [URL]"
+msgstr ""
+
+#: public/quiz-preset-1.php:70 public/quiz-preset-2.php:77
+msgid "Please enter your name:"
+msgstr ""
+
+#: quizzes-management.php:664
+msgid "Please select a question type!"
+msgstr ""
+
+#: kw-quiz-post-and-taxonomies.php:570
+#: modules/crossword/custom-post-type-registration.php:545
+#: modules/wordsearch/backend/wordsearch-cpt.php:508
+msgid "Please select a Subject."
+msgstr ""
+
+#: quizzes-management.php:688
+msgid "Please select the number of questions!"
+msgstr ""
+
+#: admin-docs.php:25
+msgid "Plugin Documentation"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/fe/success-popup-settings-section.php:47
+#: modules/wordsearch/admin/templates/sections/fe/timeup-popup-settings-section.php:47
+#: modules/wordsearch/admin/templates/sections/fe/entry-limit-popup-settings-section.php:43
+#: modules/crossword/admin/templates/sections/fe/success-popup-settings-section.php:49
+#: modules/crossword/admin/templates/sections/fe/failure-popup-settings-section.php:45
+msgid "Popup Body Text"
+msgstr ""
+
+#: quizzes-admin.php:1236
+msgid "Popup Button Font Size:"
+msgstr ""
+
+#: quizzes-admin.php:1228
+msgid "Popup Font Size:"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/fe/success-popup-settings-section.php:31
+#: modules/wordsearch/admin/templates/sections/fe/timeup-popup-settings-section.php:31
+#: modules/wordsearch/admin/templates/sections/fe/entry-limit-popup-settings-section.php:27
+#: modules/crossword/admin/templates/sections/fe/success-popup-settings-section.php:33
+#: modules/crossword/admin/templates/sections/fe/failure-popup-settings-section.php:29
+msgid "Popup Title"
+msgstr ""
+
+#: kw-quiz-post-and-taxonomies.php:379
+msgctxt "Post Type Singular Name"
+msgid "Quiz"
+msgstr ""
+
+#: modules/wordsearch/word-search-metabox-preview.php:146
+msgid "Preview Word Search"
+msgstr ""
+
+#: modules/wordsearch/admin/pages/admin-strings-setting-page.php:39
+#: modules/wordsearch/admin/templates/sections/admin-view-strings-setting.php:77
+#: modules/wordsearch/admin/templates/sections/admin-view-strings-setting.php:78
+msgid "Preview Wordsearch"
+msgstr ""
+
+#: modules/wordsearch/word-search-timer-metabox.php:143
+msgid "Preview:"
+msgstr ""
+
+#: kw-quiz-post-and-taxonomies.php:752
+msgid "Private"
+msgstr ""
+
+#: quizzes-admin.php:50 quizzes-admin.php:1723
+#: modules/wordsearch/admin/templates/sections/ai/prompt-customization-section.php:18
+#: modules/crossword/admin/templates/sections/ai/prompt-customization-section.php:20
+msgid "Prompt Customization"
+msgstr ""
+
+#: quizzes-admin.php:73
+msgid "Prompt Customization Settings"
+msgstr ""
+
+#: quizzes-management.php:741
+msgid "Prompt is required!"
+msgstr ""
+
+#: kw-quiz-post-and-taxonomies.php:747
+msgid "Public"
+msgstr ""
+
+#: quizzes-management.php:55
+msgctxt "publish alert"
+msgid "Don't forget to save! Your changes may be lost."
+msgstr ""
+
+#: quizzes-management.php:361 quizzes-management.php:1141
+msgid "Q."
+msgstr ""
+
+#: quiz-template-download.php:237
+msgid "Question"
+msgstr ""
+
+#: quizzes-admin.php:546
+msgid "Question Background Color"
+msgstr ""
+
+#: quizzes-admin.php:544
+msgid "Question Font Color"
+msgstr ""
+
+#: quizzes-admin.php:545
+msgid "Question Font Family"
+msgstr ""
+
+#: quizzes-admin.php:543
+msgid "Question Font Size"
+msgstr ""
+
+#: quizzes-admin.php:434
+msgid "Question Header Text"
+msgstr ""
+
+#: quizzes-admin.php:1268
+msgid "Question Style Settings"
+msgstr ""
+
+#: quizzes-admin.php:978
+msgid "Question Text Color:"
+msgstr ""
+
+#: quizzes-management.php:375 quizzes-management.php:1153
+msgid "Question Type"
+msgstr ""
+
+#: kw-quiz-post-and-taxonomies.php:381 kw-quiz-post-and-taxonomies.php:408
+msgid "Quiz"
+msgstr ""
+
+#. Updated ID for uniqueness
+#: kw-quiz-features-buttons.php:15
+msgid "Quiz Actions"
+msgstr ""
+
+#: kw-quiz-post-and-taxonomies.php:382
+msgid "Quiz Archives"
+msgstr ""
+
+#: kw-quiz-post-and-taxonomies.php:383
+msgid "Quiz Attributes"
+msgstr ""
+
+#: quizzes-submissions.php:72
+msgid "Quiz Author"
+msgstr ""
+
+#: kw-quiz-post-and-taxonomies.php:267
+msgid "Quiz Categories"
+msgstr ""
+
+#: quizzes-admin.php:322
+msgid "Quiz Category"
+msgstr ""
+
+#: kw-quiz-post-and-taxonomies.php:433
+msgid "Quiz Description"
+msgstr ""
+
+#: quizzes-submissions.php:67
+msgid "Quiz ID"
+msgstr ""
+
+#: admin-docs.php:30
+msgid "Quiz Module"
+msgstr ""
+
+#: admin-docs.php:166
+msgid "Quiz Module Documentation"
+msgstr ""
+
+#: admin-docs.php:144 modules/wordsearch/admin/pages/docs-page.php:11
+#: modules/crossword/admin/pages/docs-page.php:11
+msgid "Quiz Module Shortcode"
+msgstr ""
+
+#: quizzes-admin.php:424
+msgid "Quiz PDF Title"
+msgstr ""
+
+#. Meta box ID
+#: quizzes-management.php:156
+msgid "Quiz Questions"
+msgstr ""
+
+#: public/quiz-preset-1.php:338 public/quiz-preset-2.php:352
+msgid "Quiz Report Card"
+msgstr ""
+
+#: quizzes-submissions.php:63
+msgid "Quiz Submissions"
+msgstr ""
+
+#: quizzes-submissions.php:68
+msgid "Quiz Title"
+msgstr ""
+
+#: quizzes-admin.php:561
+msgid "Quiz Title Font Color"
+msgstr ""
+
+#: quizzes-admin.php:562
+msgid "Quiz Title Font Family"
+msgstr ""
+
+#: quizzes-admin.php:560
+msgid "Quiz Title Font Size"
+msgstr ""
+
+#: kw-quiz-post-and-taxonomies.php:338
+msgid "Quiz Type"
+msgstr ""
+
+#. Meta box ID
+#: kw-quiz-post-and-taxonomies.php:725
+msgid "Quiz Visibility"
+msgstr ""
+
+#: quiz-template-download.php:346
+msgid "quiz_odpowiedzi"
+msgstr ""
+
+#: quizzes-admin.php:298 kw-quiz-post-and-taxonomies.php:372
+msgid "Quizzes"
+msgstr ""
+
+#: kw-quiz-post-and-taxonomies.php:402
+msgid "Quizzes list"
+msgstr ""
+
+#: kw-quiz-post-and-taxonomies.php:403
+msgid "Quizzes list navigation"
+msgstr ""
+
+#: quizzes-admin.php:27 quizzes-admin.php:45 quizzes-admin.php:310
+msgid "Quizzes Settings"
+msgstr ""
+
+#: modules/wordsearch/word-search-metaboxes.php:51
+#: modules/wordsearch/admin/pages/frontend-styles-page.php:51
+#: modules/wordsearch/admin/templates/sections/fe/success-popup-settings-section.php:11
+msgid "Ready for another challenge?"
+msgstr ""
+
+#: quizzes-admin.php:93
+msgid "Remove"
+msgstr ""
+
+#: kw-quiz-post-and-taxonomies.php:398
+msgid "Remove featured image"
+msgstr ""
+
+#: modules/wordsearch/wordsearch-grid-shortcode.php:124
+msgid "Rendering grid..."
+msgstr ""
+
+#: wp_quiz_plugin_action_buttons_settings.php:68
+#: wp_quiz_plugin_action_buttons_settings.php:130 quizzes-admin.php:120
+#: quizzes-admin.php:1301 quizzes-admin.php:1346 quizzes-admin.php:1552
+#: quizzes-admin.php:1604
+#: modules/wordsearch/admin/templates/sections/admin-view-strings-setting.php:119
+#: modules/wordsearch/admin/templates/sections/admin-view-strings-setting.php:145
+#: modules/wordsearch/admin/templates/sections/admin-view-strings-setting.php:168
+#: modules/wordsearch/admin/templates/sections/admin-action-buttons-setting.php:179
+#: modules/crossword/admin/templates/sections/admin-view-strings-section.php:82
+#: modules/crossword/admin/templates/sections/admin-view-strings-section.php:107
+#: modules/wordsearch/admin/templates/sections/fe/success-popup-settings-section.php:93
+#: modules/wordsearch/admin/templates/sections/fe/fe-wordsearch-puzzle-texts-section.php:92
+#: modules/wordsearch/admin/templates/sections/fe/timeup-popup-settings-section.php:93
+#: modules/wordsearch/admin/templates/sections/fe/fe-main-ui-settings-section.php:132
+#: modules/wordsearch/admin/templates/sections/fe/fe-wordsearch-words-list-texts-section.php:54
+#: modules/wordsearch/admin/templates/sections/fe/entry-limit-popup-settings-section.php:57
+#: modules/wordsearch/admin/templates/sections/fe/fe-clue-settings-section.php:29
+#: modules/wordsearch/admin/templates/sections/ai/prompt-customization-section.php:41
+#: modules/wordsearch/admin/templates/sections/ai/prompt-customization-section.php:70
+#: modules/wordsearch/admin/templates/sections/ai/prompt-customization-section.php:94
+#: modules/wordsearch/admin/templates/sections/ai/ai-box-settings-section.php:67
+#: modules/crossword/admin/templates/sections/fe/success-popup-settings-section.php:103
+#: modules/crossword/admin/templates/sections/fe/fe-main-ui-settings-section.php:122
+#: modules/crossword/admin/templates/sections/fe/fe-main-ui-settings-section.php:163
+#: modules/crossword/admin/templates/sections/fe/fe-main-ui-settings-section.php:236
+#: modules/crossword/admin/templates/sections/fe/failure-popup-settings-section.php:75
+#: modules/crossword/admin/templates/sections/fe/fe-clue-settings-section.php:93
+#: modules/crossword/admin/templates/sections/ai/prompt-customization-section.php:43
+#: modules/crossword/admin/templates/sections/ai/prompt-customization-section.php:72
+#: modules/crossword/admin/templates/sections/ai/prompt-customization-section.php:96
+#: modules/crossword/admin/templates/sections/ai/ai-box-settings-section.php:67
+msgid "Reset to Default"
+msgstr ""
+
+#: modules/crossword/admin/templates/sections/fe/fe-main-ui-settings-section.php:90
+msgid "Restart Button Settings"
+msgstr ""
+
+#: public/quiz-preset-1.php:345 public/quiz-preset-2.php:359
+msgid "Retake Quiz"
+msgstr ""
+
+#: modules/crossword/admin/pages/frontend-styles-page.php:89
+#: modules/crossword/admin/templates/sections/fe/failure-popup-settings-section.php:11
+msgid "Retry"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/ai/prompt-customization-section.php:87
+#: modules/crossword/admin/templates/sections/ai/prompt-customization-section.php:89
+msgid "Return Format Prompt"
+msgstr ""
+
+#: kw-quiz-post-and-taxonomies.php:292 kw-quiz-post-and-taxonomies.php:313
+#: kw-quiz-post-and-taxonomies.php:352
+#: modules/crossword/custom-post-type-registration.php:100
+#: modules/crossword/custom-post-type-registration.php:121
+#: modules/crossword/custom-post-type-registration.php:154
+#: modules/wordsearch/backend/wordsearch-cpt.php:127
+#: modules/wordsearch/backend/wordsearch-cpt.php:148
+#: modules/wordsearch/backend/wordsearch-cpt.php:181
+msgid "School"
+msgstr ""
+
+#: quizzes-submissions.php:70
+msgid "Score"
+msgstr ""
+
+#: modules/crossword/custom-post-type-registration.php:38
+#: modules/crossword/custom-post-type-registration.php:68
+msgid "Search Crossword Categories"
+msgstr ""
+
+#: modules/crossword/custom-post-type-registration.php:15
+msgid "Search Crosswords"
+msgstr ""
+
+#: kw-quiz-post-and-taxonomies.php:393
+msgid "Search Quiz"
+msgstr ""
+
+#: kw-quiz-post-and-taxonomies.php:259
+msgid "Search Quiz Categories"
+msgstr ""
+
+#: modules/wordsearch/backend/wordsearch-cpt.php:67
+#: modules/wordsearch/backend/wordsearch-cpt.php:96
+msgid "Search Wordsearch Categories"
+msgstr ""
+
+#: modules/wordsearch/backend/wordsearch-cpt.php:43
+msgid "Search Wordsearches"
+msgstr ""
+
+#: modules/wordsearch/word-search-timer-metabox.php:136
+msgid "Seconds"
+msgstr ""
+
+#: quizzes-admin.php:1009
+msgid "Select Answer Font:"
+msgstr ""
+
+#: kw-quiz-post-and-taxonomies.php:291 kw-quiz-post-and-taxonomies.php:312
+#: modules/crossword/custom-post-type-registration.php:99
+#: modules/crossword/custom-post-type-registration.php:120
+#: modules/wordsearch/backend/wordsearch-cpt.php:126
+#: modules/wordsearch/backend/wordsearch-cpt.php:147
+msgid "Select Category Type"
+msgstr ""
+
+#: quizzes-admin.php:338
+msgid "Select Class"
+msgstr ""
+
+#: quizzes-management.php:679
+msgid "Select Number of Questions"
+msgstr ""
+
+#: quizzes-admin.php:829
+msgid "Select or Upload PDF Image"
+msgstr ""
+
+#: quizzes-admin.php:967
+msgid "Select Question Font:"
+msgstr ""
+
+#: quizzes-management.php:651
+msgid "Select Question Type"
+msgstr ""
+
+#: quizzes-admin.php:326
+msgid "Select School"
+msgstr ""
+
+#: modules/crossword/admin/templates/sections/admin-view-strings-section.php:166
+msgid "Select the background color for filled cells in the crossword."
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/admin-view-strings-setting.php:111
+#: modules/crossword/admin/templates/sections/admin-view-strings-section.php:74
+msgid "Select the background color for the \"Add Word\" button."
+msgstr ""
+
+#: kw-quiz-post-and-taxonomies.php:296 kw-quiz-post-and-taxonomies.php:317
+#: modules/crossword/custom-post-type-registration.php:104
+#: modules/crossword/custom-post-type-registration.php:125
+#: modules/wordsearch/backend/wordsearch-cpt.php:131
+#: modules/wordsearch/backend/wordsearch-cpt.php:152
+msgid "Select the category type (School, Subject, or Class)."
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/ai/ai-box-settings-section.php:53
+#: modules/crossword/admin/templates/sections/ai/ai-box-settings-section.php:53
+msgid ""
+"Select the color of the \"Generate with AI\" button using the color picker."
+msgstr ""
+
+#: quizzes-admin.php:927
+#: modules/wordsearch/admin/templates/sections/ai/open-ai-settings-section.php:33
+#: modules/crossword/admin/templates/sections/ai/open-ai-settings-section.php:33
+msgid "Select the OpenAI model to use."
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/admin-view-strings-setting.php:117
+#: modules/crossword/admin/templates/sections/admin-view-strings-section.php:80
+msgid "Select the text color for the \"Add Word\" button."
+msgstr ""
+
+#: kw-quiz-post-and-taxonomies.php:557
+#: modules/crossword/custom-post-type-registration.php:531
+#: modules/wordsearch/backend/wordsearch-cpt.php:494
+msgid "Selected Class is invalid for the chosen School."
+msgstr ""
+
+#: quizzes-management.php:722
+msgid "Selected Related Tags below:"
+msgstr ""
+
+#: kw-quiz-post-and-taxonomies.php:575
+#: modules/crossword/custom-post-type-registration.php:549
+#: modules/wordsearch/backend/wordsearch-cpt.php:512
+msgid "Selected Subject is invalid for the chosen Class."
+msgstr ""
+
+#: custom-meta-boxes/quiz_seo_text_admin_settings.php:26
+#: custom-meta-boxes/quiz_seo_text.php:5 custom-meta-boxes/quiz_seo_text.php:7
+#: modules/crossword/custom-metaboxes/crossword_seo_text.php:6
+#: modules/crossword/custom-metaboxes/crossword_seo_text.php:8
+msgid "SEO Text (Admin Only)"
+msgstr ""
+
+#: quizzes-admin.php:716
+msgid "Set a custom slug for your quizzes URL. Example: \"my-quizzes\"."
+msgstr ""
+
+#: modules/crossword/admin/templates/sections/slugurl-section.php:23
+msgid "Set a custom URL slug for crosswords. Example: \"my-crosswords\"."
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/slugurl-section.php:23
+msgid "Set a custom URL slug for wordsearch. Example: \"my-wordsearch\"."
+msgstr ""
+
+#: quizzes-admin.php:346
+msgid "Set Answer Image Size:"
+msgstr ""
+
+#: kw-quiz-post-and-taxonomies.php:397
+msgid "Set featured image"
+msgstr ""
+
+#: quizzes-admin.php:342
+msgid "Set Question Image Size:"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/fe/entry-limit-popup-settings-section.php:52
+msgid "Set the body text for the entry limit popup."
+msgstr ""
+
+#: modules/crossword/admin/templates/sections/fe/failure-popup-settings-section.php:54
+msgid "Set the body text for the failure popup."
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/fe/success-popup-settings-section.php:56
+#: modules/crossword/admin/templates/sections/fe/success-popup-settings-section.php:58
+msgid "Set the body text for the success popup."
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/fe/timeup-popup-settings-section.php:56
+msgid "Set the body text for the time's popup."
+msgstr ""
+
+#: quizzes-admin.php:1022
+msgid "Set the color for the quiz answers text."
+msgstr ""
+
+#: quizzes-admin.php:980
+msgid "Set the color for the quiz questions text."
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/ai/prompt-customization-section.php:38
+#: modules/crossword/admin/templates/sections/ai/prompt-customization-section.php:40
+msgid ""
+"Set the context prompt. This helps guide the generation by avoiding specific "
+"words."
+msgstr ""
+
+#: modules/crossword/admin/templates/sections/admin-view-strings-section.php:68
+msgid "Set the default value for category."
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/admin-action-buttons-setting.php:124
+msgid "Set the font color for the copy URL action button."
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/admin-action-buttons-setting.php:75
+msgid "Set the font color for the open tab action button."
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/admin-action-buttons-setting.php:173
+msgid "Set the font color for the share email action button."
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/admin-action-buttons-setting.php:107
+msgid "Set the font size for the copy URL action button."
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/admin-action-buttons-setting.php:58
+msgid "Set the font size for the open tab action button."
+msgstr ""
+
+#: quizzes-admin.php:1030
+msgid "Set the font size for the quiz answers (e.g., \"16px\")."
+msgstr ""
+
+#: quizzes-admin.php:989
+msgid "Set the font size for the quiz questions (e.g., \"16px\")."
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/admin-action-buttons-setting.php:156
+msgid "Set the font size for the share email action button."
+msgstr ""
+
+#: quizzes-admin.php:1230
+msgid "Set the font size for the SweetAlert popup (e.g., \"16px\")."
+msgstr ""
+
+#: quizzes-admin.php:1238
+msgid "Set the font size for the SweetAlert popup buttons (e.g., \"14px\")."
+msgstr ""
+
+#: modules/crossword/admin/templates/sections/ai/prompt-customization-section.php:69
+msgid "Set the generation prompt for creating crosswords."
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/ai/prompt-customization-section.php:67
+msgid "Set the generation prompt for creating wordsearch puzzles."
+msgstr ""
+
+#: modules/crossword/admin/templates/sections/admin-view-strings-section.php:133
+msgid "Set the label for \"Across\" clues."
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/admin-view-strings-setting.php:97
+msgid "Set the label for \"Add Words\" container."
+msgstr ""
+
+#: modules/crossword/admin/templates/sections/admin-view-strings-section.php:157
+msgid "Set the label for \"Crossword Full View\" container."
+msgstr ""
+
+#: modules/crossword/admin/templates/sections/admin-view-strings-section.php:141
+msgid "Set the label for \"Down\" clues."
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/admin-view-strings-setting.php:105
+msgid "Set the label for \"No word search entries\" text."
+msgstr ""
+
+#: modules/crossword/admin/templates/sections/admin-view-strings-section.php:149
+msgid "Set the label for \"Words and Clues\" container."
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/admin-view-strings-setting.php:79
+msgid "Set the label for \"Wordsearch Full View\" container."
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/admin-view-strings-setting.php:89
+#: modules/crossword/admin/templates/sections/admin-view-strings-section.php:62
+msgid "Set the label for the \"Add Word\" button."
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/admin-view-strings-setting.php:158
+#: modules/crossword/admin/templates/sections/admin-view-strings-section.php:120
+msgid "Set the label for the \"Show Answers\" checkbox."
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/admin-view-strings-setting.php:166
+msgid "Set the label for the \"Show Words\" checkbox."
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/admin-action-buttons-setting.php:92
+msgid "Set the label for the copy URL action button."
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/admin-action-buttons-setting.php:42
+msgid "Set the label for the open tab action button."
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/admin-action-buttons-setting.php:141
+msgid "Set the label for the share email action button."
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/ai/ai-box-settings-section.php:42
+#: modules/crossword/admin/templates/sections/ai/ai-box-settings-section.php:42
+msgid "Set the label text for the \"Generate with AI\" button."
+msgstr ""
+
+#: modules/crossword/admin/templates/sections/ai/ai-box-settings-section.php:64
+msgid "Set the maximum limit for AI-generated words in the crossword."
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/ai/ai-box-settings-section.php:64
+msgid "Set the maximum limit for AI-generated words in the wordsearch."
+msgstr ""
+
+#: quizzes-admin.php:936
+msgid "Set the maximum number of tokens for the response (50 to 300)."
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/ai/open-ai-settings-section.php:40
+#: modules/crossword/admin/templates/sections/ai/open-ai-settings-section.php:40
+msgid "Set the maximum number of tokens for the response (50 to 500)."
+msgstr ""
+
+#: modules/crossword/admin/templates/sections/ai/prompt-customization-section.php:93
+msgid "Set the return format prompt for the output of generated crosswords."
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/ai/prompt-customization-section.php:91
+msgid ""
+"Set the return format prompt for the output of generated wordsearch puzzles."
+msgstr ""
+
+#: quizzes-admin.php:945
+#: modules/wordsearch/admin/templates/sections/ai/open-ai-settings-section.php:47
+#: modules/crossword/admin/templates/sections/ai/open-ai-settings-section.php:47
+msgid "Set the temperature for response randomness (0 to 1)."
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/fe/success-popup-settings-section.php:88
+#: modules/wordsearch/admin/templates/sections/fe/timeup-popup-settings-section.php:88
+msgid "Set the text for playing again button."
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/fe/success-popup-settings-section.php:72
+#: modules/wordsearch/admin/templates/sections/fe/timeup-popup-settings-section.php:72
+msgid "Set the text for playing again."
+msgstr ""
+
+#: modules/crossword/admin/templates/sections/fe/failure-popup-settings-section.php:70
+msgid "Set the text for the button in the failure popup."
+msgstr ""
+
+#: modules/crossword/admin/templates/sections/fe/success-popup-settings-section.php:74
+msgid "Set the text for the button in the success popup."
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/fe/fe-wordsearch-puzzle-texts-section.php:67
+msgid "Set the text for the download pdf button."
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/ai/ai-box-settings-section.php:31
+#: modules/crossword/admin/templates/sections/ai/ai-box-settings-section.php:31
+msgid "Set the title displayed on the AI box."
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/fe/entry-limit-popup-settings-section.php:37
+msgid "Set the title for the entry limit popup."
+msgstr ""
+
+#: modules/crossword/admin/templates/sections/fe/failure-popup-settings-section.php:39
+msgid "Set the title for the failure popup."
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/fe/fe-wordsearch-puzzle-texts-section.php:52
+msgid "Set the title for the find words label."
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/fe/fe-wordsearch-puzzle-texts-section.php:36
+#: modules/wordsearch/admin/templates/sections/fe/fe-wordsearch-words-list-texts-section.php:32
+msgid "Set the title for the grid title label."
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/fe/success-popup-settings-section.php:41
+#: modules/crossword/admin/templates/sections/fe/success-popup-settings-section.php:43
+msgid "Set the title for the success popup."
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/fe/timeup-popup-settings-section.php:41
+msgid "Set the title for the time's up popup."
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/admin-view-strings-setting.php:64
+msgid "Set the value for Default Category."
+msgstr ""
+
+#: modules/wordsearch/word-search-timer-metabox.php:122
+msgid "Set Time Limit:"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/admin-view-strings-setting.php:59
+msgid "Set value of default category"
+msgstr ""
+
+#. Parent menu (Wordsearch CPT)
+#. Page title
+#. Parent menu (Crossword CPT)
+#: modules/wordsearch/admin/admin-settings.php:20
+#: modules/wordsearch/admin/admin-settings.php:21
+#: modules/crossword/admin/admin-settings.php:20
+#: modules/crossword/admin/admin-settings.php:21
+msgid "Settings"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/admin-action-buttons-setting.php:127
+msgid "Share Email Action Button"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/admin-action-buttons-setting.php:131
+msgid "Share Email label"
+msgstr ""
+
+#: wp_quiz_plugin_action_buttons_settings.php:28
+#: wp_quiz_plugin_action_buttons_settings.php:143
+#: kw-quiz-features-buttons.php:39
+#: modules/wordsearch/word-search-feature-buttons.php:39
+#: modules/crossword/custom-metaboxes/kw-crossword-features-buttons.php:40
+#: modules/wordsearch/admin/pages/admin-strings-setting-page.php:95
+#: modules/wordsearch/admin/templates/sections/admin-action-buttons-setting.php:9
+msgid "Share via Email"
+msgstr ""
+
+#: quizzes-admin.php:56
+msgid "Shortcode Settings"
+msgstr ""
+
+#: admin-docs.php:141 modules/wordsearch/admin/pages/docs-page.php:8
+#: modules/crossword/admin/pages/docs-page.php:8
+msgid "Shortcodes"
+msgstr ""
+
+#: modules/wordsearch/word-search-metabox-preview.php:164
+#: modules/crossword/templates/crossword-preview-meta-box.php:23
+#: modules/wordsearch/admin/pages/admin-strings-setting-page.php:22
+#: modules/crossword/admin/pages/admin-strings-setting-page.php:32
+#: modules/wordsearch/admin/templates/sections/admin-view-strings-setting.php:26
+#: modules/wordsearch/admin/templates/sections/admin-view-strings-setting.php:156
+#: modules/crossword/admin/templates/sections/admin-view-strings-section.php:118
+msgid "Show Answers"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/admin-view-strings-setting.php:153
+#: modules/crossword/admin/templates/sections/admin-view-strings-section.php:115
+msgid "Show Answers Checkbox Label"
+msgstr ""
+
+#: modules/wordsearch/wordsearch-grid-shortcode.php:31
+#: modules/wordsearch/word-search-metabox-preview.php:26
+#: modules/wordsearch/word-search-metaboxes.php:74
+msgid "Show Images"
+msgstr ""
+
+#: modules/wordsearch/word-search-metabox-preview.php:165
+#: modules/wordsearch/word-search-metabox-preview.php:172
+#: modules/wordsearch/admin/pages/admin-strings-setting-page.php:26
+#: modules/wordsearch/admin/templates/sections/admin-view-strings-setting.php:29
+#: modules/wordsearch/admin/templates/sections/admin-view-strings-setting.php:164
+msgid "Show Words"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/admin-view-strings-setting.php:161
+msgid "Show Words Label"
+msgstr ""
+
+#: modules/wordsearch/word-search-metabox-preview.php:168
+#: modules/crossword/templates/crossword-preview-meta-box.php:8
+#: modules/wordsearch/admin/pages/admin-strings-setting-page.php:19
+#: modules/crossword/admin/pages/admin-strings-setting-page.php:23
+#: modules/wordsearch/admin/templates/sections/admin-view-strings-setting.php:20
+#: modules/crossword/admin/templates/sections/admin-view-strings-section.php:20
+msgid "Shuffle"
+msgstr ""
+
+#: quizzes-management.php:324
+msgid ""
+"Specify the size of the question image in pixels. The maximum allowed size "
+"is 250px, and the default size is 200px."
+msgstr ""
+
+#: quizzes-management.php:304
+msgid ""
+"Specify the size of the question image in pixels. The maximum allowed size "
+"is 350px, and the default size is 200px."
+msgstr ""
+
+#: quizzes-admin.php:552
+msgid "Student Name & Date Background Color"
+msgstr ""
+
+#: quizzes-admin.php:550
+msgid "Student Name & Date Font Color"
+msgstr ""
+
+#: quizzes-admin.php:551
+msgid "Student Name & Date Font Family"
+msgstr ""
+
+#: quizzes-admin.php:549
+msgid "Student Name & Date Font Size"
+msgstr ""
+
+#: quizzes-admin.php:426
+msgid "Student Name Field Text"
+msgstr ""
+
+#: public/quiz-preset-1.php:339 public/quiz-preset-2.php:353
+msgid "Student Name:"
+msgstr ""
+
+#: quizzes-admin.php:1445
+#, php-format
+msgid "Styles for %s Button"
+msgstr ""
+
+#: kw-quiz-post-and-taxonomies.php:293 kw-quiz-post-and-taxonomies.php:314
+#: kw-quiz-post-and-taxonomies.php:355
+#: modules/crossword/custom-post-type-registration.php:101
+#: modules/crossword/custom-post-type-registration.php:122
+#: modules/crossword/custom-post-type-registration.php:157
+#: modules/wordsearch/backend/wordsearch-cpt.php:128
+#: modules/wordsearch/backend/wordsearch-cpt.php:149
+#: modules/wordsearch/backend/wordsearch-cpt.php:184
+msgid "Subject"
+msgstr ""
+
+#: quizzes-submissions.php:71
+msgid "Submission Date"
+msgstr ""
+
+#: quizzes-admin.php:314 quizzes-submissions.php:10
+msgid "Submissions"
+msgstr ""
+
+#: public/quiz-preset-1.php:72 public/quiz-preset-2.php:79
+msgid "Submit"
+msgstr ""
+
+#: public/quiz-preset-1.php:164 public/quiz-preset-1.php:277
+#: public/quiz-preset-1.php:292 public/quiz-preset-2.php:179
+#: public/quiz-preset-2.php:290 public/quiz-preset-2.php:305
+msgid "Submit Quiz"
+msgstr ""
+
+#: modules/wordsearch/admin/pages/frontend-styles-page.php:85
+#: modules/crossword/admin/pages/frontend-styles-page.php:94
+#: modules/wordsearch/admin/templates/sections/fe/success-popup-settings-section.php:25
+#: modules/crossword/admin/templates/sections/fe/success-popup-settings-section.php:27
+msgid "Success Popup Settings"
+msgstr ""
+
+#: modules/crossword/public/crossword-fe-index.php:49
+#: modules/wordsearch/admin/pages/frontend-styles-page.php:49
+#: modules/crossword/admin/pages/frontend-styles-page.php:80
+#: modules/crossword/admin/templates/sections/fe/success-popup-settings-section.php:9
+msgid "Success!"
+msgstr ""
+
+#: modules/crossword/custom-post-type-registration.php:36
+#: modules/crossword/custom-post-type-registration.php:66
+msgctxt "taxonomy general name"
+msgid "Crossword Categories"
+msgstr ""
+
+#: kw-quiz-post-and-taxonomies.php:257
+msgctxt "taxonomy general name"
+msgid "Quiz Categories"
+msgstr ""
+
+#: modules/wordsearch/backend/wordsearch-cpt.php:65
+#: modules/wordsearch/backend/wordsearch-cpt.php:94
+msgctxt "taxonomy general name"
+msgid "Wordsearch Categories"
+msgstr ""
+
+#: modules/crossword/custom-post-type-registration.php:37
+#: modules/crossword/custom-post-type-registration.php:67
+msgctxt "taxonomy singular name"
+msgid "Crossword Category"
+msgstr ""
+
+#: kw-quiz-post-and-taxonomies.php:258
+msgctxt "taxonomy singular name"
+msgid "Quiz Category"
+msgstr ""
+
+#: modules/wordsearch/backend/wordsearch-cpt.php:66
+#: modules/wordsearch/backend/wordsearch-cpt.php:95
+msgctxt "taxonomy singular name"
+msgid "Wordsearch Category"
+msgstr ""
+
+#: quizzes-admin.php:909
+#: modules/wordsearch/admin/templates/sections/ai/open-ai-settings-section.php:45
+#: modules/crossword/admin/templates/sections/ai/open-ai-settings-section.php:45
+msgid "Temperature"
+msgstr ""
+
+#: quizzes-management.php:384
+msgid "Text"
+msgstr ""
+
+#: quizzes-admin.php:1749
+msgid "Text Answer Prompt Template"
+msgstr ""
+
+#: quizzes-admin.php:1453
+#: modules/crossword/admin/templates/sections/fe/fe-main-ui-settings-section.php:98
+msgid "Text Color"
+msgstr ""
+
+#: modules/crossword/admin/templates/sections/ai/prompt-customization-section.php:57
+msgid "The age group for which the crossword should be created."
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/ai/prompt-customization-section.php:55
+msgid "The age group for which the wordsearch should be created."
+msgstr ""
+
+#: modules/crossword/admin/templates/sections/ai/prompt-customization-section.php:58
+msgid "The language in which the crossword should be created."
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/ai/prompt-customization-section.php:56
+msgid "The language in which the wordsearch should be created."
+msgstr ""
+
+#: modules/crossword/admin/templates/sections/ai/prompt-customization-section.php:55
+msgid "The number of words to include in the crossword."
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/ai/prompt-customization-section.php:53
+msgid "The number of words to include in the wordsearch."
+msgstr ""
+
+#: modules/crossword/admin/templates/sections/ai/prompt-customization-section.php:59
+msgid ""
+"The selected categories (e.g. school > class > subject) to further "
+"contextualize the crossword."
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/ai/prompt-customization-section.php:57
+msgid ""
+"The selected categories (e.g. school > class > subject) to further "
+"contextualize the wordsearch."
+msgstr ""
+
+#: modules/wordsearch/word-search-timer-metabox.php:148
+msgid "The timer will start when the player begins the word search game."
+msgstr ""
+
+#: modules/crossword/admin/templates/sections/ai/prompt-customization-section.php:56
+msgid "The topic on which the crossword will be based."
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/ai/prompt-customization-section.php:54
+msgid "The topic on which the wordsearch will be based."
+msgstr ""
+
+#: admin-docs.php:139 modules/wordsearch/admin/pages/docs-page.php:6
+#: modules/crossword/admin/pages/docs-page.php:6
+msgid ""
+"This is the general documentation for the plugin. It provides an overview "
+"and instructions on how to use the plugin."
+msgstr ""
+
+#: modules/crossword/admin/templates/sections/ai/prompt-customization-section.php:53
+msgid ""
+"This prompt defines the parameters for generating the crossword. Use the "
+"following placeholders to specify the details:"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/ai/prompt-customization-section.php:51
+msgid ""
+"This prompt defines the parameters for generating the wordsearch. Use the "
+"following placeholders to specify the details:"
+msgstr ""
+
+#: modules/crossword/admin/templates/sections/ai/prompt-customization-section.php:29
+msgid ""
+"This prompt helps avoid using words that are already present in the current "
+"crossword game. It automatically includes all existing words as context to "
+"prevent duplicates in generated words."
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/ai/prompt-customization-section.php:27
+msgid ""
+"This prompt helps avoid using words that are already present in the current "
+"wordsearch game. It automatically includes all existing words as context to "
+"prevent duplicates in generated words."
+msgstr ""
+
+#: modules/crossword/admin/templates/sections/ai/prompt-customization-section.php:82
+msgid ""
+"This prompt specifies the format of the generated crossword output. No "
+"additional placeholders are needed for this section."
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/ai/prompt-customization-section.php:80
+msgid ""
+"This prompt specifies the format of the generated wordsearch output. No "
+"additional placeholders are needed for this section."
+msgstr ""
+
+#: admin-docs.php:174
+msgid ""
+"This section provides documentation specific to the Crossword module, "
+"including available shortcodes, usage, and settings."
+msgstr ""
+
+#: admin-docs.php:167
+msgid ""
+"This section provides documentation specific to the Quiz module, including "
+"available shortcodes, usage, and settings."
+msgstr ""
+
+#: quizzes-admin.php:114
+msgid "This will be replaced with the exact user-provided prompt."
+msgstr ""
+
+#: quizzes-admin.php:112
+msgid "This will be replaced with the learner's age (e.g., 12)."
+msgstr ""
+
+#: quizzes-admin.php:113
+msgid ""
+"This will be replaced with the selected categories in the format: Parent "
+"Category > Child Category."
+msgstr ""
+
+#: quizzes-admin.php:115
+msgid ""
+"This will be replaced with the selected checkbox values, separated by commas "
+"(e.g., focus1, focus2)."
+msgstr ""
+
+#: quizzes-admin.php:116
+msgid ""
+"This will be replaced with the template for the selected question type (e.g.,"
+" MCQ, T/F, or Text)."
+msgstr ""
+
+#: quizzes-admin.php:117
+msgid ""
+"This will include context to avoid generating questions similar to "
+"previously generated ones."
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/fe/timeup-popup-settings-section.php:25
+msgid "Time's Up Popup Settings"
+msgstr ""
+
+#: modules/wordsearch/admin/pages/frontend-styles-page.php:93
+msgid "Time's up Popup Settings"
+msgstr ""
+
+#: modules/wordsearch/word-search-metaboxes.php:58
+#: modules/wordsearch/admin/pages/frontend-styles-page.php:59
+#: modules/wordsearch/admin/templates/sections/fe/timeup-popup-settings-section.php:9
+msgid "Time's Up!"
+msgstr ""
+
+#: modules/crossword/admin/templates/sections/ai/prompt-customization-section.php:32
+msgid ""
+"To use a custom-defined prompt, make sure to include the placeholder "
+"[existing_words], which will automatically populate with the existing words "
+"from the current crossword."
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/ai/prompt-customization-section.php:30
+msgid ""
+"To use a custom-defined prompt, make sure to include the placeholder "
+"[existing_words], which will automatically populate with the existing words "
+"from the current wordsearch."
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/fe/fe-wordsearch-puzzle-texts-section.php:87
+msgid "Toggle the grid text sound to on or off."
+msgstr ""
+
+#: modules/wordsearch/templates/generate-with-ai.php:17
+#: modules/crossword/templates/generate-with-ai.php:17
+msgid "Topic"
+msgstr ""
+
+#: public/quiz-preset-1.php:340 public/quiz-preset-2.php:354
+msgid "Total Questions:"
+msgstr ""
+
+#: kw-save-quiz-aut.php:24 quizzes-management.php:467
+#: quizzes-management.php:1257 quizzes-management.php:1417
+msgid "True"
+msgstr ""
+
+#: quizzes-management.php:381 quizzes-management.php:655
+#: quizzes-management.php:1155
+msgid "True/False"
+msgstr ""
+
+#: quizzes-admin.php:1740
+msgid "True/False Prompt Template"
+msgstr ""
+
+#: modules/crossword/public/crossword-fe-index.php:61
+msgid "Try Again"
+msgstr ""
+
+#: quizzes-management.php:701
+msgid "Type learners age here..."
+msgstr ""
+
+#: quizzes-management.php:211 quizzes-admin.php:290
+msgid "Type Question Here"
+msgstr ""
+
+#: quizzes-admin.php:362
+msgid "Type your answer here..."
+msgstr ""
+
+#: quizzes-management.php:721
+msgid "Type your prompt here..."
+msgstr ""
+
+#: kw-quiz-post-and-taxonomies.php:264
+#: modules/crossword/custom-post-type-registration.php:73
+#: modules/wordsearch/backend/wordsearch-cpt.php:101
+msgid "Update Category"
+msgstr ""
+
+#: modules/crossword/custom-post-type-registration.php:43
+msgid "Update Crossword Category"
+msgstr ""
+
+#: kw-quiz-post-and-taxonomies.php:390
+msgid "Update Quiz"
+msgstr ""
+
+#: modules/wordsearch/backend/wordsearch-cpt.php:72
+msgid "Update Wordsearch Category"
+msgstr ""
+
+#: quizzes-management.php:209 quizzes-admin.php:282
+msgid "Upload Question Image"
+msgstr ""
+
+#: kw-quiz-post-and-taxonomies.php:401
+msgid "Uploaded to this quiz"
+msgstr ""
+
+#: wp_quiz_plugin_action_buttons_settings.php:116
+msgid "Use [URL] to insert the active quiz URL in your email. For example:"
+msgstr ""
+
+#: kw-quiz-post-and-taxonomies.php:399
+msgid "Use as featured image"
+msgstr ""
+
+#: quizzes-admin.php:1772 quizzes-admin.php:1783 quizzes-admin.php:1800
+#: quizzes-admin.php:1817
+msgid "Use Default"
+msgstr ""
+
+#: quizzes-admin.php:146
+msgid ""
+"Use the provided variables to customize the AI prompt template. If "
+"{questionTemplate} or {previousQuestionsContext} is not included, they will "
+"automatically be added at the end of the prompt."
+msgstr ""
+
+#: quizzes-admin.php:830
+msgid "Use this Image"
+msgstr ""
+
+#: modules/crossword/custom-post-type-registration.php:14
+msgid "View Crossword"
+msgstr ""
+
+#: kw-quiz-post-and-taxonomies.php:391
+msgid "View Quiz"
+msgstr ""
+
+#: kw-quiz-post-and-taxonomies.php:392
+msgid "View Quizzes"
+msgstr ""
+
+#: modules/wordsearch/backend/wordsearch-cpt.php:42
+msgid "View Wordsearch"
+msgstr ""
+
+#: quizzes-admin.php:350
+msgid "Width:"
+msgstr ""
+
+#: modules/wordsearch/word-search-metaboxes.php:460
+#: modules/wordsearch/word-search-metaboxes.php:535
+#: modules/crossword/templates/crossword-words-clues.php:72
+msgid "Word"
+msgstr ""
+
+#: modules/wordsearch/word-search-metaboxes.php:470
+msgid "Word image preview"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/fe/fe-wordsearch-words-list-texts-section.php:2
+msgid "Word List Text Settings"
+msgstr ""
+
+#: modules/wordsearch/admin/pages/admin-strings-setting-page.php:115
+msgid "Word Search Action Buttons"
+msgstr ""
+
+#: modules/wordsearch/wordsearch-grid-shortcode.php:20
+msgid "Word Search Challenge"
+msgstr ""
+
+#: modules/wordsearch/admin/pages/frontend-styles-page.php:70
+msgid "Word Search Puzzle Texts"
+msgstr ""
+
+#: modules/wordsearch/word-search-timer-metabox.php:54
+msgid "Word Search Timer"
+msgstr ""
+
+#: modules/wordsearch/admin/pages/frontend-styles-page.php:77
+msgid "Word Search Words List Texts"
+msgstr ""
+
+#: modules/crossword/crossword-settings.php:5
+#: modules/crossword/admin/pages/admin-strings-setting-page.php:42
+#: modules/crossword/admin/templates/sections/admin-view-strings-section.php:147
+#: modules/crossword/admin/templates/sections/admin-view-strings-section.php:148
+msgid "Words and Clues"
+msgstr ""
+
+#: modules/crossword/admin/templates/sections/admin-view-strings-section.php:144
+msgid "Words and Clues Label"
+msgstr ""
+
+#: modules/wordsearch/backend/wordsearch-cpt.php:36
+msgid "Wordsearch"
+msgstr ""
+
+#: modules/wordsearch/templates/generate-with-ai.php:14
+msgctxt "wordsearch"
+msgid "Generating Wordsearch..."
+msgstr ""
+
+#: modules/wordsearch/backend/wordsearch-cpt.php:401
+msgctxt "wordsearch"
+msgid "Private"
+msgstr ""
+
+#: modules/wordsearch/backend/wordsearch-cpt.php:397
+msgctxt "wordsearch"
+msgid "Public"
+msgstr ""
+
+#: modules/wordsearch/backend/wordsearch-cpt.php:220
+msgctxt "wordsearch"
+msgid "Select Class"
+msgstr ""
+
+#: modules/wordsearch/backend/wordsearch-cpt.php:219
+msgctxt "wordsearch"
+msgid "Select School"
+msgstr ""
+
+#: modules/wordsearch/backend/wordsearch-cpt.php:221
+msgctxt "wordsearch"
+msgid "Select Subject"
+msgstr ""
+
+#: modules/wordsearch/backend/wordsearch-cpt.php:199
+msgctxt "wordsearch"
+msgid "Wordsearch Category"
+msgstr ""
+
+#: modules/wordsearch/backend/wordsearch-cpt.php:376
+msgctxt "wordsearch"
+msgid "Wordsearch Visibility"
+msgstr ""
+
+#. Updated ID for uniqueness
+#: modules/wordsearch/word-search-feature-buttons.php:15
+msgid "Wordsearch Actions"
+msgstr ""
+
+#: modules/wordsearch/backend/wordsearch-cpt.php:75
+#: modules/wordsearch/backend/wordsearch-cpt.php:104
+msgid "Wordsearch Categories"
+msgstr ""
+
+#: modules/wordsearch/backend/wordsearch-cpt.php:50
+msgid "Wordsearch custom post type."
+msgstr ""
+
+#: modules/wordsearch/word-search-description.php:6
+msgid "WordSearch Description"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/admin-view-strings-setting.php:74
+msgid "Wordsearch Full View Label"
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/fe/fe-clue-settings-section.php:2
+msgid "WordSearch Image Settings"
+msgstr ""
+
+#: modules/wordsearch/admin/pages/docs-page.php:61
+msgid "Wordsearch Module Shortcode"
+msgstr ""
+
+#: modules/wordsearch/admin/admin-settings.php:44
+msgid "Wordsearch Settings"
+msgstr ""
+
+#: modules/wordsearch/index.php:65
+msgctxt "wordsearch_ai"
+msgid "Error"
+msgstr ""
+
+#: modules/wordsearch/index.php:66
+msgctxt "wordsearch_ai"
+msgid "Success"
+msgstr ""
+
+#: modules/wordsearch/index.php:67
+msgctxt "wordsearch_ai_error"
+msgid ""
+"Could not parse the response. Ensure the AI response follows the expected "
+"format."
+msgstr ""
+
+#: modules/wordsearch/index.php:69
+msgctxt "wordsearch_ai_error"
+msgid "The number must be between 1 and"
+msgstr ""
+
+#: modules/wordsearch/index.php:68
+msgctxt "wordsearch_ai_success"
+msgid "Generated Content."
+msgstr ""
+
+#: modules/wordsearch/backend/wordsearch-cpt.php:35
+#: modules/wordsearch/backend/wordsearch-cpt.php:37
+msgid "Wordsearches"
+msgstr ""
+
+#: modules/wordsearch/word-search-metaboxes.php:60
+#: modules/wordsearch/admin/pages/frontend-styles-page.php:61
+#: modules/wordsearch/admin/templates/sections/fe/timeup-popup-settings-section.php:11
+msgid "Would you like to start a new game?"
+msgstr ""
+
+#: quizzes-admin.php:119
+msgid "You can use these variables to create a customized AI prompt template."
+msgstr ""
+
+#: modules/wordsearch/index.php:31
+#: modules/wordsearch/admin/pages/frontend-styles-page.php:66
+#: modules/wordsearch/assets/templates/wordsearch-limit-modal.php:3
+#: modules/wordsearch/admin/templates/sections/fe/entry-limit-popup-settings-section.php:10
+msgid "You cannot add more than 15 entries to the word search."
+msgstr ""
+
+#: quiz-template-download.php:14 quiz-template-download.php:213
+msgid "You do not have sufficient permissions to access this page."
+msgstr ""
+
+#: modules/crossword/public/crossword-fe-index.php:50
+#: modules/crossword/admin/pages/frontend-styles-page.php:81
+#: modules/crossword/admin/templates/sections/fe/success-popup-settings-section.php:10
+msgid "You have successfully completed the crossword!"
+msgstr ""
+
+#: modules/wordsearch/wordsearch-grid-shortcode.php:16
+#: modules/wordsearch/word-search-metaboxes.php:50
+#: modules/wordsearch/admin/pages/frontend-styles-page.php:50
+#: modules/wordsearch/admin/templates/sections/fe/success-popup-settings-section.php:10
+msgid "You have successfully completed the wordsearch!"
+msgstr ""
+
+#: public/quiz-preset-1.php:71 public/quiz-preset-2.php:78
+msgid "Your name here"
+msgstr ""
+
+#: public/quiz-preset-1.php:343 public/quiz-preset-2.php:357
+msgid "Your Score:"
+msgstr ""
+
+#: modules/wordsearch/word-search-metaboxes.php:59
+#: modules/wordsearch/admin/pages/frontend-styles-page.php:60
+#: modules/wordsearch/admin/templates/sections/fe/timeup-popup-settings-section.php:10
+msgid "Your time has expired for this word search puzzle."
+msgstr ""
+
+#: modules/crossword/admin/templates/sections/ai/prompt-customization-section.php:85
+msgid ""
+"⚠️ It is highly recommended not to change this prompt, as it is critical for "
+"the AI crossword generation process. Incorrect changes may result in errors "
+"or invalid output."
+msgstr ""
+
+#: modules/wordsearch/admin/templates/sections/ai/prompt-customization-section.php:83
+msgid ""
+"⚠️ It is highly recommended not to change this prompt, as it is critical for "
+"the AI wordsearch generation process. Incorrect changes may result in errors "
+"or invalid output."
+msgstr ""

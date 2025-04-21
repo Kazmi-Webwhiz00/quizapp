@@ -209,12 +209,24 @@ jQuery(document).ready(function ($) {
       }
     });
 
-    // Append the clues to the clues container
-    $("#clues-container").empty();
-    $("#clues-container").append(`<h3>${crosswordLabels.acrossLabel}</h3>`);
-    $("#clues-container").append(acrossClues);
-    $("#clues-container").append(`<h3>${crosswordLabels.downLabel}</h3>`);
-    $("#clues-container").append(downClues);
+    // Create container for "Across" clues with heading and append the list into it
+    const acrossContainer = $(`
+          <div class="acrossClue">
+            <h3>${crosswordLabels.acrossLabel}</h3>
+          </div>
+        `);
+    acrossContainer.append(acrossClues);
+
+    // Create container for "Down" clues with heading and append the list into it
+    const downContainer = $(`
+          <div class="downClue">
+            <h3>${crosswordLabels.downLabel}</h3>
+          </div>
+        `);
+    downContainer.append(downClues);
+
+    // Append the dynamically created containers into the main container
+    $("#clues-container").append(acrossContainer).append(downContainer);
 
     // Apply the show/hide answers functionality
     toggleAnswers();

@@ -140,6 +140,14 @@ jQuery(document).ready(function ($) {
       });
     });
 
+    $("#check-words").prop("checked", true);
+
+    // Enable live validation if the checkbox is checked
+    if ($("#check-words").is(":checked")) {
+      enableLiveValidation();
+    } else {
+      disableLiveValidation();
+    }
     $("#check-words").on("change", function () {
       if ($(this).is(":checked")) {
         enableLiveValidation();
