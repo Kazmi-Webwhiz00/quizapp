@@ -337,7 +337,7 @@ jQuery(document).ready(function ($) {
     // 2. Get the crossword grid data from the hidden input field
     var crossword_data = $("#crossword-data").val();
 
-    console.log("crossword_Datat", crossword_data);
+    console.log("crossword_Data", crossword_data);
 
     // 3. Build the clue/word data from the clues container
     var clue_word_data = [];

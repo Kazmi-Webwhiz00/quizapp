@@ -106,6 +106,12 @@ jQuery(document).ready(function ($) {
     });
   }
 
+  $(document).on("click", ".remove-word", function () {
+    $(this).closest(".crossword-word-clue").remove();
+    updateIndices();
+    $("#shuffle-button").click();
+  });
+
   // Add a new word and clue input pair
   addButton.on("click", function () {
     const index = container.children().length;
