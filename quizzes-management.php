@@ -2,7 +2,7 @@
 /*
 Plugin Name: OmniS
 Description: A WordPress plugin to create and manage quizzes with questions and user submissions.
-Version: 5.3.8
+Version: 5.4.5
 Author: Kazmi Webwhiz
 Author URI: https://kazmiwebwhiz.com
 Text Domain: wp-quiz-plugin
@@ -233,9 +233,9 @@ function display_questions_meta_box($post) {
     $notification_font_family = get_option('wp_quiz_plugin_notification_font_family', 'Arial');
 
     // Fetch prompt templates from admin settings
-    $defaultMcqPrompt = 'Generate a quiz question in the same language as the provided prompt. For example, if the prompt is in Polish, generate the question in Polish, and if the prompt is in English, generate the question in English. Use the following format:\nQuestion: [Your question text]\nAnswer Options: A) [Option A], B) [Option B], C) [Option C], D) [Option D]\nCorrect Answer: [A) Option A/B) Option B/C) Option C/D) Option D]';
-    $defaultTfPrompt = 'Generate a True or False quiz question in the same language as the provided prompt. For example, if the prompt is in Polish, generate the question in Polish, and if the prompt is in English, generate the question in English. Use the following format:\nQuestion: [Your question text]\nCorrect Answer: [1/0] (Use 1 for True and 0 for False)';
-    $defaultTextPrompt = 'Generate a quiz question that requires a text answer in the same language as the provided prompt. For example, if the prompt is in Polish, generate the question in Polish, and if the prompt is in English, generate the question in English. Use the following format:\nQuestion: [Your question text]\nCorrect Answer: [Your text answer]';
+    $defaultMcqPrompt = "Generate a quiz question in the same language as the provided prompt. For example, if the prompt is in Polish, generate the question in Polish, and if the prompt is in English, generate the question in English. Use the following format:\nQuestion: [Your question text]\nAnswer Options: A) [Option A], B) [Option B], C) [Option C], D) [Option D]\nCorrect Answer: [A) Option A/B) Option B/C) Option C/D) Option D]";
+    $defaultTfPrompt = "Generate a True or False quiz question in the same language as the provided prompt. For example, if the prompt is in Polish, generate the question in Polish, and if the prompt is in English, generate the question in English. Use the following format:\nQuestion: [Your question text]\nCorrect Answer: [1/0] (Use 1 for True and 0 for False)";
+    $defaultTextPrompt = "Generate a quiz question that requires a text answer in the same language as the provided prompt. For example, if the prompt is in Polish, generate the question in Polish, and if the prompt is in English, generate the question in English. Use the following format:\nQuestion: [Your question text]\nCorrect Answer: [Your text answer]";
 
     $mcqPromptTemplate = get_option('wp_quiz_plugin_mcq_prompt_template', $defaultMcqPrompt);
     $tfPromptTemplate = get_option('wp_quiz_plugin_tf_prompt_template', $defaultTfPrompt);
@@ -344,10 +344,10 @@ function display_questions_meta_box($post) {
     </div>
             
         <div class="kw_right">
-            <div id="kw_questions-list">
+            <div id="kw-quiz-questions-list">
                 <?php if (!empty($questions)): ?>
                 <?php foreach ($questions as $index => $question): ?>
-                <div class="kw_question-item" data-index="<?php echo $index; ?>">
+                <div class="kw-question-item" data-index="<?php echo $index; ?>">
 
                   <div class="kw_question-header kw_close-expand kw_toggle-question-btn">
                     <div class="kw-handle-container">
@@ -433,10 +433,19 @@ function display_questions_meta_box($post) {
                             <?php endif; ?>
 
                             <span class="kw_option-letter"><?php echo $option_letters[$ans_index]; ?>.</span>
-                                
-                                <input type="text" class="kw_answerinputs" placeholder="<?php echo esc_attr(__($add_answer_text, 'wp-quiz-plugin')); ?>"
-                                    name="quiz_questions[<?php echo $index; ?>][answers][<?php echo $ans_index; ?>][text]"
-                                    value="<?php echo esc_attr($answer['text']); ?>" style="font-family: <?php echo esc_attr($answer_text_font); ?>; color: <?php echo esc_attr($answer_text_color); ?>;font-size: <?php echo esc_attr($answer_text_font_size);?>;" required>
+                            <textarea
+                                class="kw_answerinputs"
+                                placeholder="<?php echo esc_attr(__($add_answer_text, 'wp-quiz-plugin')); ?>"
+                                name="quiz_questions[<?php echo $index; ?>][answers][<?php echo $ans_index; ?>][text]"
+                                required 
+                                rows="1"
+                                style="
+                                    font-family: <?php echo esc_attr($answer_text_font); ?>;
+                                    color: <?php echo esc_attr($answer_text_color); ?>;
+                                    font-size: <?php echo esc_attr($answer_text_font_size); ?>;
+                                    resize: none;
+                                    overflow: auto;
+                                " required><?php echo esc_attr($answer['text']); ?></textarea>
                                 <label>  <input type="checkbox"
                                         name="quiz_questions[<?php echo $index; ?>][answers][<?php echo $ans_index; ?>][correct]"
                                         <?php checked($answer['correct'], '1'); ?>></label>
@@ -514,12 +523,13 @@ function display_questions_meta_box($post) {
         
 
         jQuery(document).ready(function ($) {
-            // Initialize sortable on kw_questions-list to make kw_question-item sortable
-            $("#kw_questions-list").sortable({
-                items: ".kw_question-item",
+            var quizQuestionsCount = 0;
+            // Initialize sortable on kw-quiz-questions-list to make kw-question-item sortable
+            $("#kw-quiz-questions-list").sortable({
+                items: ".kw-question-item",
                 handle: ".kw_question-header",
                 update: function (event, ui) {
-                    $("#kw_questions-list .kw_question-item").each(function (index) {
+                    $("#kw-quiz-questions-list .kw-question-item").each(function (index) {
                         $(this).attr('data-index', index);
                         // Update the hidden input field to reflect the new order
                         $(this).find('input[name*="[order]"]').val(index);  // Add hidden input for the order
@@ -554,7 +564,7 @@ function display_questions_meta_box($post) {
                         // Determine if the upload is for a question or an answer
                         if (item.is('.kw_question-body')) {
                             // Question image logic
-                            var questionIndex = item.closest('.kw_question-item').data('index'); // Get the data-index attribute
+                            var questionIndex = item.closest('.kw-question-item').data('index'); // Get the data-index attribute
                             var inputName = 'quiz_questions[' + questionIndex + '][title_image]'; // Construct the name attribute dynamically
 
                             // Set the image URL in the corresponding hidden input field
@@ -572,7 +582,7 @@ function display_questions_meta_box($post) {
                             }
                         } else if (item.is('.kw_answer-item')) {
                             // Answer image logic
-                            var questionIndex = item.closest('.kw_question-item').data('index'); // Get the question index
+                            var questionIndex = item.closest('.kw-question-item').data('index'); // Get the question index
                             var answerIndex = item.index(); // Get the answer index within the question
                             var inputName = 'quiz_questions[' + questionIndex + '][answers][' + answerIndex + '][image]'; // Construct the name attribute dynamically
 
@@ -928,11 +938,13 @@ function display_questions_meta_box($post) {
                     // Return the final prompt
                     return finalPrompt;
                 }
-
+                
 
             // Function to handle dynamic content generation for questions and answers
             function handleGeneratedContent(type, generatedContent) {
-                var index = $('.kw_question-item').length;
+                var index = $('#kw-quiz-questions-list').children().length;
+                console.log("::quizQuestionsCount",quizQuestionsCount);
+                quizQuestionsCount = index +1;
                 var answersHtml = '';
                 var questionData = {}; // Store extracted data for saving
 
@@ -958,23 +970,38 @@ function display_questions_meta_box($post) {
                         var correctAnswerLetter = correctAnswerMatch[1].trim();
 
                         answers.forEach((answer, i) => {
-                            let isCorrect = correctAnswerLetter === String.fromCharCode(65 + i);
-                            answersHtml += `
-                                <div class="kw_answer-item kw_column-item">
-                                    <span class="kw_option-letter">${String.fromCharCode(65 + i)}.</span>
-                                    <input type="text" class="kw_answerinputs" placeholder="Answer" name="quiz_questions[${index}][answers][${i}][text]" value="${answer}" required style="font-family: <?php echo esc_attr($answer_text_font); ?>; color: <?php echo esc_attr($answer_text_color); ?>; font-size: <?php echo esc_attr($answer_text_font_size); ?>;">
-                                    <span class="kw_upload-image-btn">
-                                        <!-- SVG icon here -->
-                                    </span>
-                                    <label><input type="checkbox" name="quiz_questions[${index}][answers][${i}][correct]" ${isCorrect ? 'checked' : ''}></label>
-                                    <span class="answer-ribbon ${isCorrect ? 'correct-ribbon' : 'incorrect-ribbon'}">
-                                        ${isCorrect ? "Correct Answer" : "Incorrect Answer"}
-                                    </span>
+                        let isCorrect = correctAnswerLetter === String.fromCharCode(65 + i);
+                        answersHtml += `
+                            <div class="kw_answer-item kw_column-item">
+                                <span class="kw_option-letter">${String.fromCharCode(65 + i)}.</span>
+                                <textarea
+                                class="kw_answerinputs"
+                                placeholder="Answer" 
+                                name="quiz_questions[${index}][answers][${i}][text]"
+                                required 
+                                rows="1"
+                                style="
+                                    font-family: <?php echo esc_attr($answer_text_font); ?>;
+                                    color: <?php echo esc_attr($answer_text_color); ?>;
+                                    font-size: <?php echo esc_attr($answer_text_font_size); ?>;
+                                    resize: none;
+                                    overflow: auto;
+                                ">${answer}</textarea>
+                                <span class="kw_upload-image-btn">
+                                    <!-- SVG icon here -->
+                                </span>
+                                <label>
+                                    <input type="checkbox" name="quiz_questions[${index}][answers][${i}][correct]" ${isCorrect ? 'checked' : ''}>
+                                </label>
+                                <span class="answer-ribbon ${isCorrect ? 'correct-ribbon' : 'incorrect-ribbon'}">
+                                    ${isCorrect ? "<?php echo _x('Correct Answer', 'MCQ Hover', 'wp-quiz-plugin'); ?>" : "<?php echo _x('Incorrect Answer', 'MCQ Hover', 'wp-quiz-plugin'); ?>"}
+                                </span>
                                 </div>`;
-                        });
+                    });
+
                     } else if (type === 'T/F') {
                         // Similar processing for T/F type...
-                        var questionMatch = generatedContent.match(/Question:\s*(.*?)(?=\s*Correct Answer|$)/i);
+                        var questionMatch = generatedContent.match(/Question:\s*(.*?)(?=\s*n?Correct Answer|$)/i);
                         var correctAnswerMatch = generatedContent.match(/Correct Answer:\s*(0|1)/i);
                         if (!questionMatch || !correctAnswerMatch) {
                             throw new Error("Could not find the question or correct answer. Please check the AI response format.");
@@ -1041,38 +1068,37 @@ function display_questions_meta_box($post) {
                         if (response.success) {
                             console.log('Question saved with ID:', response.data.question_id);
                             // Append the question element with the returned ID as a hidden input
-                            $('#kw_questions-list').append(`
-                                <div class="kw_question-item" data-index="${index}">
+                            $('#kw-quiz-questions-list').append(`
+                                <div class="kw-question-item" data-index="${index}">
                                     <div class="kw_question-header kw_close-expand kw_toggle-question-btn">
                                         <div class="kw-handle-container">
-                                            <span class="kw_handle-icon" style="cursor: move; display: inline-block; margin-right: 10px;">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="16" height="16">
+                                <span class="kw_handle-icon" style="cursor: move; display: inline-block; margin-right: 10px;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="16" height="16">
                                         <rect y="4" width="20" height="2" rx="1"></rect>
                                         <rect y="9" width="20" height="2" rx="1"></rect>
                                         <rect y="14" width="20" height="2" rx="1"></rect>
                                     </svg>
-                                            </span>
-                                            <strong>Q.${index + 1}: &nbsp;</strong> ${questionText}
+                                </span>
+                                            <strong>Q.${quizQuestionsCount}: &nbsp;</strong> ${questionText}
                                         </div>
-                                        <span class="kw_remove-question-btn kw_ml-2" data-id="${response.data.question_id}">
-                                            <!-- SVG icon for remove -->
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                                            <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM175 175c9.4-9.4 24.6-9.4 33.9 0l47 47 47-47c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-47 47 47 47c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-47-47-47 47c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l47-47-47-47c-9.4-9.4-9.4-24.6 0-33.9z"/>
-                                            </svg>
-                                        </span>
+                                <span class="kw_remove-question-btn kw_ml-2" data-id="${response.data.question_id}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                                        <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM175 175c9.4-9.4 24.6-9.4 33.9 0l47 47 47-47c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-47 47 47 47c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-47-47-47 47c-9.4-9.4-24.6-9.4-33.9 0s-9.4-24.6 0-33.9l47-47-47-47c-9.4-9.4-9.4-24.6 0-33.9z"/>
+                                    </svg>
+                                </span>
                                         <input type="hidden" name="quiz_questions[${index}][order]" value="${index}">
                                     </div>
                                     <div class="kw_question-body">
                                         <select name="quiz_questions[${index}][type]" class="kw_question-type-select">
-                                            <option value="MCQ" ${type === 'MCQ' ? 'selected' : ''}>Multiple Choice</option>
-                                            <option value="T/F" ${type === 'T/F' ? 'selected' : ''}>True/False</option>
-                                            <option value="Text" ${type === 'Text' ? 'selected' : ''}>Open Text</option>
+                                            <option value="MCQ" ${type === 'MCQ' ? 'selected' : ''}><?php echo __('Multiple Choice', 'wp-quiz-plugin'); ?></option>
+                                            <option value="T/F" ${type === 'T/F' ? 'selected' : ''}><?php echo __('True/False', 'wp-quiz-plugin'); ?></option>
+                                            <option value="Text" ${type === 'Text' ? 'selected' : ''}><?php echo __('Open Text', 'wp-quiz-plugin'); ?></option>
                                         </select>
                                         <!-- Hidden input to store the question ID returned from the auto-save -->
                                         <input type="hidden" name="quiz_questions[${index}][id]" value="${response.data.question_id}">
                                         <textarea class="kw_styled-box" name="quiz_questions[${index}][title]" required>${questionText}</textarea>
                                         <div class="kw_btn-add-img kw_upload-question-image-btn">
-                                            <span class="kw_plus-icon">+</span> Upload Question Image
+                                            <span class="kw_plus-icon">+</span> <?php echo esc_html($upload_question_image_text); ?>
                                             <span class="kw_upload-image-btn-q-svg">
                                                 <!-- SVG icon -->
                                             </span>
@@ -1082,18 +1108,18 @@ function display_questions_meta_box($post) {
                                 </div>`);
                             // $('.kw-loading').hide();
                             $.fn.highlightPublishButton();
-                            $('#kw_generate-question-btn').text('Generate with ChatGPT').prop('disabled', false);
+                            $('#kw_generate-question-btn').text('<?php echo esc_js(__('Generate with ChatGPT', 'wp-quiz-plugin')); ?>').prop('disabled', false);
                         } else {
                             console.error('Error saving generated question:', response.message);
                             // $('.kw-loading').hide();
                             $.fn.highlightPublishButton();
-                            $('#kw_generate-question-btn').text('Generate with ChatGPT').prop('disabled', false);
+                            $('#kw_generate-question-btn').text('<?php echo esc_js(__('Generate with ChatGPT', 'wp-quiz-plugin')); ?>').prop('disabled', false);
                         }
                     }).fail(function(xhr, status, error) {
                         console.error('AJAX error saving generated question:', error);
                         // $('.kw-loading').hide();
                         $.fn.highlightPublishButton();
-                        $('#kw_generate-question-btn').text('Generate with ChatGPT').prop('disabled', false);
+                        $('#kw_generate-question-btn').text('<?php echo esc_js(__('Generate with ChatGPT', 'wp-quiz-plugin')); ?>').prop('disabled', false);
                     });
 
                 } catch (error) {
@@ -1101,7 +1127,7 @@ function display_questions_meta_box($post) {
                     Swal.fire("Error", "Could not find the question or correct answer. Please check the AI response format.", "error");
                     $('.kw-loading').hide();
                     $.fn.highlightPublishButton();
-                    $('#kw_generate-question-btn').text('Generate with ChatGPT').prop('disabled', false);
+                    $('#kw_generate-question-btn').text('<?php echo esc_js(__('Generate with ChatGPT', 'wp-quiz-plugin')); ?>').prop('disabled', false);
                 }
             }
 
@@ -1129,13 +1155,13 @@ function display_questions_meta_box($post) {
 
             // Event delegation for various actions (adding/removing questions, toggling visibility, etc.)
             $(document).on('click', '.kw_toggle-question-btn', function () {
-                $(this).closest('.kw_question-item').find('.kw_question-body').toggleClass('active');
+                $(this).closest('.kw-question-item').find('.kw_question-body').toggleClass('active');
             });
 
             $(document).on('click', '#kw_add-question-btn', function () {
-                var index = $('.kw_question-item').length;
-                $('#kw_questions-list').append(`
-                    <div class="kw_question-item" data-index="${index}">
+                var index = $('.kw-question-item').length;
+                $('#kw-quiz-questions-list').append(`
+                    <div class="kw-question-item" data-index="${index}">
                         <div class="kw_question-header kw_close-expand kw_toggle-question-btn">
                             <div class="kw-handle-container">
                                 <span class="kw_handle-icon" style="cursor: move; display: inline-block; margin-right: 10px;">
@@ -1188,8 +1214,9 @@ function display_questions_meta_box($post) {
                                         });
 
             $(document).on('click', '.kw_remove-question-btn', function () {
-                var questionItem = $(this).closest('.kw_question-item');
+                var questionItem = $(this).closest('.kw-question-item');
                 var questionIndex = questionItem.data('index');
+                quizQuestionsCount--;
 
                 if (confirm('<?php echo esc_js(__('Are you sure you want to delete the question?', 'wp-quiz-plugin')); ?>')) {
                     var questionId = $('input[name="quiz_questions[' + questionIndex + '][id]"]').val();
@@ -1205,10 +1232,10 @@ function display_questions_meta_box($post) {
             });
 
             $(document).on('change', '.kw_question-type-select', function () {
-                var container = $(this).closest('.kw_question-item').find('.kw_answers-container');
-                var fourColumnContainer = $(this).closest('.kw_question-item').find('.kw_four-column-container');
+                var container = $(this).closest('.kw-question-item').find('.kw_answers-container');
+                var fourColumnContainer = $(this).closest('.kw-question-item').find('.kw_four-column-container');
                 var type = $(this).val();
-                var questionIndex = $(this).closest('.kw_question-item').data('index');
+                var questionIndex = $(this).closest('.kw-question-item').data('index');
 
                 container.empty();
 
@@ -1227,7 +1254,7 @@ function display_questions_meta_box($post) {
              // Check for "Text" on page load and remove the class if it's selected
             $('.kw_question-type-select').each(function() {
                 if ($(this).val() === 'Text') {
-                    var container = $(this).closest('.kw_question-item').find('.kw_answers-container');
+                    var container = $(this).closest('.kw-question-item').find('.kw_answers-container');
                     container.removeClass('kw_four-column-container');
                 }
             });
@@ -1295,7 +1322,7 @@ function display_questions_meta_box($post) {
             // Add more answers for MCQ questions
             $(document).on('click', '.kw_add-more-answers-btn', function () {
                 var container = $(this).closest('.kw_answers-container');
-                var questionIndex = $(this).closest('.kw_question-item').data('index');
+                var questionIndex = $(this).closest('.kw-question-item').data('index');
                 var answerCount = container.find('.kw_answer-item').length;
 
                 if (answerCount < 4) { // Ensure limit of 4 answers

@@ -165,7 +165,7 @@ function my_plugin_bulk_delete_old_submissions() {
     }
 
     global $wpdb;
-    $table_name = $wpdb->prefix . 'submissions';
+    $table_name = $wpdb->prefix . 'kw_submissions';
 
     $deleted = $wpdb->query("DELETE FROM $table_name WHERE SubmittedAt < (NOW() - INTERVAL 30 DAY)");
 
