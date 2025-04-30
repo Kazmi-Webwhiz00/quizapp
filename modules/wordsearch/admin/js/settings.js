@@ -168,6 +168,43 @@ jQuery(document).ready(function ($) {
     }
   });
 
+  let mediaFrame;
+  const $imageField = $("#kw_wordsearch_admin_featured_image");
+  const $preview = $("#kw-image-preview");
+
+  // ← Open / select
+  $("#kw_wordsearch_admin_featured_image_button").on("click", function (e) {
+    e.preventDefault();
+
+    if (mediaFrame) {
+      mediaFrame.open();
+      return;
+    }
+
+    mediaFrame = wp.media({
+      title: kwWordsearchAdmin.title,
+      button: { text: kwWordsearchAdmin.buttonText },
+      library: { type: "image" },
+      multiple: false,
+    });
+
+    mediaFrame.on("select", function () {
+      const attachment = mediaFrame.state().get("selection").first().toJSON();
+
+      // STORE the ID, not the URL
+      $imageField.val(attachment.id);
+
+      // preview with the medium URL
+      $preview.html(
+        '<img src="' +
+          attachment.sizes.medium.url +
+          '" style="max-width:200px;height:150px;" />'
+      );
+    });
+
+    mediaFrame.open();
+  });
+
   // Function to show "Copied to clipboard" message
   function showCopyMessage(messageId) {
     $(messageId).fadeIn().delay(1500).fadeOut();

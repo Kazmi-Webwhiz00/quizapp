@@ -69,7 +69,7 @@ function wordsearch_enqueue_assets() {
         $success_popup_button_text = get_option('kw_wordsearch_success_popup_button_text', $default_popup_button_text);
         /*  Render Time's up Popup Section */
         $default_timeup_popup_label = __("Time's Up!", 'wp-quiz-plugin');
-        $default_timeup__body_text = __('Your time has expired for this word search puzzle.', 'wp-quiz-plugin');
+        $default_timeup_body_text = __('Your time has expired for this word search puzzle.', 'wp-quiz-plugin');
         $default_timeup_challenge_text = __('Would you like to start a new game?', 'wp-quiz-plugin');
         $default_timeup_button_text = __('Play Again', 'wp-quiz-plugin');
         $timeup_popup_title = get_option('kw_wordsearch_timeup_popup_title', $default_timeup_popup_label);
