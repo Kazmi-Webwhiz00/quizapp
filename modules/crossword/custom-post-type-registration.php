@@ -22,10 +22,27 @@ function register_crossword_post_type() {
         'description'        => __( 'Crosswords custom post type.', 'wp-quiz-plugin' ),
         'public'             => true,
         'menu_icon'          => 'dashicons-editor-table',
-        'supports'           => array( 'title' ),
+        'supports'           => array( 'title', 'thumbnail' ),
         'has_archive'        => true,
         'rewrite'            => array('slug' => $custom_slug), // Singular slug
     );
+
+
+    add_filter( 'admin_post_thumbnail_html', 'kw_crossword_default_admin_thumbnail', 10, 3 );
+    function kw_crossword_default_admin_thumbnail( $content, $post_id, $thumbnail_id ) {
+    
+        if ( get_post_type( $post_id ) !== 'crossword' || $thumbnail_id ) {
+            return $content;          // wrong post-type or the post already has its own image
+        }
+    
+        $fallback_id = (int) get_option( 'kw_crossword_admin_featured_image', 0 );
+        if ( ! $fallback_id ) {      // option is zero → use WP’s native “Set featured image” box
+            return $content;
+        }
+    
+        // thumbnail-ID FIRST, post-ID second
+        return _wp_post_thumbnail_html( $fallback_id, $post_id );
+    }
 
     register_post_type( 'crossword', $args ); // Singular post type key
 }

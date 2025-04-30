@@ -83,6 +83,11 @@ if (!defined('ABSPATH')) {
         'default' => '#e1f5fe', // Default text color
     ]);
 
+register_setting('kw_crossword_admin_view_strings', 'kw_crossword_admin_featured_image', [
+    'default' => plugin_dir_url(__FILE__) . '../../../assets/images/crossword.png',
+]
+);
+
     // Add a settings section for Admin Strings
     add_settings_section(
         'kw_crossword_admin_strings_section',

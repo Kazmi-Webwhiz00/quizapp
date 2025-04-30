@@ -36,6 +36,15 @@ if (!defined('ABSPATH')) {
     $defaultCategoryValue = __('Physics', 'wp-quiz-plugin');
     $categoryValue = get_option('kw_crossword_default_category_value',$defaultCategoryValue);
 
+    $default_image_url = plugin_dir_url( __FILE__ ) . '../../../assets/images/crossword.png';
+    $default_id  = attachment_url_to_postid( $default_image_url );
+    $saved_id          = (int) get_option( 'kw_crossword_admin_featured_image', $default_id );
+
+    $preview_url = $saved_id
+	? wp_get_attachment_image_url( $saved_id, 'medium' )
+	: $default_image_url;
+
+
 // Retrieve saved values or use defaults
 $settings = [];
 foreach ($default_settings as $key => $values) {
@@ -164,13 +173,31 @@ foreach ($default_settings as $key => $values) {
         value="<?php echo esc_attr(get_option('kw_crossword_admin_filled_cell_color', '#e1f5fe')); ?>" 
         data-default="#e1f5fe">
     <p class="description"><?php esc_html_e('Select the background color for filled cells in the crossword.', 'wp-quiz-plugin'); ?></p>
+
+    <div class="kw-settings-field" style="padding:0">
+	<label class="kw-label"><?php esc_html_e( 'Set the featured image', 'wp-quiz-plugin' ); ?></label>
+
+	<div id="kw-image-preview">
+		<img src="<?php echo esc_url( $preview_url ); ?>" style="max-width:200px;height:150px;" />
+	</div>
+
+	<input type="hidden"
+		   id="kw_crossword_admin_featured_image"
+		   name="kw_crossword_admin_featured_image" 
+		   data-default-id="<?php echo esc_attr( $default_id ); ?>"
+		   data-default-url="<?php echo esc_attr( $default_image_url ); ?>"
+		   value="<?php echo esc_attr( $saved_id ); ?>" />
+
+	<button type="button" class="button" id="kw_crossword_admin_featured_image_button">
+		<?php esc_html_e( 'Select Image', 'wp-quiz-plugin' ); ?>
+	</button>
+
+	<!-- <button type="button" class="button-secondary kw-reset-button">
+		<?php esc_html_e( 'Reset to Default', 'wp-quiz-plugin' ); ?>
+	</button> -->
 </div>
-
-
-
-    
-
-</div>
+    </div>
+    </div>
 
 <script>
 document.querySelectorAll('.kw-reset-button').forEach(button => {

@@ -403,12 +403,11 @@ function register_quizzes_post_type() {
         'items_list_navigation' => __('Quizzes list navigation', 'wp-quiz-plugin'),
         'filter_items_list'     => __('Filter quizzes list', 'wp-quiz-plugin'),
     );
-
     $args = array(
         'label'                 => __('Quiz', 'wp-quiz-plugin'),
         'description'           => __('Custom Post Type for Quizzes', 'wp-quiz-plugin'),
         'labels'                => $labels,
-        'supports'              => array('title'),
+        'supports'              => array('title', 'thumbnail'),
         'taxonomies' => array('subject', 'standard'), // Ensure this is set to your taxonomy slugs
         'public'                => true,
         'show_ui'               => true,
@@ -421,6 +420,27 @@ function register_quizzes_post_type() {
         'map_meta_cap'          => true,
         'rewrite'               => array('slug' => get_option('wp_quiz_plugin_quizzes_url_slug', 'quizzes')),
     );
+
+add_filter( 'admin_post_thumbnail_html', 'quiz_default_admin_thumbnail', 10, 3 );
+function quiz_default_admin_thumbnail( $content, $post_id, $thumbnail_id ) {
+
+	// target only our CPT
+	if ( get_post_type( $post_id ) !== 'quizzes' ) {
+		return $content;
+	}
+
+	// when WordPress already has a thumbnail to show, do nothing
+	if ( $thumbnail_id ) {    // the 3rd param is the current _thumbnail_id value
+		return $content;
+	}
+
+	// fetch the fallback attachment ID that you stored in the option screen
+	$default_id = (int) get_option( 'wp_quiz_plugin_featured_image', 0 );
+	if ( ! $default_id ) {                // no fallback configured
+		return $content;
+	}
+	return _wp_post_thumbnail_html( $default_id, $post_id ); 
+}
 
     register_post_type('quizzes', $args);
 }
@@ -726,7 +746,7 @@ function quiz_visibility_meta_box() {
         'render_quiz_visibility_meta_box', // Callback function to display the meta box
         'quizzes',                        // Custom post type 'quizzes'
         'side',                         // Context (position at the top of the editor)
-        'default'                            // Priority (higher to place it closer to the top)
+        'low'                            // Priority (higher to place it closer to the top)
     );
 }
 

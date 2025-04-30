@@ -369,3 +369,16 @@ button#kw-reset-default-prompt:hover {
 .kw-toggle-switch input:checked + .kw-slider:before {
   transform: translateX(24px);
 }
+
+#kw_wordsearch_admin_featured_image_button {
+  max-width: 200px;
+  background-color: #0073aa;
+  color: #fff;
+  border: none;
+  padding: 10px 16px; /* Adjust button padding for balanced design */
+  font-size: 0.95rem;
+  border-radius: 6px; /* Softer edges for button */
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  align-self: flex-start; /* Align button to the left */
+}

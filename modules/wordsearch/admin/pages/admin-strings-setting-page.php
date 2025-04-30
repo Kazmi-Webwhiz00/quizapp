@@ -64,13 +64,17 @@ if (!defined('ABSPATH')) {
         'default' => '#0073aa', // Default background color
     ]);
 
-    // Open in New Tab Button Settings
-    register_setting('kw_wordsearch_admin_view_strings', 'wordsearch_open_tab_button_label', [
-        'default' => __('Open in New Tab', 'wp-quiz-plugin'), // Default button label
+    register_setting(
+    'kw_wordsearch_admin_view_strings', 'kw_wordsearch_admin_featured_image',[
+        'default' => plugin_dir_url(__FILE__) . '../../../assets/images/wordsearch.png',
     ]);
 
+    // Open in New Tab Button Settings
+    register_setting('kw_wordsearch_admin_view_strings', 'wordsearch_open_tab_button_label', [
+        'default' => __('Open in New Tab', 'wp-quiz-plugin'),    ]);
+
     register_setting('kw_wordsearch_admin_view_strings', 'wordsearch_open_tab_button_color', [
-        'default' => '#007BFF', // Default background color
+        'default' => '#007BFF', 
     ]);
 
     register_setting('kw_wordsearch_admin_view_strings', 'wordsearch_open_tab_button_font_size', [

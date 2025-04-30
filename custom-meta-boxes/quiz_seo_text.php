@@ -13,7 +13,7 @@ function add_seo_text_meta_box() {
         'render_seo_text_meta_box', // Callback function to display the input field
         'quizzes', // Post type (quizzes)
         'side', // Position
-        'low' // Priority
+        'default' // Priority
     );
 }
 add_action('add_meta_boxes', 'add_seo_text_meta_box');

@@ -100,6 +100,8 @@ function crossword_admin_enqueue_assets($hook) {
     wp_localize_script('kw-crossword-admin-scripts', 'kwCrosswordAdmin', array(
         'ajaxUrl' => admin_url('admin-ajax.php'),
         'nonce' => wp_create_nonce('kw-crossword-nonce'),
+        'title' => esc_html( 'Select or Upload Image', 'wp-quiz-plugin' ),
+        'buttonText' => esc_html( 'Use this image', 'wp-quiz-plugin' ),
     ));
 
     wp_enqueue_style('wp-color-picker');
