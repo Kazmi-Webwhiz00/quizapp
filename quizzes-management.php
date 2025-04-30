@@ -2,7 +2,7 @@
 /*
 Plugin Name: OmniS
 Description: A WordPress plugin to create and manage quizzes with questions and user submissions.
-Version: 5.4.5
+Version: 5.4.8
 Author: Kazmi Webwhiz
 Author URI: https://kazmiwebwhiz.com
 Text Domain: wp-quiz-plugin
@@ -149,18 +149,46 @@ function create_quiz_questions_table() {
     }
 register_activation_hook(__FILE__, 'create_quiz_questions_table');
 
-// Add Meta Box for Questions in Quiz Post Type
+// 1) Add your “Quiz Questions” box
+add_action( 'add_meta_boxes', 'add_questions_meta_box' );
 function add_questions_meta_box() {
     add_meta_box(
-        'quiz_questions_meta_box',  // Meta box ID
-        __('Quiz Questions', 'wp-quiz-plugin'), // Meta box title (translatable string)
-        'display_questions_meta_box', // Callback function
-        'quizzes',                  // Post type
-        'normal',                   // Context (normal, side, advanced)
-        'high'                      // Priority (high, core, default, low)
+        'quiz_questions_meta_box',       // Meta box ID
+        __( 'Quiz Questions', 'wp-quiz-plugin' ), // Title
+        'display_questions_meta_box',    // Callback
+        'quizzes',                       // Post type (make sure this matches your CPT slug)
+        'normal',                        // Context
+        'high'                           // Priority
     );
 }
-add_action('add_meta_boxes', 'add_questions_meta_box');
+
+// 2) At a super-late priority, pull out & prepend your five side-panel boxes
+/**
+ * Enqueue our meta-box reorderer on the quiz/crossword/wordsearch edit screens.
+ */
+add_action( 'admin_enqueue_scripts', function( $hook ) {
+    // Only run on post-new.php and post.php
+    if ( ! in_array( $hook, [ 'post.php', 'post-new.php' ], true ) ) {
+        return;
+    }
+
+    $screen = get_current_screen();
+    if ( ! in_array( $screen->post_type, [ 'quizzes', 'crossword', 'wordsearch' ], true ) ) {
+        return;
+    }
+
+    wp_enqueue_script(
+        'kw-reorder-side-metaboxes',
+        plugin_dir_url( __FILE__ ) . 'assets/js/kw-reorder-side-metaboxes.js',
+        [ 'jquery' ],
+        '1.0',
+        true
+    );
+    // Pass the current post type into JS
+    wp_localize_script( 'kw-reorder-side-metaboxes', 'KW_MetaBox_Order', [
+        'postType' => $screen->post_type,
+    ] );
+} );
 
 
 
@@ -475,7 +503,7 @@ function display_questions_meta_box($post) {
                                 <input type="text" class="kw_answerinputs"  name="quiz_questions[<?php echo $index; ?>][answers][0][text]"
                                     value="<?php echo esc_attr(__('True', 'wp-quiz-plugin')); ?>" readonly
                                     style="font-family: <?php echo esc_attr($answer_text_font); ?>; color: <?php echo esc_attr($answer_text_color); ?>;font-size: <?php echo esc_attr($answer_text_font_size);?>;">
-                                <label>  
+                                <label style="padding-bottom: 0;">  
                                     <input type="radio" name="quiz_questions[<?php echo $index; ?>][correct]" value="0" <?php echo $true_checked; ?>>
                                 </label>
 
@@ -483,7 +511,7 @@ function display_questions_meta_box($post) {
                             <div class="kw_answer-item kw_column-item">
                                 <input type="text" class="kw_answerinputs" name="quiz_questions[<?php echo $index; ?>][answers][1][text]"
                                     value="<?php echo esc_attr(__('False', 'wp-quiz-plugin')); ?>"  readonly style="font-family: <?php echo esc_attr($answer_text_font); ?>; color: <?php echo esc_attr($answer_text_color); ?>;font-size: <?php echo esc_attr($answer_text_font_size);?>;">
-                                <label>  <input type="radio" name="quiz_questions[<?php echo $index; ?>][correct]"
+                                <label style="padding-bottom: 0;">  <input type="radio" name="quiz_questions[<?php echo $index; ?>][correct]"
                                         value="1" <?php echo $false_checked; ?>></label>
                             </div>
                             <?php
@@ -492,12 +520,21 @@ function display_questions_meta_box($post) {
                                                 $text_answer = isset($answers[0]['text']) ? $answers[0]['text'] : '';
                                                 // Add a translatable label for the open-ended answer field
                                                 echo '<label style="color: #646970" for="quiz_questions_' . $index . '_answers_0_text">' . __($open_ended_question_lable, 'wp-quiz-plugin') . '</label>';
-                                                wp_editor($text_answer, 'quiz_questions_' . $index . '_answers_0_text', array(
-                                                    'textarea_name' => 'quiz_questions[' . $index . '][answers][0][text]',
-                                                    'media_buttons' => false,
-                                                    'textarea_rows' => 5,
-                                                    'teeny' => true,
-                                                ));
+                                                wp_editor(
+                                                    $text_answer,
+                                                    'quiz_questions_' . $index . '_answers_0_text',
+                                                    array(
+                                                        'textarea_name' => 'quiz_questions[' . $index . '][answers][0][text]',
+                                                        'media_buttons'  => false,
+                                                        'textarea_rows'  => 5,
+                                                        'teeny'          => true,
+                                                        'quicktags'      => false,
+                                                        'tinymce'        => array(
+                                                            'toolbar1' => 'bold,italic,underline',
+                                                            'toolbar2' => '',
+                                                        ),
+                                                    )
+                                                );
                                             }
                                             ?>
 
@@ -1015,11 +1052,11 @@ function display_questions_meta_box($post) {
                         answersHtml = `
                             <div class="kw_answer-item kw_column-item">
                                 <input type="text" class="kw_answerinputs" name="quiz_questions[${index}][answers][0][text]" value="True" readonly>
-                                <label><input type="radio" name="quiz_questions[${index}][correct]" value="1" ${trueAnswerChecked}></label>
+                                <label style="padding-bottom: 0;"><input type="radio" name="quiz_questions[${index}][correct]" value="1" ${trueAnswerChecked}></label>
                             </div>
                             <div class="kw_answer-item kw_column-item">
                                 <input type="text" class="kw_answerinputs" name="quiz_questions[${index}][answers][1][text]" value="False" readonly>
-                                <label><input type="radio" name="quiz_questions[${index}][correct]" value="0" ${falseAnswerChecked}></label>
+                                <label style="padding-bottom: 0;"><input type="radio" name="quiz_questions[${index}][correct]" value="0" ${falseAnswerChecked}></label>
                             </div>`;
                     } else if (type === 'Text') {
                         var questionMatch = generatedContent.match(/Question:\s*(.*?)(?=\s*Correct Answer|$)/i);
@@ -1160,6 +1197,7 @@ function display_questions_meta_box($post) {
 
             $(document).on('click', '#kw_add-question-btn', function () {
                 var index = $('.kw-question-item').length;
+                let defaultType = 'MCQ';
                 $('#kw-quiz-questions-list').append(`
                     <div class="kw-question-item" data-index="${index}">
                         <div class="kw_question-header kw_close-expand kw_toggle-question-btn">
@@ -1182,12 +1220,40 @@ function display_questions_meta_box($post) {
                         </div>
 
                         <div class="kw_question-body">
-                            <select name="quiz_questions[${index}][type]" class="kw_question-type-select">
-                                <option selected disabled><?php echo __('Question Type', 'wp-quiz-plugin'); ?></option>
-                                <option value="MCQ"><?php echo __('Multiple Choice', 'wp-quiz-plugin'); ?> </option>
-                                <option value="T/F"><?php echo __('True/False', 'wp-quiz-plugin'); ?></option>
-                                <option value="Text"><?php echo __('Open Text', 'wp-quiz-plugin'); ?></option>
-                            </select>
+                           <!-- new checkbox group -->
+                             <input
+                            type="hidden"
+                            class="kw-question-type-hidden"
+                            name="quiz_questions[${index}][type]"
+                            value="${defaultType}"
+                        />
+                            <div class="kw-question-type-checkboxes" name="quiz_questions[${index}][type]">
+                                <label>
+                                    <input type="checkbox"
+                                        class="kw-question-type-checkbox"
+                                        data-type="MCQ"
+                                        ${ defaultType === 'MCQ' ? 'checked' : '' }
+                                        />
+                                    <?php echo __('Multiple Choice', 'wp-quiz-plugin'); ?>
+                                </label>
+                                <label>
+                                    <input type="checkbox"
+                                        class="kw-question-type-checkbox"
+                                        data-type="T/F" 
+                                        ${ defaultType === 'T/F' ? 'checked' : '' }
+                                        />
+                                    <?php echo __('True/False', 'wp-quiz-plugin'); ?>
+                                </label>
+                                <label>
+                                    <input type="checkbox"
+                                        class="kw-question-type-checkbox"
+                                        data-type="Text" 
+                                        ${ defaultType === 'Text' ? 'checked' : '' }
+                                        />
+                                        
+                                    <?php echo __('Open Text', 'wp-quiz-plugin'); ?>
+                                </label>
+                                </div>
                             
                             <textarea 
                                 class="kw_styled-box" 
@@ -1211,7 +1277,15 @@ function display_questions_meta_box($post) {
                                                     </div>
                                                 </div>
                                             `);
-                                        });
+
+
+                $('.kw-question-item').each(function(){
+                // var $item  = $(this);
+                var $newItem = $('#kw-quiz-questions-list .kw-question-item').last();
+                var type= $newItem.find('.kw-question-type-hidden').val();
+                renderByType(type, $newItem);
+                });
+                });
 
             $(document).on('click', '.kw_remove-question-btn', function () {
                 var questionItem = $(this).closest('.kw-question-item');
@@ -1231,25 +1305,72 @@ function display_questions_meta_box($post) {
                 }
             });
 
-            $(document).on('change', '.kw_question-type-select', function () {
-                var container = $(this).closest('.kw-question-item').find('.kw_answers-container');
-                var fourColumnContainer = $(this).closest('.kw-question-item').find('.kw_four-column-container');
-                var type = $(this).val();
-                var questionIndex = $(this).closest('.kw-question-item').data('index');
+            // Helper: run your existing logic
+            function renderByType(type, questionItem) {
+                var idx         = questionItem.data('index');
+                var container   = questionItem.find('.kw_answers-container');
+                var fourColWrap = questionItem.find('.kw_four-column-container');
 
                 container.empty();
 
                 if (type === 'MCQ') {
-                    container.append(generateMCQAnswerFields(questionIndex));
-                    fourColumnContainer.css('display', 'flex');
-                } else if (type === 'T/F') {
-                    container.append(generateTFAnswerFields(questionIndex));
-                    fourColumnContainer.css('display', 'flex');
-                } else if (type === 'Text') {
-                    container.append(generateTextAnswerField(questionIndex));
-                    fourColumnContainer.css('display', 'block');
-                    loadTextEditor(questionIndex);
+                container.append(generateMCQAnswerFields(idx));
+                fourColWrap.css('display','flex');
                 }
+                else if (type === 'T/F') {
+                container.append(generateTFAnswerFields(idx));
+                fourColWrap.css('display','flex');
+                }
+                else if (type === 'Text') {
+                container.append(generateTextAnswerField(idx));
+                fourColWrap.css('display','block');
+                loadTextEditor(idx);
+                }
+            }
+
+            // Listen to both dropdown *and* the new checkboxes
+            $(document).on('change', '.kw_question-type-select, .kw-question-type-checkbox', function(){
+                var $this      = $(this);
+                var $question  = $this.closest('.kw-question-item');
+                var type;
+
+                var $cb   = $(this),
+                $body = $cb.closest('.kw_question-body'),
+                type  = $cb.data('type');
+
+                // uncheck siblings
+                $body.find('.kw-question-type-checkbox')
+                .not($cb)
+                .prop('checked', false);
+
+                // write the single hidden value
+                $body.find('.kw-question-type-hidden').val(type);
+
+                if ($this.hasClass('kw_question-type-select')) {
+                type = $this.val();
+                // also uncheck all checkboxes to keep UI in sync:
+                $question.find('.kw-question-type-checkbox').prop('checked', false);
+                // check the matching one:
+                $question
+                    .find('.kw-question-type-checkbox[data-type="'+ type +'"]')
+                    .prop('checked', true);
+                }
+                else {
+                // a checkbox was clicked — uncheck siblings so only one stays active
+                $question
+                    .find('.kw-question-type-checkbox')
+                    .not($this)
+                    .prop('checked', false);
+
+                type = $this.data('type');
+                // keep the <select> in sync too (if you’re still using it)
+                $question
+                    .find('.kw_question-type-select')
+                    .val(type);
+                }
+
+                // finally render the answers
+                renderByType(type, $question);
             });
              // Check for "Text" on page load and remove the class if it's selected
             $('.kw_question-type-select').each(function() {
@@ -1263,18 +1384,18 @@ function display_questions_meta_box($post) {
             function generateMCQAnswerFields(questionIndex) {
                 return `
                     <div class="kw_answer-item kw_column-item">
-                        <span class="kw_option-letter">A.</span>
+                        <span class="kw_option-letter" style="padding-bottom: 0;">A.</span>
                         <input type="text" style="font-family: <?php echo esc_attr($answer_text_font); ?>; color: <?php echo esc_attr($answer_text_color); ?>; font-size: <?php echo esc_attr($answer_text_font_size); ?>;" class="kw_answerinputs" placeholder="<?php echo esc_attr(__($add_answer_text, 'wp-quiz-plugin')); ?>" name="quiz_questions[${questionIndex}][answers][0][text]" required>
-                        <label><input type="checkbox" name="quiz_questions[${questionIndex}][answers][0][correct]"></label>
-                        <span class="kw_upload-image-btn">
+                        <label style="padding-bottom: 0;"><input type="checkbox" name="quiz_questions[${questionIndex}][answers][0][correct]"></label>
+                        <span class="kw_upload-image-btn" style="padding-bottom: 0;">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M160 80l352 0c8.8 0 16 7.2 16 16l0 224c0 8.8-7.2 16-16 16l-21.2 0L388.1 178.9c-4.4-6.8-12-10.9-20.1-10.9s-15.7 4.1-20.1 10.9l-52.2 79.8-12.4-16.9c-4.5-6.2-11.7-9.8-19.4-9.8s-14.8 3.6-19.4 9.8L175.6 336 160 336c-8.8 0-16-7.2-16-16l0-224c0-8.8 7.2-16 16-16zM96 96l0 224c0 35.3 28.7 64 64 64l352 0c35.3 0 64-28.7 64-64l0-224c0-35.3-28.7-64-64-64L160 32c-35.3 0-64 28.7-64 64zM48 120c0-13.3-10.7-24-24-24S0 106.7 0 120L0 344c0 75.1 60.9 136 136 136l320 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-320 0c-48.6 0-88-39.4-88-88l0-224zm208 24a32 32 0 1 0 -64 0 32 32 0 1 0 64 0z"/></svg>
                         </span>
                     </div>
                     <div class="kw_answer-item kw_column-item">
-                        <span class="kw_option-letter">B.</span>
+                        <span class="kw_option-letter" style="padding-bottom: 0;">B.</span>
                         <input type="text" class="kw_answerinputs" style="font-family: <?php echo esc_attr($answer_text_font); ?>; color: <?php echo esc_attr($answer_text_color); ?>; font-size: <?php echo esc_attr($answer_text_font_size); ?>;" placeholder="<?php echo esc_attr(__($add_answer_text, 'wp-quiz-plugin')); ?>" name="quiz_questions[${questionIndex}][answers][1][text]" required>
-                        <label><input type="checkbox" name="quiz_questions[${questionIndex}][answers][1][correct]"></label>
-                        <span class="kw_upload-image-btn">
+                        <labelstyle="padding-bottom: 0;"><input type="checkbox" name="quiz_questions[${questionIndex}][answers][1][correct]"></label>
+                        <span class="kw_upload-image-btn" style="padding-bottom: 0;>
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M160 80l352 0c8.8 0 16 7.2 16 16l0 224c0 8.8-7.2 16-16 16l-21.2 0L388.1 178.9c-4.4-6.8-12-10.9-20.1-10.9s-15.7 4.1-20.1 10.9l-52.2 79.8-12.4-16.9c-4.5-6.2-11.7-9.8-19.4-9.8s-14.8 3.6-19.4 9.8L175.6 336 160 336c-8.8 0-16-7.2-16-16l0-224c0-8.8 7.2-16 16-16zM96 96l0 224c0 35.3 28.7 64 64 64l352 0c35.3 0 64-28.7 64-64l0-224c0-35.3-28.7-64-64-64L160 32c-35.3 0-64 28.7-64 64zM48 120c0-13.3-10.7-24-24-24S0 106.7 0 120L0 344c0 75.1 60.9 136 136 136l320 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-320 0c-48.6 0-88-39.4-88-88l0-224zm208 24a32 32 0 1 0 -64 0 32 32 0 1 0 64 0z"/></svg>
                         </span>
                     </div>
@@ -1289,11 +1410,11 @@ function display_questions_meta_box($post) {
                 return `
                     <div class="kw_answer-item kw_column-item">
                         <input type="text" class="kw_answerinputs" name="quiz_questions[${questionIndex}][answers][0][text]" value="<?php echo esc_attr(__('True', 'wp-quiz-plugin')); ?>" readonly>
-                        <label><input type="radio" name="quiz_questions[${questionIndex}][correct]" value="0"></label>
+                        <label style="padding-bottom: 0;"><input type="radio" name="quiz_questions[${questionIndex}][correct]" value="0"></label>
                     </div>
                     <div class="kw_answer-item kw_column-item">
                         <input type="text" class="kw_answerinputs" name="quiz_questions[${questionIndex}][answers][1][text]" value="<?php echo esc_attr(__('False', 'wp-quiz-plugin')); ?>" readonly>
-                        <label><input type="radio" name="quiz_questions[${questionIndex}][correct]" value="1"></label>
+                        <label style="padding-bottom: 0;"><input type="radio" name="quiz_questions[${questionIndex}][correct]" value="1"></label>
                     </div>`;
             }
 
@@ -1329,10 +1450,12 @@ function display_questions_meta_box($post) {
                     var optionLetters = ['A', 'B', 'C', 'D'];
                     var newAnswer = `
                         <div class="kw_answer-item kw_column-item">
-                            <span class="kw_option-letter">${optionLetters[answerCount]}.</span>
+                            <span class="kw_option-letter"">
+                            <?php echo esc_html( $optionLetters[ $answerCount ] ) . '.'; ?>
+                            </span>
                             <input type="text" style="font-family: <?php echo esc_attr($answer_text_font); ?>; color: <?php echo esc_attr($answer_text_color); ?>;font-size: <?php echo esc_attr($answer_text_font_size);?>;" class="kw_answerinputs" placeholder="<?php echo esc_attr(__($add_answer_text, 'wp-quiz-plugin')); ?>" name="quiz_questions[${questionIndex}][answers][${answerCount}][text]" required>
                             <label><input type="checkbox" name="quiz_questions[${questionIndex}][answers][${answerCount}][correct]"></label>
-                            <span class="kw_upload-image-btn">
+                            <span class="kw_upload-image-btn" style="padding-bottom: 0;">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M160 80l352 0c8.8 0 16 7.2 16 16l0 224c0 8.8-7.2 16-16 16l-21.2 0L388.1 178.9c-4.4-6.8-12-10.9-20.1-10.9s-15.7 4.1-20.1 10.9l-52.2 79.8-12.4-16.9c-4.5-6.2-11.7-9.8-19.4-9.8s-14.8 3.6-19.4 9.8L175.6 336 160 336c-8.8 0-16-7.2-16-16l0-224c0-8.8-7.2-16 16-16zM96 96l0 224c0 35.3 28.7 64 64 64l352 0c35.3 0 64-28.7 64-64l0-224c0-35.3-28.7-64-64-64L160 32c-35.3 0-64 28.7-64 64zM48 120c0-13.3-10.7-24-24-24S0 106.7 0 120L0 344c0 75.1 60.9 136 136 136l320 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-320 0c-48.6 0-88-39.4-88-88l0-224zm208 24a32 32 0 1 0 -64 0 32 32 0 1 0 64 0z"/></svg>
                             </span>
                         </div>
@@ -1526,6 +1649,12 @@ function add_text_editor_callback() {
             'media_buttons' => false,
             'textarea_rows' => 5,
             'teeny' => true,
+            'quicktags'     => false,
+            'tinymce'       => [        // configure TinyMCE if you want to prune buttons
+            'toolbar1' => 'bold,italic,underline', 
+            'toolbar2' => '',
+            ],
+            'textarea_rows' => 5,
         ));
         $editor_html = ob_get_clean();
 

@@ -72,3 +72,74 @@
     transform: rotate(360deg);
   }
 }
+
+/* Container: flexible, wraps when needed, gap scales with viewport */
+.kw-question-type-checkboxes {
+  display: flex;
+  flex-wrap: nowrap; /* 1) never wrap to next line */
+  align-items: center; /* vertically center boxes & text */
+  justify-content: space-between; /* spread them out in the row */
+  gap: clamp(0.5rem, 5vw, 2rem); /* fluid – min 0.5rem, max 2rem */
+  overflow-x: auto; /* allow scroll if it truly can’t fit */
+  -webkit-overflow-scrolling: touch; /* smooth touch-scroll on iOS/Android */
+  margin-bottom: 0.5rem;
+}
+
+/* Hide native appearance, size scales with root font-size */
+.kw-question-type-checkbox {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 1.5em; /* 1.5 × root font-size */
+  height: 1.5em;
+  border: 0.125em solid #000; /* 2px at 16px root, scales */
+  border-radius: 0.25em;
+  background-color: #fff;
+  position: relative;
+  margin: 0 !important; /* nudge to align with first text line */
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.kw-question-type-checkbox:checked {
+  background-color: #4caf50;
+  border-color: #4caf50;
+}
+
+.kw-question-type-checkbox:focus {
+  outline: none;
+  box-shadow: 0 0 0 0.2em rgba(76, 175, 80, 0.5);
+}
+
+/* Remove any default ::before/::after from checked state */
+.kw-question-type-checkbox::before,
+.kw-question-type-checkbox::after {
+  content: none !important;
+}
+
+/* Input inside label: keep it aligned under text wrap */
+.kw-question-type-checkboxes input {
+  align-self: center; /* top-align with first line of text */
+}
+
+/* Label: text wraps naturally, font-size scales */
+.kw-question-type-checkboxes label {
+  flex: 1 1 0; /* 2) allow each label to shrink & grow equally */
+  min-width: 0; /* crucial: permits flex-shrink to actually work */
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5em;
+  line-height: 1.3;
+  word-wrap: break-word;
+  font-family: sans-serif;
+  font-weight: 500;
+  font-size: clamp(1rem, 1.2vw, 1.125rem);
+  cursor: pointer;
+}
+
+/* Optional: tweak layout on really wide screens */
+@media (min-width: 1600px) {
+  .kw-question-type-checkboxes {
+    justify-content: space-between;
+    /* gap: 8vw; */
+  }
+}
