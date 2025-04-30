@@ -34,6 +34,18 @@ if (!defined('ABSPATH')) {
     $no_entries_found_label = get_option('kw_no_entries_label',$default_no_entries_label);
 
 
+    $defaultImage = plugin_dir_url( __FILE__ ) . '../../../assets/images/wordsearch.png';
+    $default_id  = attachment_url_to_postid( $defaultImage );
+    $saved_id     = (int) get_option('kw_wordsearch_admin_featured_image', $default_id );
+    
+    // 2) Decide which URL to preview
+    $preview_url = $saved_id
+        ? wp_get_attachment_image_url( $saved_id, 'medium' )
+        : $defaultImage;
+
+        
+
+
 // Retrieve saved values or use defaults
 $settings = [];
 foreach ($default_settings as $key => $values) {
@@ -167,6 +179,37 @@ foreach ($default_settings as $key => $values) {
     <button type="button" class="button-secondary kw-reset-button" id="kw-reset-show-words">
         <?php esc_html_e('Reset to Default', 'wp-quiz-plugin'); ?>
 </button>
+    </div>
+
+        <div class="kw-settings-field" style="padding:0;">
+  <label class="kw-label" for="kw_wordsearch_admin_featured_image">
+    <?php esc_html_e( 'Set the featured image', 'wp-quiz-plugin' ); ?>
+  </label>
+
+  <div id="kw-image-preview">
+    <img src="<?php echo esc_url( $preview_url ); ?>"
+         style="max-width:200px;height:150px;" />
+  </div>
+
+  <input type="hidden"
+         id="kw_wordsearch_admin_featured_image"
+         name="kw_wordsearch_admin_featured_image"
+         data-default-id="<?php echo esc_attr( $default_id ); ?>"
+         data-default-url="<?php echo esc_attr( $defaultImage ); ?>"
+         value="<?php echo esc_attr( $saved_id ); ?>" />
+
+  <button type="button"
+          class="button"
+          id="kw_wordsearch_admin_featured_image_button">
+    <?php esc_html_e( 'Select Image', 'wp-quiz-plugin' ); ?>
+  </button>
+
+  <!-- <button type="button"
+          class="button-secondary kw-reset-button">
+    <?php esc_html_e( 'Reset to Default', 'wp-quiz-plugin' ); ?>
+  </button> -->
+</div>
+    </div>
     </div>
 
     

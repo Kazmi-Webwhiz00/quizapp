@@ -1619,6 +1619,7 @@ function wp_quiz_plugin_frontend_answer_reset_defaults_callback() {
 }
 function wp_quiz_plugin_notification_styles_settings_init() {
     // Register the settings for notification text and background colors
+    register_setting('wp_quiz_plugin_quizzes_settings', 'wp_quiz_plugin_featured_image');
     register_setting('wp_quiz_plugin_quizzes_settings', 'wp_quiz_plugin_notification_text_color');
     register_setting('wp_quiz_plugin_quizzes_settings', 'wp_quiz_plugin_notification_background_color');
     register_setting('wp_quiz_plugin_quizzes_settings', 'wp_quiz_plugin_notification_font_size');
@@ -1667,6 +1668,14 @@ function wp_quiz_plugin_notification_styles_settings_init() {
         'wp_quiz_plugin',
         'wp_quiz_plugin_notification_styles_section'
     );
+
+    add_settings_field(
+        'wp_quiz_plugin_featured_image',
+        'Set the featured image',
+        'wp_quiz_plugin_featured_image_callback',
+        'wp_quiz_plugin',
+        'wp_quiz_plugin_notification_styles_section'
+    );
 }
 add_action('admin_init', 'wp_quiz_plugin_notification_styles_settings_init');
 // Callback for Notification Text Color
@@ -1707,6 +1716,51 @@ function wp_quiz_plugin_notification_font_family_callback() {
     }
     echo '</select>';
     echo '<p class="description">Choose the font family for the notification text.</p>';
+}
+
+function wp_quiz_plugin_featured_image_callback(){
+    $defaultImage = plugin_dir_url(__FILE__) . 'assets/quiz.png';
+    $default_id  = attachment_url_to_postid( $defaultImage );
+    $image_id  = get_option('wp_quiz_plugin_featured_image', $default_id);
+    $image_url = $image_id ? wp_get_attachment_image_url($image_id, 'medium') : $defaultImage;
+    ?>
+    <div id="quiz-image-preview">
+        <?php if ( $image_url ): ?>
+            <img src="<?php echo esc_url( $image_url ); ?>" style="max-width:200px;height:150px;" />
+        <?php endif; ?>
+    </div>
+    <?php
+    echo '<input type="hidden" id="wp_quiz_plugin_featured_image" name="wp_quiz_plugin_featured_image" value="' . esc_attr( $image_id ) . '"/>';
+    echo '<button type="button" class="button-secondary" id="wp_quiz_plugin_upload_image_button">' . __('Upload Image','wp-quiz-plugin') . '</button>';
+    echo '<p class="description">Set the featured image for the quiz.</p>';
+    ?>
+    <script>
+        jQuery(document).ready(function($) {
+            var $preview = $("#quiz-image-preview");
+            $('#wp_quiz_plugin_upload_image_button').click(function(e) {
+                e.preventDefault();
+                var image_frame;
+                image_frame = wp.media({
+                    title: '<?php _e('Select or Upload an Image','wp-quiz-plugin'); ?>',
+                    button: {
+                        text: '<?php _e('Use this image','wp-quiz-plugin'); ?>'
+                    },
+                    multiple: false
+                });
+                image_frame.on('select', function() {
+                    var attachment = image_frame.state().get('selection').first().toJSON();
+                    $('#wp_quiz_plugin_featured_image').val(attachment.id);
+                    $preview.html(
+                        '<img src="' +
+                        attachment.sizes.medium.url +
+                        '" style="max-width:200px;height:auto;" />'
+                    );
+                });
+                image_frame.open();
+            });
+        });
+    </script>
+    <?php
 }
 
 // ====== OPEN API PROMPT SETTINGS =====
@@ -1818,6 +1872,4 @@ function wp_quiz_plugin_text_prompt_template_callback() {
     <p class="description"><?php _e('Customize the prompt template for Text answer questions.','wp-quiz-plugin'); ?></p>
     <?php
 }
-
-
 ?>

@@ -27,37 +27,76 @@ function wordsearch_category_enqueue_admin_script($hook) {
 }
 add_action('admin_enqueue_scripts', 'wordsearch_category_enqueue_admin_script');
 
-// Register Wordsearch Post Type
+add_action( 'init', 'register_wordsearch_post_type', 0 );
 function register_wordsearch_post_type() {
-    $custom_slug = get_option('wordsearch_custom_url_slug', 'wordsearch'); // Fetch the saved slug
+    // Pull your custom slug (sanitize for safety), defaulting to “wordsearch”
+    $custom_slug = sanitize_title( get_option( 'wordsearch_custom_url_slug', 'wordsearch' ) );
 
     $labels = array(
-        'name'               => __( 'Wordsearches', 'wp-quiz-plugin' ),
-        'singular_name'      => __( 'Wordsearch', 'wp-quiz-plugin' ),
-        'menu_name'          => __( 'Wordsearches', 'wp-quiz-plugin' ),
-        'add_new'            => __( 'Add New', 'wp-quiz-plugin' ),
-        'add_new_item'       => __( 'Add New Wordsearch', 'wp-quiz-plugin' ),
-        'edit_item'          => __( 'Edit Wordsearch', 'wp-quiz-plugin' ),
-        'new_item'           => __( 'New Wordsearch', 'wp-quiz-plugin' ),
-        'view_item'          => __( 'View Wordsearch', 'wp-quiz-plugin' ),
-        'search_items'       => __( 'Search Wordsearches', 'wp-quiz-plugin' ),
-        'not_found'          => __( 'No wordsearches found', 'wp-quiz-plugin' ),
-        'not_found_in_trash' => __( 'No wordsearches found in Trash', 'wp-quiz-plugin' ),
+        'name'                  => __( 'Wordsearches',            'wp-quiz-plugin' ),
+        'singular_name'         => __( 'Wordsearch',             'wp-quiz-plugin' ),
+        'menu_name'             => __( 'Wordsearches',            'wp-quiz-plugin' ),
+        'name_admin_bar'        => __( 'Wordsearch',             'wp-quiz-plugin' ),
+        'add_new'               => __( 'Add New',                'wp-quiz-plugin' ),
+        'add_new_item'          => __( 'Add New Wordsearch',     'wp-quiz-plugin' ),
+        'edit_item'             => __( 'Edit Wordsearch',        'wp-quiz-plugin' ),
+        'new_item'              => __( 'New Wordsearch',         'wp-quiz-plugin' ),
+        'view_item'             => __( 'View Wordsearch',        'wp-quiz-plugin' ),
+        'search_items'          => __( 'Search Wordsearches',    'wp-quiz-plugin' ),
+        'not_found'             => __( 'No wordsearches found.', 'wp-quiz-plugin' ),
+        'not_found_in_trash'    => __( 'No wordsearches in Trash','wp-quiz-plugin' ),
     );
 
     $args = array(
-        'labels'             => $labels,
-        'description'        => __( 'Wordsearch custom post type.', 'wp-quiz-plugin' ),
-        'public'             => true,
-        'menu_icon'          => 'dashicons-editor-table',
-        'supports'           => array( 'title' ),
-        'has_archive'        => true,
-        'rewrite'            => array('slug' => $custom_slug),
+        'labels'            => $labels,
+        'description'       => __( 'Wordsearch custom post type.', 'wp-quiz-plugin' ),
+        'public'            => true,
+        'show_in_menu'      => true,
+        'menu_icon'         => 'dashicons-editor-table',
+        'supports'          => array( 'title', 'thumbnail' ),
+        'has_archive'       => true,
+        'rewrite'           => array(
+            'slug'       => $custom_slug,
+            'with_front' => false,
+        ),
+        'show_in_rest'      => true,                // enable Gutenberg / REST API
     );
 
     register_post_type( 'wordsearch', $args );
 }
-add_action( 'init', 'register_wordsearch_post_type' );
+
+// 2) Flush rewrite rules automatically when your slug option is updated
+add_action( 'update_option_wordsearch_custom_url_slug', 'kw_flush_rewrites_on_slug_change', 10, 2 );
+function kw_flush_rewrites_on_slug_change( $old_value, $new_value ) {
+    if ( $old_value !== $new_value ) {
+        flush_rewrite_rules();
+    }
+}
+
+// 3) Provide a fallback default featured image in the admin list
+add_filter( 'admin_post_thumbnail_html', 'kw_wordsearch_default_admin_thumbnail', 10, 3 );
+function kw_wordsearch_default_admin_thumbnail( $content, $post_id, $thumbnail_id ) {
+    // Only target our CPT
+    if ( 'wordsearch' !== get_post_type( $post_id ) ) {
+        return $content;
+    }
+
+    // If one is already set, leave it alone
+    if ( $thumbnail_id ) {
+        return $content;
+    }
+    
+    // Pull your fallback ID (type-cast to int)
+    $default_id = (int) get_option( 'kw_wordsearch_admin_featured_image', 0 );
+    if ( ! $default_id ) {
+        return $content;
+    }
+
+    // Render its markup in place of the empty slot
+    return _wp_post_thumbnail_html( $default_id, $post_id );
+}
+
+
 
 // Register Wordsearch Taxonomy
 function register_wordsearch_taxonomy() {

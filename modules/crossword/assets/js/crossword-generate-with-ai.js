@@ -86,7 +86,7 @@ jQuery(document).ready(function ($) {
 
       let entryHtml = template
         .replace(/{{index}}/g, newIndex)
-        .replace(/{{number}}/g, newIndex + 2)
+        .replace(/{{number}}/g, newIndex + 1)
         .replace('value=""', `value="${item.word}"`) // Sets word
         .replace('value=""', `value="${item.clue}"`) // Sets clue
         .replace('value=""', `value="${uniqueId}"`); // Sets uniqueId
@@ -154,7 +154,48 @@ jQuery(document).ready(function ($) {
   // Unique ID for the button
   const generateButtonId = "#generate-ai-button";
 
-  // Click event handler for the Generate with AI button
+  const defaultContextPrompt =
+    "Avoid using the following word: [existing_words]";
+
+  const defaultReturnFormatPrompt =
+    '\nProvide the output in the following JSON array format, with no additional text:\n\n[\n  { "word": "exampleWord1", "clue": "Example clue for word 1" },\n  { "word": "exampleWord2", "clue": "Example clue for word 2" },\n  ...\n]\n';
+
+  // 1. Define your “generate_crossword” function schema as an OBJECT
+  const crosswordTool = {
+    type: "function",
+    function: {
+      name: "generate_crossword",
+      description:
+        "Return a crossword as an object with a single `entries` array. Each entry has the word in upper‑case and a clue.",
+      parameters: {
+        type: "object", // ← top‑level must be object
+        properties: {
+          entries: {
+            type: "array",
+            description: "Array of crossword entries",
+            items: {
+              type: "object",
+              properties: {
+                word: {
+                  type: "string",
+                  description: "The crossword entry, A‑Z only.",
+                },
+                clue: {
+                  type: "string",
+                  description: "A brief clue for the word.",
+                },
+              },
+              required: ["word", "clue"],
+            },
+            minItems: 1,
+            maxItems: parseInt(wpQuizPlugin.maxNumberOfWords, 10),
+          },
+        },
+        required: ["entries"],
+      },
+    },
+  };
+
   $(generateButtonId).on("click", function () {
     const topic = $("#ai-topic").val().trim();
     const age = $("#ai-age").val().trim();
@@ -176,17 +217,24 @@ jQuery(document).ready(function ($) {
     const data = {
       model: wpQuizPlugin.model,
       messages: [
+        { role: "system", content: defaultContextPrompt },
         {
           role: "user",
-          content: generatePrompt(number, topic, age, language),
+          content:
+            generatePrompt(number, topic, age, language) +
+            defaultReturnFormatPrompt,
         },
       ],
-      max_tokens: parseInt(wpQuizPlugin.maxTokens),
+      tools: [crosswordTool],
+      tool_choice: {
+        type: "function",
+        function: { name: "generate_crossword" },
+      },
+      max_tokens: parseInt(wpQuizPlugin.maxTokens, 10),
       temperature: parseFloat(wpQuizPlugin.temperature),
     };
 
-    // Function to send the request with retry logic
-    function sendRequest(retryCount, count) {
+    function sendRequest(retries, count) {
       if (count <= 0) return;
 
       $.ajax({
@@ -197,83 +245,79 @@ jQuery(document).ready(function ($) {
           "Content-Type": "application/json",
         },
         data: JSON.stringify(data),
-        beforeSend: function () {
+        beforeSend() {
           $(".kw-loading").show();
           console.log("Sending request to OpenAI...", data);
           if (wpQuizPlugin.isAdmin) {
-            showAdminPrompt(data.messages[0].content);
+            showAdminPrompt(data.messages[1].content);
           }
           $(generateButtonId)
             .text(wpQuizPlugin.generatingText)
             .prop("disabled", true);
         },
-        success: function (response) {
+        success(response) {
           console.log("Received response:", response);
           try {
-            // Get the content from the API response
-            const generatedContentString =
-              response.choices[0].message.content.trim();
-            console.log("generated content String", generatedContentString);
+            const msg = response.choices[0].message;
 
-            // Clean up the response to handle potential JSON formatting issues
-            const cleanJsonString = (str) => {
-              // Find the first '[' and last ']' to extract just the JSON array
-              const startIdx = str.indexOf("[");
-              const endIdx = str.lastIndexOf("]") + 1;
-              if (startIdx >= 0 && endIdx > startIdx) {
-                return str.substring(startIdx, endIdx);
-              }
-              return str;
-            };
+            // ➊ Extract the JSON payload from the function call (or fallback)
+            let jsonPayload;
+            if (msg.tool_calls && msg.tool_calls.length) {
+              jsonPayload = msg.tool_calls[0].function.arguments;
+            } else {
+              jsonPayload = msg.content.trim();
+            }
+            console.log("Raw JSON payload:", jsonPayload);
 
-            // Apply cleaning and then parse
-            const cleanedContent = cleanJsonString(generatedContentString);
-            const generatedContent = JSON.parse(cleanedContent);
-            console.log("Generated content:", generatedContent);
+            // ➋ Parse into JS
+            const parsed = JSON.parse(jsonPayload);
 
-            // Validation function for crossword words
+            // ➌ Support both
+            // — if you used the object-with-entries pattern:
+            const candidates = Array.isArray(parsed.entries)
+              ? parsed.entries
+              : // — otherwise assume parsed is already an array:
+              Array.isArray(parsed)
+              ? parsed
+              : [];
+
+            // ➍ Your original validation helper
             const isValidCrosswordWord = (word) => {
-              // Check if word exists and is a string
               if (!word || typeof word !== "string") return false;
-
-              // Convert to uppercase for consistency
-              const upperWord = word.toUpperCase();
+              const upper = word.toUpperCase();
               return (
-                /^[A-Z]+$/.test(upperWord) &&
-                upperWord.length >= 3 &&
-                upperWord.length <= 15
+                /^[A-Z]+$/.test(upper) &&
+                upper.length >= 3 &&
+                upper.length <= 15
               );
             };
 
-            // Filter the content to only valid words with proper error handling
-            const validGeneratedContent = Array.isArray(generatedContent)
-              ? generatedContent.filter(
-                  (item) =>
-                    item &&
-                    item.word &&
-                    isValidCrosswordWord(item.word) &&
-                    item.clue &&
-                    typeof item.clue === "string" &&
-                    item.clue.trim() !== ""
-                )
-              : [];
+            // ➎ Filter invalid items
+            const validItems = candidates.filter(
+              (item) =>
+                item &&
+                item.word &&
+                isValidCrosswordWord(item.word) &&
+                item.clue &&
+                typeof item.clue === "string" &&
+                item.clue.trim() !== ""
+            );
 
-            // Check if we have any valid content after filtering
-            if (validGeneratedContent.length === 0) {
+            // ➏ Make sure we found at least one
+            if (validItems.length === 0) {
               throw new Error(
                 "No valid crossword words were found in the response"
               );
             }
 
-            // Process the words with proper casing
-            const processedContent = validGeneratedContent.map((item) => ({
-              ...item,
-              word: item.word.toUpperCase(), // Ensure words are uppercase for crossword
+            // ➐ Uppercase the words & trim clues
+            const processed = validItems.map((item) => ({
+              word: item.word.toUpperCase(),
+              clue: item.clue.trim(),
             }));
 
-            appendGeneratedContent(processedContent);
+            appendGeneratedContent(processed);
             $("#shuffle-button").click();
-
             // Rest of your code remains the same
             postStatus = $("#original_post_status").val();
             postId = $("#post_ID").val();
@@ -289,29 +333,34 @@ jQuery(document).ready(function ($) {
               "success"
             );
             $.fn.highlightPublishButton();
-          } catch (error) {
-            console.error("Error processing response:", error);
+          } catch (err) {
+            console.error("Error processing response:", err);
             Swal.fire(
               wpQuizPlugin.strings.errorTitle,
-              `${wpQuizPlugin.strings.errorMessage}: ${error.message}`,
+              `${wpQuizPlugin.strings.errorMessage}: ${err.message}`,
               "error"
             );
+          } finally {
             $(".kw-loading").hide();
+            $(generateButtonId)
+              .text(wpQuizPlugin.generateWithAiText)
+              .prop("disabled", false);
           }
-          $(generateButtonId)
-            .text(wpQuizPlugin.generateWithAiText)
-            .prop("disabled", false);
         },
-        error: function (xhr, status, error) {
+        error(xhr, status, error) {
           console.error("API request error:", xhr.responseText);
-          if (retryCount > 0) {
-            console.log(`Retrying request... Attempts left: ${retryCount}`);
-            setTimeout(() => sendRequest(retryCount - 1, count), 2000); // Retry after 2 seconds
+          if (retries > 0) {
+            console.log(`Retrying request... Attempts left: ${retries}`);
+            setTimeout(() => sendRequest(retries - 1, count), 2000);
           } else {
             let errorMsg = "Failed to generate question. ";
             errorMsg += xhr.responseJSON?.error?.message || "Error: " + error;
+            Swal.fire(
+              wpQuizPlugin.strings.errorTitle,
+              xhr.responseJSON?.error?.message || error,
+              "error"
+            );
             $(".kw-loading").hide();
-            Swal.fire(wpQuizPlugin.strings.errorTitle, errorMsg, "error");
             $(generateButtonId)
               .text(wpQuizPlugin.generateWithAiText)
               .prop("disabled", false);
@@ -320,7 +369,6 @@ jQuery(document).ready(function ($) {
       });
     }
 
-    // Start the request with a retry count of 3
     sendRequest(3, number);
   });
 
