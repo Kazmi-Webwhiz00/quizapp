@@ -38,12 +38,29 @@ function wp_quiz_display_shortcode($atts) {
     $answer_font_size = esc_attr(get_option('wp_quiz_plugin_frontend_answer_font_size', '16px'));
 
 
-    // Check if we are in a single quiz post
-    if (is_singular('quizzes')) {
-        $quiz_id = get_the_ID(); // Get current post ID
-    } else {
+    // 1) Parse explicit `id` attribute
+    $atts    = shortcode_atts( [ 'id' => 0 ], $atts, 'wp_quiz' );
+    $quiz_id = absint( $atts['id'] );
+
+    // 2) Try Divi builder preview params
+    if ( ! $quiz_id ) {
+        $quiz_id = isset( $_GET['p'] )       ? absint( $_GET['p'] )
+                 : ( isset( $_REQUEST['post_id'] ) ? absint( $_REQUEST['post_id'] ) : 0 );
+    }
+
+    // 3) Finally fall back to the queried object (the real post slug)
+    if ( ! $quiz_id ) {
+        $quiz_id = absint( get_queried_object_id() );
+    }
+
+    // 4) Ensure it’s a valid “quizzes” post
+    if ( !is_singular('quizzes')) {
         return '<p>This shortcode is only valid on a quiz post.</p>';
     }
+    else if ( ! $quiz_id ) {
+        return '<p>No quiz ID provided.</p>';
+    }
+    // 5) Ensure the quiz exists
 
     // Fetch quiz questions
     global $wpdb;
