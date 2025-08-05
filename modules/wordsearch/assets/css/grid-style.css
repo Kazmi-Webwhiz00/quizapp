@@ -149,7 +149,7 @@ h3 {
   margin: 0 !important;
   color: #1a2a3a;
   font-weight: 800 !important;
-  font-family: "Montserrat", sans-serif !important;
+  font-family: "Noto Sans", sans-serif;
   text-transform: uppercase;
   letter-spacing: 2px;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.15), 0 0 10px rgba(72, 138, 255, 0.2);
@@ -224,6 +224,7 @@ h3 {
 }
 
 .word-panel-title {
+  font-family: "Noto Sans", sans-serif !important;
   margin-top: 0;
   margin-bottom: 0.75rem;
   font-size: 28px;
@@ -403,6 +404,7 @@ h3 {
 }
 
 .word-text {
+  font-family: "Noto Sans", sans-serif !important;
   margin-right: 10px;
 }
 
@@ -586,6 +588,13 @@ h3 {
   outline: none;
   transition: border-color 0.2s ease;
 } */
+
+.kw-wordsearch-words-container input[type="text"],
+input[type="number"],
+input[type="text"] {
+  font-family: "Noto Sans", sans-serif !important;
+}
+
 input[type="text"],
 input[type="number"],
 input[type="text"]:focus,
@@ -870,6 +879,7 @@ button:active {
 
 /* Styled Shuffle Button */
 .shuffle-button {
+  font-family: "Noto Sans", sans-serif;
   background: linear-gradient(135deg, #3a6ea5 0%, #2c5282 100%);
   color: white;
   border: none;
@@ -1337,6 +1347,7 @@ canvas {
 }
 
 .kw-grid-download-button {
+  font-family: "Noto Sans", sans-serif;
   display: none;
   background-color: rgb(0, 121, 107);
   color: rgb(255, 255, 255);
@@ -1442,4 +1453,53 @@ canvas {
       display: none;
     }
   }
+}
+
+.wordsearch-container {
+  position: relative;
+}
+
+/* 2. Style the fullscreen toggle button: */
+.fullscreen-toggle {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 32px;
+  height: 32px;
+  padding: 4px;
+  background: rgba(0, 0, 0, 0.4);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* when you’ve added your “fullscreen” helper class */
+.wordsearch-container.fullscreen {
+  /* old Firefox */
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  overflow: auto !important; /* allow scrolling if content exceeds */
+  z-index: 9999; /* sit above everything */
+}
+
+/* Optional hover effect */
+.fullscreen-toggle:hover {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+/* If you want to swap to an “exit fullscreen” icon, you can use :fullscreen on the container: */
+.wordsearch-container:fullscreen .fullscreen-toggle svg.switch-to-fullscreen {
+  display: none;
+}
+.wordsearch-container:fullscreen .fullscreen-toggle svg.switch-to-exit {
+  display: block;
+}
+.wordsearch-container:not(:fullscreen) .fullscreen-toggle svg.switch-to-exit {
+  display: none;
 }

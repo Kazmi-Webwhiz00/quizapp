@@ -7,6 +7,7 @@
 
 /* New left section styling */
 #ws-generate-ai-container {
+  font-family: "Noto Sans", sans-serif !important;
   display: flex;
   flex-direction: row;
   gap: 10px;
@@ -26,6 +27,7 @@
 
 #ws-generate-ai-container input[type="text"],
 #ws-generate-ai-container input[type="number"] {
+  font-family: "Noto Sans", sans-serif !important;
   padding: 5px;
   width: 100%;
   font-size: 14px;
@@ -39,12 +41,14 @@
 
 #ws-generate-ai-container input[type="text"]:focus,
 #ws-generate-ai-container input[type="number"]:focus {
+  font-family: "Noto Sans", sans-serif !important;
   border-color: #6c9bd1;
   box-shadow: 0 0 5px rgba(108, 155, 209, 0.3);
   outline: none;
 }
 
 #ws-generate-ai-container button {
+  font-family: "Noto Sans", sans-serif !important;
   padding: 8px 10px;
   font-size: 14px;
   cursor: pointer;
@@ -61,6 +65,7 @@
 
 /* Existing styles */
 #wordsearch-words-clues-container {
+  font-family: "Noto Sans", sans-serif !important;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -68,6 +73,7 @@
 }
 
 .wordsearch-word-clue {
+  font-family: "Noto Sans", sans-serif !important;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -88,6 +94,7 @@
 /* Input fields styling */
 .wordsearch-word-clue input[type="text"],
 .wordsearch-word-clue input[type="file"] {
+  font-family: "Noto Sans", sans-serif !important;
   padding: 5px;
   font-size: 14px;
   border: 1px solid #ccc;
@@ -113,6 +120,7 @@
 
 /* Styling for the remove icon (trash can) */
 button.remove-word {
+  font-family: "Noto Sans", sans-serif !important;
   background: none;
   border: none;
   cursor: pointer;
@@ -137,6 +145,7 @@ button.remove-word:hover svg {
 /* Styling for action buttons */
 #add-word-button,
 #clear-list-button {
+  font-family: "Noto Sans", sans-serif !important;
   margin-top: 10px;
   padding: 8px 15px;
   font-size: 14px;

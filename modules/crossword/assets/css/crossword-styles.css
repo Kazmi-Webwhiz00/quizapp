@@ -181,6 +181,10 @@ button.remove-word:hover svg {
   width: 80%;
 }
 
+.kw-crossword-words-clues-container input {
+  font-family: "Noto Sans", sans-serif;
+}
+
 @media (max-width: 500px) {
   .crossword-word-clue input[type="text"] {
     width: 100%;

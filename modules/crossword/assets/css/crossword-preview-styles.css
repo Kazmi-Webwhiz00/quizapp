@@ -93,6 +93,7 @@
 }
 
 .filled-cell {
+  font-family: "Noto Sans", sans-serif;
   background-color: #e1f5fe;
   border: 1px solid #d0d0d0 !important;
 }
@@ -136,6 +137,11 @@
 
 .clueHeading {
   display: none;
+}
+
+.acrossClue ul,
+.downClue ul {
+  font-family: "Noto Sans", sans-serif;
 }
 
 /* Clues header styling */

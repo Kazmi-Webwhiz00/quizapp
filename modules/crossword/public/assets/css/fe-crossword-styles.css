@@ -36,6 +36,10 @@
   border: 1px solid #d0d0d0 !important;
 }
 
+.filled-cell input {
+  font-family: "Noto Sans", sans-serif;
+}
+
 .empty-cell {
   background-color: #ffffff;
 }
@@ -81,6 +85,7 @@ h3 {
 }
 
 #clues-container-fe li {
+  font-family: "Noto Sans", sans-serif;
   margin-bottom: 20px;
   font-size: 1em;
   color: #555;
@@ -155,6 +160,7 @@ h3 {
 }
 
 .fe-download-button-wrapper {
+  font-family: "Noto Sans", sans-serif;
   margin-bottom: 10px;
 }
 .fe-download-button-wrapper > span {
@@ -323,4 +329,47 @@ h3 {
 
 .filled-cell.highlighted-cell input {
   background-color: transparent;
+}
+
+/* 1. Allow absolutely‑positioning the button: */
+#crossword-container {
+  position: relative;
+}
+
+/* 2. Style the fullscreen toggle button: */
+.fullscreen-toggle {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 32px;
+  height: 32px;
+  padding: 4px;
+  background: rgba(0, 0, 0, 0.4);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Optional hover effect */
+.fullscreen-toggle:hover {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+/* If you want to swap to an “exit fullscreen” icon, you can use :fullscreen on the container: */
+#crossword-container:fullscreen .fullscreen-toggle svg.switch-to-fullscreen {
+  display: none;
+}
+#crossword-container:fullscreen .fullscreen-toggle svg.switch-to-exit {
+  display: block;
+}
+#crossword-container:not(:fullscreen) .fullscreen-toggle svg.switch-to-exit {
+  display: none;
+}
+
+/* When #crossword-container has the fullscreen class, adjust the clues container */
+#crossword-container.fullscreen #clues-container-fe {
+  justify-content: space-around !important;
 }

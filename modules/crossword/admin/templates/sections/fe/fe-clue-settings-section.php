@@ -6,7 +6,7 @@
     $clue_defaults = [
         'kw_fe_clue_title_font_color' => '#000000',
         'kw_fe_clue_title_font_size' => 25,
-        'kw_fe_clue_title_font_family' => 'Arial',
+        'kw_fe_clue_title_font_family' => 'Noto Sans',
         'kw_fe_body_text_font_color' => 'rgb(85, 85, 85)',
         'kw_fe_body_text_font_size' => 16,
         'kw_fe_body_text_font_family' => 'Arial',
@@ -34,7 +34,7 @@
                 <?php
                 $font_family_options = [
                     'Arial', 'Helvetica', 'Times New Roman', 'Courier New', 'Georgia',
-                    'Verdana', 'Trebuchet MS', 'Lucida Sans',
+                    'Verdana', 'Trebuchet MS', 'Lucida Sans', 'Noto Sans',
                 ];
                 foreach ($font_family_options as $font_family) :
                     ?>

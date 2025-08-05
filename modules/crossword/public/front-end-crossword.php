@@ -24,7 +24,7 @@ if (isset($_GET['download']) && $_GET['download'] === 'json') {
 // Fetch font and style options
 $clue_title_font_color = esc_attr(get_option('kw_fe_clue_title_font_color', '#000000'));
 $clue_title_font_size = intval(get_option('kw_fe_clue_title_font_size', 25)) . 'px';
-$clue_title_font_family = esc_attr(get_option('kw_fe_clue_title_font_family', 'Arial'));
+$clue_title_font_family = esc_attr(get_option('kw_fe_clue_title_font_family', 'Noto Sans'));
 
 $restart_button_bg_color = esc_attr(get_option('kw_fe_restart_button_color', '#00796b'));
 $restart_button_text_color = esc_attr(get_option('kw_fe_restart_button_text_color', '#ffffff'));
@@ -36,20 +36,20 @@ $restart_button_label = esc_html(get_option('kw_fe_restart_button_label', ''));
 $download_button_bg_color = esc_attr(get_option('kw_fe_download_button_bg_color', '#00796b'));
 $download_button_text_color = esc_attr(get_option('kw_fe_download_button_text_color', '#ffffff'));
 $download_button_font_size = esc_attr(get_option('kw_fe_download_button_font_size', '16px'));
-$download_button_font_family = esc_attr(get_option('kw_fe_download_button_font_family', 'Arial, sans-serif'));
+$download_button_font_family = esc_attr(get_option('kw_fe_download_button_font_family', 'Noto Sans'));
 $download_button_label = esc_html(get_option('kw_fe_download_button_text', 'Download'));
 
 $check_button_bg_color = esc_attr(get_option('kw_fe_check_crossword_button_bg_color', '#00796b'));
 $check_button_text_color = esc_attr(get_option('kw_fe_check_crossword_button_text_color', '#CE2525'));
 $check_button_font_size = esc_attr(get_option('kw_fe_check_crossword_button_font_size', '16px'));
-$check_button_font_family = esc_attr(get_option('kw_fe_check_crossword_button_font_family', 'Arial, sans-serif'));
+$check_button_font_family = esc_attr(get_option('kw_fe_check_crossword_button_font_family', 'Noto Sans'));
 $check_button_label = esc_html(get_option('kw_fe_check_crossword_button_text', 'Check Crossword'));
 
 $check_live_enabled_bg_color = esc_attr(get_option('kw_fe_enable_live_word_check_button_enabled_color', 'white'));
 $check_live_bg_color = esc_attr(get_option('kw_fe_enable_live_word_check_button_bg_color', 'white'));
 $live_word_check_font_color = esc_attr(get_option('kw_fe_enable_live_word_check_button_text_color', '#000000'));
 $live_word_check_font_size = intval(get_option('kw_fe_enable_live_word_check_button_font_size', 14)) . 'px';
-$live_word_check_font_family = esc_attr(get_option('kw_fe_enable_live_word_check_button_font_family', 'Arial'));
+$live_word_check_font_family = esc_attr(get_option('kw_fe_enable_live_word_check_button_font_family', 'Noto Sans'));
 $live_word_check_label = esc_html(get_option('kw_fe_enable_live_word_check_button_text', 'Enable Live Word Check'));
 
 $clue_across_text = esc_html(get_option('kw_fe_clue_title_across', 'Across'));
@@ -96,6 +96,16 @@ $error_message_color = esc_attr(get_option('kw_fe_error_message_color', '#ff0000
                         </div>
                     </div>
                 </div>
+                <button class="fullscreen-toggle" aria-label="Toggle full screen">
+                <!-- fullscreen icon -->
+                <svg class="switch-to-fullscreen" width="20" height="20" viewBox="0 0 24 24">
+                <path d="M7 14H5v5h5v-2H7v-3zm0-4h2V7h3V5H7v5zm10 4h2v3h-3v2h5v-5zm-3-9v2h3v3h2V5h-5z"/>
+                </svg>
+                <!-- exit‑fullscreen icon (hidden by default) -->
+                <svg class="switch-to-exit" width="20" height="20" viewBox="0 0 24 24">
+                <path d="M5 16h3v3h2v-5H5v2zm11 3h3v-3h-2v2h-3v2zm3-11v5h2V5h-5v2h3zm-9 0V5H5v5h2V7h3z"/>
+                </svg>
+                </button>
             </div>
             <div id="crossword-grid"></div>
 
