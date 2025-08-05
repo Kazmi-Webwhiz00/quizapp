@@ -9,8 +9,32 @@ if (!defined('ABSPATH')) {
 }
 
 // Fetch existing crossword grid data from the post meta
-global $post;
-$grid_data = get_post_meta($post->ID, '_crossword_grid_data', true);
+$post_id = isset( $_GET['id'] ) ? absint( $_GET['id'] ) : 0;
+
+// 2) Divi preview fallbacks
+if ( ! $post_id ) {
+    if ( ! empty( $_GET['p'] ) ) {
+        $post_id = absint( $_GET['p'] );
+    } elseif ( ! empty( $_REQUEST['post_id'] ) ) {
+        $post_id = absint( $_REQUEST['post_id'] );
+    }
+}
+
+// 3) Fallback to queried object
+if ( ! $post_id ) {
+    $post_id = absint( get_queried_object_id() );
+}
+
+// 4) Validate CPT
+if ( ! $post_id || get_post_type( $post_id ) !== 'crossword' ) {
+    return; // or display an error
+}
+
+// 5) Fetch the grid data
+$grid_data = get_post_meta( $post_id, '_crossword_grid_data', true );
+if ( ! $grid_data ) {
+    return; // nothing to download
+}
 $filename = sanitize_title(get_the_title()) . '-crossword.json';
 
 // Prepare data for download if requested

@@ -199,31 +199,42 @@ add_action('save_post', 'save_crossword_description_meta_box');
 
 
 // Shortcode to display crossword description
-function crossword_description_shortcode($atts) {
-    // Extract shortcode attributes (optional if you plan to expand functionality later)
-    $atts = shortcode_atts(
-        array(
-            'id' => null, // Post ID
-        ),
-        $atts,
-        'crossword_description'
-    );
-
-    // Get the current post ID if no ID is passed in the shortcode
-    $post_id = $atts['id'] ? intval($atts['id']) : get_the_ID();
-
-    // Check if the post ID exists and is of type 'crossword'
-    if ($post_id && get_post_type($post_id) === 'crossword') {
-        // Fetch the description
-        $description = get_post_meta($post_id, '_crossword_description', true);
-
-        // Return the description or a default message
-        return !empty($description) ? esc_html($description) : '';
+function crossword_description_shortcode( $atts ) {
+    // 1) Parse explicit `id` attribute
+    $atts    = shortcode_atts( [ 'id' => 0 ], $atts, 'crossword_description' );
+    $post_id = absint( $atts['id'] );
+    // 2) Fallback to Divi preview params if still missing
+    if ( ! $post_id ) {
+        if ( ! empty( $_GET['p'] ) ) {
+            $post_id = absint( $_GET['p'] );
+        } elseif ( ! empty( $_REQUEST['post_id'] ) ) {
+            $post_id = absint( $_REQUEST['post_id'] );
+        }
     }
 
-    return __('Invalid crossword ID.', 'wp-quiz-plugin');
+    // 3) Finally fall back to the main queried object
+    if ( ! $post_id ) {
+        $post_id = absint( get_queried_object_id() );
+    }
+
+    // 4) Validate it’s a `crossword` post type
+    $post_type = $post_id ? get_post_type( $post_id ) : '';
+
+    if ( $post_id && $post_type === 'crossword' ) {
+        $description = get_post_meta( $post_id, '_crossword_description', true );
+        if ( $description !== '' ) {
+            return esc_html( $description );
+        }
+        error_log( "[Crossword] no description meta for post_id=$post_id" );
+        return ''; // or a placeholder if you prefer
+    }
+
+    // 5) Nothing valid found
+    error_log( "[Crossword] Invalid crossword ID: $post_id" );
+    return '<p>' . esc_html__( 'Invalid crossword ID.', 'wp-quiz-plugin' ) . '</p>';
 }
-add_shortcode('crossword_description', 'crossword_description_shortcode');
+add_shortcode( 'crossword_description', 'crossword_description_shortcode' );
+
 
 
 // function exclude_private_crosswords($query) {

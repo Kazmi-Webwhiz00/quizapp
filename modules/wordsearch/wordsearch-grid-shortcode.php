@@ -49,9 +49,11 @@ $downloadPdfLabel = get_option('kw_download_pdf_label', $default_download_pdf_la
 $soundEnabled = get_option('kw_grid_text_sound_setting', 'true') ;
 // Show or hide Images Label
 $showImagesLabel = __('Show Images', 'wp-quiz-plugin');
-global $post;
-$title = get_the_title( $post );
+// Get the real post ID (e.g. your quiz or crossword)
+$post_id = get_queried_object_id();
 
+// Then fetch its title
+$title = get_the_title( $post_id );
     ?>
 <div class="wordsearch-container">
 <div class="game-header">
