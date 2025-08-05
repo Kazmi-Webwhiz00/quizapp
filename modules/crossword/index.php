@@ -35,6 +35,8 @@ function load_crossword_assets($hook) {
         wp_localize_script('crossword-script', 'crosswordScriptVar', array(
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce'   => wp_create_nonce('crossword_ajax_nonce'),
+            'selectImageTitle' => esc_js( esc_html__( 'Select Image', 'wp-quiz-plugin' ) ),
+            'useImageText'     => esc_js( esc_html__( 'Use this image', 'wp-quiz-plugin' ) ),
         ));
         
 

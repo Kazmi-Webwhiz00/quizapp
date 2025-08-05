@@ -155,15 +155,70 @@ jQuery(document).ready(function ($) {
   // Unique ID for the wordsearch generate button
   const generateButtonId = "#ws-generate-ai-button";
 
-  // Click event handler for the Generate with AI button for wordsearch
+  const defaultContextPrompt =
+    "Avoid using the following words:[existing_words]";
+
+  // Unique ID for the wordsearch generate button
+
+  // 🆕 Updated “JSON-only” tail prompt allowing Polish letters and your wordText+clue schema
+  const defaultReturnFormatPrompt =
+    "\nIMPORTANT: Respond with exactly a JSON array of objects—no extra text, no markdown fences.\n" +
+    "Each object must have:\n" +
+    '  • "wordText": 3–15 uppercase letters A–Z or ĄĆĘŁŃÓŚŹŻ\n' +
+    '  • "clue": a non-empty string\n\n' +
+    "Example:\n" +
+    "[\n" +
+    '  { "wordText": "ŁĄKA", "clue": "Polish for meadow" },\n' +
+    '  { "wordText": "GĘŚ", "clue": "Polish for goose" }\n' +
+    "]\n";
+
+  // 🆕 Top-level function definition for the OpenAI functions API
+  const wordsearchTool = {
+    name: "generate_wordsearch",
+    description:
+      "Return a word-search as an object with an `entries` array. " +
+      "Each entry has `wordText` (A–Z plus ĄĆĘŁŃÓŚŹŻ) and a `clue`.",
+    parameters: {
+      type: "object",
+      properties: {
+        entries: {
+          type: "array",
+          description: "Array of word-search entries",
+          minItems: 1,
+          maxItems: parseInt(wordsearchScriptVar.wsMaxNumberOfWords, 10),
+          items: {
+            type: "object",
+            properties: {
+              wordText: {
+                type: "string",
+                description:
+                  "3–15 characters: A–Z or ĄĆĘŁŃÓŚŹŻ only (no spaces/punctuation)",
+                pattern: "^[A-ZĄĆĘŁŃÓŚŹŻ]{3,15}$",
+              },
+              clue: {
+                type: "string",
+                description: "A brief clue for the word (must be non-empty).",
+              },
+            },
+            required: ["wordText", "clue"],
+          },
+        },
+      },
+      required: ["entries"],
+    },
+  };
+
   $(generateButtonId).on("click", function () {
     const topic = $("#ws-topic").val().trim();
     const age = $("#ws-age").val().trim();
     const number = $("#ws-words").val().trim();
-    const newEntries = parseInt(number);
-
+    const newEntries = parseInt(number, 10);
     const language = $("#ws-language").val().trim();
-    const maxNumberOfWords = parseInt(wordsearchScriptVar.wsMaxNumberOfWords);
+
+    const maxNumberOfWords = parseInt(
+      wordsearchScriptVar.wsMaxNumberOfWords,
+      10
+    );
     if (newEntries < 1 || newEntries > maxNumberOfWords) {
       Swal.fire(
         wordsearchScriptVar.wsStrings.errorTitle,
@@ -173,14 +228,13 @@ jQuery(document).ready(function ($) {
       return;
     }
 
-    // Check if adding new entries would exceed the maximum limit
     if (window.totalEntries + newEntries > MAX_ENTRIES) {
       Swal.fire({
         title: wordsearchScriptVar.entryLimitTitle,
         text: wordsearchScriptVar.entryLimitBodyText,
         icon: "error",
         confirmButtonText: "OK",
-        confirmButtonColor: "#3085d6", // Professional blue color
+        confirmButtonColor: "#3085d6",
         customClass: {
           container: "my-swal-container",
           popup: "my-swal-popup",
@@ -189,32 +243,38 @@ jQuery(document).ready(function ($) {
           confirmButton: "my-swal-confirm-btn",
         },
         showClass: {
-          popup: "animate__animated animate__fadeIn faster", // Smooth fade-in animation
+          popup: "animate__animated animate__fadeIn faster",
         },
         hideClass: {
-          popup: "animate__animated animate__fadeOut faster", // Smooth fade-out animation
+          popup: "animate__animated animate__fadeOut faster",
         },
       });
-
       return;
     }
 
-    // Update the global total entries
     window.totalEntries += newEntries;
     console.log(ws_generatePrompt(number, topic, age, language));
+
+    // append our strict-return prompt
+    const userPrompt =
+      ws_generatePrompt(number, topic, age, language) +
+      defaultReturnFormatPrompt;
+
     const data = {
       model: wordsearchScriptVar.wsModel,
       messages: [
         {
-          role: "user",
-          content: ws_generatePrompt(number, topic, age, language),
+          role: "system",
+          content: defaultContextPrompt,
         },
+        { role: "user", content: userPrompt },
       ],
-      max_tokens: parseInt(wordsearchScriptVar.wsMaxTokens),
+      functions: [wordsearchTool],
+      function_call: { name: "generate_wordsearch" },
+      max_tokens: parseInt(wordsearchScriptVar.wsMaxTokens, 10),
       temperature: parseFloat(wordsearchScriptVar.wsTemperature),
     };
 
-    // Function to send the request with retry logic
     function ws_sendRequest(retryCount, count) {
       if (count <= 0) return;
       $.ajax({
@@ -227,65 +287,69 @@ jQuery(document).ready(function ($) {
         data: JSON.stringify(data),
         beforeSend: function () {
           $(".kw-loading").show();
-          console.log("Sending request to OpenAI (wordsearch)...", data);
+          console.log("Sending request to OpenAI (wordsearch)…", data);
           if (wordsearchScriptVar.isAdmin) {
-            showAdminPrompt(data.messages[0].content);
+            showAdminPrompt(data.messages[1].content);
           }
           $(generateButtonId)
             .text(wordsearchScriptVar.wsGeneratingText)
             .prop("disabled", true);
         },
         success: function (response) {
-          console.log("Received response (wordsearch):", response);
           try {
-            const generatedContentString =
-              response.choices[0].message.content.trim();
-            let jsonString = generatedContentString;
+            const msg = response.choices[0].message;
+            let raw = msg.function_call
+              ? msg.function_call.arguments
+              : msg.content.trim();
 
-            // Remove markdown code block formatting if present
-            if (jsonString.startsWith("```")) {
-              // Remove the first line (which may be "```json" or just "```")
-              jsonString = jsonString.replace(/^```(?:json)?\n?/, "");
-              // Remove trailing triple backticks, if any
-              jsonString = jsonString.replace(/```$/, "").trim();
+            // Strip any ```json blocks
+            if (raw.startsWith("```")) {
+              raw = raw
+                .replace(/^```(?:json)?\n?/, "")
+                .replace(/```$/, "")
+                .trim();
             }
 
-            console.log("generated content String", jsonString);
-            const generatedContent = JSON.parse(jsonString);
-            console.log("Generated content (wordsearch):", generatedContent);
+            console.log("Raw JSON payload:", raw);
+            const parsed = JSON.parse(raw);
 
-            // Process each generated entry: rename "word" to "wordText"
-            generatedContent.forEach(function (item) {
-              if (item.word) {
-                item.wordText = item.word; // Rename property
-                delete item.word; // Remove old property
-              }
-              // Ensure each entry has a unique id
-              if (!item.id) {
-                item.id =
-                  "ws_" + Date.now() + "_" + Math.floor(Math.random() * 1000);
-              }
+            // Normalize to array
+            const candidates = Array.isArray(parsed.entries)
+              ? parsed.entries
+              : Array.isArray(parsed)
+              ? parsed
+              : [];
 
-              if (!item.imageUrl) {
-                item.imageUrl = "";
-              }
+            // Validate A–Z + Polish letters and non-empty clue
+            const isWord = (w) => /^[A-ZĄĆĘŁŃÓŚŹŻ]{3,15}$/.test(w.trim());
+            const isClue = (c) => typeof c === "string" && c.trim().length > 0;
 
-              if (!item.hidden) {
-                item.hidden = false;
-              }
-              // Push the modified entry to the global wordEntries array
-              wordEntries.push(item);
-            });
+            const processed = candidates
+              .filter(
+                (item) =>
+                  item &&
+                  isWord(item.wordText?.toUpperCase?.()) &&
+                  isClue(item.clue)
+              )
+              .map((item) => ({
+                id: "ws_" + Date.now() + "_" + Math.floor(Math.random() * 1000),
+                wordText: item.wordText.toUpperCase(),
+                clue: item.clue.trim(),
+                imageUrl: "",
+                hidden: false,
+              }));
 
-            // Update the cookie with the new entries
-            // Commented out UI update related to word entry rendering
-            ws_appendGeneratedContent(generatedContent);
-            // $("#ws-shuffle-button").click();
-            // Additional non-AI processing (e.g., saving grid data) is commented out:
+            if (!processed.length) {
+              throw new Error("No valid entries found in AI response");
+            }
+
+            processed.forEach((it) => wordEntries.push(it));
+            ws_appendGeneratedContent(processed);
+
+            // Save and notify
             let postStatus = $("#original_post_status").val();
             let postId = $("#post_ID").val();
             $.fn.updatePostAsDraft(postId, postStatus);
-            // wordsearch.updateHiddenFields();
             ws_saveWordSearchAjax();
             $(".kw-loading").hide();
             Swal.fire(
@@ -294,19 +358,20 @@ jQuery(document).ready(function ($) {
               "success"
             );
             $.fn.highlightPublishButton();
-          } catch (error) {
-            console.error("Error parsing response (wordsearch):", error);
+          } catch (err) {
+            console.error("Parse error:", err);
             $(".kw-loading").hide();
             Swal.fire(
               wordsearchScriptVar.wsStrings.errorTitle,
-              wordsearchScriptVar.wsStrings.errorMessage,
+              "Could not parse the response. Ensure the AI response follows the expected format.",
               "error"
             );
-            window.totalEntries -= newEntries; // Decrement total entries on error
+            window.totalEntries -= newEntries;
+          } finally {
+            $(generateButtonId)
+              .text(wordsearchScriptVar.wsGenerateWithAiText)
+              .prop("disabled", false);
           }
-          $(generateButtonId)
-            .text(wordsearchScriptVar.wsGenerateWithAiText)
-            .prop("disabled", false);
         },
         error: function (xhr, status, error) {
           console.error("API request error (wordsearch):", xhr.responseText);
@@ -315,7 +380,7 @@ jQuery(document).ready(function ($) {
             setTimeout(() => ws_sendRequest(retryCount - 1, count), 2000);
           } else {
             let errorMsg = "Failed to generate wordsearch. ";
-            errorMsg += xhr.responseJSON?.error?.message || "Error: " + error;
+            errorMsg += xhr.responseJSON?.error?.message || error;
             Swal.fire(
               wordsearchScriptVar.wsStrings.errorTitle,
               errorMsg,
@@ -329,8 +394,8 @@ jQuery(document).ready(function ($) {
       });
     }
 
-    // Start the request with a retry count of 3
-    ws_sendRequest(3, number);
+    // Start with up to 3 retries
+    ws_sendRequest(3, newEntries);
   });
 
   // Comment out non-AI function for saving grid data

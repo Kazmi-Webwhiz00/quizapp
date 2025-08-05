@@ -1,329 +1,386 @@
 .pf_user-name-prompt {
-    display: flex !important ;
-    flex-direction: column !important ; /* Arrange elements in a column */
-    align-items: center !important ; /* Center align all children */
-    max-width: 400px !important ; /* Limit the width */
-    margin: 0 auto 20px !important ; /* Center horizontally and add bottom margin */
-    padding: 40px  !important ; /* Add some padding */
-    background-color: #ffffff !important ; /* Background color */
-    border-radius: 8px !important ; /* Rounded corners */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important ; /* Subtle shadow */
-    border: 1px solid #e1e1e1 !important ; /* Light border */
+  display: flex !important ;
+  flex-direction: column !important ; /* Arrange elements in a column */
+  align-items: center !important ; /* Center align all children */
+  max-width: 400px !important ; /* Limit the width */
+  margin: 0 auto 20px !important ; /* Center horizontally and add bottom margin */
+  padding: 40px !important ; /* Add some padding */
+  background-color: #ffffff !important ; /* Background color */
+  border-radius: 8px !important ; /* Rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important ; /* Subtle shadow */
+  border: 1px solid #e1e1e1 !important ; /* Light border */
 }
 
 .pf_user-name-prompt label {
-    font-size: 18px !important ; /* Font size */
-    color: #333 !important ; /* Text color */
-    margin-bottom: 10px !important ; /* Margin below label */
+  font-size: 18px !important ; /* Font size */
+  color: #333 !important ; /* Text color */
+  margin-bottom: 10px !important ; /* Margin below label */
 }
 
 #pf_user-name-input {
-    width: 90% !important ; /* Full width */
-    padding: 12px !important ; /* Padding */
-    font-size: 16px !important ; /* Font size */
-    border: 2px solid #ddd !important ; /* Border */
-    border-radius: 4px !important ; /* Rounded corners */
-    margin-bottom: 15px !important ; /* Margin below the input */
-    transition: border-color 0.3s ease !important ; /* Transition for border on focus */
+  width: 90% !important ; /* Full width */
+  padding: 12px !important ; /* Padding */
+  font-size: 16px !important ; /* Font size */
+  border: 2px solid #ddd !important ; /* Border */
+  border-radius: 4px !important ; /* Rounded corners */
+  margin-bottom: 15px !important ; /* Margin below the input */
+  transition: border-color 0.3s ease !important ; /* Transition for border on focus */
 }
 
 #pf_user-name-input:focus {
-    border-color: #3b82f6 !important ; /* Blue border on focus */
-    outline: none !important ; /* Remove default outline */
-    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2) !important ; /* Subtle blue shadow */
+  border-color: #3b82f6 !important ; /* Blue border on focus */
+  outline: none !important ; /* Remove default outline */
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2) !important ; /* Subtle blue shadow */
 }
 
 #pf_submit-name-btn {
-    padding: 12px 20px !important ; /* Padding */
-    border-radius: 5px !important ; /* Rounded corners */
-    border: none !important ; /* No border */
-    cursor: pointer !important ; /* Pointer cursor */
-    font-size: 16px !important ; /* Font size */
-    background-color: #4CAF50 !important ; /* Button background */
-    color: white !important ; /* Text color */
-    transition: background-color 0.3s ease !important ; /* Transition on hover */
+  padding: 12px 20px !important ; /* Padding */
+  border-radius: 5px !important ; /* Rounded corners */
+  border: none !important ; /* No border */
+  cursor: pointer !important ; /* Pointer cursor */
+  font-size: 16px !important ; /* Font size */
+  background-color: #4caf50 !important ; /* Button background */
+  color: white !important ; /* Text color */
+  transition: background-color 0.3s ease !important ; /* Transition on hover */
 }
 
 #pf_submit-name-btn:hover {
-    background-color: #45a049 !important ; /* Darker green on hover */
+  background-color: #45a049 !important ; /* Darker green on hover */
 }
 
 .pf_report-card {
-    max-width: 700px !important ;
-    margin: 40px auto !important ;
-    padding: 20px !important ;
-    background: #ffffff !important ;
-    border-radius: 8px !important ;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important ;
-    border: 1px solid #e1e1e1 !important ;
-    text-align: center !important ;
+  max-width: 700px !important ;
+  margin: 40px auto !important ;
+  padding: 20px !important ;
+  background: #ffffff !important ;
+  border-radius: 8px !important ;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important ;
+  border: 1px solid #e1e1e1 !important ;
+  text-align: center !important ;
 }
 
 .pf_report-card h2 {
-    font-size: 28px !important ;
-    color: #0056b3 !important ;
-    margin-bottom: 20px !important ;
+  font-size: 28px !important ;
+  color: #0056b3 !important ;
+  margin-bottom: 20px !important ;
 }
 
 .pf_report-card p {
-    font-size: 18px !important ;
-    color: #333 !important ;
-    margin: 10px 0 !important ;
+  font-size: 18px !important ;
+  color: #333 !important ;
+  margin: 10px 0 !important ;
 }
 
 .pf_score-bar {
-    width: 100% !important ;
-    background-color: #f1f1f1 !important ;
-    height: 20px !important ;
-    border-radius: 10px !important ;
-    overflow: hidden !important ;
-    margin: 20px 0 !important ;
+  width: 100% !important ;
+  background-color: #f1f1f1 !important ;
+  height: 20px !important ;
+  border-radius: 10px !important ;
+  overflow: hidden !important ;
+  margin: 20px 0 !important ;
 }
 
 .pf_score-fill {
-    height: 100% !important ;
-    background-color: #4CAF50 !important ;
-    width: 0 !important ;
-    transition: width 0.4s ease !important ;
+  height: 100% !important ;
+  background-color: #4caf50 !important ;
+  width: 0 !important ;
+  transition: width 0.4s ease !important ;
 }
 
 #pf_retake-quiz-btn {
-    margin-top: 20px !important ;
-    padding: 12px 20px !important ;
-    border-radius: 5px !important ;
-    border: none !important ;
-    cursor: pointer !important ;
-    font-size: 16px !important ;
-    background-color: #4CAF50 !important ;
-    color: white !important ;
+  margin-top: 20px !important ;
+  padding: 12px 20px !important ;
+  border-radius: 5px !important ;
+  border: none !important ;
+  cursor: pointer !important ;
+  font-size: 16px !important ;
+  background-color: #4caf50 !important ;
+  color: white !important ;
 }
 
 #pf_quiz-container {
-    max-width: 700px !important ;
-    margin: 40px auto !important ;
-    padding: 20px !important ;
-    background: #ffffff !important ;
-    border-radius: 8px !important ;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important ;
-    border: 1px solid #e1e1e1 !important ;
-    display: flex !important ;
-    flex-direction: column !important ;
-    position: relative !important ; /* Keeps the structure intact */
-    height: auto !important ; /* Fixed height for the container */
+  max-width: 700px !important ;
+  margin: 40px auto !important ;
+  padding: 20px !important ;
+  background: #ffffff !important ;
+  border-radius: 8px !important ;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important ;
+  border: 1px solid #e1e1e1 !important ;
+  display: flex !important ;
+  flex-direction: column !important ;
+  position: relative !important ; /* Keeps the structure intact */
+  height: auto !important ; /* Fixed height for the container */
 }
 
 .pf_quiz-header {
-    display: flex !important ;
-    flex-direction: column !important ;
-    align-items: center !important ;
-    margin-bottom: 20px !important ;
-    background-color: #ffffff !important ;
-    z-index: 2 !important ;
+  display: flex !important ;
+  flex-direction: column !important ;
+  align-items: center !important ;
+  margin-bottom: 20px !important ;
+  background-color: #ffffff !important ;
+  z-index: 2 !important ;
 }
 
 #pf_question-container {
-    overflow-y: hidden !important ; /* Always show the scrollbar */
-    flex-grow: 1 !important ; /* Allow the middle content to grow */
-    min-height: 300px !important ; /* Minimum height for content area */
-    max-height: calc(100% - 150px) !important ; /* Adjust to avoid overlapping header and footer */
-    padding: 10px !important ; /* Padding for content */
-    outline: none !important ; /* Remove focus outline */
+  overflow-y: hidden !important ; /* Always show the scrollbar */
+  flex-grow: 1 !important ; /* Allow the middle content to grow */
+  min-height: 300px !important ; /* Minimum height for content area */
+  max-height: calc(
+    100% - 150px
+  ) !important ; /* Adjust to avoid overlapping header and footer */
+  padding: 10px !important ; /* Padding for content */
+  outline: none !important ; /* Remove focus outline */
 }
 
 /* Custom Scrollbar for WebKit-based browsers (Chrome, Safari, Edge) */
 #pf_question-container::-webkit-scrollbar {
-    width: 12px !important ; /* Width of the vertical scrollbar */
+  width: 12px !important ; /* Width of the vertical scrollbar */
 }
 
 #pf_question-container::-webkit-scrollbar-track {
-    background: #f1f1f1 !important ; /* Track color */
-    border-radius: 10px !important ; /* Rounded track */
+  background: #f1f1f1 !important ; /* Track color */
+  border-radius: 10px !important ; /* Rounded track */
 }
 
 #pf_question-container::-webkit-scrollbar-thumb {
-    background-color: #3b82f6 !important ; /* Thumb color */
-    border-radius: 10px !important ; /* Rounded scrollbar thumb */
-    border: 3px solid #f1f1f1 !important ; /* Padding around thumb */
-    transition: background-color 0.3s ease !important ; /* Smooth transition for hover effect */
+  background-color: #3b82f6 !important ; /* Thumb color */
+  border-radius: 10px !important ; /* Rounded scrollbar thumb */
+  border: 3px solid #f1f1f1 !important ; /* Padding around thumb */
+  transition: background-color 0.3s ease !important ; /* Smooth transition for hover effect */
 }
 
 #pf_question-container::-webkit-scrollbar-thumb:hover {
-    background-color: #0056b3 !important ; /* Darker color on hover */
+  background-color: #0056b3 !important ; /* Darker color on hover */
 }
 
 /* Updated styles for the answer text area */
 .pf_answer-textarea {
-    min-height: 230px !important ;
-    width: 100% !important ;
-    padding: 15px !important ;
-    font-size: 16px !important ;
-    border: 2px solid #ddd !important ;
-    border-radius: 8px !important ;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important ;
-    margin-bottom: 20px !important ;
-    resize: vertical !important ; /* Allow vertical resizing */
-    transition: border-color 0.3s ease, box-shadow 0.3s ease !important ;
+  min-height: 230px !important ;
+  width: 100% !important ;
+  padding: 15px !important ;
+  font-size: 16px !important ;
+  border: 2px solid #ddd !important ;
+  border-radius: 8px !important ;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important ;
+  margin-bottom: 20px !important ;
+  resize: vertical !important ; /* Allow vertical resizing */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease !important ;
 }
 
 .pf_answer-textarea:focus {
-    border-color: #3b82f6 !important ; /* Blue border on focus */
-    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2) !important ; /* Subtle blue shadow */
-    outline: none !important ; /* Remove default outline */
+  border-color: #3b82f6 !important ; /* Blue border on focus */
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2) !important ; /* Subtle blue shadow */
+  outline: none !important ; /* Remove default outline */
 }
 
 .pf_quiz-container {
-    max-width: 700px !important ;
-    margin: 40px auto !important ;
-    padding: 20px !important ;
-    background: #ffffff !important ;
-    border-radius: 8px !important ;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important ;
-    border: 1px solid #e1e1e1 !important ;
+  max-width: 700px !important ;
+  margin: 40px auto !important ;
+  padding: 20px !important ;
+  background: #ffffff !important ;
+  border-radius: 8px !important ;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important ;
+  border: 1px solid #e1e1e1 !important ;
 }
 
 .pf_quiz-header {
-    display: flex !important ;
-    flex-direction: column !important ;
-    align-items: center !important ;
-    margin-bottom: 20px !important ;
+  display: flex !important ;
+  flex-direction: column !important ;
+  align-items: center !important ;
+  margin-bottom: 20px !important ;
 }
 
 .pf_quiz-title {
-    font-size: 24px !important ;
-    color: #0056b3 !important ;
-    margin-bottom: 10px !important ;
+  font-size: 24px !important ;
+  color: #0056b3 !important ;
+  margin-bottom: 10px !important ;
 }
 
 .pf_progress-bar {
-    width: 100% !important ;
-    background-color: #f1f1f1 !important ;
-    height: 8px !important ;
-    border-radius: 4px !important ;
-    overflow: hidden !important ;
-    margin: 10px 0 !important ;
+  width: 100% !important ;
+  background-color: #f1f1f1 !important ;
+  height: 8px !important ;
+  border-radius: 4px !important ;
+  overflow: hidden !important ;
+  margin: 10px 0 !important ;
 }
 
 .pf_progress {
-    height: 100%  ;
-    background-color: #4CAF50  ;
-    width: 0%  ;
-    transition: width 0.4s ease  !important;
+  height: 100%;
+  background-color: #4caf50;
+  width: 0%;
+  transition: width 0.4s ease !important;
 }
 
 .pf_quiz-info {
-    margin-top: 10px !important ;
-    font-size: 14px !important ;
-    color: #666 !important ;
+  margin-top: 10px !important ;
+  font-size: 14px !important ;
+  color: #666 !important ;
 }
 
 .pf_question-container {
-    margin: 20px 0 !important ;
+  margin: 20px 0 !important ;
 }
 
 .pf_question-header {
-    text-align: center !important ;
-    margin-bottom: 20px !important ;
+  text-align: center !important ;
+  margin-bottom: 20px !important ;
 }
 
 .pf_question-header h3 {
-    font-size: 20px !important ;
-    color: #333 !important ;
-    margin-bottom: 10px !important ;
+  font-size: 20px !important ;
+  color: #333 !important ;
+  margin-bottom: 10px !important ;
 }
 
 .pf_question-image {
-    max-width: 350px !important ; /* Make the image smaller */
-    height: auto !important ;
-    max-height: 350px !important ;
-    margin: 10px 0 !important ;
-    border-radius: 4px !important ;
-    display: block !important ; /* Center the image */
-    margin-left: auto !important ;
-    margin-right: auto !important ;
-    object-fit: contain !important ;
+  max-width: 350px !important ; /* Make the image smaller */
+  height: auto !important ;
+  max-height: 350px !important ;
+  margin: 10px 0 !important ;
+  border-radius: 4px !important ;
+  display: block !important ; /* Center the image */
+  margin-left: auto !important ;
+  margin-right: auto !important ;
+  object-fit: contain !important ;
 }
 .pf_answers-container {
-    display: flex !important ;
-    flex-wrap: wrap !important ; /* Enable wrapping to allow multiple rows */
-    justify-content: space-between !important ; /* Space between the boxes */
-    gap: 10px !important ; /* Add gap between rows and columns */
-    width: 100% !important ; /* Ensure full width */
-    max-width: 700px !important ; /* Limit the container width */
-    margin: 0 auto !important ; /* Center the container */
+  display: flex !important ;
+  flex-wrap: wrap !important ; /* Enable wrapping to allow multiple rows */
+  justify-content: space-between !important ; /* Space between the boxes */
+  gap: 10px !important ; /* Add gap between rows and columns */
+  width: 100% !important ; /* Ensure full width */
+  max-width: 700px !important ; /* Limit the container width */
+  margin: 0 auto !important ; /* Center the container */
 }
 
 .pf_answer-option {
-    flex: 0 0 48% !important ; /* Allow 2 boxes per row by setting 48% width */
-    max-width: 48% !important ; /* Max width to ensure 2 per row */
-    box-sizing: border-box !important ; /* Ensure padding and border are included in width */
-    padding: 15px !important ;
-    display: flex !important ;
-    flex-direction: column !important ; /* Image on top, text underneath */
-    align-items: center !important ;
-    text-align: center !important ;
-    border: 2px solid #d3d3d3 !important ;
-    border-radius: 8px !important ;
-    cursor: pointer !important ;
-    transition: all 0.3s ease !important ;
-    margin-bottom: 10px !important ; /* Space between rows */
+  flex: 0 0 48% !important ; /* Allow 2 boxes per row by setting 48% width */
+  max-width: 48% !important ; /* Max width to ensure 2 per row */
+  box-sizing: border-box !important ; /* Ensure padding and border are included in width */
+  padding: 15px !important ;
+  display: flex !important ;
+  flex-direction: column !important ; /* Image on top, text underneath */
+  align-items: center !important ;
+  text-align: center !important ;
+  border: 2px solid #d3d3d3 !important ;
+  border-radius: 8px !important ;
+  cursor: pointer !important ;
+  transition: all 0.3s ease !important ;
+  margin-bottom: 10px !important ; /* Space between rows */
 }
 
 .pf_answer-option:hover {
-    border-color: #3b82f6 !important ;
+  border-color: #3b82f6 !important ;
 }
 
 .pf_answer-option.correct {
-    border-color: #4CAF50 !important ;
-    background-color: #e8f5e9 !important ;
+  border-color: #4caf50 !important ;
+  background-color: #e8f5e9 !important ;
 }
 
 .pf_answer-option.incorrect {
-    border-color: #f44336 !important ;
-    background-color: #ffebee !important ;
+  border-color: #f44336 !important ;
+  background-color: #ffebee !important ;
 }
 
 .pf_answer-option.selected {
-    border-color: #3b82f6 !important ;
-    background-color: #e0f0ff !important ;
+  border-color: #3b82f6 !important ;
+  background-color: #e0f0ff !important ;
 }
 
 .pf_answer-option img.pf_answer-image {
-    max-width: 250px !important ;
-    max-height: 250px !important ;
-    margin-bottom: 10px !important ; /* Space between image and text */
+  max-width: 250px !important ;
+  max-height: 250px !important ;
+  margin-bottom: 10px !important ; /* Space between image and text */
 }
 
 .pf_button {
-    padding: 12px 20px !important ;
-    border-radius: 5px !important ;
-    border: none !important ;
-    cursor: pointer !important ;
-    font-size: 16px !important ;
+  padding: 12px 20px !important ;
+  border-radius: 5px !important ;
+  border: none !important ;
+  cursor: pointer !important ;
+  font-size: 16px !important ;
 }
 
 .pf_button-primary {
-    background-color: #4CAF50 !important ;
-    color: white !important ;
+  background-color: #4caf50 !important ;
+  color: white !important ;
 }
 
 .pf_button-secondary {
-    background-color: #ddd !important ;
-    color: #333 !important ;
+  background-color: #ddd !important ;
+  color: #333 !important ;
 }
 
 .pf_button[disabled] {
-    background-color: #ccc !important ;
-    cursor: not-allowed !important ;
-    color: #666 !important ;
+  background-color: #ccc !important ;
+  cursor: not-allowed !important ;
+  color: #666 !important ;
 }
-@media(max-width:480px){
-    .pf_answer-option{
-        max-width: 44%  !important ;
-    }
-    .pf_answer-option img.pf_answer-image{
-        max-width: 130px !important ;
-        max-height: 110px !important ;
-        padding: 0px 10px !important ;
-    }
+@media (max-width: 480px) {
+  .pf_answer-option {
+    max-width: 44% !important ;
+  }
+  .pf_answer-option img.pf_answer-image {
+    max-width: 130px !important ;
+    max-height: 110px !important ;
+    padding: 0px 10px !important ;
+  }
 }
 
+#pf_quiz-container {
+  position: relative;
+}
+
+/* 2. Style the fullscreen toggle button: */
+.fullscreen-toggle {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 32px;
+  height: 32px;
+  padding: 4px;
+  background: rgba(0, 0, 0, 0.4);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* when you’ve added your “fullscreen” helper class */
+#pf_quiz-container.fullscreen {
+  /* old Firefox */
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  overflow: auto !important; /* allow scrolling if content exceeds */
+  z-index: 9999; /* sit above everything */
+}
+
+/* Optional hover effect */
+.fullscreen-toggle:hover {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+/* If you want to swap to an “exit fullscreen” icon, you can use :fullscreen on the container: */
+#pf_quiz-container:fullscreen .fullscreen-toggle svg.switch-to-fullscreen {
+  display: none;
+}
+#pf_quiz-container:fullscreen .fullscreen-toggle svg.switch-to-exit {
+  display: block;
+}
+#pf_quiz-container:not(:fullscreen) .fullscreen-toggle svg.switch-to-exit {
+  display: none;
+}
+
+#pf_quiz-container.fullscreen #pf_question-container {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+}

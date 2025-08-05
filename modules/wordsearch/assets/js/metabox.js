@@ -278,7 +278,7 @@ jQuery(document).ready(function ($) {
   // Handler for "Clear List" button click.
   $("#clear-wordsearch-list-button").on("click", function (e) {
     e.preventDefault();
-    if (confirm("Are you sure you want to clear the list?")) {
+    if (confirm(entryLimit.clearListBodyText)) {
       wordsContainer.empty();
       wordEntries = [];
       window.totalEntries = 0;
@@ -305,8 +305,8 @@ jQuery(document).ready(function ($) {
 
       const customUploader = wp
         .media({
-          title: "Select Image",
-          button: { text: "Use this image" },
+          title: entryLimit.selectImageTitle,
+          button: { text: entryLimit.useImageText },
           multiple: false,
         })
         .on("select", function () {

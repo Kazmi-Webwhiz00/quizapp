@@ -40,6 +40,9 @@ function wordsearch_meta_box_callback($post) {
     $email_color = get_option('wordsearch_share_email_button_color', '#007BFF');
     $email_font_size = get_option('wordsearch_share_email_button_font_size', '16');
 
+    $email_subject = esc_html(get_option('wordsearch_share_email_subject', __('New Wordsearch Available', 'wp-quiz-plugin')));
+    $email_body = esc_html(get_option('wordsearch_share_email_body', __('Hello,\n\nCheck out this new wordsearch:\n\n[URL]\n\nBest regards,', 'wp-quiz-plugin')));
+
 
         
 

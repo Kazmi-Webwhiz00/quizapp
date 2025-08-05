@@ -25,6 +25,9 @@ function enqueue_style_script( $hook ) {
     // Entry Limit Popup
     $default_entry_limit_popup_title     = __( "Entry Limit Reached", 'wp-quiz-plugin' );
     $default_entry_limit_popup_body_text = __( "You cannot add more than 15 entries to the word search.", 'wp-quiz-plugin' );
+    $clear_list_body_text               = __( "Are you sure you want to clear the list?", 'wp-quiz-plugin' );
+    $add_question_with_ai_text =  __("Add Question with AI", 'wp-quiz-plugin');
+    $forget_warning_msg                 = __("Don't forget to save! Your changes may be lost.", 'wp-quiz-plugin');
     $entry_limit_popup_title             = get_option( 'kw_wordsearch_entry_limit_popup_title', $default_entry_limit_popup_title );
     $entry_limit_popup_body_text         = get_option( 'kw_wordsearch_entry_limit_popup_body_text', $default_entry_limit_popup_body_text );
     
@@ -42,6 +45,11 @@ function enqueue_style_script( $hook ) {
         wp_localize_script( 'custom-admin-js', 'entryLimit', array(
             'entryLimitTitle'    => $entry_limit_popup_title,
             'entryLimitBodyText' => $entry_limit_popup_body_text,
+            'clearListBodyText' => $clear_list_body_text,
+            'selectImageTitle' => esc_js( esc_html__( 'Select Image', 'wp-quiz-plugin' ) ),
+            'useImageText'     => esc_js( esc_html__( 'Use this image', 'wp-quiz-plugin' ) ),
+            'forgetWarningMsg'   => $forget_warning_msg,
+            'addQuestionWithAI' => $add_question_with_ai_text,
         ) );
     }
 }
@@ -49,6 +57,8 @@ add_action( 'admin_enqueue_scripts', 'enqueue_style_script' );
 
 
 function wordsearch_enqueue_assets() {
+    global $post;
+    $post_type = get_post_type($post);
 
         // Fetch the filled cell background color with a default value
         $grid_even_cell_bg_color = get_option('kw_grid_even_cell_bg_color', '#ecd8b3');
@@ -86,6 +96,27 @@ function wordsearch_enqueue_assets() {
         $gridFindWordsLabel = get_option('kw_find_words_label', $default_find_words_label);
         $showImagesLabel = __('Show Images', 'wp-quiz-plugin');
         $hideImagesLabel = __('Hide Images', 'wp-quiz-plugin');
+        $quizQuestionsLabel = __('Quiz Questions', 'wp-quiz-plugin');
+        $openText = __('Open Text', 'wp-quiz-plugin');
+        $trueFalseText = __('True/False', 'wp-quiz-plugin');
+        $multipleChoiceText = __('Multiple Choice', 'wp-quiz-plugin');
+        $quizAiModalTitle = __('Enter your prompt for ChatGPT:', 'wp-quiz-plugin');
+        $quizAiModalBody = __('Enter your prompt below:', 'wp-quiz-plugin');
+        $quizAiModalTagsTitle = __('Selected Related Tags below:', 'wp-quiz-plugin');
+        $quizAiModalPromptPlaceholder = __('Type your prompt here...', 'wp-quiz-plugin');
+        $uploadImagesText = __('Upload Image', 'wp-quiz-plugin');
+        $uploadImagesText = __('Upload PDF', 'wp-quiz-plugin');
+        $uploadImagesLabel = __('Upload Image(s):', 'wp-quiz-plugin');
+        $uploadPdfLabel = __('Upload PDF(s):', 'wp-quiz-plugin');
+        $uploadPdfButtonLabel = __('Choose PDFs', 'wp-quiz-plugin');
+        $chooseImagesLabel = __('Choose Images:', 'wp-quiz-plugin');
+        $noImageLabel = __('No images chosen', 'wp-quiz-plugin');
+        $noPdfLabel = __('No PDFs chosen', 'wp-quiz-plugin');
+        $noFilesSelectedLabel = __('No files selected', 'wp-quiz-plugin');
+        $generateByTextLabel = __('Provide Text to Generate Questions:', 'wp-quiz-plugin');
+        $onlyOnePdfText = __('Please remove your existing PDF before uploading a new one.', 'wp-quiz-plugin');
+        $onlyFourImagesText = __("You can only upload a maximum of 4 images.", 'wp-quiz-plugin');
+
         // Word List Text Settings
         $default_word_text_font_size = 14.4;
         $default_word_text_font_color = '#4a5568';
@@ -121,6 +152,7 @@ function wordsearch_enqueue_assets() {
         ));
 
     // Enqueue the frontend JS.
+    if( $post && $post_type === 'wordsearch' ) {
     wp_enqueue_script(
         'wordsearch-grid',
         plugin_dir_url(__FILE__) . '/assets/js/index.js',
@@ -128,6 +160,7 @@ function wordsearch_enqueue_assets() {
         '1.0' . time(),
         true
     );
+}
     wp_script_add_data( 'wordsearch-grid', 'type', 'module' );
 
         // Pass plugin URL to JavaScript
@@ -198,6 +231,31 @@ function wordsearch_enqueue_assets() {
     }
 }
 add_action( 'wp_enqueue_scripts', 'wordsearch_enqueue_assets' );
+
+// 1) Add the column header
+add_filter( 'manage_posts_columns', 'add_author_name_column' );
+function add_author_name_column( $columns ) {
+    // Insert after the title column:
+    $new = [];
+    foreach ( $columns as $key => $label ) {
+        $new[ $key ] = $label;
+        if ( 'title' === $key ) {
+            $new['post_author_name'] = __( 'Author', 'wp-quiz-plugin' );
+        }
+    }
+    return $new;
+}
+
+// 2) Render the column’s contents
+add_action( 'manage_posts_custom_column', 'render_author_name_column', 10, 2 );
+function render_author_name_column( $column, $post_id ) {
+    if ( 'post_author_name' === $column ) {
+        $author_id   = get_post_field( 'post_author', $post_id );
+        $author_name = get_the_author_meta( 'display_name', $author_id );
+        echo esc_html( $author_name );
+    }
+}
+
 
 // Save the meta box data.
 function save_wordsearch_meta_box_data( $post_id ) {

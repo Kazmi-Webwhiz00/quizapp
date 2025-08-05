@@ -113,37 +113,97 @@ function generate_crossword_pdf_callback() {
     $pdf->Ln(10);
 
     // Function to render clues (both Across and Down)
-    function render_clues($pdf, $clues, $title) {
-        $pdf->SetFont('dejavusans', 'B', 14);
-        $pdf->Cell(0, 10, $title, 0, 1, 'L');
-        $pdf->SetFont('dejavusans', '', 12);
-
-        foreach ($clues as $clueData) {
-            $clueNumber = htmlspecialchars($clueData['clueNumber']);
-            $clueText = htmlspecialchars($clueData['clueText']);
-            $clueImage = $clueData['clueImage'];
-            $rowWidth = !empty($clueImage) ? 70 : 100;
-            $html = '<table cellpadding="1" cellspacing="0" style="width: 100%; margin-bottom: 10px;">';
-            $html .= '<tr>';
-            $html .= '<td style="width:'. $rowWidth .'%; background-color: #E8E8E8; padding: 8px;"><strong>' . $clueNumber . '.</strong> ' . $clueText . '</td>';
-
-            if (!empty($clueImage)) {
-                $imagePath = $clueImage;
-                if (strpos($clueImage, home_url()) !== false) {
-                    $imagePath = str_replace(home_url('/'), ABSPATH, $clueImage);
-                } elseif (strpos($clueImage, '/') === 0) {
-                    $imagePath = ABSPATH . ltrim($clueImage, '/');
-                }
-
-                $html .= '<td style="width: 30%; text-align: center; padding: 8px; background-color: #E8E8E8;">';
-                $html .= '<img src="' . htmlspecialchars($imagePath) . '" style="width: 50px; height: 50px;" />';
-                $html .= '</td>';
-            } else {
-                $html .= '<td style="width: 30%;"></td>';
+    function render_clues( $pdf, $clues, $title ) {
+        // Disable TCPDF's auto page-break: we'll manage it manually
+        $pdf->SetAutoPageBreak( false, 0 );
+    
+        // Draw the section heading
+        $pdf->SetFont( 'dejavusans', 'B', 14 );
+        $pdf->Cell( 0, 10, $title, 0, 1, 'L' );
+        $pdf->SetFont( 'dejavusans', '', 12 );
+    
+        // Page dimensions & bottom‐of‐content limit
+        $margins      = $pdf->getMargins();
+        $pageW        = $pdf->getPageWidth()  - $margins['left'] - $margins['right'];
+        $pageH        = $pdf->getPageHeight();
+        $footerH      = $margins['bottom'];        // matches your SetFooterMargin(10)
+        $safetyGap    = 2;                         // mm cushion above footer
+        $bottomLimit  = $pageH - $footerH - $safetyGap;
+    
+        // Style constants
+        $bgR     = 232; $bgG = 232; $bgB = 232;   // #E8E8E8 background
+        $padding = 2;                             // mm inside each cell
+        $imgSize = 18;                            // mm square for any image
+        $rowGap  = 4;                             // mm between rows
+    
+        foreach ( $clues as $clue ) {
+            $num = htmlspecialchars( $clue['clueNumber'] );
+            $txt = htmlspecialchars( $clue['clueText'] );
+            $src = $clue['clueImage'];
+    
+            // Resolve the image path on disk
+            $path = $src;
+            if ( strpos( $src, home_url() ) !== false ) {
+                $path = str_replace( home_url('/'), ABSPATH, $src );
+            } elseif ( strpos( $src, '/' ) === 0 ) {
+                $path = ABSPATH . ltrim( $src, '/' );
             }
-
-            $html .= '</tr></table>';
-            $pdf->writeHTML($html, true, false, false, false, '');
+            $hasImage = ! empty( $path ) && file_exists( $path );
+    
+            // Compute column widths
+            $wText = $hasImage ? $pageW * 0.70 : $pageW;
+            $wImg  = $hasImage ? $pageW * 0.30 : 0;
+    
+            // Determine this row's height:
+            if ( $hasImage ) {
+                // fixed height = image + padding top/bottom
+                $rowH = $imgSize + ( $padding * 2 );
+            } else {
+                // measure just the text block height, then add padding
+                $textBlock   = "{$num}. {$txt}";
+                $textWidth   = $wText - ( $padding * 2 );
+                $textHeight  = $pdf->getStringHeight( $textWidth, $textBlock );
+                $rowH        = $textHeight + ( $padding * 2 );
+            }
+    
+            // Manual page‐break: if this row won't fit, start a new page
+            if ( $pdf->GetY() + $rowH > $bottomLimit ) {
+                $pdf->AddPage();
+            }
+    
+            // Save origin
+            $x = $pdf->GetX();
+            $y = $pdf->GetY();
+    
+            // Draw gray backgrounds
+            $pdf->SetFillColor( $bgR, $bgG, $bgB );
+            $pdf->Rect( $x,          $y, $wText, $rowH, 'F' );
+            if ( $hasImage ) {
+                $pdf->Rect( $x+$wText, $y, $wImg,  $rowH, 'F' );
+            }
+    
+            // Draw the clue text (vertically centered)
+            $pdf->SetXY( $x + $padding, $y + $padding );
+            $pdf->MultiCell(
+                $wText - 2*$padding,
+                $rowH  - 2*$padding,
+                "{$num}. {$txt}",
+                0, 'L',
+                false, 0,
+                '', '',
+                true, 0, false, true,
+                0, 'M'
+            );
+    
+            // Draw the image (if present), centered in its 30% cell
+            if ( $hasImage ) {
+                $imgX = $x + $wText + ( ( $wImg - $imgSize ) / 2 );
+                $imgY = $y + $padding;
+                $pdf->Image( $path, $imgX, $imgY, $imgSize, $imgSize, '', '', '', false, 300 );
+            }
+    
+            // Advance down by this row's height + gap
+            $pdf->SetXY( $x, $y + $rowH + $rowGap );
         }
     }
 
