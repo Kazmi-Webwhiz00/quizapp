@@ -1,0 +1,457 @@
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  background: white;
+  padding: 24px;
+  border-radius: 12px;
+}
+
+/* Upload Section Styles */
+.upload-section {
+  margin-bottom: 24px;
+}
+
+.upload-section label {
+  font-family: "Noto Sans", sans-serif !important;
+  display: block;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #1f2937;
+  font-size: 15px;
+  letter-spacing: -0.025em;
+}
+
+.upload-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.upload-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  border: none;
+  color: white;
+  padding: 12px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.2),
+    0 2px 4px -1px rgba(16, 185, 129, 0.06);
+  position: relative;
+  overflow: hidden;
+}
+
+.upload-btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.5s;
+}
+
+.upload-btn:hover::before {
+  left: 100%;
+}
+
+.upload-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -3px rgba(16, 185, 129, 0.3),
+    0 4px 6px -2px rgba(16, 185, 129, 0.05);
+}
+
+.upload-btn:active {
+  transform: translateY(0);
+  transition: transform 0.1s;
+}
+
+.upload-btn.has-files {
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.2),
+    0 2px 4px -1px rgba(59, 130, 246, 0.06);
+}
+
+.upload-btn.has-files:hover {
+  box-shadow: 0 10px 25px -3px rgba(59, 130, 246, 0.3),
+    0 4px 6px -2px rgba(59, 130, 246, 0.05);
+}
+
+.upload-status {
+  font-family: "Noto Sans", sans-serif !important;
+  font-size: 13px;
+  color: #6b7280;
+  flex: 1;
+  font-weight: 500;
+}
+
+.upload-counter {
+  font-size: 12px;
+  color: #065f46;
+  font-weight: 700;
+  background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+  padding: 4px 12px;
+  border-radius: 20px;
+  border: 1px solid #6ee7b7;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* File Preview Styles */
+.file-preview-container {
+  font-family: "Noto Sans", sans-serif !important;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+  gap: 12px;
+  margin: 16px 0;
+  max-height: 200px;
+  overflow-y: auto;
+  padding: 8px;
+  background: #f8fafc;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.file-preview-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.file-preview-container::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 3px;
+}
+
+.file-preview-container::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+.file-preview-container::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+.file-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 70px;
+  height: 70px;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 8px;
+  background: #ffffff;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  cursor: pointer;
+}
+
+.file-item:hover {
+  border-color: #3b82f6;
+  box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.1),
+    0 4px 6px -2px rgba(59, 130, 246, 0.05);
+  transform: translateY(-4px) scale(1.02);
+}
+
+.file-item img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.file-item:hover img {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.file-item .file-icon {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+  border-radius: 10px;
+  margin-bottom: 6px;
+  box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.2);
+  transition: all 0.3s ease;
+}
+
+.file-item:hover .file-icon {
+  transform: scale(1.1);
+  box-shadow: 0 6px 10px -1px rgba(239, 68, 68, 0.3);
+}
+
+.file-name {
+  font-size: 10px;
+  text-align: center;
+  max-width: 65px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #4b5563;
+  font-weight: 600;
+  margin-top: 4px;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 2px 6px;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+}
+
+.file-remove {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 22px;
+  height: 22px;
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+  border: 2px solid white;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.3),
+    0 2px 4px -1px rgba(239, 68, 68, 0.06);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 10;
+}
+
+.file-remove:hover {
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+  transform: scale(1.15);
+  box-shadow: 0 6px 10px -1px rgba(239, 68, 68, 0.4),
+    0 2px 4px -1px rgba(239, 68, 68, 0.1);
+}
+
+.file-remove:active {
+  transform: scale(1.05);
+}
+
+/* Progress and Processing Styles */
+.progress-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 70px;
+  height: 70px;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.progress-ring-circle {
+  fill: transparent;
+  stroke: #3b82f6;
+  stroke-width: 3;
+  stroke-dasharray: 220;
+  stroke-dashoffset: 220;
+  transform-origin: 50% 50%;
+  transform: rotate(-90deg);
+  animation: progress-spin 2s ease-in-out infinite;
+  filter: drop-shadow(0 2px 4px rgba(59, 130, 246, 0.3));
+}
+
+@keyframes progress-spin {
+  0% {
+    stroke-dashoffset: 220;
+    transform: rotate(-90deg);
+  }
+  50% {
+    stroke-dashoffset: 55;
+    transform: rotate(270deg);
+  }
+  100% {
+    stroke-dashoffset: 220;
+    transform: rotate(630deg);
+  }
+}
+
+.processing-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(4px);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 4;
+}
+
+#kw_ocrspace-results {
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border: 1px solid #cbd5e1;
+  padding: 20px;
+  margin-top: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  position: relative;
+  overflow: hidden;
+}
+
+#kw_ocrspace-results::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #3b82f6, #10b981, #8b5cf6);
+  border-radius: 12px 12px 0 0;
+}
+
+#kw_ocrspace-results pre {
+  white-space: pre-wrap;
+  font-size: 14px;
+  color: #1f2937;
+  font-family: "SF Mono", "Monaco", "Inconsolata", "Roboto Mono", monospace;
+  line-height: 1.6;
+  margin: 0;
+  background: white;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* Smooth animations for file additions */
+.file-item {
+  animation: slideInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Enhanced focus states for accessibility */
+.upload-btn:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+.file-remove:focus-visible {
+  outline: 2px solid #ef4444;
+  outline-offset: 2px;
+}
+
+/* Empty state styling */
+.file-preview-container:empty::after {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9ca3af;
+  font-size: 13px;
+  font-style: italic;
+  height: 80px;
+  grid-column: 1 / -1;
+}
+
+/* 1) allow the toggle button in your quiz box */
+#quiz_questions_meta_box {
+  position: relative;
+}
+
+/* 2) your custom toggle button */
+.fullscreen-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: #0073aa;
+  color: #fff;
+  border: none;
+  border-radius: 3px;
+  padding: 6px 8px;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  z-index: 1000;
+  transition: all 0.2s ease;
+}
+.fullscreen-btn:hover {
+  background: #005a87;
+  transform: scale(1.05);
+}
+.fullscreen-btn:focus {
+  outline: 2px solid #005a87;
+  outline-offset: 2px;
+}
+
+/* 3) full‑screen styles on the quiz box itself */
+#quiz_questions_meta_box.fullscreen-active {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  margin: 0 !important;
+  padding: 20px !important;
+  background: #fff !important;
+  z-index: 99999 !important;
+  overflow: auto !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 4) stick the header inside the box */
+#quiz_questions_meta_box.fullscreen-active .postbox-header,
+#quiz_questions_meta_box.fullscreen-active .hndle,
+#quiz_questions_meta_box.fullscreen-active .handlediv {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 1001 !important;
+  background: #fff !important;
+  border-bottom: 1px solid #ddd !important;
+  margin: 0 !important;
+}
+
+/* 5) hide *everything else* on the page when full‑screened
+      (our box is a direct child of body at that point) */
+body.quiz-fullscreen-mode > *:not(#quiz_questions_meta_box),
+body.quiz-fullscreen-mode #adminmenuwrap,
+body.quiz-fullscreen-mode #wpadminbar {
+  display: none !important;
+}
+
+/* 6) prevent the body itself from scrolling underneath */
+body.quiz-fullscreen-mode {
+  overflow: hidden !important;
+}
+
+/* 7) gentle transitions */
+#quiz_questions_meta_box,
+#kw_quiz-questions-container {
+  transition: all 0.2s ease;
+}
