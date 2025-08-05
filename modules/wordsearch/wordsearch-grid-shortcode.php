@@ -1,4 +1,24 @@
 <?php
+
+add_action( 'wp_enqueue_scripts', 'frontend_preview_assets' ); 
+// Enqueue frontend assets for the WordSearch grid.
+function frontend_preview_assets() {
+  global $post;
+  if ($post) {
+    $post_type = get_post_type($post);
+    if( $post_type === 'wordsearch') {
+      // Enqueue styles and scripts only for the WordSearch post type
+      wp_enqueue_script(
+        'fullscreen-wordsearch-grid',
+        plugin_dir_url(__FILE__) . '/assets/js/fullscreen.js',
+        array('jquery'),
+        '1.0' . time(),
+        true
+    );
+    }
+}
+}
+
 // Shortcode function to display the WordSearch game on the frontend
 
 function showWordLimitModal(){
@@ -73,6 +93,17 @@ $title = get_the_title( $post );
   <button id="downloadButton" class="control-button kw-grid-download-button">
       <span class="button-icon">📥</span>
       <span class="button-text"><?php echo esc_html__($downloadPdfLabel); ?></span>
+    </button>
+
+    <button class="fullscreen-toggle" aria-label="Toggle full screen">
+    <!-- fullscreen icon -->
+    <svg class="switch-to-fullscreen" width="20" height="20" viewBox="0 0 24 24">
+    <path d="M7 14H5v5h5v-2H7v-3zm0-4h2V7h3V5H7v5zm10 4h2v3h-3v2h5v-5zm-3-9v2h3v3h2V5h-5z"/>
+    </svg>
+    <!-- exit‑fullscreen icon (hidden by default) -->
+    <svg class="switch-to-exit" width="20" height="20" viewBox="0 0 24 24">
+    <path d="M5 16h3v3h2v-5H5v2zm11 3h3v-3h-2v2h-3v2zm3-11v5h2V5h-5v2h3zm-9 0V5H5v5h2V7h3z"/>
+    </svg>
     </button>
 </div>
   
