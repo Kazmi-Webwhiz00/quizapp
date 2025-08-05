@@ -162,6 +162,7 @@ h3 {
   display: inline-block;
   order: 1;
   flex: 1;
+  z-index: 0;
 }
 
 .game-title::after {
@@ -1460,10 +1461,10 @@ canvas {
 }
 
 /* 2. Style the fullscreen toggle button: */
-.fullscreen-toggle {
+.game-header .fullscreen-toggle {
   position: absolute;
-  top: 8px;
-  right: 8px;
+  top: 0px;
+  right: 0px;
   width: 32px;
   height: 32px;
   padding: 4px;
@@ -1474,6 +1475,7 @@ canvas {
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 1;
 }
 
 /* when you’ve added your “fullscreen” helper class */
