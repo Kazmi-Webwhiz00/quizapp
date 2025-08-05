@@ -646,7 +646,7 @@ function display_questions_meta_box($post) {
                 </div>
                 <?php endforeach; ?>
                 <?php endif; ?>
-            </div>
+            <!-- </div> -->
         </div>
         </div>
 
