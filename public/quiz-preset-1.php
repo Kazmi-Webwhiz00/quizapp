@@ -1,6 +1,8 @@
 <?php
 
  function enqueue_quiz_styles() {
+    global $post;
+    $post_type = get_post_type($post);
     // Enqueue the CSS file
     wp_enqueue_style(
         'quiz-preset-1-style', // Handle name for the stylesheet
@@ -8,11 +10,26 @@
         array(), // Dependencies (if any), can leave empty
         '1.0.0'  // Version number
     );
+
+    $plugin_base_url = plugin_dir_url(dirname(__FILE__));
+
+    // Then append the assets path
+    if(!empty($post) && $post_type === 'quizzes') {
+        // Enqueue the JavaScript file for fullscreen quiz functionality
+        wp_enqueue_script(
+            'fullscreen-quiz',
+            $plugin_base_url . 'assets/js/quiz-fullscreen.js',
+            array('jquery'),
+            '1.0.' . time(),
+            true
+        );
+    }
 }
 // Hook the function to the appropriate action
 add_action('wp_enqueue_scripts', 'enqueue_quiz_styles');
 
 function wp_quiz_render_ui($quiz_id, $questions, $background_color, $button_background_color, $button_text_color, $progress_bar_color, $progress_bar_background_color, $question_font_family, $question_font_color, $question_font_size, $answer_font_family, $answer_font_color, $answer_font_size) {
+    error_log("Rendering quiz UI for quiz ID: $quiz_id with " . count($questions) . " questions.");
 
     $answer_text_area_place_holder = get_option(
             'wp_quiz_plugin_open_text_area_place_holder_text', 'Type your answer here...');
@@ -20,6 +37,16 @@ function wp_quiz_render_ui($quiz_id, $questions, $background_color, $button_back
     ob_start(); ?>
         <div id="pf_quiz-container" data-quiz-id="<?php echo $quiz_id; ?>" data-total-questions="<?php echo count($questions); ?>" style="background-color: <?php echo $background_color; ?>;">
             <div class="pf_quiz-header">
+            <button class="fullscreen-toggle" aria-label="Toggle full screen">
+                <!-- fullscreen icon -->
+                <svg class="switch-to-fullscreen" width="20" height="20" viewBox="0 0 24 24">
+                <path d="M7 14H5v5h5v-2H7v-3zm0-4h2V7h3V5H7v5zm10 4h2v3h-3v2h5v-5zm-3-9v2h3v3h2V5h-5z"/>
+                </svg>
+                <!-- exit‑fullscreen icon (hidden by default) -->
+                <svg class="switch-to-exit" width="20" height="20" viewBox="0 0 24 24">
+                <path d="M5 16h3v3h2v-5H5v2zm11 3h3v-3h-2v2h-3v2zm3-11v5h2V5h-5v2h3zm-9 0V5H5v5h2V7h3z"/>
+                </svg>
+                </button>
                 <p><strong>1/<?php echo count($questions); ?></strong></p>
                 <div class="pf_progress-bar" style="width: 100%; background-color: <?php echo $progress_bar_background_color; ?>; height: 4px; margin-bottom: 15px;">
                     <div class="pf_progress" style="width: 0%; height: 4px; background-color: <?php echo $progress_bar_color; ?>;"></div>
