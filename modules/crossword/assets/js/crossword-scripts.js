@@ -15,8 +15,8 @@ jQuery(document).ready(function ($) {
 
       const customUploader = wp
         .media({
-          title: "Select Image",
-          button: { text: "Use this image" },
+          title: crosswordScriptVar.selectImageTitle,
+          button: { text: crosswordScriptVar.useImageText },
           multiple: false, // Single image upload
         })
         .on("select", function () {

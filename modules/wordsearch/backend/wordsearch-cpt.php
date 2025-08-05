@@ -43,7 +43,7 @@ function register_wordsearch_post_type() {
         'new_item'              => __( 'New Wordsearch',         'wp-quiz-plugin' ),
         'view_item'             => __( 'View Wordsearch',        'wp-quiz-plugin' ),
         'search_items'          => __( 'Search Wordsearches',    'wp-quiz-plugin' ),
-        'not_found'             => __( 'No wordsearches found.', 'wp-quiz-plugin' ),
+        'not_found'             => __( 'No wordsearches found', 'wp-quiz-plugin' ),
         'not_found_in_trash'    => __( 'No wordsearches in Trash','wp-quiz-plugin' ),
     );
 

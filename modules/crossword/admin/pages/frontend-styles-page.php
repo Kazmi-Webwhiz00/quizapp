@@ -39,7 +39,7 @@ function crossword_register_frontend_styles_settings() {
     register_setting('kw_crossword_fe_settings', 'kw_fe_enable_live_word_check_button_enabled_color', ['default' => '#00796b']);
     register_setting('kw_crossword_fe_settings', 'kw_fe_enable_live_word_check_button_text_color', ['default' => '#000000']);
     register_setting('kw_crossword_fe_settings', 'kw_fe_enable_live_word_check_button_font_size', ['default' => '16px']);
-    register_setting('kw_crossword_fe_settings', 'kw_fe_enable_live_word_check_button_font_family', ['default' => 'Arial, sans-serif']);    
+    register_setting('kw_crossword_fe_settings', 'kw_fe_enable_live_word_check_button_font_family', ['default' => 'Noto Sans, sans-serif']);    
 
     // Filled Cell Background
     register_setting('kw_crossword_fe_settings', 'kw_fe_filled_cell_bg_color', ['default' => '#e1f5fe']);

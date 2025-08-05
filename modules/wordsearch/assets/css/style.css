@@ -62,6 +62,7 @@
 
 #add-wordsearch-button,
 #clear-wordsearch-list-button {
+  font-family: "Noto Sans", sans-serif !important;
   border-radius: 3px;
   background-color: #0073aa;
   padding: 8px 10px;

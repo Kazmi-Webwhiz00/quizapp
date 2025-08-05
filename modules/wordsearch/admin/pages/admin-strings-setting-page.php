@@ -98,6 +98,15 @@ if (!defined('ABSPATH')) {
         register_setting('kw_wordsearch_admin_view_strings', 'wordsearch_share_email_button_label', [
             'default' => __('Share via Email', 'wp-quiz-plugin'), // Default button label
         ]);
+
+        register_setting('kw_wordsearch_admin_view_strings', 'wordsearch_share_email_subject', [
+            'default' => __('New Wordsearch Assessment Available', 'wp-quiz-plugin'),
+        ]);
+
+        register_setting('kw_wordsearch_admin_view_strings', 'wordsearch_share_email_body', [
+            'default' => __('Hello,\n\nPlease attempt this wordsearch on time. Here is the wordsearch link:\n\n[URL]\n\nBest regards,', 'wp-quiz-plugin'),
+        ]);
+
         register_setting('kw_wordsearch_admin_view_strings', 'wordsearch_share_email_button_color', [
             'default' => '#007BFF', // Default background color
         ]);

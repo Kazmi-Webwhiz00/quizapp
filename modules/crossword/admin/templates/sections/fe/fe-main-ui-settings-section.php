@@ -60,6 +60,7 @@ $font_family_options = [
     'Courier New',
     'Georgia',
     'Verdana',
+    'Noto Sans',
     'Trebuchet MS',
     'Lucida Sans',
 ];
