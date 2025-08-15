@@ -113,9 +113,7 @@
 }
 
 .question-box#kw-qn-box {
-  grid-template-columns: repeat(2, minmax(30px, 150px));
   margin-top: 8px;
-  display: grid;
 }
 
 .question-row {
