@@ -26,6 +26,7 @@ include_once plugin_dir_path(__FILE__) . 'kw-quiz-features-buttons.php';
 include_once plugin_dir_path(__FILE__) . 'admin-docs.php';
 include_once plugin_dir_path(__FILE__) . 'kw-author-name-admin-view.php';
 include_once plugin_dir_path(__FILE__) .  'kw-save-quiz-aut.php';
+include_once plugin_dir_path(__FILE__) . 'wp-source-text-choice.php';
 
 
 // Enqueue Plugin Styles for Admin
@@ -57,9 +58,19 @@ function wp_quiz_plugin_enqueue_styles($hook) {
 
     wp_enqueue_script('wp-quiz-plugin-admin-js', plugin_dir_url(__FILE__) . 'assets/js/admin.js', ['jquery'], null, true);
 
+    global $post;
+    if (isset($post->ID)) {
+        $quizId = $post->ID;
+        error_log("Quiz ID set to: " . $quizId); // Debugging line to check quiz ID
+    } else {
+        $quizId = 0; // Default value if no post is set
+    }
     wp_localize_script('wp-quiz-plugin-admin-js', 'quizAdminData', [
         'message' => __("Don't forget to save! Your changes may be lost.", 'wp-quiz-plugin'),
         "forgetWarningMsg" => $forget_warning_msg,
+        'ajaxUrl' => admin_url('admin-ajax.php'),
+        'nonce'   => wp_create_nonce('gpt_source_choice'),
+        'quizId'  => $quizId ?? 0, // Replace if you know the quiz/post ID on front-end.
     ]);
 
     // Ensure scripts and styles are loaded only on plugin-related admin pages
@@ -317,7 +328,6 @@ function display_questions_meta_box($post) {
     $add_question_font_size = esc_attr(get_option('quiz_add_question_font_size', '14'));
 
     $add_question_text = get_option('wp_quiz_plugin_add_question_text', __('Add New Question', 'wp-quiz-plugin'));
-    $add_question_with_ai_text =  __('Add Question with AI', 'wp-quiz-plugin');
     $add_ai_question_text = get_option('wp_quiz_plugin_add_ai_question_text', __('Add New Question With AI', 'wp-quiz-plugin'));
     $upload_question_image_text = get_option('wp_quiz_plugin_upload_question_image_text', __('Upload Question Image', 'wp-quiz-plugin'));
     $add_option_text = get_option('wp_quiz_plugin_add_option_text', __('Add New Option', 'wp-quiz-plugin'));
@@ -373,6 +383,8 @@ function display_questions_meta_box($post) {
     $noPdfLabel = __('No PDFs chosen', 'wp-quiz-plugin');
     $noFilesSelectedLabel = __('No files selected', 'wp-quiz-plugin');
     $generateByTextLabel = __('Provide Text to Generate Questions:', 'wp-quiz-plugin');
+    $includeText = get_post_meta($quiz_id, '_quiz_include_source', true);
+    $sourceText = get_post_meta($quiz_id, '_quiz_source_text', true) ?? '';
     ?>
 
 
@@ -383,90 +395,12 @@ function display_questions_meta_box($post) {
 
     <div id="kw_quiz-questions-container" style="font-family: <?php echo esc_attr($text_font); ?>; color: <?php echo esc_attr($text_color); ?>; font-size: <?php echo esc_attr($font_size); ?>">
 
-    <!-- Buttons with dynamically applied styles -->
-    <div class="kw_left kw_quiz-content">
-        <!-- Image size Settings -->
-        <div class="image-size-settings">
-            
-    <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
-    <symbol id="check-circle-fill" fill="currentColor" viewBox="0 0 16 16">
-        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
-    </symbol>
-    <symbol id="info-fill" fill="currentColor" viewBox="0 0 16 16">
-        <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
-    </symbol>
-    <symbol id="exclamation-triangle-fill" fill="currentColor" viewBox="0 0 16 16">
-        <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
-    </symbol>
-    </svg>
-
-<div class="alert kw_modern-alert" style="display: flex; background: <?php echo esc_attr($notification_background_color); ?>; padding: 1rem 1rem; margin-bottom: 10px; border-radius: 5px" role="alert">
-  <svg style="padding-right: 10px; color:<?php echo esc_attr($notification_text_color );?> " class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:">
-    <use xlink:href="#info-fill"/>
-  </svg>
-  <div class="kw_alert-content" style="font-family: <?php echo esc_attr($notification_font_family ); ?>; color: <?php echo esc_attr($notification_text_color ); ?>; font-size: <?php echo esc_attr($notification_font_size ); ?>">
-    <?php echo __($image_height_settings_notification, 'wp-quiz-plugin'); ?>
-  </div>
-</div>
-    <!-- Question Image Size Settings -->
-
-        <div class="kw_settings-card collapsed">
-        <div class="kw_settings-header">
-        <span class="kw_toggle-icon">
-    <svg width="24" height="24" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M2 4L6 8L10 4" fill="#4F883D"/>
-    </svg>
-    </span>
-        <!-- <span class="kw_settings-icon">📝</span> -->
-    <h3><?php _e($set_question_image_size_text, 'wp-quiz-plugin'); ?></h3>
-    <p class="kw-quiz-tooltip" data-tooltip="<?php echo __("Specify the size of the question image in pixels. The maximum allowed size is 350px, and the default size is 200px.", 'wp-quiz-plugin'); ?>">ℹ️</p>
+    <?php if ( $includeText && $sourceText ) : ?>
+    <div class="include-text">
+        <p class="text"><?php echo esc_html( $sourceText ); ?></p>
     </div>
-    <div class="kw_settings-content">
-    <div class="kw_size-inputs-container">
+    <?php endif; ?>
 
-        <div class="kw_size-input-group">
-        <label for="question_image_width" class="kw_input-label"><?php _e($image_width_lable_text, 'wp-quiz-plugin'); ?></label>
-        <input class="kw_size-input" type="number" id="question_image_width" name="question_image_width" value="<?php echo esc_attr($question_image_width); ?>" min="0" max="350" placeholder="px"/>
-        </div>
-
-        <div class="kw_size-input-group">
-        <label for="question_image_height" class="kw_input-label"><?php _e($image_height_lable_text, 'wp-quiz-plugin'); ?></label>
-        <input class="kw_size-input" type="number" id="question_image_height" name="question_image_height" value="<?php echo esc_attr($question_image_height); ?>" min="0" max="350" placeholder="px"/>  
-    </div>
-        </div>
-    </div>
-</div>
-
-    <!-- Answer Image Size Settings -->
-    <div class="kw_settings-card collapsed">
-    <div class="kw_settings-header">
-    <span class="kw_toggle-icon">
-    <svg width="24" height="24" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M2 4L6 8L10 4" fill="#4F883D"/>
-    </svg>
-</span>
-    <!-- <span class="kw_settings-icon">💬</span> -->
-
-    <h3><?php _e($set_answer_image_size_text, 'wp-quiz-plugin'); ?></h3>
-    <p class="kw-quiz-tooltip" data-tooltip="<?php echo __("Specify the size of the question image in pixels. The maximum allowed size is 250px, and the default size is 200px.", 'wp-quiz-plugin');?>">ℹ️</p>
-    </div>
-    <div class="kw_settings-content">
-    <div class="kw_size-inputs-container">
-
-        <div class="kw_size-input-group">
-        <label for="answer_image_width" class="kw_input-label"><?php _e($image_width_lable_text, 'wp-quiz-plugin'); ?></label>
-        <input class="kw_size-input" type="number" id="answer_image_width" name="answer_image_width" value="<?php echo esc_attr($answer_image_width); ?>" min="0" max="250" placeholder="px"/>
-        </div>
-
-        <div class="kw_size-input-group">
-        <label for="answer_image_height" class="kw_input-label"><?php _e($image_height_lable_text, 'wp-quiz-plugin'); ?></label>
-        <input class="kw_size-input" type="number" id="answer_image_height" name="answer_image_height" value="<?php echo esc_attr($answer_image_height); ?>" min="0" max="250" placeholder="px"/>
-    </div>
-        </div>
-</div>
-    </div>
-</div>
-    </div>
         <div class="kw_right">
             <div id="kw-quiz-questions-list">
                 <?php if (!empty($questions)): ?>
@@ -650,6 +584,93 @@ function display_questions_meta_box($post) {
         </div>
         </div>
 
+            <!-- Buttons with dynamically applied styles -->
+    <div class="kw_left kw_quiz-content">
+        <!-- Image size Settings -->
+        <div class="image-size-settings">
+            
+    <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+    <symbol id="check-circle-fill" fill="currentColor" viewBox="0 0 16 16">
+        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+    </symbol>
+    <symbol id="info-fill" fill="currentColor" viewBox="0 0 16 16">
+        <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
+    </symbol>
+    <symbol id="exclamation-triangle-fill" fill="currentColor" viewBox="0 0 16 16">
+        <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+    </symbol>
+    </svg>
+
+<div class="alert kw_modern-alert" style="display: flex; background: <?php echo esc_attr($notification_background_color); ?>; padding: 1rem 1rem; margin-bottom: 10px; border-radius: 5px" role="alert">
+  <svg style="padding-right: 10px; color:<?php echo esc_attr($notification_text_color );?> " class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:">
+    <use xlink:href="#info-fill"/>
+  </svg>
+  <div class="kw_alert-content" style="font-family: <?php echo esc_attr($notification_font_family ); ?>; color: <?php echo esc_attr($notification_text_color ); ?>; font-size: <?php echo esc_attr($notification_font_size ); ?>">
+    <?php echo __($image_height_settings_notification, 'wp-quiz-plugin'); ?>
+  </div>
+</div>
+    <!-- Question Image Size Settings -->
+
+    <div class="kw_settings-container">
+        <div class="kw_settings-card collapsed">
+        <div class="kw_settings-header">
+        <span class="kw_toggle-icon">
+    <svg width="24" height="24" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M2 4L6 8L10 4" fill="#4F883D"/>
+    </svg>
+    </span>
+        <!-- <span class="kw_settings-icon">📝</span> -->
+    <h3><?php _e($set_question_image_size_text, 'wp-quiz-plugin'); ?></h3>
+    <p class="kw-quiz-tooltip" data-tooltip="<?php echo __("Specify the size of the question image in pixels. The maximum allowed size is 350px, and the default size is 200px.", 'wp-quiz-plugin'); ?>">ℹ️</p>
+    </div>
+    <div class="kw_settings-content">
+    <div class="kw_size-inputs-container">
+
+        <div class="kw_size-input-group">
+        <label for="question_image_width" class="kw_input-label"><?php _e($image_width_lable_text, 'wp-quiz-plugin'); ?></label>
+        <input class="kw_size-input" type="number" id="question_image_width" name="question_image_width" value="<?php echo esc_attr($question_image_width); ?>" min="0" max="350" placeholder="px"/>
+        </div>
+
+        <div class="kw_size-input-group">
+        <label for="question_image_height" class="kw_input-label"><?php _e($image_height_lable_text, 'wp-quiz-plugin'); ?></label>
+        <input class="kw_size-input" type="number" id="question_image_height" name="question_image_height" value="<?php echo esc_attr($question_image_height); ?>" min="0" max="350" placeholder="px"/>  
+    </div>
+        </div>
+    </div>
+</div>
+
+    <!-- Answer Image Size Settings -->
+    <div class="kw_settings-card collapsed">
+    <div class="kw_settings-header">
+    <span class="kw_toggle-icon">
+    <svg width="24" height="24" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M2 4L6 8L10 4" fill="#4F883D"/>
+    </svg>
+</span>
+    <!-- <span class="kw_settings-icon">💬</span> -->
+
+    <h3><?php _e($set_answer_image_size_text, 'wp-quiz-plugin'); ?></h3>
+    <p class="kw-quiz-tooltip" data-tooltip="<?php echo __("Specify the size of the question image in pixels. The maximum allowed size is 250px, and the default size is 200px.", 'wp-quiz-plugin');?>">ℹ️</p>
+    </div>
+    <div class="kw_settings-content">
+    <div class="kw_size-inputs-container">
+
+        <div class="kw_size-input-group">
+        <label for="answer_image_width" class="kw_input-label"><?php _e($image_width_lable_text, 'wp-quiz-plugin'); ?></label>
+        <input class="kw_size-input" type="number" id="answer_image_width" name="answer_image_width" value="<?php echo esc_attr($answer_image_width); ?>" min="0" max="250" placeholder="px"/>
+        </div>
+
+        <div class="kw_size-input-group">
+        <label for="answer_image_height" class="kw_input-label"><?php _e($image_height_lable_text, 'wp-quiz-plugin'); ?></label>
+        <input class="kw_size-input" type="number" id="answer_image_height" name="answer_image_height" value="<?php echo esc_attr($answer_image_height); ?>" min="0" max="250" placeholder="px"/>
+    </div>
+        </div>
+</div>
+    </div>
+    </div>
+</div>
+    </div>
+
         <!-- Hidden input to track deleted questions -->
         <input type="hidden" id="kw_deleted_questions" name="deleted_questions" value="">
 
@@ -822,23 +843,44 @@ function display_questions_meta_box($post) {
                     buttonFontSize: '<?php echo esc_js(get_option('wp_quiz_plugin_swal_button_font_size', '14px')); ?>'  // Button font size
                 };
             
+                const questionTypeOptions = [
+                { id: 'qt-mcq',  value: 'MCQ', label: '<?php echo esc_js(__('Multiple Choice','wp-quiz-plugin')); ?>' },
+                { id: 'qt-tf',   value: 'T/F', label: '<?php echo esc_js(__('True/False','wp-quiz-plugin')); ?>' },
+                { id: 'qt-text', value: 'Text',label: '<?php echo esc_js(__('Open Text','wp-quiz-plugin')); ?>' }
+                ];
+
+                const typeHtml = `
+                <div class="question-box" id="kw-qt-box">
+                    ${questionTypeOptions.map(o => `
+                    <div class="kw-checkbox-wrapper-promot">
+                        <input type="checkbox" id="${o.id}" name="qt[]" value="${o.value}">
+                        <label for="${o.id}">${o.label}</label>
+                    </div>
+                    `).join('')}
+                </div>
+                `;
+
+                // Enforce single selection (checkboxes behave like radios)
+                $(document).off('change', '#kw-qt-box input[type="checkbox"]')
+                .on('change', '#kw-qt-box input[type="checkbox"]', function () {
+                $('#kw-qt-box input[type="checkbox"]').not(this).prop('checked', false);
+                });
+
                 createSwalPopup({
                     title: '<?php echo esc_js(__('Select Question Type', 'wp-quiz-plugin')); ?>',
-                    input: 'select',
-                    inputOptions: {
-                        'MCQ': '<?php echo __('Multiple Choice', 'wp-quiz-plugin'); ?>',
-                        'T/F': '<?php echo __('True/False', 'wp-quiz-plugin'); ?>',
-                        'Text': '<?php echo __('Open Text', 'wp-quiz-plugin'); ?>'
-                    },
-                    inputPlaceholder: '<?php echo esc_attr__('Choose a question type...', 'wp-quiz-plugin'); ?>',
+                    html: typeHtml,
+                    focusConfirm: false,
                     showCancelButton: true,
                     confirmButtonText: '<?php echo __('Next', 'wp-quiz-plugin'); ?>',
                     cancelButtonText: '<?php echo __('Cancel', 'wp-quiz-plugin'); ?>',
-                    preConfirm: (questionType) => {
-                        if (!questionType) {
-                            Swal.showValidationMessage('<?php echo __('Please select a question type!', 'wp-quiz-plugin'); ?>');
+                    preConfirm: () => {
+                        const checked = Array.from(document.querySelectorAll('#kw-qt-box input[type="checkbox"]:checked'))
+                        .map(el => el.value);
+                        if (checked.length !== 1) {
+                        Swal.showValidationMessage('<?php echo esc_js(__('Please check exactly one question type.','wp-quiz-plugin')); ?>');
+                        return false;
                         }
-                        return questionType;
+                        return checked[0]; // returns e.g. "MCQ"
                     }
                 }, swalStyles).then((typeResult) => {
                     if (typeResult.isConfirmed) {
@@ -908,8 +950,28 @@ function display_questions_meta_box($post) {
                         uploadHtml = `
                             <div class="text-container">
                             <!-- TEXT input for generation -->
+                            <div class="text-input-section">
                             <label><?php echo __($generateByTextLabel, 'wp-quiz-plugin'); ?></label>
                             <textarea id="kw_text_generation_input" class="swal2-textarea" placeholder="<?php echo __('Type your source text here...', 'wp-quiz-plugin'); ?>"></textarea>
+                            </div>
+                            <!-- Include / exclude source text -->
+                            <div class="source_text_choice">
+                            <h4 class="source-text-label">
+                                <?php echo esc_html__('Show the source text to learners?', 'your-text-domain'); ?>
+                            </h4>
+
+                            <div class="source_text_options">
+                            <label class="source-text-option">
+                                <input type="checkbox" id="include_text_source" />
+                                <span><?php echo esc_html__('Include the text above the quiz', 'your-text-domain'); ?></span>
+                            </label>
+
+                            <label class="source-text-option">
+                                <input type="checkbox" id="exclude_text_source" />
+                                <span><?php echo esc_html__('Do not include the text above the quiz', 'your-text-domain'); ?></span>
+                            </label>
+                            </div>
+                            </div>
                             </div>
                         `;
                         }
@@ -927,20 +989,43 @@ function display_questions_meta_box($post) {
                         `).join('')}
                         </div>
                         `;
+
+                        // If you already have inputOptions (object like {5:'5',10:'10',...}), reuse its keys:
+                        const numberOptions = Object.keys(inputOptions || {}).map(n => parseInt(n, 10)).sort((a,b)=>a-b);
+
+                        const countHtml = `
+                        <div class="question-box" id="kw-qn-box">
+                            ${numberOptions.map((n,i) => `
+                            <div class="kw-checkbox-wrapper-promot">
+                                <input type="checkbox" id="qn-${i}" name="qn[]" value="${n}">
+                                <label for="qn-${i}">${n}</label>
+                            </div>
+                            `).join('')}
+                        </div>
+                        `;
+
+                        // Enforce single selection
+                        $(document).off('change', '#kw-qn-box input[type="checkbox"]')
+                        .on('change', '#kw-qn-box input[type="checkbox"]', function () {
+                        $('#kw-qn-box input[type="checkbox"]').not(this).prop('checked', false);
+                        });
                         createSwalPopup({
                             title: '<?php echo esc_js(__('Select Number of Questions', 'wp-quiz-plugin')); ?>',
-                            input: 'select',
+                            html: countHtml,
                             inputOptions: inputOptions,
-                            inputPlaceholder: '<?php echo esc_js(__('Choose a number of questions...', 'wp-quiz-plugin')); ?>',
+                            focusConfirm: false,
                             showCancelButton: true,
                             confirmButtonText: '<?php echo __('Next', 'wp-quiz-plugin'); ?>',
                             cancelButtonText: '<?php echo __('Cancel', 'wp-quiz-plugin'); ?>',
                             preConfirm: (questionCount) => {
-                                if (!questionCount) {
-                                    Swal.showValidationMessage('<?php echo __('Please select the number of questions!', 'wp-quiz-plugin'); ?>');
-                                }
-                                return questionCount;
-                            }
+                                const checked = Array.from(document.querySelectorAll('#kw-qn-box input[type="checkbox"]:checked'))
+      .map(el => el.value);
+    if (checked.length !== 1) {
+      Swal.showValidationMessage('<?php echo esc_js(__('Please check exactly one number of questions.','wp-quiz-plugin')); ?>');
+      return false;
+    }
+    return parseInt(checked[0], 10); // returns e.g. 10
+  }
                         }, swalStyles).then((countResult) => {
 
                             if (countResult.isConfirmed) {
@@ -982,12 +1067,11 @@ function display_questions_meta_box($post) {
                                             const userPrompt = promptEl ? promptEl.value.trim() : '';
                                             const textEl = document.getElementById('kw_text_generation_input');
                                             window.sourceText = textEl ? textEl.value.trim() : '';
-                                                const selectedCheckboxes = Array.from(document.querySelectorAll('#kw-checkbox-container-promot input[type="checkbox"]:checked'))
-                                                    .map(checkbox => checkbox.value);
-
-                                                    if (!userPrompt && window.uploadedImages.length === 0 && window.uploadedPDFs.length === 0 && !window.sourceText) {
-                                                    Swal.showValidationMessage('<?php echo esc_js(__('Prompt is required!', 'wp-quiz-plugin')); ?>');
-                                                    return false;
+                                            const selectedCheckboxes = Array.from(document.querySelectorAll('#kw-checkbox-container-promot input[type="checkbox"]:checked'))
+                                                .map(checkbox => checkbox.value);
+                                                if (!userPrompt && window.uploadedImages.length === 0 && window.uploadedPDFs.length === 0 && !window.sourceText) {
+                                                Swal.showValidationMessage('<?php echo esc_js(__('Prompt is required!', 'wp-quiz-plugin')); ?>');
+                                                return false;
                                                 }
 
                                                 return { 
@@ -1137,36 +1221,15 @@ function display_questions_meta_box($post) {
 
                 function generatePromptForType(type, userPrompt, generatedQuestionsList, learnerAge, selectedCheckboxes) {
                     // Fetch the custom prompt template from the options table
-                    let customPromptTemplate = '<?php echo esc_js(get_option("wp_quiz_plugin_custom_prompt_template", "")); ?>';
-                    // Define the original phrase to replace
-                    const originalPhrase = "Generate a quiz question and answers based on the following prompt";
-                    // Phrase when feeding images directly
-                    const newPhraseForImage =
-                    "Generate a quiz question and answers by analyzing the content of the provided images. Based on the information presented in these images to fulfil the following prompt";
-                    // Phrase when feeding *extracted text* from a PDF
-                    const newPhraseForPdf =
-                    "Generate a quiz question and answers by analyzing the extracted text from the PDF document. Based on the information presented in this text to fulfil the following prompt";
-                    // Your text‑only override:
-                    const newPhraseForText = 
-                    "Generate quiz questions and answers using only the following source text provided by the user. Based on the information presented in this text to fulfil the following prompt";
-                    // Conditionally update the prompt template
-                    if (aiType === "image") {
-                    customPromptTemplate = customPromptTemplate.replace(
-                        originalPhrase,
-                        newPhraseForImage
-                    );
-                    } else if (aiType === "pdf") {
-                    customPromptTemplate = customPromptTemplate.replace(
-                        originalPhrase,
-                        newPhraseForPdf
-                    );
-                    }
-                    else if (aiType === 'text') {
-                    customPromptTemplate = customPromptTemplate.replace(
-                        originalPhrase,
-                        newPhraseForText
-                    );
-                    }
+                    const templates = <?php echo wp_json_encode([
+                    'prompt' => get_option('wp_quiz_plugin_custom_prompt_template', ''),
+                    'image'   => get_option('wp_quiz_plugin_custom_images_prompt_template', ''),
+                    'pdf'     => get_option('wp_quiz_plugin_custom_pdf_prompt_template', ''),
+                    'text'    => get_option('wp_quiz_plugin_custom_text_prompt_template', ''),
+                    ]); ?>;
+
+                    // Pick the template based on aiType, fallback to default
+                    const customPromptTemplate = templates[aiType] ?? templates.prompt;
 
                     // Generate the previous questions context
                     let previousQuestionsContext = generatedQuestionsList.length 
