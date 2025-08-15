@@ -1,4 +1,5 @@
 (function ($) {
+  var sourceText = "";
   $.fn.highlightPublishButton = function () {
     let publishButton = $("#publish");
     let submitDiv = $("#submitdiv"); // Publish box container
@@ -158,6 +159,127 @@
       },
     });
   };
+
+  // Fire AJAX save
+  function sendChoice(includeSource) {
+    var payload = {
+      action: "save_source_text_choice",
+      nonce: quizAdminData.nonce ? quizAdminData.nonce : "",
+      include_source: includeSource ? 1 : 0,
+      quiz_id: quizAdminData.quizId ? quizAdminData.quizId : 0,
+      source_text: sourceText,
+    };
+
+    $.ajax({
+      url: quizAdminData.ajaxUrl,
+      method: "POST",
+      dataType: "json",
+      data: payload,
+      success: function (res) {
+        if (res.success && res.data) {
+          var includeSource = !!res.data.include_source;
+          var sourceText = res.data.source_text
+            ? res.data.source_text.trim()
+            : "";
+
+          if (includeSource && sourceText.trim().length > 0) {
+            // Build the HTML
+            const includeHtml = `
+                <div class="include-text">
+                  <p class="text">${$("<div>").text(sourceText).html()}</p>
+                </div>
+              `;
+
+            // Insert at the very start of the container
+            $("#kw_quiz-questions-container").prepend(includeHtml);
+          }
+        }
+        $(document).trigger("source_text_choice:saved", res);
+      },
+    }).fail(function (xhr) {
+      $(document).trigger("source_text_choice:error", xhr);
+    });
+  }
+
+  // Observe changes to elements with the class "text-container"
+  const observer = new MutationObserver(() => {
+    const $container = $(".text-container");
+
+    if ($container.length) {
+      // Your initialization logic for the checkboxes goes here
+      normalizeDefaultIfNeeded();
+    }
+  });
+
+  // Start observing the whole document for changes inside .text-container
+  observer.observe(document.documentElement, {
+    childList: true,
+    subtree: true,
+  });
+
+  function setState($include, $exclude, include, fireAjax) {
+    $include.prop("checked", !!include);
+    $exclude.prop("checked", !include);
+    if (fireAjax) sendChoice(!!include);
+  }
+
+  // --- NEW: safely fetch current checkbox jQuery objects each time ---
+  function getEls() {
+    return {
+      $include: $("#include_text_source"),
+      $exclude: $("#exclude_text_source"),
+    };
+  }
+
+  // --- NEW: run once when the checkboxes first appear to set default (no AJAX) ---
+  let _gptSourceChoiceInitDone = false;
+  function normalizeDefaultIfNeeded() {
+    if (_gptSourceChoiceInitDone) return;
+    const { $include, $exclude } = getEls();
+    if (!$include.length || !$exclude.length) return;
+
+    // If neither is checked → default to EXCLUDE
+    const includeChecked = $include.is(":checked");
+    const excludeChecked = $exclude.is(":checked");
+
+    if (!includeChecked && !excludeChecked) {
+      setState($include, $exclude, false, false); // false = exclude
+    } else {
+      // Normalize to exactly one checked
+      setState($include, $exclude, includeChecked, false);
+    }
+    _gptSourceChoiceInitDone = true;
+  }
+
+  // --- EVENT DELEGATION: works even if elements are added later ---
+  $(document).on("change", "#include_text_source", function () {
+    const { $include, $exclude } = getEls();
+    if (!$include.length || !$exclude.length) return;
+
+    // If include got checked, enforce exclusivity and save
+    if ($include.is(":checked")) {
+      const textEl = document.getElementById("kw_text_generation_input");
+      if (textEl) {
+        sourceText = textEl.value.trim();
+      }
+      setState($include, $exclude, true, true);
+    } else {
+      // Disallow leaving both unchecked—revert to include
+      setState($include, $exclude, true, true);
+    }
+  });
+
+  $(document).on("change", "#exclude_text_source", function () {
+    const { $include, $exclude } = getEls();
+    if (!$include.length || !$exclude.length) return;
+
+    if ($exclude.is(":checked")) {
+      setState($include, $exclude, false, true);
+    } else {
+      // Disallow leaving both unchecked—revert to exclude
+      setState($include, $exclude, false, true);
+    }
+  });
 
   // Expose the functions globally if needed
   window.highlightPublishButton = $.fn.highlightPublishButton;

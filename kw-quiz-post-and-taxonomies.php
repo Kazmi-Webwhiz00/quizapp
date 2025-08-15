@@ -764,12 +764,12 @@ function render_quiz_visibility_meta_box($post) {
     <p class="quiz-visibility-options">
         <label>
             <input type="radio" name="quiz_visibility" value="public" <?php checked($listing_visibility_status, 'public'); ?>>
-            <?php _e('Public', 'wp-quiz-plugin'); ?>
+            <span><?php _e('Public', 'wp-quiz-plugin'); ?></span>
         </label>
 
         <label>
             <input type="radio" name="quiz_visibility" value="private" <?php checked($listing_visibility_status, 'private'); ?>>
-            <?php _e('Private', 'wp-quiz-plugin'); ?>
+            <span><?php _e('Private', 'wp-quiz-plugin'); ?></span>
         </label>
     </p>
     <?php

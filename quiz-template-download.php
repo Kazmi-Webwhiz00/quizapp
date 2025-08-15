@@ -75,6 +75,8 @@ function kw_download_quiz_pdf_callback() {
     $answer_font_color = get_option('wp_quiz_plugin_answer_font_color', '#000000');
     $answer_font_family = get_option('wp_quiz_plugin_answer_font_family', 'dejavusans');
     $answer_background_color = get_option('wp_quiz_plugin_answer_background_color', '#FFFFFF');
+    $includeText = (int) get_post_meta($quiz_id, '_quiz_include_source', true);
+    $sourceText  = (string) get_post_meta($quiz_id, '_quiz_source_text', true);
 
     // Helper function to convert HEX to RGB
     function hex2rgb($hex) {
@@ -138,6 +140,37 @@ function kw_download_quiz_pdf_callback() {
             error_log("Image file not found: " . $image_path); // Log an error if the image file is not found
         }
     }
+
+    // ---- SOURCE TEXT (print once under header) ----
+
+if ($includeText && trim($sourceText) !== '') {
+    // Space below header
+    $pdf->Ln(2);
+
+    // Save/adjust line-height and text look (approx. CSS)
+    $prev_ratio = $pdf->getCellHeightRatio();
+    $pdf->setCellHeightRatio(1.7);
+    $pdf->SetFont($answer_font_family, '', 16);      // Noto Sans substitute in TCPDF
+    $pdf->SetTextColor(26, 32, 44);           // #1a202c
+
+    // Safe plain-text, keep line breaks
+    $safe_text = wp_strip_all_tags($sourceText);
+    $safe_text = preg_replace("/\r\n|\r|\n/", "\n", $safe_text);
+
+    // Full width, justified
+    $pdf->MultiCell(0, 0, $safe_text, 0, 'J', 0, 1, '', '', true);
+
+    // Bottom spacing before first question
+    $pdf->Ln(6);
+
+    // Restore question font/colors
+    $pdf->setCellHeightRatio($prev_ratio);
+    $pdf->SetFont($question_font_family, '', $question_font_size);
+    list($qr, $qg, $qb) = hex2rgb($question_font_color);
+    $pdf->SetTextColor($qr, $qg, $qb);
+    $pdf->Ln(15); // ⬅ Increase vertical gap before the Q&A block
+}
+
     
     // Loop through questions and add them to the PDF
     foreach ($questions as $index => $question) {
@@ -297,6 +330,27 @@ function kw_download_answer_key_pdf_callback() {
     $pdf->SetTextColorArray(hex2rgb($title_font_color));
     $pdf->Cell(0, 10, __($pdf_answer_key_title, 'wp-quiz-plugin') . ': ' . __($quiz_title, 'wp-quiz-plugin'), 0, 1, 'C');
     $pdf->Ln(5);
+
+if ($includeText && trim($sourceText) !== '') {
+    $prev_ratio = $pdf->getCellHeightRatio();
+    $pdf->setCellHeightRatio(1.7);
+    $pdf->SetFont('dejavusans', '', 16);
+    $pdf->SetTextColor(26, 32, 44);
+
+    $safe_text = wp_strip_all_tags($sourceText);
+    $safe_text = preg_replace("/\r\n|\r|\n/", "\n", $safe_text);
+
+    $pdf->MultiCell(0, 0, $safe_text, 0, 'J', 0, 1, '', '', true);
+    $pdf->Ln(6);
+
+    // Restore table styles
+    $pdf->setCellHeightRatio($prev_ratio);
+    $pdf->SetFont($answer_font_family, '', $answer_font_size);
+    list($ar, $ag, $ab) = hex2rgb($answer_font_color);
+    $pdf->SetTextColor($ar, $ag, $ab);
+    $pdf->Ln(10); // ⬅ Increase vertical gap before the Q&A block
+}
+
 
     // Array to store answer key for the table
     $answer_key = [];

@@ -40,7 +40,32 @@ function wp_quiz_plugin_add_quizzes_settings_page() {
 add_action('admin_menu', 'wp_quiz_plugin_add_quizzes_settings_page');
 
 
-function wp_quiz_plugin_render_quizzes_settings_page() { ?>
+function wp_quiz_plugin_render_quizzes_settings_page() { 
+    $prompt_help_text = __(
+        'Use the provided variables to customize the AI prompt template. If {questionTemplate} or {previousQuestionsContext} is not included, they will automatically be added at the end of the prompt.',
+        'wp-quiz-plugin'
+    );
+    
+    /** General (default) prompt */
+    $general_section_title = __('Prompt Template', 'wp-quiz-plugin');
+    $general_field_label   = __('Custom AI Prompt Template', 'wp-quiz-plugin');
+    $general_placeholder   = __('Define your custom prompt here...', 'wp-quiz-plugin');
+    
+    /** Images prompt */
+    $images_section_title = __('Images Prompt', 'wp-quiz-plugin');
+    $images_field_label   = __('Custom AI Images Prompt Template', 'wp-quiz-plugin');
+    $images_placeholder   = __('Define your custom prompt for images here...', 'wp-quiz-plugin');
+    
+    /** PDF prompt */
+    $pdf_section_title = __('PDF Prompt', 'wp-quiz-plugin');
+    $pdf_field_label   = __('Custom AI Pdf Prompt Template', 'wp-quiz-plugin');
+    $pdf_placeholder   = __('Define your custom prompt for pdf here...', 'wp-quiz-plugin');
+    
+    /** Text prompt */
+    $text_section_title = __('Text Prompt', 'wp-quiz-plugin');
+    $text_field_label   = __('Custom AI Prompt Text Template', 'wp-quiz-plugin');
+    $text_placeholder   = __('Define your custom prompt for text here...', 'wp-quiz-plugin');
+    ?>
     <div class="wrap">
         <h1><?php esc_html_e('Quizzes Settings','wp-quiz-plugin'); ?></h1>
         
@@ -124,28 +149,118 @@ function wp_quiz_plugin_render_quizzes_settings_page() { ?>
                     <?php 
                     // Register setting
                     settings_fields('wp_quiz_plugin_ai_prompt_settings'); 
-                    do_settings_sections('wp_quiz_plugin_ai_prompt_customization'); 
+                    do_settings_sections('wp_quiz_plugin_ai_prompt_customization');
 
                     // Retrieve saved template
                     $customPromptTemplate = get_option('wp_quiz_plugin_custom_prompt_template', '');
+                    $customImagesPromptTemplate = get_option('wp_quiz_plugin_custom_images_prompt_template', '');
+                    $customPdfPromptTemplate = get_option('wp_quiz_plugin_custom_pdf_prompt_template', '');
+                    $customTextPromptTemplate = get_option('wp_quiz_plugin_custom_text_prompt_template', '');
                     ?>
-                    
                     <!-- Custom Prompt Template -->
                     <div class="kw-form-field">
-                        <label for="wp_quiz_plugin_custom_prompt_template">
-                            <strong><?php esc_html_e('Custom AI Prompt Template', 'wp-quiz-plugin'); ?></strong>
-                        </label>
-                        <textarea 
-                            id="wp_quiz_plugin_custom_prompt_template" 
-                            name="wp_quiz_plugin_custom_prompt_template" 
-                            class="large-text" 
-                            rows="10" 
-                            placeholder="<?php esc_attr_e('Define your custom prompt here...', 'wp-quiz-plugin'); ?>"
-                        ><?php echo esc_textarea($customPromptTemplate); ?></textarea>
-                        <p class="description">
-                            <?php esc_html_e('Use the provided variables to customize the AI prompt template. If {questionTemplate} or {previousQuestionsContext} is not included, they will automatically be added at the end of the prompt.', 'wp-quiz-plugin'); ?>
-                        </p>
+                    <div class="field-decorator">
+                        <span>🎯 <?php echo esc_html__('Prompt Template', 'wp-quiz-plugin'); ?></span>
                     </div>
+
+                    <label for="wp_quiz_plugin_custom_prompt_template">
+                        <strong><?php esc_html_e('Custom AI Prompt Template', 'wp-quiz-plugin'); ?></strong>
+                    </label>
+
+                    <textarea
+                        id="wp_quiz_plugin_custom_prompt_template"
+                        name="wp_quiz_plugin_custom_prompt_template"
+                        class="large-text"
+                        rows="10"
+                        placeholder="<?php esc_attr_e('Define your custom prompt here...', 'wp-quiz-plugin'); ?>"
+                    ><?php echo esc_textarea($customPromptTemplate); ?></textarea>
+
+                    <p class="description">
+                        <?php esc_html_e(
+                        'Use the provided variables to customize the AI prompt template. If {questionTemplate} or {previousQuestionsContext} is not included, they will automatically be added at the end of the prompt.',
+                        'wp-quiz-plugin'
+                        ); ?>
+                    </p>
+                    </div>
+
+                    <!-- Images Prompt -->
+                    <div class="kw-form-field">
+                    <div class="field-decorator">
+                        <span>🖼️ <?php esc_html_e('Images Prompt', 'wp-quiz-plugin'); ?></span>
+                    </div>
+
+                    <label for="wp_quiz_plugin_custom_images_prompt_template">
+                        <strong><?php esc_html_e('Custom AI Images Prompt Template', 'wp-quiz-plugin'); ?></strong>
+                    </label>
+
+                    <textarea
+                        id="wp_quiz_plugin_custom_images_prompt_template"
+                        name="wp_quiz_plugin_custom_images_prompt_template"
+                        class="large-text"
+                        rows="10"
+                        placeholder="<?php esc_attr_e('Define your custom prompt for images here...', 'wp-quiz-plugin'); ?>"
+                    ><?php echo esc_textarea($customImagesPromptTemplate); ?></textarea>
+
+                    <p class="description">
+                        <?php esc_html_e(
+                        'Use the provided variables to customize the AI prompt template. If {questionTemplate} or {previousQuestionsContext} is not included, they will automatically be added at the end of the prompt.',
+                        'wp-quiz-plugin'
+                        ); ?>
+                    </p>
+                    </div>
+
+                    <!-- PDF Prompt -->
+                    <div class="kw-form-field">
+                    <div class="field-decorator">
+                        <span>📄 <?php esc_html_e('PDF Prompt', 'wp-quiz-plugin'); ?></span>
+                    </div>
+
+                    <label for="wp_quiz_plugin_custom_pdf_prompt_template">
+                        <strong><?php esc_html_e('Custom AI Pdf Prompt Template', 'wp-quiz-plugin'); ?></strong>
+                    </label>
+
+                    <textarea
+                        id="wp_quiz_plugin_custom_pdf_prompt_template"
+                        name="wp_quiz_plugin_custom_pdf_prompt_template"
+                        class="large-text"
+                        rows="10"
+                        placeholder="<?php esc_attr_e('Define your custom prompt for pdf here...', 'wp-quiz-plugin'); ?>"
+                    ><?php echo esc_textarea($customPdfPromptTemplate); ?></textarea>
+
+                    <p class="description">
+                        <?php esc_html_e(
+                        'Use the provided variables to customize the AI prompt template. If {questionTemplate} or {previousQuestionsContext} is not included, they will automatically be added at the end of the prompt.',
+                        'wp-quiz-plugin'
+                        ); ?>
+                    </p>
+                    </div>
+
+                    <!-- Text Prompt -->
+                    <div class="kw-form-field">
+                    <div class="field-decorator">
+                        <span>✍️ <?php esc_html_e('Text Prompt', 'wp-quiz-plugin'); ?></span>
+                    </div>
+
+                    <label for="wp_quiz_plugin_custom_text_prompt_template">
+                        <strong><?php esc_html_e('Custom AI Prompt Text Template', 'wp-quiz-plugin'); ?></strong>
+                    </label>
+
+                    <textarea
+                        id="wp_quiz_plugin_custom_text_prompt_template"
+                        name="wp_quiz_plugin_custom_text_prompt_template"
+                        class="large-text"
+                        rows="10"
+                        placeholder="<?php esc_attr_e('Define your custom prompt for text here...', 'wp-quiz-plugin'); ?>"
+                    ><?php echo esc_textarea($customTextPromptTemplate); ?></textarea>
+
+                    <p class="description">
+                        <?php esc_html_e(
+                        'Use the provided variables to customize the AI prompt template. If {questionTemplate} or {previousQuestionsContext} is not included, they will automatically be added at the end of the prompt.',
+                        'wp-quiz-plugin'
+                        ); ?>
+                    </p>
+                    </div>
+
 
                     <?php submit_button(); ?>
                 </form>
@@ -447,6 +562,15 @@ function wp_quiz_plugin_register_prompt_customization_settings() {
 
     // Register custom AI prompt template
     register_setting('wp_quiz_plugin_ai_prompt_settings', 'wp_quiz_plugin_custom_prompt_template', [
+        'sanitize_callback' => 'wp_kses_post' // Allow HTML tags for admin flexibility
+    ]);
+    register_setting('wp_quiz_plugin_ai_prompt_settings', 'wp_quiz_plugin_custom_images_prompt_template', [
+        'sanitize_callback' => 'wp_kses_post' // Allow HTML tags for admin flexibility
+    ]);    
+    register_setting('wp_quiz_plugin_ai_prompt_settings', 'wp_quiz_plugin_custom_pdf_prompt_template', [
+        'sanitize_callback' => 'wp_kses_post' // Allow HTML tags for admin flexibility
+    ]);    
+    register_setting('wp_quiz_plugin_ai_prompt_settings', 'wp_quiz_plugin_custom_text_prompt_template', [
         'sanitize_callback' => 'wp_kses_post' // Allow HTML tags for admin flexibility
     ]);
 }
