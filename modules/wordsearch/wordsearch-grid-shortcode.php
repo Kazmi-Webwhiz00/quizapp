@@ -49,6 +49,36 @@ $downloadPdfLabel = get_option('kw_download_pdf_label', $default_download_pdf_la
 $soundEnabled = get_option('kw_grid_text_sound_setting', 'true') ;
 // Show or hide Images Label
 $showImagesLabel = __('Show Images', 'wp-quiz-plugin');
+
+$prompt_help_text = __(
+  'Use the provided variables to customize the AI prompt template. If {questionTemplate} or {previousQuestionsContext} is not included, they will automatically be added at the end of the prompt.',
+  'wp-quiz-plugin'
+);
+
+/** General (default) prompt */
+$general_section_title = __('Prompt Template', 'wp-quiz-plugin');
+$general_field_label   = __('Custom AI Prompt Template', 'wp-quiz-plugin');
+$general_placeholder   = __('Define your custom prompt here...', 'wp-quiz-plugin');
+
+/** Images prompt */
+$images_section_title = __('Images Prompt', 'wp-quiz-plugin');
+$images_field_label   = __('Custom AI Images Prompt Template', 'wp-quiz-plugin');
+$images_placeholder   = __('Define your custom prompt for images here...', 'wp-quiz-plugin');
+
+/** PDF prompt */
+$pdf_section_title = __('PDF Prompt', 'wp-quiz-plugin');
+$pdf_field_label   = __('Custom AI Pdf Prompt Template', 'wp-quiz-plugin');
+$pdf_placeholder   = __('Define your custom prompt for pdf here...', 'wp-quiz-plugin');
+
+/** Text prompt */
+$text_section_title = __('Text Prompt', 'wp-quiz-plugin');
+$text_field_label   = __('Custom AI Prompt Text Template', 'wp-quiz-plugin');
+$text_placeholder   = __('Define your custom prompt for text here...', 'wp-quiz-plugin');
+
+//Texts for source text choice textboxes
+$show_source_text = __('Show the source text to learners?', 'wp-quiz-plugin');
+$include_source_text   = __('Include the text above the quiz', 'wp-quiz-plugin');
+$exclude_source_text   = __('Do not include the text above the quiz', 'wp-quiz-plugin');
 // Get the real post ID (e.g. your quiz or crossword)
 $post_id = get_queried_object_id();
 
