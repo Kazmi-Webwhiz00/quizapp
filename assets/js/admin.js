@@ -192,6 +192,9 @@
 
             // Insert at the very start of the container
             $("#kw_quiz-questions-container").prepend(includeHtml);
+          } else {
+            // Remove if includeSource is false or no sourceText
+            $("#kw_quiz-questions-container .include-text").remove();
           }
         }
         $(document).trigger("source_text_choice:saved", res);
