@@ -957,18 +957,18 @@ function display_questions_meta_box($post) {
                             <!-- Include / exclude source text -->
                             <div class="source_text_choice">
                             <h4 class="source-text-label">
-                                <?php echo esc_html__('Show the source text to learners?', 'your-text-domain'); ?>
+                                <?php echo esc_html__('Show the source text to learners?', 'wp-quiz-plugin'); ?>
                             </h4>
 
                             <div class="source_text_options">
                             <label class="source-text-option">
                                 <input type="checkbox" id="include_text_source" />
-                                <span><?php echo esc_html__('Include the text above the quiz', 'your-text-domain'); ?></span>
+                                <span><?php echo esc_html__('Include the text above the quiz', 'wp-quiz-plugin'); ?></span>
                             </label>
 
                             <label class="source-text-option">
                                 <input type="checkbox" id="exclude_text_source" />
-                                <span><?php echo esc_html__('Do not include the text above the quiz', 'your-text-domain'); ?></span>
+                                <span><?php echo esc_html__('Do not include the text above the quiz', 'wp-quiz-plugin'); ?></span>
                             </label>
                             </div>
                             </div>
