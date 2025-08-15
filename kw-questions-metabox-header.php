@@ -32,6 +32,9 @@ function kw_render_quiz_buttons($quiz_id) {
     $download_answer_key_text_color = esc_attr(get_option('quiz_download_answer_key_text_color', '#ffffff'));
     $download_answer_key_bg_color = esc_attr(get_option('quiz_download_answer_key_bg_color', '#ffffff'));
     $download_answer_key_font_size = esc_attr(get_option('quiz_download_answer_key_font_size', '14'));
+    // Fetch settings for the "Add Question" button
+    $add_question_with_ai_text =  __('Add Question with AI', 'wp-quiz-plugin');
+
     ob_start();
     ?>
 <div class="header-section">

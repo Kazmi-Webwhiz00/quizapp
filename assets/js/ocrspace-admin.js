@@ -437,7 +437,7 @@ jQuery(function ($) {
           type: "image_url",
           image_url: {
             url: dataUrl,
-            detail: "low", // or "high" for better quality
+            detail: "high", // or "high" for better quality
           },
         });
       }
